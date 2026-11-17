@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Modal dialog</title>
+    <script src="/extension-ready.js"></script>
+  </head>
+  <body>
+    <dialog id="modal">
+      <textarea rows="10" cols="50" data-testid="textarea"></textarea>
+    </dialog>
+    <script>
+      document.getElementById('modal').showModal()
+    </script>
+  </body>
+</html>

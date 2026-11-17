@@ -1,8 +1,8 @@
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/squire-rte/dist/squire.mjs
-var ft = () => true;
-var T = class {
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/squire-rte/dist/squire.mjs
+var gt = () => true;
+var _ = class {
   constructor(t, e, n) {
-    this.root = t, this.currentNode = t, this.nodeType = e, this.filter = n || ft;
+    this.root = t, this.currentNode = t, this.nodeType = e, this.filter = n || gt;
   }
   isAcceptableNode(t) {
     let e = t.nodeType;
@@ -42,71 +42,71 @@ var ee = navigator.userAgent;
 var fe = /Mac OS X/.test(ee);
 var ue = /Windows NT/.test(ee);
 var be = /iP(?:ad|hone|od)/.test(ee) || fe && !!navigator.maxTouchPoints;
-var Mt = /Android/.test(ee);
-var qe = /Gecko\//.test(ee);
+var Pt = /Android/.test(ee);
+var We = /Gecko\//.test(ee);
 var re = /Edge\//.test(ee);
-var ut = !re && /WebKit\//.test(ee);
+var Nt = !re && /WebKit\//.test(ee);
 var y = fe || be ? "Meta-" : "Ctrl-";
-var oe = ut;
-var Ue = "onbeforeinput" in document && "inputType" in new InputEvent("input");
-var B = /[^ \t\r\n\u200B]/;
-var gt = /^(?:#text|A(?:BBR|CRONYM)?|B(?:R|D[IO])?|C(?:ITE|ODE)|D(?:ATA|EL|FN)|EM|FONT|HR|I(?:FRAME|MG|NPUT|NS)?|KBD|Q|R(?:P|T|UBY)|S(?:AMP|MALL|PAN|TR(?:IKE|ONG)|U[BP])?|TIME|U|VAR|WBR)$/;
-var Nt = /* @__PURE__ */ new Set(["BR", "HR", "IFRAME", "IMG", "INPUT"]);
-var St = 0;
+var ie = Nt;
+var ze = "onbeforeinput" in document && "inputType" in new InputEvent("input");
+var A = /[^ \t\r\n\u200B]/;
+var Tt = /^(?:#text|A(?:BBR|CRONYM)?|B(?:R|D[IO])?|C(?:ITE|ODE)|D(?:ATA|EL|FN)|EM|FONT|HR|I(?:FRAME|MG|NPUT|NS)?|KBD|Q|R(?:P|T|UBY)|S(?:AMP|MALL|PAN|TR(?:IKE|ONG)|U[BP])?|TIME|U|VAR|WBR)$/;
+var _t = /* @__PURE__ */ new Set(["BR", "HR", "IFRAME", "IMG", "INPUT"]);
+var Ct = 0;
 var Re = 1;
-var We = 2;
-var ze = 3;
+var Ke = 2;
+var $e = 3;
 var he = /* @__PURE__ */ new WeakMap();
 var me = () => {
   he = /* @__PURE__ */ new WeakMap();
 };
-var H = (i) => Nt.has(i.nodeName);
-var ke = (i) => {
-  switch (i.nodeType) {
+var W = (o) => _t.has(o.nodeName);
+var ye = (o) => {
+  switch (o.nodeType) {
     case 8:
     case 3:
       return Re;
     case 1:
     case 11:
-      if (he.has(i)) return he.get(i);
+      if (he.has(o)) return he.get(o);
       break;
     default:
-      return St;
+      return Ct;
   }
   let t;
-  return Array.from(i.childNodes).every(g) ? gt.test(i.nodeName) ? t = Re : t = We : t = ze, he.set(i, t), t;
+  return Array.from(o.childNodes).every(N) ? Tt.test(o.nodeName) ? t = Re : t = Ke : t = $e, he.set(o, t), t;
 };
-var g = (i) => ke(i) === Re;
-var q = (i) => ke(i) === We;
-var X = (i) => ke(i) === ze;
-var m = (i, t, e) => {
-  let n = document.createElement(i);
-  if (t instanceof Array && (e = t, t = null), t) for (let o in t) {
-    let s = t[o];
-    s !== void 0 && n.setAttribute(o, s);
+var N = (o) => ye(o) === Re;
+var F = (o) => ye(o) === Ke;
+var K = (o) => ye(o) === $e;
+var h = (o, t, e) => {
+  let n = document.createElement(o);
+  if (t instanceof Array && (e = t, t = null), t) for (let i in t) {
+    let s = t[i];
+    s !== void 0 && n.setAttribute(i, s);
   }
-  return e && e.forEach((o) => n.appendChild(o)), n;
+  return e && e.forEach((i) => n.appendChild(i)), n;
 };
-var ye = (i, t) => H(i) || i.nodeType !== t.nodeType || i.nodeName !== t.nodeName ? false : i instanceof HTMLElement && t instanceof HTMLElement ? i.nodeName !== "A" && i.className === t.className && i.style.cssText === t.style.cssText : true;
-var pe = (i, t, e) => {
-  if (i.nodeName !== t) return false;
-  for (let n in e) if (!("getAttribute" in i) || i.getAttribute(n) !== e[n]) return false;
+var Oe = (o, t) => W(o) || o.nodeType !== t.nodeType || o.nodeName !== t.nodeName ? false : o instanceof HTMLElement && t instanceof HTMLElement ? o.nodeName !== "A" && o.className === t.className && o.style.cssText === t.style.cssText : true;
+var pe = (o, t, e) => {
+  if (o.nodeName !== t) return false;
+  for (let n in e) if (!("getAttribute" in o) || o.getAttribute(n) !== e[n]) return false;
   return true;
 };
-var N = (i, t, e, n) => {
-  for (; i && i !== t; ) {
-    if (pe(i, e, n)) return i;
-    i = i.parentNode;
+var g = (o, t, e, n) => {
+  for (; o && o !== t; ) {
+    if (pe(o, e, n)) return o;
+    o = o.parentNode;
   }
   return null;
 };
-var ge = (i, t) => {
-  let e = i.childNodes;
-  for (; t && i instanceof Element; ) i = e[t - 1], e = i.childNodes, t = e.length;
-  return i;
+var ge = (o, t) => {
+  let e = o.childNodes;
+  for (; t && o instanceof Element; ) o = e[t - 1], e = o.childNodes, t = e.length;
+  return o;
 };
-var Oe = (i, t) => {
-  let e = i;
+var Be = (o, t) => {
+  let e = o;
   if (e instanceof Element) {
     let n = e.childNodes;
     if (t < n.length) e = n[t];
@@ -117,54 +117,55 @@ var Oe = (i, t) => {
   }
   return e;
 };
-var L = (i) => i instanceof Element || i instanceof DocumentFragment ? i.childNodes.length : i instanceof CharacterData ? i.length : 0;
-var _ = (i) => {
-  let t = document.createDocumentFragment(), e = i.firstChild;
-  for (; e; ) t.appendChild(e), e = i.firstChild;
+var L = (o) => o instanceof Element || o instanceof DocumentFragment ? o.childNodes.length : o instanceof CharacterData ? o.length : 0;
+var T = (o) => {
+  let t = document.createDocumentFragment(), e = o.firstChild;
+  for (; e; ) t.appendChild(e), e = o.firstChild;
   return t;
 };
-var S = (i) => {
-  let t = i.parentNode;
-  return t && t.removeChild(i), i;
+var E = (o) => {
+  let t = o.parentNode;
+  return t && t.removeChild(o), o;
 };
-var k = (i, t) => {
-  let e = i.parentNode;
-  e && e.replaceChild(t, i);
+var k = (o, t) => {
+  let e = o.parentNode;
+  e && e.replaceChild(t, o);
 };
-var Et = (i) => i instanceof Element ? i.nodeName === "BR" : B.test(i.data);
-var te = (i, t) => {
-  let e = i.parentNode;
-  for (; g(e); ) e = e.parentNode;
-  let n = new T(e, 5, Et);
-  return n.currentNode = i, !!n.nextNode() || t && !n.previousNode();
+var vt = (o) => o instanceof Element ? o.nodeName === "BR" : A.test(o.data);
+var te = (o, t) => {
+  let e = o.parentNode;
+  for (; N(e); ) e = e.parentNode;
+  let n = new _(e, 5, vt);
+  return n.currentNode = o, !!n.nextNode() || t && !n.previousNode();
 };
-var le = (i, t) => {
-  let e = new T(i, 4), n, o;
-  for (; n = e.nextNode(); ) for (; (o = n.data.indexOf("\u200B")) > -1 && (!t || n.parentNode !== t); ) if (n.length === 1) {
+var le = (o, t) => {
+  let e = new _(o, 4), n, i;
+  for (; n = e.nextNode(); ) for (; (i = n.data.indexOf("\u200B")) > -1 && (!t || n.parentNode !== t); ) if (n.length === 1) {
     let s = n, r = s.parentNode;
-    for (; r && (r.removeChild(s), e.currentNode = r, !(!g(r) || L(r))); ) s = r, r = s.parentNode;
+    for (; r && (r.removeChild(s), e.currentNode = r, !(!N(r) || L(r))); ) s = r, r = s.parentNode;
     break;
-  } else n.deleteData(o, 1);
+  } else n.deleteData(i, 1);
 };
-var _t = 0;
-var Tt = 1;
-var Ct = 2;
-var vt = 3;
-var z = (i, t, e) => {
+var xt = 0;
+var bt = 1;
+var Rt = 2;
+var Lt = 3;
+var z = (o, t, e) => {
   let n = document.createRange();
   if (n.selectNode(t), e) {
-    let o = i.compareBoundaryPoints(vt, n) > -1, s = i.compareBoundaryPoints(Tt, n) < 1;
-    return !o && !s;
+    let i = o.compareBoundaryPoints(Lt, n) > -1, s = o.compareBoundaryPoints(bt, n) < 1;
+    return !i && !s;
   } else {
-    let o = i.compareBoundaryPoints(_t, n) < 1, s = i.compareBoundaryPoints(Ct, n) > -1;
-    return o && s;
+    let i = o.compareBoundaryPoints(xt, n) < 1, s = o.compareBoundaryPoints(Rt, n) > -1;
+    return i && s;
   }
 };
-var C = (i) => {
-  let { startContainer: t, startOffset: e, endContainer: n, endOffset: o } = i;
+var De = (o) => o instanceof Text || o.nodeType === 1 && !W(o);
+var C = (o) => {
+  let { startContainer: t, startOffset: e, endContainer: n, endOffset: i } = o;
   for (; !(t instanceof Text); ) {
     let s = t.childNodes[e];
-    if (!s || H(s)) {
+    if (!s || !De(s)) {
       if (e && (s = t.childNodes[e - 1], s instanceof Text)) {
         let r = s, l;
         for (; !r.length && (l = r.previousSibling) && l instanceof Text; ) r.remove(), r = l;
@@ -174,456 +175,460 @@ var C = (i) => {
     }
     t = s, e = 0;
   }
-  if (o) for (; !(n instanceof Text); ) {
-    let s = n.childNodes[o - 1];
-    if (!s || H(s)) {
+  if (i) for (; !(n instanceof Text); ) {
+    let s = n.childNodes[i - 1];
+    if (!s || !De(s)) {
       if (s && s.nodeName === "BR" && !te(s, false)) {
-        o -= 1;
+        i -= 1;
         continue;
       }
       break;
     }
-    n = s, o = L(n);
+    n = s, i = L(n);
   }
   else for (; !(n instanceof Text); ) {
     let s = n.firstChild;
-    if (!s || H(s)) break;
+    if (!s || !De(s)) break;
     n = s;
   }
-  i.setStart(t, e), i.setEnd(n, o);
+  o.setStart(t, e), o.setEnd(n, i);
 };
-var K = (i, t, e, n) => {
-  let o = i.startContainer, s = i.startOffset, r = i.endContainer, l = i.endOffset, a;
-  for (t || (t = i.commonAncestorContainer), e || (e = t); !s && o !== t && o !== n; ) a = o.parentNode, s = Array.from(a.childNodes).indexOf(o), o = a;
+var $ = (o, t, e, n) => {
+  let i = o.startContainer, s = o.startOffset, r = o.endContainer, l = o.endOffset, a;
+  for (t || (t = o.commonAncestorContainer), e || (e = t); !s && i !== t && i !== n; ) a = i.parentNode, s = Array.from(a.childNodes).indexOf(i), i = a;
   for (; !(r === e || r === n || (r.nodeType !== 3 && r.childNodes[l] && r.childNodes[l].nodeName === "BR" && !te(r.childNodes[l], false) && (l += 1), l !== L(r))); ) a = r.parentNode, l = Array.from(a.childNodes).indexOf(r) + 1, r = a;
-  i.setStart(o, s), i.setEnd(r, l);
+  o.setStart(i, s), o.setEnd(r, l);
 };
-var Be = (i, t, e) => {
-  let n = N(i.endContainer, e, t);
+var Ae = (o, t, e) => {
+  let n = g(o.endContainer, e, t);
   if (n && (n = n.parentNode)) {
-    let o = i.cloneRange();
-    K(o, n, n, e), o.endContainer === n && (i.setStart(o.endContainer, o.endOffset), i.setEnd(o.endContainer, o.endOffset));
+    let i = o.cloneRange();
+    $(i, n, n, e), i.endContainer === n && (o.setStart(i.endContainer, i.endOffset), o.setEnd(i.endContainer, i.endOffset));
   }
-  return i;
+  return o;
 };
-var x = (i) => {
+var x = (o) => {
   let t = null;
-  if (i instanceof Text) return i;
-  if (g(i)) {
-    let e = i.firstChild;
-    if (oe) for (; e && e instanceof Text && !e.data; ) i.removeChild(e), e = i.firstChild;
-    e || (oe ? t = document.createTextNode("\u200B") : t = document.createTextNode(""));
-  } else if ((i instanceof Element || i instanceof DocumentFragment) && !i.querySelector("BR") && !B.test(i.textContent || "")) {
-    t = m("BR");
-    let e = i, n;
-    for (; (n = e.lastElementChild) && !g(n); ) e = n;
-    i = e, i instanceof HTMLElement && i.contentEditable === "true" && (i = m("DIV"), e.appendChild(i));
+  if (o instanceof Text) return o;
+  if (N(o)) {
+    let e = o.firstChild;
+    if (ie) for (; e && e instanceof Text && !e.data; ) o.removeChild(e), e = o.firstChild;
+    e || (ie ? t = document.createTextNode("\u200B") : t = document.createTextNode(""));
+  } else if ((o instanceof Element || o instanceof DocumentFragment) && !o.querySelector("BR") && !A.test(o.textContent || "")) {
+    t = h("BR");
+    let e = o, n;
+    for (; (n = e.lastElementChild) && !N(n); ) e = n;
+    o = e, o instanceof HTMLElement && o.contentEditable === "true" && (o = h("DIV"), e.appendChild(o));
   }
   if (t) try {
-    i.appendChild(t);
+    o.appendChild(t);
   } catch {
   }
-  return i;
+  return o;
 };
-var D = (i, t) => {
+var B = (o, t) => {
   let e = null;
-  return /^(?:TABLE|TBODY|TR|TH|TD|P)/.test(i.nodeName) || (Array.from(i.childNodes).forEach((n) => {
-    let o = n.nodeName === "BR";
-    !o && g(n) ? (e || (e = m("DIV")), e.appendChild(n)) : (o || e) && (e || (e = m("DIV")), x(e), o ? i.replaceChild(e, n) : i.insertBefore(e, n), e = null), X(n) && D(n, t);
-  }), e && i.appendChild(x(e))), i;
+  return /^(?:TABLE|TBODY|TR|TH|TD|P)/.test(o.nodeName) || (Array.from(o.childNodes).forEach((n) => {
+    let i = n.nodeName === "BR";
+    !i && N(n) ? (e || (e = h("DIV")), e.appendChild(n)) : (i || e) && (e || (e = h("DIV")), x(e), i ? o.replaceChild(e, n) : o.insertBefore(e, n), e = null), K(n) && B(n, t);
+  }), e && o.appendChild(x(e))), o;
 };
-var I = (i, t, e, n) => {
-  if (!e.contains(i)) throw new Error("split: stopNode does not contain node");
-  if (i instanceof Text && i !== e) {
+var I = (o, t, e, n) => {
+  if (!e.contains(o)) throw new Error("split: stopNode does not contain node");
+  if (o instanceof Text && o !== e) {
     if (typeof t != "number") throw new Error("Offset must be a number to split text node!");
-    if (!i.parentNode) throw new Error("Cannot split text node with no parent!");
-    return I(i.parentNode, i.splitText(t), e, n);
+    if (!o.parentNode) throw new Error("Cannot split text node with no parent!");
+    return I(o.parentNode, o.splitText(t), e, n);
   }
-  let o = typeof t == "number" ? t < i.childNodes.length ? i.childNodes[t] : null : t, s = i.parentNode;
-  if (!s || i === e || !(i instanceof Element)) return o;
-  let r = i.cloneNode(false);
-  for (; o; ) {
-    let l = o.nextSibling;
-    r.appendChild(o), o = l;
+  let i = typeof t == "number" ? t < o.childNodes.length ? o.childNodes[t] : null : t, s = o.parentNode;
+  if (!s || o === e || !(o instanceof Element)) return i;
+  let r = o.cloneNode(false);
+  for (; i; ) {
+    let l = i.nextSibling;
+    r.appendChild(i), i = l;
   }
-  return i instanceof HTMLOListElement && N(i, n, "BLOCKQUOTE") && (r.start = (+i.start || 1) + i.childNodes.length - 1), x(i), x(r), s.insertBefore(r, i.nextSibling), I(s, r, e, n);
+  return o instanceof HTMLOListElement && g(o, n, "BLOCKQUOTE") && (r.start = (+o.start || 1) + o.childNodes.length - 1), x(o), x(r), s.insertBefore(r, o.nextSibling), I(s, r, e, n);
 };
-var Ke = (i, t) => {
-  let e = i.childNodes, n = e.length, o = [];
+var Ze = (o, t) => {
+  let e = o.childNodes, n = e.length, i = [];
   for (; n--; ) {
     let s = e[n], r = n ? e[n - 1] : null;
-    if (r && g(s) && ye(s, r)) t.startContainer === s && (t.startContainer = r, t.startOffset += L(r)), t.endContainer === s && (t.endContainer = r, t.endOffset += L(r)), t.startContainer === i && (t.startOffset > n ? t.startOffset -= 1 : t.startOffset === n && (t.startContainer = r, t.startOffset = L(r))), t.endContainer === i && (t.endOffset > n ? t.endOffset -= 1 : t.endOffset === n && (t.endContainer = r, t.endOffset = L(r))), S(s), s instanceof Text ? r.appendData(s.data) : o.push(_(s));
+    if (r && N(s) && Oe(s, r)) t.startContainer === s && (t.startContainer = r, t.startOffset += L(r)), t.endContainer === s && (t.endContainer = r, t.endOffset += L(r)), t.startContainer === o && (t.startOffset > n ? t.startOffset -= 1 : t.startOffset === n && (t.startContainer = r, t.startOffset = L(r))), t.endContainer === o && (t.endOffset > n ? t.endOffset -= 1 : t.endOffset === n && (t.endContainer = r, t.endOffset = L(r))), E(s), s instanceof Text ? r.appendData(s.data) : i.push(T(s));
     else if (s instanceof Element) {
       let l;
-      for (; l = o.pop(); ) s.appendChild(l);
-      Ke(s, t);
+      for (; l = i.pop(); ) s.appendChild(l);
+      Ze(s, t);
     }
   }
 };
-var ne = (i, t) => {
-  let e = i instanceof Text ? i.parentNode : i;
+var ne = (o, t) => {
+  let e = o instanceof Text ? o.parentNode : o;
   if (e instanceof Element) {
     let n = { startContainer: t.startContainer, startOffset: t.startOffset, endContainer: t.endContainer, endOffset: t.endOffset };
-    Ke(e, n), t.setStart(n.startContainer, n.startOffset), t.setEnd(n.endContainer, n.endOffset);
+    Ze(e, n), t.setStart(n.startContainer, n.startOffset), t.setEnd(n.endContainer, n.endOffset);
   }
 };
-var V = (i, t, e, n) => {
-  let o = t, s, r;
-  for (; (s = o.parentNode) && s !== n && s instanceof Element && s.childNodes.length === 1; ) o = s;
-  S(o), r = i.childNodes.length;
-  let l = i.lastChild;
-  l && l.nodeName === "BR" && (i.removeChild(l), r -= 1), i.appendChild(_(t)), e.setStart(i, r), e.collapse(true), ne(i, e);
+var V = (o, t, e, n) => {
+  let i = t, s, r;
+  for (; (s = i.parentNode) && s !== n && s instanceof Element && s.childNodes.length === 1; ) i = s;
+  E(i), r = o.childNodes.length;
+  let l = o.lastChild;
+  l && l.nodeName === "BR" && (o.removeChild(l), r -= 1), o.appendChild(T(t)), e.setStart(o, r), e.collapse(true), ne(o, e);
 };
-var P = (i, t) => {
-  let e = i.previousSibling, n = i.firstChild, o = i.nodeName === "LI";
-  if (!(o && (!n || !/^[OU]L$/.test(n.nodeName)))) {
-    if (e && ye(e, i)) {
-      if (!X(e)) if (o) {
-        let r = m("DIV");
-        r.appendChild(_(e)), e.appendChild(r);
+var H = (o, t) => {
+  let e = o.previousSibling, n = o.firstChild, i = o.nodeName === "LI";
+  if (!(i && (!n || !/^[OU]L$/.test(n.nodeName)))) {
+    if (e && Oe(e, o)) {
+      if (!K(e)) if (i) {
+        let r = h("DIV");
+        r.appendChild(T(e)), e.appendChild(r);
       } else return;
-      S(i);
-      let s = !X(i);
-      e.appendChild(_(i)), s && D(e, t), n && P(n, t);
-    } else if (o) {
-      let s = m("DIV");
-      i.insertBefore(s, n), x(s);
+      E(o);
+      let s = !K(o);
+      e.appendChild(T(o)), s && B(e, t), n && H(n, t);
+    } else if (i) {
+      let s = h("DIV");
+      o.insertBefore(s, n), x(s);
     }
   }
 };
-var $e = { "font-weight": { regexp: /^bold|^700/i, replace() {
-  return m("B");
+var Ge = { "font-weight": { regexp: /^bold|^700/i, replace() {
+  return h("B");
 } }, "font-style": { regexp: /^italic/i, replace() {
-  return m("I");
-} }, "font-family": { regexp: B, replace(i, t) {
-  let e = m("SPAN", { class: i.fontFamily });
+  return h("I");
+} }, "font-family": { regexp: A, replace(o, t) {
+  let e = h("SPAN", { class: o.fontFamily });
   return e.style.fontFamily = t, e;
-} }, "font-size": { regexp: B, replace(i, t) {
-  let e = m("SPAN", { class: i.fontSize });
+} }, "font-size": { regexp: A, replace(o, t) {
+  let e = h("SPAN", { class: o.fontSize });
   return e.style.fontSize = t, e;
 } }, "text-decoration": { regexp: /^underline/i, replace() {
-  return m("U");
+  return h("U");
 } } };
-var xt = (i, t, e) => {
-  let n = i.style, o, s;
-  for (let r in $e) {
-    let l = $e[r], a = n.getPropertyValue(r);
+var kt = (o, t, e) => {
+  let n = o.style, i, s;
+  for (let r in Ge) {
+    let l = Ge[r], a = n.getPropertyValue(r);
     if (a && l.regexp.test(a)) {
       let d = l.replace(e.classNames, a);
-      if (d.nodeName === i.nodeName && d.className === i.className) continue;
-      s || (s = d), o && o.appendChild(d), o = d, i.style.removeProperty(r);
+      if (d.nodeName === o.nodeName && d.className === o.className) continue;
+      s || (s = d), i && i.appendChild(d), i = d, o.style.removeProperty(r);
     }
   }
-  return s && o && (o.appendChild(_(i)), i.style.cssText ? i.appendChild(s) : k(i, s)), o || i;
+  return s && i && (i.appendChild(T(o)), o.style.cssText ? o.appendChild(s) : k(o, s)), i || o;
 };
-var Ne = (i) => (t, e) => {
-  let n = m(i), o = t.attributes;
-  for (let s = 0, r = o.length; s < r; s += 1) {
-    let l = o[s];
+var Ne = (o) => (t, e) => {
+  let n = h(o), i = t.attributes;
+  for (let s = 0, r = i.length; s < r; s += 1) {
+    let l = i[s];
     n.setAttribute(l.name, l.value);
   }
-  return e.replaceChild(n, t), n.appendChild(_(t)), n;
+  return e.replaceChild(n, t), n.appendChild(T(t)), n;
 };
-var bt = { 1: "10", 2: "13", 3: "16", 4: "18", 5: "24", 6: "32", 7: "48" };
-var Rt = { STRONG: Ne("B"), EM: Ne("I"), INS: Ne("U"), STRIKE: Ne("S"), SPAN: xt, FONT: (i, t, e) => {
-  let n = i, o = n.face, s = n.size, r = n.color, l = e.classNames, a, d, c, f, u;
-  return o && (a = m("SPAN", { class: l.fontFamily }), a.style.fontFamily = o, u = a, f = a), s && (d = m("SPAN", { class: l.fontSize }), d.style.fontSize = bt[s] + "px", u || (u = d), f && f.appendChild(d), f = d), r && /^#?([\dA-F]{3}){1,2}$/i.test(r) && (r.charAt(0) !== "#" && (r = "#" + r), c = m("SPAN", { class: l.color }), c.style.color = r, u || (u = c), f && f.appendChild(c), f = c), (!u || !f) && (u = f = m("SPAN")), t.replaceChild(u, n), f.appendChild(_(n)), f;
-}, TT: (i, t, e) => {
-  let n = m("SPAN", { class: e.classNames.fontFamily, style: 'font-family:menlo,consolas,"courier new",monospace' });
-  return t.replaceChild(n, i), n.appendChild(_(i)), n;
+var yt = { 1: "10", 2: "13", 3: "16", 4: "18", 5: "24", 6: "32", 7: "48" };
+var je = { STRONG: Ne("B"), EM: Ne("I"), INS: Ne("U"), STRIKE: Ne("S"), SPAN: kt, FONT: (o, t, e) => {
+  let n = o, i = n.face, s = n.size, r = n.color, l = e.classNames, a, d, c, u, f;
+  return i && (a = h("SPAN", { class: l.fontFamily }), a.style.fontFamily = i, f = a, u = a), s && (d = h("SPAN", { class: l.fontSize }), d.style.fontSize = yt[s] + "px", f || (f = d), u && u.appendChild(d), u = d), r && /^#?([\dA-F]{3}){1,2}$/i.test(r) && (r.charAt(0) !== "#" && (r = "#" + r), c = h("SPAN", { class: l.color }), c.style.color = r, f || (f = c), u && u.appendChild(c), u = c), (!f || !u) && (f = u = h("SPAN")), t.replaceChild(f, n), u.appendChild(T(n)), u;
+}, TT: (o, t, e) => {
+  let n = h("SPAN", { class: e.classNames.fontFamily, style: 'font-family:menlo,consolas,"courier new",monospace' });
+  return t.replaceChild(n, o), n.appendChild(T(o)), n;
 } };
-var Lt = /^(?:A(?:DDRESS|RTICLE|SIDE|UDIO)|BLOCKQUOTE|CAPTION|D(?:[DLT]|IV)|F(?:IGURE|IGCAPTION|OOTER)|H[1-6]|HEADER|L(?:ABEL|EGEND|I)|O(?:L|UTPUT)|P(?:RE)?|SECTION|T(?:ABLE|BODY|D|FOOT|H|HEAD|R)|COL(?:GROUP)?|UL)$/;
-var kt = /^(?:HEAD|META|STYLE)/;
-var Se = (i, t, e) => {
-  let n = i.childNodes, o = i;
-  for (; g(o); ) o = o.parentNode;
-  let s = new T(o, 5);
-  for (let r = 0, l = n.length; r < l; r += 1) {
-    let a = n[r], d = a.nodeName, c = Rt[d];
-    if (a instanceof HTMLElement) {
-      let f = a.childNodes.length;
-      if (c) a = c(a, i, t);
-      else if (kt.test(d)) {
-        i.removeChild(a), r -= 1, l -= 1;
+var Qe = /^(?:A(?:DDRESS|RTICLE|SIDE|UDIO)?|BLOCKQUOTE|CAPTION|D(?:[DLT]|IV)|F(?:IGURE|IGCAPTION|OOTER)|H[1-6]|HEADER|L(?:ABEL|EGEND|I)|O(?:L|UTPUT)|P(?:RE)?|SECTION|T(?:ABLE|BODY|D|FOOT|H|HEAD|R)|COL(?:GROUP)?|UL)$/;
+var Ot = /^(?:HEAD|META|STYLE)$/;
+var Xe = (o, t, e, n) => {
+  let i = [], s = false, r = true, l;
+  for (o.currentNode = t; l = e ? o.nextNode() : o.previousPONode(); ) {
+    let a = n.get(l);
+    if (a !== void 0) {
+      s = a;
+      break;
+    }
+    if (l.nodeName === "IMG" || l instanceof Text && A.test(l.data)) {
+      s = true;
+      break;
+    }
+    if (!N(l)) {
+      r = !e || Qe.test(l.nodeName) && !je[l.nodeName];
+      break;
+    }
+    i.push(l);
+  }
+  if (r) for (let a of i) n.set(a, s);
+  return s;
+};
+var Ee = (o, t, e, n = { before: /* @__PURE__ */ new WeakMap(), after: /* @__PURE__ */ new WeakMap() }) => {
+  let i = o.childNodes, s = o;
+  for (; N(s); ) s = s.parentNode;
+  let r = new _(s, 5);
+  for (let l = 0, a = i.length; l < a; l += 1) {
+    let d = i[l], c = d.nodeName, u = je[c];
+    if (d instanceof HTMLElement) {
+      let f = d.childNodes.length;
+      if (u) d = u(d, o, t);
+      else if (Ot.test(c)) {
+        o.removeChild(d), l -= 1, a -= 1;
         continue;
-      } else if (!Lt.test(d) && !g(a)) {
-        r -= 1, l += f - 1, i.replaceChild(_(a), a);
+      } else if (!Qe.test(c) && !N(d)) {
+        l -= 1, a += f - 1, o.replaceChild(T(d), d);
         continue;
       }
-      f && Se(a, t, e || d === "PRE");
+      f && Ee(d, t, e || c === "PRE", n);
     } else {
-      if (a instanceof Text) {
-        let f = a.data, u = !B.test(f.charAt(0)), p = !B.test(f.charAt(f.length - 1));
-        if (e || !u && !p) continue;
-        if (u) {
-          s.currentNode = a;
-          let h;
-          for (; (h = s.previousPONode()) && !(h.nodeName === "IMG" || h instanceof Text && B.test(h.data)); ) if (!g(h)) {
-            h = null;
-            break;
-          }
-          f = f.replace(/^[ \t\r\n]+/g, h ? " " : "");
-        }
-        if (p) {
-          s.currentNode = a;
-          let h;
-          for (; (h = s.nextNode()) && !(h.nodeName === "IMG" || h instanceof Text && B.test(h.data)); ) if (!g(h)) {
-            h = null;
-            break;
-          }
-          f = f.replace(/[ \t\r\n]+$/g, h ? " " : "");
-        }
-        if (f) {
-          a.data = f;
+      if (d instanceof Text) {
+        let f = d.data, p = !A.test(f.charAt(0)), m = !A.test(f.charAt(f.length - 1));
+        if (e || !p && !m) continue;
+        if (p && (f = f.replace(/^[ \t\r\n]+/g, Xe(r, d, false, n.before) ? " " : "")), m && f && (f = f.replace(/[ \t\r\n]+$/g, Xe(r, d, true, n.after) ? " " : "")), f) {
+          d.data = f;
           continue;
         }
       }
-      i.removeChild(a), r -= 1, l -= 1;
+      o.removeChild(d), l -= 1, a -= 1;
     }
   }
-  return i;
+  return o;
 };
-var Ee = (i) => {
-  let t = i.childNodes, e = t.length;
+var Se = (o) => {
+  let t = o.childNodes, e = t.length;
   for (; e--; ) {
     let n = t[e];
-    n instanceof Element && !H(n) ? (Ee(n), g(n) && !n.firstChild && i.removeChild(n)) : n instanceof Text && !n.data && i.removeChild(n);
+    n instanceof Element && !W(n) ? (Se(n), N(n) && !n.firstChild && o.removeChild(n)) : n instanceof Text && !n.data && o.removeChild(n);
   }
 };
-var ae = (i, t, e) => {
-  let n = i.querySelectorAll("BR"), o = [], s = n.length;
-  for (let r = 0; r < s; r += 1) o[r] = te(n[r], e);
+var ae = (o, t, e) => {
+  let n = o.querySelectorAll("BR"), i = [], s = n.length;
+  for (let r = 0; r < s; r += 1) i[r] = te(n[r], e);
   for (; s--; ) {
     let r = n[s], l = r.parentNode;
-    l && (o[s] ? g(l) || D(l, t) : S(r));
+    l && (i[s] ? N(l) || B(l, t) : E(r));
   }
 };
-var De = (i) => i.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;").split('"').join("&quot;");
-var ce = (i, t) => {
-  let e = new T(t, 1, q);
-  return e.currentNode = i, e;
+var we = (o) => o.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;").split('"').join("&quot;");
+var ce = (o, t) => {
+  let e = new _(t, 1, F);
+  return e.currentNode = o, e;
 };
-var W = (i, t) => {
-  let e = ce(i, t).previousNode();
+var U = (o, t) => {
+  let e = ce(o, t).previousNode();
   return e !== t ? e : null;
 };
-var M = (i, t) => {
-  let e = ce(i, t).nextNode();
+var M = (o, t) => {
+  let e = ce(o, t).nextNode();
   return e !== t ? e : null;
 };
-var de = (i) => !i.textContent && !i.querySelector("IMG");
-var v = (i, t) => {
-  let e = i.startContainer, n;
-  if (g(e)) n = W(e, t);
-  else if (e !== t && e instanceof HTMLElement && q(e)) n = e;
+var de = (o) => !o.textContent && !o.querySelector("IMG");
+var v = (o, t) => {
+  let e = o.startContainer, n;
+  if (N(e)) n = U(e, t);
+  else if (e !== t && e instanceof HTMLElement && F(e)) n = e;
   else {
-    let o = ge(e, i.startOffset);
-    n = M(o, t);
+    let i = ge(e, o.startOffset);
+    n = M(i, t);
   }
-  return n && z(i, n, true) ? n : null;
+  return n && z(o, n, true) ? n : null;
 };
-var $ = (i, t) => {
-  let e = i.endContainer, n;
-  if (g(e)) n = W(e, t);
-  else if (e !== t && e instanceof HTMLElement && q(e)) n = e;
+var Z = (o, t) => {
+  let e = o.endContainer, n;
+  if (N(e)) n = U(e, t);
+  else if (e !== t && e instanceof HTMLElement && F(e)) n = e;
   else {
-    let o = Oe(e, i.endOffset);
-    if (!o || !t.contains(o)) {
-      o = t;
+    let i = Be(e, o.endOffset);
+    if (!i || !t.contains(i)) {
+      i = t;
       let s;
-      for (; s = o.lastChild; ) o = s;
+      for (; s = i.lastChild; ) i = s;
     }
-    n = W(o, t);
+    n = U(i, t);
   }
-  return n && z(i, n, true) ? n : null;
+  return n && z(o, n, true) ? n : null;
 };
-var Ge = (i) => i instanceof Text ? B.test(i.data) : i.nodeName === "IMG";
-var j = (i, t) => {
-  let e = i.startContainer, n = i.startOffset, o;
+var Ye = (o) => o instanceof Text ? A.test(o.data) : o.nodeName === "IMG";
+var j = (o, t) => {
+  let e = o.startContainer, n = o.startOffset, i;
   if (e instanceof Text) {
     let l = e.data;
     for (let a = n; a > 0; a -= 1) if (l.charAt(a - 1) !== "\u200B") return false;
-    o = e;
-  } else if (o = Oe(e, n), o && !t.contains(o) && (o = null), !o && (o = ge(e, n), o instanceof Text && o.length)) return false;
-  let s = v(i, t);
+    i = e;
+  } else if (i = Be(e, n), i && !t.contains(i) && (i = null), !i && (i = ge(e, n), i instanceof Text && i.length)) return false;
+  let s = v(o, t);
   if (!s) return false;
-  let r = new T(s, 5, Ge);
-  return r.currentNode = o, !r.previousNode();
+  let r = new _(s, 5, Ye);
+  return r.currentNode = i, !r.previousNode();
 };
-var G = (i, t) => {
-  let e = i.endContainer, n = i.endOffset, o;
+var G = (o, t) => {
+  let e = o.endContainer, n = o.endOffset, i;
   if (e instanceof Text) {
     let l = e.data, a = l.length;
     for (let d = n; d < a; d += 1) if (l.charAt(d) !== "\u200B") return false;
-    o = e;
-  } else o = ge(e, n);
-  let s = $(i, t);
+    i = e;
+  } else i = ge(e, n);
+  let s = Z(o, t);
   if (!s) return false;
-  let r = new T(s, 5, Ge);
-  return r.currentNode = o, !r.nextNode();
+  let r = new _(s, 5, Ye);
+  return r.currentNode = i, !r.nextNode();
 };
-var Ae = (i, t) => {
-  let e = v(i, t), n = $(i, t), o;
-  e && n && (o = e.parentNode, i.setStart(o, Array.from(o.childNodes).indexOf(e)), o = n.parentNode, i.setEnd(o, Array.from(o.childNodes).indexOf(n) + 1));
+var Ie = (o, t) => {
+  let e = v(o, t), n = Z(o, t), i;
+  e && n && (i = e.parentNode, o.setStart(i, Array.from(i.childNodes).indexOf(e)), i = n.parentNode, o.setEnd(i, Array.from(i.childNodes).indexOf(n) + 1));
 };
-function Q(i, t, e, n) {
-  let o = document.createRange();
-  return o.setStart(i, t), e && typeof n == "number" ? o.setEnd(e, n) : o.setEnd(i, t), o;
+function Q(o, t, e, n) {
+  let i = document.createRange();
+  return i.setStart(o, t), e && typeof n == "number" ? i.setEnd(e, n) : i.setEnd(o, t), i;
 }
-var Z = (i, t) => {
-  let { startContainer: e, startOffset: n, endContainer: o, endOffset: s } = i, r;
+var X = (o, t) => {
+  let { startContainer: e, startOffset: n, endContainer: i, endOffset: s } = o, r;
   if (e instanceof Text) {
     let a = e.parentNode;
-    if (r = a.childNodes, n === e.length) n = Array.from(r).indexOf(e) + 1, i.collapsed && (o = a, s = n);
+    if (r = a.childNodes, n === e.length) n = Array.from(r).indexOf(e) + 1, o.collapsed && (i = a, s = n);
     else {
       if (n) {
         let d = e.splitText(n);
-        o === e ? (s -= n, o = d) : o === a && (s += 1), e = d;
+        i === e ? (s -= n, i = d) : i === a && (s += 1), e = d;
       }
       n = Array.from(r).indexOf(e);
     }
     e = a;
   } else r = e.childNodes;
   let l = r.length;
-  n === l ? e.appendChild(t) : e.insertBefore(t, r[n]), e === o && (s += r.length - l), i.setStart(e, n), i.setEnd(o, s);
+  n === l ? e.appendChild(t) : e.insertBefore(t, r[n]), e === i && (s += r.length - l), o.setStart(e, n), o.setEnd(i, s);
 };
-var we = (i, t, e) => {
+var Me = (o, t, e) => {
   let n = document.createDocumentFragment();
-  if (i.collapsed) return n;
-  t || (t = i.commonAncestorContainer), t instanceof Text && (t = t.parentNode);
-  let o = i.startContainer, s = i.startOffset, r = I(i.endContainer, i.endOffset, t, e), l = 0, a = I(o, s, t, e);
+  if (o.collapsed) return n;
+  t || (t = o.commonAncestorContainer), t instanceof Text && (t = t.parentNode);
+  let i = o.startContainer, s = o.startOffset, r = I(o.endContainer, o.endOffset, t, e), l = 0, a = I(i, s, t, e);
   for (; a && a !== r; ) {
     let d = a.nextSibling;
     n.appendChild(a), a = d;
   }
-  return a = r && r.previousSibling, a && a instanceof Text && r instanceof Text && (l = a.length, a.appendData(r.data), S(r), r = a), i.setStart(o, s), r ? i.setEnd(r, l) : i.setEnd(t, t.childNodes.length), x(t), n;
+  return a = r && r.previousSibling, a && a instanceof Text && r instanceof Text && (l = a.length, a.appendData(r.data), E(r), r = a), o.setStart(i, s), r ? o.setEnd(r, l) : o.setEnd(t, t.childNodes.length), x(t), n;
 };
-var Ze = (i, t, e) => {
-  i.currentNode = e;
+var Ve = (o, t, e) => {
+  o.currentNode = e;
   let n;
-  for (; n = i[t](); ) {
-    if (n instanceof Text || H(n)) return n;
-    if (!g(n)) return null;
+  for (; n = o[t](); ) {
+    if (n instanceof Text || W(n)) return n;
+    if (!N(n)) return null;
   }
   return null;
 };
-var F = (i, t) => {
-  let e = v(i, t), n = $(i, t), o = e !== n;
-  e && n && (C(i), K(i, e, n, t));
-  let s = we(i, null, t);
-  C(i), o && (n = $(i, t), e && n && e !== n && V(e, n, i, t)), e && x(e);
+var P = (o, t) => {
+  let e = v(o, t), n = Z(o, t), i = e !== n;
+  e && n && (C(o), $(o, e, n, t));
+  let s = Me(o, null, t);
+  C(o), i && (n = Z(o, t), e && n && e !== n && V(e, n, o, t)), e && x(e);
   let r = t.firstChild;
-  (!r || r.nodeName === "BR") && (x(t), t.firstChild && i.selectNodeContents(t.firstChild)), i.collapse(true);
-  let l = i.startContainer, a = i.startOffset, d = new T(t, 5), c = l, f = a;
-  (!(c instanceof Text) || f === c.data.length) && (c = Ze(d, "nextNode", c), f = 0);
-  let u = l, p = a - 1;
-  (!(u instanceof Text) || p === -1) && (u = Ze(d, "previousPONode", c || (l instanceof Text ? l : l.childNodes[a] || l)), u instanceof Text && (p = u.data.length));
-  let h = null, E = 0;
-  return c instanceof Text && c.data.charAt(f) === " " && j(i, t) ? (h = c, E = f) : u instanceof Text && u.data.charAt(p) === " " && (c instanceof Text && c.data.charAt(f) === " " || G(i, t)) && (h = u, E = p), h && h.replaceData(E, 1, "\xA0"), i.setStart(l, a), i.collapse(true), s;
+  (!r || r.nodeName === "BR") && (x(t), t.firstChild && o.selectNodeContents(t.firstChild)), o.collapse(true);
+  let l = o.startContainer, a = o.startOffset, d = new _(t, 5), c = l, u = a;
+  (!(c instanceof Text) || u === c.data.length) && (c = Ve(d, "nextNode", c), u = 0);
+  let f = l, p = a - 1;
+  (!(f instanceof Text) || p === -1) && (f = Ve(d, "previousPONode", c || (l instanceof Text ? l : l.childNodes[a] || l)), f instanceof Text && (p = f.data.length));
+  let m = null, S = 0;
+  return c instanceof Text && c.data.charAt(u) === " " && j(o, t) ? (m = c, S = u) : f instanceof Text && f.data.charAt(p) === " " && (c instanceof Text && c.data.charAt(u) === " " || G(o, t)) && (m = f, S = p), m && m.replaceData(S, 1, "\xA0"), o.setStart(l, a), o.collapse(true), s;
 };
-var Xe = (i, t, e) => {
-  let n = t.firstChild && g(t.firstChild), o;
-  for (D(t, e), o = t; o = M(o, e); ) x(o);
-  i.collapsed || F(i, e), C(i), i.collapse(false);
-  let s = N(i.endContainer, e, "BLOCKQUOTE") || e, r = v(i, e), l = null, a = M(t, t), d = !n && !!r && de(r);
-  if (r && a && !d && !N(a, t, "PRE") && !N(a, t, "TABLE")) {
-    K(i, r, r, e), i.collapse(true);
-    let c = i.endContainer, f = i.endOffset;
-    if (ae(r, e, false), g(c)) {
-      let u = I(c, f, W(c, e) || e, e);
-      c = u.parentNode, f = Array.from(c.childNodes).indexOf(u);
+var Je = (o, t, e) => {
+  let n = t.firstChild && N(t.firstChild), i;
+  for (B(t, e), i = t; i = M(i, e); ) x(i);
+  o.collapsed || P(o, e), C(o), o.collapse(false);
+  let s = g(o.endContainer, e, "BLOCKQUOTE") || e, r = v(o, e), l = null, a = M(t, t), d = !n && !!r && de(r);
+  if (r && a && !d && !g(a, t, "PRE") && !g(a, t, "TABLE")) {
+    $(o, r, r, e), o.collapse(true);
+    let c = o.endContainer, u = o.endOffset;
+    if (ae(r, e, false), N(c)) {
+      let f = I(c, u, U(c, e) || e, e);
+      c = f.parentNode, u = Array.from(c.childNodes).indexOf(f);
     }
-    if (f !== L(c)) for (l = document.createDocumentFragment(); o = c.childNodes[f]; ) l.appendChild(o);
-    V(c, a, i, e), c === e ? i.setEnd(e, L(e)) : (f = Array.from(c.parentNode.childNodes).indexOf(c) + 1, c = c.parentNode, i.setEnd(c, f));
+    if (u !== L(c)) for (l = document.createDocumentFragment(); i = c.childNodes[u]; ) l.appendChild(i);
+    V(c, a, o, e), c === e ? o.setEnd(e, L(e)) : (u = Array.from(c.parentNode.childNodes).indexOf(c) + 1, c = c.parentNode, o.setEnd(c, u));
   }
   if (L(t)) {
-    d && r && (i.setEndBefore(r), i.collapse(false), S(r)), s.contains(i.endContainer) || (e.contains(i.endContainer) || (i.setEnd(e, L(e)), i.collapse(false)), s = N(i.endContainer, e, "BLOCKQUOTE") || e), K(i, s, s, e);
-    let c = I(i.endContainer, i.endOffset, s, e), f = c ? c.previousSibling : s.lastChild;
-    s.insertBefore(t, c), c ? i.setEndBefore(c) : i.setEnd(s, L(s)), r = $(i, e), C(i);
-    let u = i.endContainer, p = i.endOffset;
-    c && X(c) && P(c, e), c = f && f.nextSibling, c && X(c) && P(c, e), i.setEnd(u, p);
+    d && r && (o.setEndBefore(r), o.collapse(false), E(r)), s.contains(o.endContainer) || (e.contains(o.endContainer) || (o.setEnd(e, L(e)), o.collapse(false)), s = g(o.endContainer, e, "BLOCKQUOTE") || e), $(o, s, s, e);
+    let c = I(o.endContainer, o.endOffset, s, e), u = c ? c.previousSibling : s.lastChild;
+    s.insertBefore(t, c), c ? o.setEndBefore(c) : o.setEnd(s, L(s)), r = Z(o, e), C(o);
+    let f = o.endContainer, p = o.endOffset;
+    c && K(c) && H(c, e), c = u && u.nextSibling, c && K(c) && H(c, e), o.setEnd(f, p);
   }
   if (l && r) {
-    let c = i.cloneRange();
-    x(l), V(r, l, c, e), i.setEnd(c.endContainer, c.endOffset);
+    let c = o.cloneRange();
+    x(l), V(r, l, c, e), o.setEnd(c.endContainer, c.endOffset);
   }
-  C(i);
+  C(o);
 };
-var _e = (i) => {
-  if (i.collapsed) return "";
-  let t = i.startContainer, e = i.endContainer, n = new T(i.commonAncestorContainer, 5, (a) => z(i, a, true));
+var Te = (o) => {
+  if (o.collapsed) return "";
+  let t = o.startContainer, e = o.endContainer, n = new _(o.commonAncestorContainer, 5, (a) => z(o, a, true));
   n.currentNode = t;
-  let o = t, s = "", r = false, l;
-  for ((!(o instanceof Element) && !(o instanceof Text) || !n.filter(o)) && (o = n.nextNode()); o; ) o instanceof Text ? (l = o.data, l && /\S/.test(l) && (o === e && (l = l.slice(0, i.endOffset)), o === t && (l = l.slice(i.startOffset)), s += l, r = true)) : (o.nodeName === "BR" || r && !g(o)) && (s += `
-`, r = false), o = n.nextNode();
+  let i = t, s = "", r = false, l;
+  for ((!(i instanceof Element) && !(i instanceof Text) || !n.filter(i)) && (i = n.nextNode()); i; ) i instanceof Text ? (l = i.data, l && /\S/.test(l) && (i === e && (l = l.slice(0, o.endOffset)), i === t && (l = l.slice(o.startOffset)), s += l, r = true)) : (i.nodeName === "BR" || r && !N(i)) && (s += `
+`, r = false), i = n.nextNode();
   return s = s.replace(/ /g, " "), s;
 };
-var Ie = Array.prototype.indexOf;
-var je = (i, t, e, n, o) => {
-  let s = o ? "" : _e(i), r = v(i, t), l = $(i, t), a = i.commonAncestorContainer, d = t;
+var He = Array.prototype.indexOf;
+var et = (o, t, e, n, i) => {
+  let s = i ? "" : Te(o), r = v(o, t), l = Z(o, t), a = o.commonAncestorContainer, d = t;
   r === l && r?.contains(a) && (d = r);
   let c;
-  for (e ? (c = F(i, t), a.isConnected || (a = i.commonAncestorContainer)) : c = i.cloneContents(), a instanceof Text && (a = a.parentNode); a && a !== d; ) {
-    let u = a.cloneNode(false);
-    u.appendChild(c), c = u, a = a.parentNode;
+  for (e ? (c = P(o, t), a.isConnected || (a = o.commonAncestorContainer)) : c = o.cloneContents(); a && !(a instanceof Element); ) a = a.parentNode;
+  for (; a && a !== d; ) {
+    let f = a.cloneNode(false);
+    f.appendChild(c), c = f, a = a.parentNode;
   }
-  let f;
-  if (c.childNodes.length === 1 && c.childNodes[0] instanceof Text) s = c.childNodes[0].data.replace(/ /g, " "), f = void 0;
+  let u;
+  if (c.childNodes.length === 1 && c.childNodes[0] instanceof Text) s = c.childNodes[0].data.replace(/ /g, " "), u = void 0;
   else {
-    let u = m("DIV");
-    u.appendChild(c), f = u.innerHTML, n && (f = n(f));
+    let f = h("DIV");
+    f.appendChild(c), u = f.innerHTML, n && (u = n(u));
   }
-  return o && f !== void 0 && (s = o(f)), s === f && (f = void 0), ue && (s = s.replace(/\r?\n/g, `\r
-`)), f && (f = "<!-- squire -->" + f), [s, f];
+  return i && u !== void 0 && (s = i(u)), s === u && (u = void 0), ue && (s = s.replace(/\r?\n/g, `\r
+`)), u && (u = "<!-- squire -->" + u), [s, u];
 };
-var Qe = (i, t, e, n, o, s, r) => {
-  let l = i.clipboardData;
+var tt = (o, t, e, n, i, s, r) => {
+  let l = o.clipboardData;
   if (re || !l) return false;
-  let [a, d] = je(t, e, n, o, s);
-  return i.preventDefault(), !r && d && l.setData("text/html", d), l.setData("text/plain", a), true;
+  let [a, d] = et(t, e, n, i, s);
+  return o.preventDefault(), !r && d && l.setData("text/html", d), l.setData("text/plain", a), true;
 };
-var Ye = function(i) {
+var nt = function(o) {
   let t = this.getSelection(), e = this._root;
   if (t.collapsed) {
-    i.preventDefault();
+    o.preventDefault();
     return;
   }
-  this.saveUndoState(t), Qe(i, t, e, true, this._config.willCutCopy, this._config.toPlainText, false) || setTimeout(() => {
+  this.saveUndoState(t), tt(o, t, e, true, this._config.willCutCopy, this._config.toPlainText, false) || setTimeout(() => {
     try {
       this._ensureBottomLine();
-    } catch (o) {
-      this._config.didError(o);
+    } catch (i) {
+      this._config.didError(i);
     }
   }, 0), this.setSelection(t);
 };
-var Ve = function(i) {
-  Qe(i, this.getSelection(), this._root, false, this._config.willCutCopy, this._config.toPlainText, false);
+var ot = function(o) {
+  tt(o, this.getSelection(), this._root, false, this._config.willCutCopy, this._config.toPlainText, false);
 };
-var Me = function(i) {
-  this._isShiftDown = i.shiftKey;
+var Pe = function(o) {
+  this._isShiftDown = o.shiftKey;
 };
-var Je = function(i) {
-  let t = i.clipboardData, e = t?.items, n = this._isShiftDown || !!N(this.getSelection().commonAncestorContainer, this._root, "PRE"), o = false, s = false, r = null, l = null;
+var it = function(o) {
+  let t = o.clipboardData, e = t?.items, n = this._isShiftDown || !!g(this.getSelection().commonAncestorContainer, this._root, "PRE"), i = false, s = false, r = null, l = null;
   if (e) {
     let R = e.length;
     for (; R--; ) {
-      let O = e[R], A = O.type;
-      A === "text/html" ? l = O : A === "text/plain" || A === "text/uri-list" ? r = O : A === "text/rtf" ? o = true : /^image\/.*/.test(A) && (s = true);
+      let O = e[R], D = O.type;
+      D === "text/html" ? l = O : D === "text/plain" || D === "text/uri-list" ? r = O : D === "text/rtf" ? i = true : /^image\/.*/.test(D) && (s = true);
     }
-    if (s && !(o && l) && !r) {
-      i.preventDefault(), this.fireEvent("pasteImage", { clipboardData: t });
+    if (s && !(i && l) && !r) {
+      o.preventDefault(), this.fireEvent("pasteImage", { clipboardData: t });
       return;
     }
     if (!re) {
-      i.preventDefault(), l && (!n || !r) ? l.getAsString((O) => {
+      o.preventDefault(), l && (!n || !r) ? l.getAsString((O) => {
         this.insertHTML(O, true);
       }) : r && r.getAsString((O) => {
-        let A = this.getSelection();
-        if (!A.collapsed && B.test(A.toString())) {
+        let D = this.getSelection();
+        if (!D.collapsed && A.test(D.toString())) {
           let J = this.linkRegExp.exec(O);
           if (!!J && J[0].length === O.length) {
-            let dt = J[1] ? /^(?:ht|f)tps?:/i.test(J[1]) ? J[1] : "http://" + J[1] : "mailto:" + J[0];
-            this.makeLink(dt);
+            let pt = J[1] ? /^(?:ht|f)tps?:/i.test(J[1]) ? J[1] : "http://" + J[1] : "mailto:" + J[0];
+            this.makeLink(pt);
             return;
           }
         }
@@ -633,186 +638,186 @@ var Je = function(i) {
     }
   }
   let a = t?.types;
-  if (!re && a && (Ie.call(a, "text/html") > -1 || !qe && Ie.call(a, "text/plain") > -1 && Ie.call(a, "text/rtf") < 0)) {
-    i.preventDefault();
+  if (!re && a && (He.call(a, "text/html") > -1 || !We && He.call(a, "text/plain") > -1 && He.call(a, "text/rtf") < 0)) {
+    o.preventDefault();
     let R;
     !n && (R = t.getData("text/html")) ? this.insertHTML(R, true) : ((R = t.getData("text/plain")) || (R = t.getData("text/uri-list"))) && this.insertPlainText(R, true);
     return;
   }
-  let d = document.body, c = this.getSelection(), f = c.startContainer, u = c.startOffset, p = c.endContainer, h = c.endOffset, E = m("DIV", { contenteditable: "true", style: "position:fixed; overflow:hidden; top:0; right:100%; width:1px; height:1px;" });
-  d.appendChild(E), c.selectNodeContents(E), this.setSelection(c), setTimeout(() => {
+  let d = document.body, c = this.getSelection(), u = c.startContainer, f = c.startOffset, p = c.endContainer, m = c.endOffset, S = h("DIV", { contenteditable: "true", style: "position:fixed; overflow:hidden; top:0; right:100%; width:1px; height:1px;" });
+  d.appendChild(S), c.selectNodeContents(S), this.setSelection(c), setTimeout(() => {
     try {
-      let R = "", O = E, A;
-      for (; E = O; ) O = E.nextSibling, S(E), A = E.firstChild, A && A === E.lastChild && A instanceof HTMLDivElement && (E = A), R += E.innerHTML;
-      this.setSelection(Q(f, u, p, h)), R && this.insertHTML(R, true);
+      let R = "", O = S, D;
+      for (; S = O; ) O = S.nextSibling, E(S), D = S.firstChild, D && D === S.lastChild && D instanceof HTMLDivElement && (S = D), R += S.innerHTML;
+      this.setSelection(Q(u, f, p, m)), R && this.insertHTML(R, true);
     } catch (R) {
       this._config.didError(R);
     }
   }, 0);
 };
-var et = function() {
-  let i = this.getSelection();
-  i && !i.collapsed && this._root.contains(i.commonAncestorContainer) ? this._dragRange = i.cloneRange() : this._dragRange = null;
+var st = function() {
+  let o = this.getSelection();
+  o && !o.collapsed && this._root.contains(o.commonAncestorContainer) ? this._dragRange = o.cloneRange() : this._dragRange = null;
 };
-var tt = function() {
+var rt = function() {
   this._dragRange = null;
 };
-var Ot = (i, t, e) => {
-  let n = null, o = document;
-  if (o.caretPositionFromPoint) {
-    let s = o.caretPositionFromPoint(i, t);
+var Dt = (o, t, e) => {
+  let n = null, i = document;
+  if (i.caretPositionFromPoint) {
+    let s = i.caretPositionFromPoint(o, t);
     s && (n = document.createRange(), n.setStart(s.offsetNode, s.offset), n.collapse(true));
-  } else o.caretRangeFromPoint && (n = o.caretRangeFromPoint(i, t));
+  } else i.caretRangeFromPoint && (n = i.caretRangeFromPoint(o, t));
   return n && !e.contains(n.commonAncestorContainer) ? null : n;
 };
-var Bt = (i, t) => i.compareBoundaryPoints(Range.START_TO_START, t) >= 0 && i.compareBoundaryPoints(Range.END_TO_END, t) <= 0;
-var nt = function(i) {
-  let t = i.dataTransfer;
+var At = (o, t) => o.compareBoundaryPoints(Range.START_TO_START, t) >= 0 && o.compareBoundaryPoints(Range.END_TO_END, t) <= 0;
+var lt = function(o) {
+  let t = o.dataTransfer;
   if (!t) return;
-  let e = t.types, n = false, o = false;
-  for (let c = 0, f = e.length; c < f; c += 1) switch (e[c]) {
+  let e = t.types, n = false, i = false;
+  for (let c = 0, u = e.length; c < u; c += 1) switch (e[c]) {
     case "text/plain":
       n = true;
       break;
     case "text/html":
-      o = true;
+      i = true;
       break;
   }
-  if (!n && !o) return;
-  i.preventDefault();
-  let s = this._root, r = Ot(i.clientX, i.clientY, s), l = this._dragRange;
+  if (!n && !i) return;
+  o.preventDefault();
+  let s = this._root, r = Dt(o.clientX, o.clientY, s), l = this._dragRange;
   if (this._dragRange = null, !r) return;
   let a, d;
   if (l) {
-    if (Bt(r, l)) return;
+    if (At(r, l)) return;
     this._recordUndoState(l, this._isInUndoState);
     let c = document.createComment("");
-    r.insertNode(c), this._getRangeAndRemoveBookmark(l), [a, d] = je(l, s, t.dropEffect !== "copy", this._config.willCutCopy, this._config.toPlainText), c.replaceWith(m("INPUT", { id: this.startSelectionId, type: "hidden" }), m("INPUT", { id: this.endSelectionId, type: "hidden" })), this._getRangeAndRemoveBookmark(r), me();
-  } else this.saveUndoState(r), o ? d = t.getData("text/html") : a = t.getData("text/plain");
+    r.insertNode(c), this._getRangeAndRemoveBookmark(l), [a, d] = et(l, s, t.dropEffect !== "copy", this._config.willCutCopy, this._config.toPlainText), c.replaceWith(h("INPUT", { id: this.startSelectionId, type: "hidden" }), h("INPUT", { id: this.endSelectionId, type: "hidden" })), this._getRangeAndRemoveBookmark(r), me();
+  } else this.saveUndoState(r), i ? d = t.getData("text/html") : a = t.getData("text/plain");
   this.setSelection(r), d !== void 0 ? this.insertHTML(d, true) : a !== void 0 && this.insertPlainText(a, true);
 };
-var He = (i, t, e) => {
-  t.preventDefault(), i.splitBlock(t.shiftKey, e);
+var Fe = (o, t, e) => {
+  t.preventDefault(), o.splitBlock(t.shiftKey, e);
 };
-var ie = (i, t) => {
+var oe = (o, t) => {
   try {
-    t || (t = i.getSelection());
+    t || (t = o.getSelection());
     let e = t.startContainer;
     e instanceof Text && (e = e.parentNode);
     let n = e;
-    for (; g(n) && (!n.textContent || n.textContent === "\u200B"); ) e = n, n = e.parentNode;
-    e !== n && (t.setStart(n, Array.from(n.childNodes).indexOf(e)), t.collapse(true), n.removeChild(e), q(n) || (n = W(n, i._root) || i._root), x(n), C(t)), e === i._root && (e = e.firstChild) && e.nodeName === "BR" && S(e), i._ensureBottomLine(), i.setSelection(t), i._updatePath(t, true);
+    for (; N(n) && (!n.textContent || n.textContent === "\u200B"); ) e = n, n = e.parentNode;
+    e !== n && (t.setStart(n, Array.from(n.childNodes).indexOf(e)), t.collapse(true), n.removeChild(e), F(n) || (n = U(n, o._root) || o._root), x(n), C(t)), e === o._root && (e = e.firstChild) && e.nodeName === "BR" && E(e), o._ensureBottomLine(), o.setSelection(t), o._updatePath(t, true);
   } catch (e) {
-    i._config.didError(e);
+    o._config.didError(e);
   }
 };
-var Te = (i, t) => {
+var _e = (o, t) => {
   let e;
-  for (; (e = i.parentNode) && !(e === t || e.isContentEditable); ) i = e;
-  S(i);
+  for (; (e = o.parentNode) && !(e === t || e.isContentEditable); ) o = e;
+  E(o);
 };
-var Ce = (i, t, e) => {
-  if (N(t, i._root, "A")) return;
-  let n = t.data || "", o = Math.max(n.lastIndexOf(" ", e - 1), n.lastIndexOf("\xA0", e - 1)) + 1, s = n.slice(o, e), r = i.linkRegExp.exec(s);
+var Ce = (o, t, e) => {
+  if (g(t, o._root, "A")) return;
+  let n = t.data || "", i = Math.max(n.lastIndexOf(" ", e - 1), n.lastIndexOf("\xA0", e - 1)) + 1, s = n.slice(i, e), r = o.linkRegExp.exec(s);
   if (r) {
-    let l = i.getSelection();
-    i._docWasChanged(), i._recordUndoState(l), i._getRangeAndRemoveBookmark(l);
-    let a = o + r.index, d = a + r[0].length, c = l.startContainer === t, f = l.startOffset - d;
+    let l = o.getSelection();
+    o._docWasChanged(), o._recordUndoState(l), o._getRangeAndRemoveBookmark(l);
+    let a = i + r.index, d = a + r[0].length, c = l.startContainer === t, u = l.startOffset - d;
     a && (t = t.splitText(a));
-    let u = i._config.tagAttributes.a, p = m("A", Object.assign({ href: r[1] ? /^(?:ht|f)tps?:/i.test(r[1]) ? r[1] : "http://" + r[1] : "mailto:" + r[0] }, u));
-    p.textContent = n.slice(a, d), t.parentNode.insertBefore(p, t), t.data = n.slice(d), c && (l.setStart(t, f), l.setEnd(t, f)), i.setSelection(l);
+    let f = o._config.tagAttributes.a, p = h("A", Object.assign({ href: r[1] ? /^(?:ht|f)tps?:/i.test(r[1]) ? r[1] : "http://" + r[1] : "mailto:" + r[0] }, f));
+    p.textContent = n.slice(a, d), t.parentNode.insertBefore(p, t), t.data = n.slice(d), c && (l.setStart(t, u), l.setEnd(t, u)), o.setSelection(l);
   }
 };
-var it = (i, t, e) => {
-  let n = i._root;
-  if (i._removeZWS(), i.saveUndoState(e), !e.collapsed) t.preventDefault(), F(e, n), ie(i, e);
+var at = (o, t, e) => {
+  let n = o._root;
+  if (o._removeZWS(), o.saveUndoState(e), !e.collapsed) t.preventDefault(), P(e, n), oe(o, e);
   else if (j(e, n)) {
     t.preventDefault();
-    let o = v(e, n);
-    if (!o) return;
-    let s = o;
-    D(s.parentNode, n);
-    let r = W(s, n);
+    let i = v(e, n);
+    if (!i) return;
+    let s = i;
+    B(s.parentNode, n);
+    let r = U(s, n);
     if (r) {
       if (!r.isContentEditable) {
-        Te(r, n);
+        _e(r, n);
         return;
       }
       for (V(r, s, e, n), s = r.parentNode; s !== n && !s.nextSibling; ) s = s.parentNode;
-      s !== n && (s = s.nextSibling) && P(s, n), i.setSelection(e);
+      s !== n && (s = s.nextSibling) && H(s, n), o.setSelection(e);
     } else if (s) {
-      if (N(s, n, "UL") || N(s, n, "OL")) {
-        i.decreaseListLevel(e);
+      if (g(s, n, "UL") || g(s, n, "OL")) {
+        o.decreaseListLevel(e);
         return;
-      } else if (N(s, n, "BLOCKQUOTE")) {
-        i.removeQuote(e);
+      } else if (g(s, n, "BLOCKQUOTE")) {
+        o.removeQuote(e);
         return;
       }
-      i.setSelection(e), i._updatePath(e, true);
+      o.setSelection(e), o._updatePath(e, true);
     }
   } else {
     C(e);
-    let o = e.startContainer, s = e.startOffset, r = o.parentNode;
-    o instanceof Text && r instanceof HTMLAnchorElement && s && r.href.includes(o.data) ? (o.deleteData(s - 1, 1), i.setSelection(e), i.removeLink(), t.preventDefault()) : (i.setSelection(e), setTimeout(() => {
-      ie(i);
+    let i = e.startContainer, s = e.startOffset, r = i.parentNode;
+    i instanceof Text && r instanceof HTMLAnchorElement && s && r.href.includes(i.data) ? (i.deleteData(s - 1, 1), o.setSelection(e), o.removeLink(), t.preventDefault()) : (o.setSelection(e), setTimeout(() => {
+      oe(o);
     }, 0));
   }
 };
-var ot = (i, t, e) => {
-  let n = i._root, o, s, r, l, a, d;
-  if (i._removeZWS(), i.saveUndoState(e), !e.collapsed) t.preventDefault(), F(e, n), ie(i, e);
+var ct = (o, t, e) => {
+  let n = o._root, i, s, r, l, a, d;
+  if (o._removeZWS(), o.saveUndoState(e), !e.collapsed) t.preventDefault(), P(e, n), oe(o, e);
   else if (G(e, n)) {
-    if (t.preventDefault(), o = v(e, n), !o) return;
-    if (D(o.parentNode, n), s = M(o, n), s) {
+    if (t.preventDefault(), i = v(e, n), !i) return;
+    if (B(i.parentNode, n), s = M(i, n), s) {
       if (!s.isContentEditable) {
-        Te(s, n);
+        _e(s, n);
         return;
       }
-      for (V(o, s, e, n), s = o.parentNode; s !== n && !s.nextSibling; ) s = s.parentNode;
-      s !== n && (s = s.nextSibling) && P(s, n), i.setSelection(e), i._updatePath(e, true);
+      for (V(i, s, e, n), s = i.parentNode; s !== n && !s.nextSibling; ) s = s.parentNode;
+      s !== n && (s = s.nextSibling) && H(s, n), o.setSelection(e), o._updatePath(e, true);
     }
   } else {
-    if (r = e.cloneRange(), K(e, n, n, n), l = e.endContainer, a = e.endOffset, l instanceof Element && (d = l.childNodes[a], d && d.nodeName === "IMG")) {
-      t.preventDefault(), S(d), C(e), ie(i, e);
+    if (r = e.cloneRange(), $(e, n, n, n), l = e.endContainer, a = e.endOffset, l instanceof Element && (d = l.childNodes[a], d && d.nodeName === "IMG")) {
+      t.preventDefault(), E(d), C(e), oe(o, e);
       return;
     }
-    i.setSelection(r), setTimeout(() => {
-      ie(i);
+    o.setSelection(r), setTimeout(() => {
+      oe(o);
     }, 0);
   }
 };
-var st = (i, t, e) => {
-  let n = i._root;
-  if (i._removeZWS(), e.collapsed && j(e, n)) {
-    let o = v(e, n), s;
-    for (; s = o.parentNode; ) {
+var dt = (o, t, e) => {
+  let n = o._root;
+  if (o._removeZWS(), e.collapsed && j(e, n)) {
+    let i = v(e, n), s;
+    for (; s = i.parentNode; ) {
       if (s.nodeName === "UL" || s.nodeName === "OL") {
-        t.preventDefault(), i.increaseListLevel(e);
+        t.preventDefault(), o.increaseListLevel(e);
         break;
       }
-      o = s;
+      i = s;
     }
   }
 };
-var rt = (i, t, e) => {
-  let n = i._root;
-  if (i._removeZWS(), e.collapsed && j(e, n)) {
-    let o = e.startContainer;
-    (N(o, n, "UL") || N(o, n, "OL")) && (t.preventDefault(), i.decreaseListLevel(e));
+var ft = (o, t, e) => {
+  let n = o._root;
+  if (o._removeZWS(), e.collapsed && j(e, n)) {
+    let i = e.startContainer;
+    (g(i, n, "UL") || g(i, n, "OL")) && (t.preventDefault(), o.decreaseListLevel(e));
   }
 };
-var lt = (i, t, e) => {
-  let n, o = i._root;
-  if (i._recordUndoState(e), i._getRangeAndRemoveBookmark(e), !e.collapsed) F(e, o), i._ensureBottomLine(), i.setSelection(e), i._updatePath(e, true);
-  else if (G(e, o)) {
-    let s = v(e, o);
+var ut = (o, t, e) => {
+  let n, i = o._root;
+  if (o._recordUndoState(e), o._getRangeAndRemoveBookmark(e), !e.collapsed) P(e, i), o._ensureBottomLine(), o.setSelection(e), o._updatePath(e, true);
+  else if (G(e, i)) {
+    let s = v(e, i);
     if (s && s.nodeName !== "PRE") {
       let r = s.textContent?.trimEnd().replace("\u200B", "");
       if (r === "*" || r === "1.") {
-        t.preventDefault(), i.insertPlainText(" ", false), i._docWasChanged(), i.saveUndoState(e);
-        let l = new T(s, 4), a;
-        for (; a = l.nextNode(); ) S(a);
-        r === "*" ? i.makeUnorderedList() : i.makeOrderedList();
+        t.preventDefault(), o.insertPlainText(" ", false), o._docWasChanged(), o.saveUndoState(e);
+        let l = new _(s, 4), a;
+        for (; a = l.nextNode(); ) E(a);
+        r === "*" ? o.makeUnorderedList() : o.makeOrderedList();
         return;
       }
     }
@@ -822,55 +827,55 @@ var lt = (i, t, e) => {
       e.setStartAfter(n);
       break;
     }
-  while (!n.nextSibling && (n = n.parentNode) && n !== o);
-  if (i._config.addLinks) {
+  while (!n.nextSibling && (n = n.parentNode) && n !== i);
+  if (o._config.addLinks) {
     let s = e.cloneRange();
     C(s);
     let r = s.startContainer, l = s.startOffset;
     setTimeout(() => {
-      Ce(i, r, l);
+      Ce(o, r, l);
     }, 0);
   }
-  i.setSelection(e);
+  o.setSelection(e);
 };
-var at = function(i) {
-  if (i.defaultPrevented || i.isComposing) return;
-  let t = i.key, e = "", n = i.code;
-  /^Digit\d$/.test(n) && (t = n.slice(-1)), t !== "Backspace" && t !== "Delete" && (i.altKey && (e += "Alt-"), i.ctrlKey && (e += "Ctrl-"), i.metaKey && (e += "Meta-"), i.shiftKey && (e += "Shift-")), ue && i.shiftKey && t === "Delete" && (e += "Shift-"), t = e + t;
-  let o = this.getSelection(), s = this._keyHandlers[t];
-  s ? s(this, i, o) : !o.collapsed && !i.ctrlKey && !i.metaKey && t.length === 1 && (this.saveUndoState(o), F(o, this._root), this._ensureBottomLine(), this.setSelection(o), this._updatePath(o, true));
+var ht = function(o) {
+  if (o.defaultPrevented || o.isComposing) return;
+  let t = o.key, e = "", n = o.code;
+  /^Digit\d$/.test(n) && (t = n.slice(-1)), t !== "Backspace" && t !== "Delete" && (o.altKey && (e += "Alt-"), o.ctrlKey && (e += "Ctrl-"), o.metaKey && (e += "Meta-"), o.shiftKey && (e += "Shift-")), ue && o.shiftKey && t === "Delete" && (e += "Shift-"), t = e + t;
+  let i = this.getSelection(), s = this._keyHandlers[t];
+  s ? s(this, o, i) : !i.collapsed && !o.ctrlKey && !o.metaKey && t.length === 1 && (this.saveUndoState(i), P(i, this._root), this._ensureBottomLine(), this.setSelection(i), this._updatePath(i, true));
 };
-var b = { Backspace: it, Delete: ot, Tab: st, "Shift-Tab": rt, " ": lt, ArrowLeft(i) {
-  i._removeZWS();
-}, ArrowRight(i, t, e) {
-  i._removeZWS();
-  let n = i.getRoot();
+var b = { Backspace: at, Delete: ct, Tab: dt, "Shift-Tab": ft, " ": ut, ArrowLeft(o) {
+  o._removeZWS();
+}, ArrowRight(o, t, e) {
+  o._removeZWS();
+  let n = o.getRoot();
   if (G(e, n)) {
     C(e);
-    let o = e.endContainer;
+    let i = e.endContainer;
     do
-      if (o.nodeName === "CODE") {
-        let s = o.nextSibling;
+      if (i.nodeName === "CODE") {
+        let s = i.nextSibling;
         if (!(s instanceof Text) || s.length === 0) {
           let r = document.createTextNode("\xA0");
-          o.parentNode.insertBefore(r, s), s = r;
+          i.parentNode.insertBefore(r, s), s = r;
         }
-        e.setStart(s, 1), i.setSelection(e), t.preventDefault();
+        e.setStart(s, 1), o.setSelection(e), t.preventDefault();
         break;
       }
-    while (!o.nextSibling && (o = o.parentNode) && o !== n);
+    while (!i.nextSibling && (i = i.parentNode) && i !== n);
   }
 } };
-Ue || (b.Enter = He, b["Shift-Enter"] = He);
-!fe && !be && (b.PageUp = (i) => {
-  i.moveCursorToStart();
-}, b.PageDown = (i) => {
-  i.moveCursorToEnd();
+ze || (b.Enter = Fe, b["Shift-Enter"] = Fe);
+!fe && !be && (b.PageUp = (o) => {
+  o.moveCursorToStart();
+}, b.PageDown = (o) => {
+  o.moveCursorToEnd();
 });
-var se = (i, t) => (t = t || null, (e, n) => {
+var se = (o, t) => (t = t || null, (e, n) => {
   n.preventDefault();
-  let o = e.getSelection();
-  e.hasFormat(i, null, o) ? e.changeFormat(null, { tag: i }, o) : e.changeFormat({ tag: i }, t, o);
+  let i = e.getSelection();
+  e.hasFormat(o, null, i) ? e.changeFormat(null, { tag: o }, i) : e.changeFormat({ tag: o }, t, i);
 });
 b[y + "b"] = se("B");
 b[y + "i"] = se("I");
@@ -878,55 +883,55 @@ b[y + "u"] = se("U");
 b[y + "Shift-7"] = se("S");
 b[y + "Shift-5"] = se("SUB", { tag: "SUP" });
 b[y + "Shift-6"] = se("SUP", { tag: "SUB" });
-b[y + "Shift-8"] = (i, t) => {
+b[y + "Shift-8"] = (o, t) => {
   t.preventDefault();
-  let e = i.getPath();
-  /(?:^|>)UL/.test(e) ? i.removeList() : i.makeUnorderedList();
+  let e = o.getPath();
+  /(?:^|>)UL/.test(e) ? o.removeList() : o.makeUnorderedList();
 };
-b[y + "Shift-9"] = (i, t) => {
+b[y + "Shift-9"] = (o, t) => {
   t.preventDefault();
-  let e = i.getPath();
-  /(?:^|>)OL/.test(e) ? i.removeList() : i.makeOrderedList();
+  let e = o.getPath();
+  /(?:^|>)OL/.test(e) ? o.removeList() : o.makeOrderedList();
 };
-b[y + "["] = (i, t) => {
+b[y + "["] = (o, t) => {
   t.preventDefault();
-  let e = i.getPath();
-  /(?:^|>)BLOCKQUOTE/.test(e) || !/(?:^|>)[OU]L/.test(e) ? i.decreaseQuoteLevel() : i.decreaseListLevel();
+  let e = o.getPath();
+  /(?:^|>)BLOCKQUOTE/.test(e) || !/(?:^|>)[OU]L/.test(e) ? o.decreaseQuoteLevel() : o.decreaseListLevel();
 };
-b[y + "]"] = (i, t) => {
+b[y + "]"] = (o, t) => {
   t.preventDefault();
-  let e = i.getPath();
-  /(?:^|>)BLOCKQUOTE/.test(e) || !/(?:^|>)[OU]L/.test(e) ? i.increaseQuoteLevel() : i.increaseListLevel();
+  let e = o.getPath();
+  /(?:^|>)BLOCKQUOTE/.test(e) || !/(?:^|>)[OU]L/.test(e) ? o.increaseQuoteLevel() : o.increaseListLevel();
 };
-b[y + "d"] = (i, t) => {
-  t.preventDefault(), i.toggleCode();
+b[y + "d"] = (o, t) => {
+  t.preventDefault(), o.toggleCode();
 };
-b[y + "z"] = (i, t) => {
-  t.preventDefault(), i.undo();
+b[y + "z"] = (o, t) => {
+  t.preventDefault(), o.undo();
 };
-b[y + "y"] = b[y + "Shift-z"] = b[y + "Shift-Z"] = (i, t) => {
-  t.preventDefault(), i.redo();
+b[y + "y"] = b[y + "Shift-z"] = b[y + "Shift-Z"] = (o, t) => {
+  t.preventDefault(), o.redo();
 };
-var Pe = 8;
-var ct = 40;
-var Fe = 1200;
-var Dt = [{ pos: "nw", cursor: "nwse-resize" }, { pos: "n", cursor: "ns-resize" }, { pos: "ne", cursor: "nesw-resize" }, { pos: "e", cursor: "ew-resize" }, { pos: "se", cursor: "nwse-resize" }, { pos: "s", cursor: "ns-resize" }, { pos: "sw", cursor: "nesw-resize" }, { pos: "w", cursor: "ew-resize" }];
-var At = { ArrowUp: (i, t, e) => {
+var qe = 8;
+var mt = 40;
+var Ue = 1200;
+var wt = [{ pos: "nw", cursor: "nwse-resize" }, { pos: "n", cursor: "ns-resize" }, { pos: "ne", cursor: "nesw-resize" }, { pos: "e", cursor: "ew-resize" }, { pos: "se", cursor: "nwse-resize" }, { pos: "s", cursor: "ns-resize" }, { pos: "sw", cursor: "nesw-resize" }, { pos: "w", cursor: "ew-resize" }];
+var It = { ArrowUp: (o, t, e) => {
   let n = v(t, e);
   if (n) {
-    let o = W(n, e);
-    o && (t.selectNodeContents(o), t.collapse(false), i.setSelection(t).focus());
+    let i = U(n, e);
+    i && (t.selectNodeContents(i), t.collapse(false), o.setSelection(t).focus());
   }
-}, ArrowDown: (i, t, e) => {
+}, ArrowDown: (o, t, e) => {
   let n = v(t, e);
   if (n) {
-    let o = M(n, e);
-    o && (t.selectNodeContents(o), t.collapse(true), i.setSelection(t).focus());
+    let i = M(n, e);
+    i && (t.selectNodeContents(i), t.collapse(true), o.setSelection(t).focus());
   }
-}, Delete: (i, t) => {
-  i.replaceWithBlankLine(t);
-}, Backspace: (i, t) => {
-  i.replaceWithBlankLine(t);
+}, Delete: (o, t) => {
+  o.replaceWithBlankLine(t);
+}, Backspace: (o, t) => {
+  o.replaceWithBlankLine(t);
 } };
 var ve = class {
   constructor(t, e) {
@@ -938,7 +943,7 @@ var ve = class {
     this._startY = 0;
     this._startWidth = 0;
     this._startHeight = 0;
-    this._maxWidth = Fe;
+    this._maxWidth = Ue;
     this._originalRatio = 1;
     this._editor = e, this._root = t, document.addEventListener("click", this), e.addEventListener("drop", this);
   }
@@ -979,8 +984,8 @@ var ve = class {
   _selectImage(t) {
     if (this._currentImage === t) return;
     this._deselectImage(), this._root.blur();
-    let e = Dt.map(({ pos: s, cursor: r }) => {
-      let l = Pe / 2, a = "";
+    let e = wt.map(({ pos: s, cursor: r }) => {
+      let l = qe / 2, a = "";
       switch (s) {
         case "nw":
           a = `left: -${l}px; top: -${l}px;`;
@@ -1007,10 +1012,10 @@ var ve = class {
           a = `left: -${l}px; top: calc(50% - ${l}px);`;
           break;
       }
-      let d = m("div", { class: `squire-resize-handle squire-resize-handle-${s}`, style: `
+      let d = h("div", { class: `squire-resize-handle squire-resize-handle-${s}`, style: `
                     position: absolute;
-                    width: ${Pe}px;
-                    height: ${Pe}px;
+                    width: ${qe}px;
+                    height: ${qe}px;
                     background: #0067b9;
                     border: 1px solid #fff;
                     cursor: ${r};
@@ -1020,42 +1025,42 @@ var ve = class {
                     ${a}
                 ` });
       return d.addEventListener("pointerdown", this), { element: d, cursor: r, position: s };
-    }), n = m("div", { class: "squire-image-resize-container", style: "position: absolute; pointer-events: none; z-index: 1000;" }, e.map((s) => s.element));
+    }), n = h("div", { class: "squire-image-resize-container", style: "position: absolute; pointer-events: none; z-index: 1000;" }, e.map((s) => s.element));
     this._currentImage = t, this._resizeContainer = n, this._handles = e, this._root.appendChild(this._resizeContainer);
-    let o = t.naturalWidth;
-    this._originalRatio = o / t.naturalHeight, this._maxWidth = Math.min(o * 2, t.parentElement ? t.parentElement.offsetWidth : Fe, Fe), this._positionResizeContainer(), t.tabIndex = -1, t.focus(), document.addEventListener("keydown", this, true);
+    let i = t.naturalWidth;
+    this._originalRatio = i / t.naturalHeight, this._maxWidth = Math.min(i * 2, t.parentElement ? t.parentElement.offsetWidth : Ue, Ue), this._positionResizeContainer(), t.tabIndex = -1, t.focus(), document.addEventListener("keydown", this, true);
   }
   _positionResizeContainer() {
     let t = this._resizeContainer, e = this._root, n = this._currentImage;
     if (!t || !n) return;
-    let o = e.getBoundingClientRect(), s = n.getBoundingClientRect(), r = s.top - o.top + e.scrollTop, l = s.left - o.left + e.scrollLeft, a = s.width, d = s.height;
+    let i = e.getBoundingClientRect(), s = n.getBoundingClientRect(), r = s.top - i.top + e.scrollTop, l = s.left - i.left + e.scrollLeft, a = s.width, d = s.height;
     t.style.top = r + "px", t.style.left = l + "px", t.style.width = a + "px", t.style.height = d + "px";
   }
   _onPointerDown(t) {
     if (this._currentHandle || !this._handles) return;
     let e = t.target, n = this._handles.find((r) => r.element === e) || null;
     if (!n) return;
-    let o = this._currentImage;
-    if (!o) return;
+    let i = this._currentImage;
+    if (!i) return;
     t.preventDefault(), t.stopPropagation(), e.addEventListener("pointermove", this), e.addEventListener("pointerup", this), e.addEventListener("pointercancel", this), e.setPointerCapture(t.pointerId), this._currentHandle = n, this._startX = t.clientX, this._startY = t.clientY;
-    let s = getComputedStyle(o);
+    let s = getComputedStyle(i);
     this._startWidth = parseFloat(s.width), this._startHeight = parseFloat(s.height), document.body.style.cursor = n.cursor;
   }
   _onPointerMove(t) {
     t.preventDefault();
     let e = this._currentHandle, n = this._currentImage;
     if (!e || !n) return;
-    let o = t.clientX - this._startX, s = t.clientY - this._startY, r = this._maxWidth, l = this._originalRatio, a = this._startWidth, d = this._startHeight;
+    let i = t.clientX - this._startX, s = t.clientY - this._startY, r = this._maxWidth, l = this._originalRatio, a = this._startWidth, d = this._startHeight;
     switch (e.position) {
       case "sw":
       case "nw":
       case "w":
-        a -= 2 * o;
+        a -= 2 * i;
         break;
       case "se":
       case "ne":
       case "e":
-        a += 2 * o;
+        a += 2 * i;
         break;
       case "n":
         d -= s, a = d * l;
@@ -1064,7 +1069,7 @@ var ve = class {
         d += s, a = d * l;
         break;
     }
-    a < ct ? a = ct : a > r && (a = r);
+    a < mt ? a = mt : a > r && (a = r);
     let c = n.style;
     c.width = a + "px", c.height = "auto", this._positionResizeContainer();
   }
@@ -1075,14 +1080,14 @@ var ve = class {
   }
   _onKeyDown(t) {
     t.preventDefault(), t.stopPropagation();
-    let e = At[t.key];
+    let e = It[t.key];
     if (!e) return;
     let n = this._currentImage;
     if (!n) return;
-    let o = this._editor, s = this._root;
+    let i = this._editor, s = this._root;
     this._deselectImage();
-    let r = o.getSelection();
-    r.selectNode(n), e(o, r, s);
+    let r = i.getSelection();
+    r.selectNode(n), e(i, r, s);
   }
 };
 var xe = class {
@@ -1090,9 +1095,9 @@ var xe = class {
     this.customEvents = /* @__PURE__ */ new Set(["pathChange", "select", "input", "pasteImage", "undoStateChange"]);
     this.startSelectionId = "squire-selection-start";
     this.endSelectionId = "squire-selection-end";
-    this.linkRegExp = /\b(?:((?:(?:ht|f)tps?:\/\/|www\d{0,3}[.]|[a-z0-9][a-z0-9.\-]*[.][a-z]{2,}\/)(?:[^\s()<>]+|\([^\s()<>]+\))+(?:[^\s?&`!()\[\]{};:'".,<>«»“”‘’]|\([^\s()<>]+\)))|([\w\-.%+]+@(?:[\w\-]+\.)+[a-z]{2,}\b(?:[?][^&?\s]+=[^\s?&`!()\[\]{};:'".,<>«»“”‘’]+(?:&[^&?\s]+=[^\s?&`!()\[\]{};:'".,<>«»“”‘’]+)*)?))/i;
+    this.linkRegExp = /\b(?:((?:(?:ht|f)tps?:\/\/|www\d{0,3}[.]|[a-z0-9][a-z0-9.\-]{0,252}[.][a-z]{2,}\/)(?:[^\s()<>]|\([^\s()<>]+\))+(?:[^\s?&`!()\[\]{};:'".,<>«»“”‘’]|\([^\s()<>]+\)))|([\w\-.%+]{1,64}@(?:[\w\-]+\.)+[a-z]{2,}\b(?:[?][^&?\s]+=[^\s?&`!()\[\]{};:'".,<>«»“”‘’]+(?:&[^&?\s]+=[^\s?&`!()\[\]{};:'".,<>«»“”‘’]+)*)?))/i;
     this.tagAfterSplit = { DT: "DD", DD: "DT", LI: "LI", PRE: "PRE" };
-    this._root = t, this._config = this._makeConfig(e), this._isFocused = false, this._lastSelection = Q(t, 0), this._willRestoreSelection = false, this._mayHaveZWS = false, this._lastAnchorNode = null, this._lastFocusNode = null, this._lastPathRange = null, this._path = "", this._events = /* @__PURE__ */ new Map(), this._undoIndex = -1, this._undoStack = [], this._undoStackLength = 0, this._isInUndoState = false, this._ignoreChange = false, this._ignoreAllChanges = false, this.addEventListener("selectionchange", this._updatePathOnEvent), this.addEventListener("blur", this._enableRestoreSelection), this.addEventListener("mousedown", this._disableRestoreSelection), this.addEventListener("touchstart", this._disableRestoreSelection), this.addEventListener("focus", this._restoreSelection), this.addEventListener("blur", this._removeZWS), this._isShiftDown = false, this.addEventListener("cut", Ye), this.addEventListener("copy", Ve), this.addEventListener("paste", Je), this._dragRange = null, this.addEventListener("dragstart", et), this.addEventListener("dragend", tt), this.addEventListener("drop", nt), this.addEventListener("keydown", Me), this.addEventListener("keyup", Me), this.addEventListener("keydown", at), this._keyHandlers = Object.create(b);
+    this._root = t, this._config = this._makeConfig(e), this._isFocused = false, this._lastSelection = Q(t, 0), this._willRestoreSelection = false, this._mayHaveZWS = false, this._lastAnchorNode = null, this._lastFocusNode = null, this._lastPathRange = null, this._path = "", this._events = /* @__PURE__ */ new Map(), this._undoIndex = -1, this._undoStack = [], this._undoStackLength = 0, this._isInUndoState = false, this._ignoreChange = false, this._ignoreAllChanges = false, this.addEventListener("selectionchange", this._updatePathOnEvent), this.addEventListener("blur", this._enableRestoreSelection), this.addEventListener("mousedown", this._disableRestoreSelection), this.addEventListener("touchstart", this._disableRestoreSelection), this.addEventListener("focus", this._restoreSelection), this.addEventListener("blur", this._removeZWS), this._isShiftDown = false, this.addEventListener("cut", nt), this.addEventListener("copy", ot), this.addEventListener("paste", it), this._dragRange = null, this.addEventListener("dragstart", st), this.addEventListener("dragend", rt), this.addEventListener("drop", lt), this.addEventListener("keydown", Pe), this.addEventListener("keyup", Pe), this.addEventListener("keydown", ht), this._keyHandlers = Object.create(b);
     let n = new MutationObserver(() => this._docWasChanged());
     n.observe(t, { childList: true, attributes: true, characterData: true, subtree: true }), this._mutation = n, t.setAttribute("contenteditable", "true"), this.addEventListener("beforeinput", this._beforeInput), this._imageResizer = new ve(t, this), this.setHTML("");
   }
@@ -1103,8 +1108,8 @@ var xe = class {
   }
   _makeConfig(t) {
     let e = { blockTag: "DIV", blockAttributes: null, tagAttributes: {}, classNames: { color: "color", fontFamily: "font", fontSize: "size", highlight: "highlight" }, undo: { documentSizeThreshold: -1, undoLimit: -1 }, addLinks: true, willCutCopy: null, toPlainText: null, sanitizeToDOMFragment: (n) => {
-      let o = DOMPurify.sanitize(n, { ALLOW_UNKNOWN_PROTOCOLS: true, WHOLE_DOCUMENT: false, RETURN_DOM: true, RETURN_DOM_FRAGMENT: true, FORCE_BODY: false });
-      return o ? document.importNode(o, true) : document.createDocumentFragment();
+      let i = DOMPurify.sanitize(n, { ALLOW_UNKNOWN_PROTOCOLS: true, WHOLE_DOCUMENT: false, RETURN_DOM: true, RETURN_DOM_FRAGMENT: true, FORCE_BODY: false });
+      return i ? document.importNode(i, true) : document.createDocumentFragment();
     }, didError: (n) => console.log(n) };
     return t && (Object.assign(e, t), e.blockTag = e.blockTag.toUpperCase()), e;
   }
@@ -1184,20 +1189,20 @@ var xe = class {
   fireEvent(t, e) {
     let n = this._events.get(t);
     if (/^(?:focus|blur)/.test(t)) {
-      let o = this._root === document.activeElement;
+      let i = this._root === document.activeElement;
       if (t === "focus") {
-        if (!o || this._isFocused) return this;
+        if (!i || this._isFocused) return this;
         this._isFocused = true;
       } else {
-        if (o || !this._isFocused) return this;
+        if (i || !this._isFocused) return this;
         this._isFocused = false;
       }
     }
     if (n) {
-      let o = e instanceof Event ? e : new CustomEvent(t, { detail: e });
+      let i = e instanceof Event ? e : new CustomEvent(t, { detail: e });
       n = n.slice();
       for (let s of n) try {
-        "handleEvent" in s ? s.handleEvent(o) : s.call(this, o);
+        "handleEvent" in s ? s.handleEvent(i) : s.call(this, i);
       } catch (r) {
         this._config.didError(r);
       }
@@ -1205,17 +1210,17 @@ var xe = class {
     return this;
   }
   addEventListener(t, e) {
-    let n = this._events.get(t), o = this._root;
-    return n || (n = [], this._events.set(t, n), this.customEvents.has(t) || (t === "selectionchange" && (o = document), o.addEventListener(t, this, true))), n.push(e), this;
+    let n = this._events.get(t), i = this._root;
+    return n || (n = [], this._events.set(t, n), this.customEvents.has(t) || (t === "selectionchange" && (i = document), i.addEventListener(t, this, true))), n.push(e), this;
   }
   removeEventListener(t, e) {
-    let n = this._events.get(t), o = this._root;
+    let n = this._events.get(t), i = this._root;
     if (n) {
       if (e) {
         let s = n.length;
         for (; s--; ) n[s] === e && n.splice(s, 1);
       } else n.length = 0;
-      n.length || (this._events.delete(t), this.customEvents.has(t) || (t === "selectionchange" && (o = document), o.removeEventListener(t, this, true)));
+      n.length || (this._events.delete(t), this.customEvents.has(t) || (t === "selectionchange" && (i = document), i.removeEventListener(t, this, true)));
     }
     return this;
   }
@@ -1238,25 +1243,25 @@ var xe = class {
     this._mayHaveZWS && (le(this._root), this._mayHaveZWS = false);
   }
   _saveRangeToBookmark(t) {
-    let e = m("INPUT", { id: this.startSelectionId, type: "hidden" }), n = m("INPUT", { id: this.endSelectionId, type: "hidden" }), o;
-    Z(t, e), t.collapse(false), Z(t, n), e.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_PRECEDING && (e.id = this.endSelectionId, n.id = this.startSelectionId, o = e, e = n, n = o), t.setStartAfter(e), t.setEndBefore(n);
+    let e = h("INPUT", { id: this.startSelectionId, type: "hidden" }), n = h("INPUT", { id: this.endSelectionId, type: "hidden" }), i;
+    X(t, e), t.collapse(false), X(t, n), e.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_PRECEDING && (e.id = this.endSelectionId, n.id = this.startSelectionId, i = e, e = n, n = i), t.setStartAfter(e), t.setEndBefore(n);
   }
   _getRangeAndRemoveBookmark(t) {
-    let e = this._root, n = e.querySelectorAll("#" + this.startSelectionId), o = e.querySelectorAll("#" + this.endSelectionId), s = n[0], r = o[0];
+    let e = this._root, n = e.querySelectorAll("#" + this.startSelectionId), i = e.querySelectorAll("#" + this.endSelectionId), s = n[0], r = i[0];
     if (s && r && s.compareDocumentPosition(r) & Node.DOCUMENT_POSITION_FOLLOWING) {
       let l = s.parentNode, a = r.parentNode, d = Array.from(l.childNodes).indexOf(s), c = Array.from(a.childNodes).indexOf(r);
       l === a && (c -= 1), s.remove(), r.remove(), t || (t = document.createRange()), t.setStart(l, d), t.setEnd(a, c), ne(l, t), l !== a && ne(a, t), t.collapsed && (l = t.startContainer, l instanceof Text && (a = l.childNodes[t.startOffset], (!a || !(a instanceof Text)) && (a = l.childNodes[t.startOffset - 1]), a && a instanceof Text && (t.setStart(a, 0), t.collapse(true))));
     }
     for (let l = 0; l < n.length; l += 1) n[l].remove();
-    for (let l = 0; l < o.length; l += 1) o[l].remove();
+    for (let l = 0; l < i.length; l += 1) i[l].remove();
     return t || null;
   }
   getSelection() {
     let t = window.getSelection(), e = this._root, n = null;
     if (this._isFocused && t && t.rangeCount) {
       n = t.getRangeAt(0).cloneRange();
-      let o = n.startContainer, s = n.endContainer;
-      o && H(o) && n.setStartBefore(o), s && H(s) && n.setEndBefore(s);
+      let i = n.startContainer, s = n.endContainer;
+      i && W(i) && n.setStartBefore(i), s && W(s) && n.setEndBefore(s);
     }
     return n && e.contains(n.commonAncestorContainer) ? this._lastSelection = n : (n = this._lastSelection, document.contains(n.commonAncestorContainer) || (n = null)), n || (n = Q(e.firstElementChild || e, 0)), n;
   }
@@ -1282,10 +1287,10 @@ var xe = class {
     let t = this.getSelection(), e = t.getBoundingClientRect();
     if (e && !e.top) {
       this._ignoreChange = true;
-      let n = m("SPAN");
-      n.textContent = "\u200B", Z(t, n), e = n.getBoundingClientRect();
-      let o = n.parentNode;
-      o.removeChild(n), ne(o, t);
+      let n = h("SPAN");
+      n.textContent = "\u200B", X(t, n), e = n.getBoundingClientRect();
+      let i = n.parentNode;
+      i.removeChild(n), ne(i, t);
     }
     return e;
   }
@@ -1300,19 +1305,19 @@ var xe = class {
   }
   _updatePath(t, e) {
     this._lastPathRange = t.cloneRange();
-    let n = t.startContainer, o = t.endContainer, s;
-    (e || n !== this._lastAnchorNode || o !== this._lastFocusNode) && (this._lastAnchorNode = n, this._lastFocusNode = o, s = n && o ? n === o ? this._getPath(o) : "(selection)" : "", (this._path !== s || n !== o) && (this._path = s, this.fireEvent("pathChange", { path: s }))), this.fireEvent(t.collapsed ? "cursor" : "select", { range: t });
+    let n = t.startContainer, i = t.endContainer, s;
+    (e || n !== this._lastAnchorNode || i !== this._lastFocusNode) && (this._lastAnchorNode = n, this._lastFocusNode = i, s = n && i ? n === i ? this._getPath(i) : "(selection)" : "", (this._path !== s || n !== i) && (this._path = s, this.fireEvent("pathChange", { path: s }))), this.fireEvent(t.collapsed ? "cursor" : "select", { range: t });
   }
   _getPath(t) {
-    let e = this._root, n = this._config, o = "";
+    let e = this._root, n = this._config, i = "";
     if (t && t !== e) {
       let s = t.parentNode;
-      if (o = s ? this._getPath(s) : "", t instanceof HTMLElement) {
+      if (i = s ? this._getPath(s) : "", t instanceof HTMLElement) {
         let r = t.id, l = t.classList, a = Array.from(l).sort(), d = t.dir, c = n.classNames;
-        o += (o ? ">" : "") + t.nodeName, r && (o += "#" + r), a.length && (o += ".", o += a.join(".")), d && (o += "[dir=" + d + "]"), l.contains(c.highlight) && (o += "[backgroundColor=" + t.style.backgroundColor.replace(/ /g, "") + "]"), l.contains(c.color) && (o += "[color=" + t.style.color.replace(/ /g, "") + "]"), l.contains(c.fontFamily) && (o += "[fontFamily=" + t.style.fontFamily.replace(/ /g, "") + "]"), l.contains(c.fontSize) && (o += "[fontSize=" + t.style.fontSize + "]");
+        i += (i ? ">" : "") + t.nodeName, r && (i += "#" + r), a.length && (i += ".", i += a.join(".")), d && (i += "[dir=" + d + "]"), l.contains(c.highlight) && (i += "[backgroundColor=" + t.style.backgroundColor.replace(/ /g, "") + "]"), l.contains(c.color) && (i += "[color=" + t.style.color.replace(/ /g, "") + "]"), l.contains(c.fontFamily) && (i += "[fontFamily=" + t.style.fontFamily.replace(/ /g, "") + "]"), l.contains(c.fontSize) && (i += "[fontSize=" + t.style.fontSize + "]");
       }
     }
-    return o;
+    return i;
   }
   modifyDocument(t) {
     let e = this._mutation;
@@ -1330,10 +1335,10 @@ var xe = class {
   _recordUndoState(t, e) {
     let n = this._isInUndoState;
     if (!n || e) {
-      let o = this._undoIndex + 1, s = this._undoStack, r = this._config.undo, l = r.documentSizeThreshold, a = r.undoLimit;
-      if (o < this._undoStackLength && (s.length = this._undoStackLength = o), t && this._saveRangeToBookmark(t), n) return this;
+      let i = this._undoIndex + 1, s = this._undoStack, r = this._config.undo, l = r.documentSizeThreshold, a = r.undoLimit;
+      if (i < this._undoStackLength && (s.length = this._undoStackLength = i), t && this._saveRangeToBookmark(t), n) return this;
       let d = this._getRawHTML();
-      e && (o -= 1), l > -1 && d.length * 2 > l && a > -1 && o > a && (s.splice(0, o - a), o = a, this._undoStackLength = a), s[o] = d, this._undoIndex = o, this._undoStackLength += 1, this._isInUndoState = true;
+      e && (i -= 1), l > -1 && d.length * 2 > l && a > -1 && i > a && (s.splice(0, i - a), i = a, this._undoStackLength = a), s[i] = d, this._undoIndex = i, this._undoStackLength += 1, this._isInUndoState = true;
     }
     return this;
   }
@@ -1367,10 +1372,10 @@ var xe = class {
   _setRawHTML(t) {
     let e = this._root;
     e.innerHTML = t;
-    let n = e, o = n.firstChild;
-    if (!o || o.nodeName === "BR") {
+    let n = e, i = n.firstChild;
+    if (!i || i.nodeName === "BR") {
       let s = this.createDefaultBlock();
-      o ? n.replaceChild(s, o) : n.appendChild(s);
+      i ? n.replaceChild(s, i) : n.appendChild(s);
     } else for (; n = M(n, e); ) x(n);
     return this._ignoreChange = true, this;
   }
@@ -1378,104 +1383,104 @@ var xe = class {
     let e, n = "";
     return this.modifyDocument(() => {
       t && (e = this.getSelection(), this._saveRangeToBookmark(e));
-      let o = this._root.querySelector(".squire-image-resize-container");
-      o && o.remove(), n = this._getRawHTML().replace(/\u200B/g, ""), o && this._root.appendChild(o), t && this._getRangeAndRemoveBookmark(e);
+      let i = this._root.querySelector(".squire-image-resize-container");
+      i && i.remove(), n = this._getRawHTML().replace(/\u200B/g, ""), i && this._root.appendChild(i), t && this._getRangeAndRemoveBookmark(e);
     }), n;
   }
   setHTML(t) {
     let e = this._config.sanitizeToDOMFragment(t, this), n = this._root;
-    Se(e, this._config), ae(e, n, false), D(e, n);
-    let o = e, s = o.firstChild;
+    Ee(e, this._config), ae(e, n, false), B(e, n);
+    let i = e, s = i.firstChild;
     if (!s || s.nodeName === "BR") {
       let l = this.createDefaultBlock();
-      s ? o.replaceChild(l, s) : o.appendChild(l);
-    } else for (; o = M(o, n); ) x(o);
+      s ? i.replaceChild(l, s) : i.appendChild(l);
+    } else for (; i = M(i, n); ) x(i);
     for (this._ignoreChange = true; s = n.lastChild; ) n.removeChild(s);
     n.appendChild(e), this._undoIndex = -1, this._undoStack.length = 0, this._undoStackLength = 0, this._isInUndoState = false;
     let r = this._getRangeAndRemoveBookmark() || Q(n.firstElementChild || n, 0);
     return this.saveUndoState(r), this.setSelection(r), this._updatePath(r, true), this;
   }
   insertHTML(t, e) {
-    let n = this._config, o = n.sanitizeToDOMFragment(t, this), s = this.getSelection();
+    let n = this._config, i = n.sanitizeToDOMFragment(t, this), s = this.getSelection();
     this.saveUndoState(s);
     try {
       let r = this._root;
-      n.addLinks && this.addDetectedLinks(o, o), Se(o, this._config), ae(o, r, false), Ee(o), o.normalize();
-      let l = o;
-      for (; l = M(l, o); ) x(l);
+      n.addLinks && this.addDetectedLinks(i, i), Ee(i, this._config), ae(i, r, false), Se(i), i.normalize();
+      let l = i;
+      for (; l = M(l, i); ) x(l);
       let a = true;
       if (e) {
-        let d = new CustomEvent("willPaste", { cancelable: true, detail: { html: t, fragment: o } });
-        this.fireEvent("willPaste", d), o = d.detail.fragment, a = !d.defaultPrevented;
+        let d = new CustomEvent("willPaste", { cancelable: true, detail: { html: t, fragment: i } });
+        this.fireEvent("willPaste", d), i = d.detail.fragment, a = !d.defaultPrevented;
       }
-      a && (Xe(s, o, r), s.collapse(false), Be(s, "A", r), this._ensureBottomLine()), this.setSelection(s), this._updatePath(s, true), e && this.focus();
+      a && (Je(s, i, r), s.collapse(false), Ae(s, "A", r), this._ensureBottomLine()), this.setSelection(s), this._updatePath(s, true), e && this.focus();
     } catch (r) {
       this._config.didError(r);
     }
     return this;
   }
   insertElement(t, e) {
-    if (e || (e = this.getSelection()), e.collapse(true), g(t)) Z(e, t), e.setStartAfter(t);
+    if (e || (e = this.getSelection()), e.collapse(true), N(t)) X(e, t), e.setStartAfter(t);
     else {
-      let n = this._root, o = v(e, n), s = o || n, r = null;
+      let n = this._root, i = v(e, n), s = i || n, r = null;
       for (; s !== n && !s.nextSibling; ) s = s.parentNode;
       if (s !== n) {
         let a = s.parentNode;
         r = I(a, s.nextSibling, n, n);
       }
-      o && de(o) && S(o), n.insertBefore(t, r);
+      i && de(i) && E(i), n.insertBefore(t, r);
       let l = this.createDefaultBlock();
       n.insertBefore(l, r), e.setStart(l, 0), e.setEnd(l, 0), C(e);
     }
     return this.focus(), this.setSelection(e), this._updatePath(e), this;
   }
   insertImage(t, e) {
-    let n = m("IMG", Object.assign({ src: t }, e));
+    let n = h("IMG", Object.assign({ src: t }, e));
     return this.insertElement(n), n;
   }
   insertPlainText(t, e) {
     let n = this.getSelection();
-    if (n.collapsed && N(n.startContainer, this._root, "PRE")) {
+    if (n.collapsed && g(n.startContainer, this._root, "PRE")) {
       let c = true;
       if (e) {
-        let f = new CustomEvent("willPaste", { cancelable: true, detail: { text: t } });
-        this.fireEvent("willPaste", f), t = f.detail.text, c = !f.defaultPrevented;
+        let u = new CustomEvent("willPaste", { cancelable: true, detail: { text: t } });
+        this.fireEvent("willPaste", u), t = u.detail.text, c = !u.defaultPrevented;
       }
       if (c) {
         this.saveUndoState(n);
-        let f = n.startContainer, u = n.startOffset, p;
-        if (f instanceof Text) p = f;
+        let u = n.startContainer, f = n.startOffset, p;
+        if (u instanceof Text) p = u;
         else {
-          let h = u ? f.childNodes[u - 1] : null;
-          if (h instanceof Text) p = h, u = p.length;
+          let m = f ? u.childNodes[f - 1] : null;
+          if (m instanceof Text) p = m, f = p.length;
           else {
-            let E = document.createTextNode("");
-            f.insertBefore(E, f.childNodes[u]), p = E, u = 0;
+            let S = document.createTextNode("");
+            u.insertBefore(S, u.childNodes[f]), p = S, f = 0;
           }
         }
-        p.insertData(u, t), n.setStart(p, u + t.length), n.collapse(true);
+        p.insertData(f, t), n.setStart(p, f + t.length), n.collapse(true);
       }
       return this.setSelection(n), this;
     }
-    let o = t.split(`
+    let i = t.split(`
 `), s = this._config, r = s.blockTag, l = s.blockAttributes, a = "</" + r + ">", d = "<" + r;
-    for (let c in l) d += " " + c + '="' + De(l[c]) + '"';
+    for (let c in l) d += " " + c + '="' + we(l[c]) + '"';
     d += ">";
-    for (let c = 0, f = o.length; c < f; c += 1) {
-      let u = o[c];
-      u = De(u).replace(/ (?=(?: |$))/g, "&nbsp;"), c && (u = d + (u || "<BR>") + a), o[c] = u;
+    for (let c = 0, u = i.length; c < u; c += 1) {
+      let f = i[c];
+      f = we(f).replace(/ (?=(?: |$))/g, "&nbsp;"), c && (f = d + (f || "<BR>") + a), i[c] = f;
     }
-    return this.insertHTML(o.join(""), e);
+    return this.insertHTML(i.join(""), e);
   }
   getSelectedText(t) {
-    return _e(t || this.getSelection());
+    return Te(t || this.getSelection());
   }
   getFontInfo(t) {
     let e = { color: void 0, backgroundColor: void 0, fontFamily: void 0, fontSize: void 0 };
     t || (t = this.getSelection()), C(t);
-    let n = 0, o = t.commonAncestorContainer;
-    if (t.collapsed || o instanceof Text) for (o instanceof Text && (o = o.parentNode); n < 4 && o; ) {
-      let s = o.style;
+    let n = 0, i = t.commonAncestorContainer;
+    if (t.collapsed || i instanceof Text) for (i instanceof Text && (i = i.parentNode); n < 4 && i; ) {
+      let s = i.style;
       if (s) {
         let r = s.color;
         !e.color && r && (e.color = r, n += 1);
@@ -1486,37 +1491,37 @@ var xe = class {
         let d = s.fontSize;
         !e.fontSize && d && (e.fontSize = d, n += 1);
       }
-      o = o.parentNode;
+      i = i.parentNode;
     }
     return e;
   }
   hasFormat(t, e, n) {
     t = t.toUpperCase(), e || (e = {}), n || (n = this.getSelection()), !n.collapsed && n.startContainer instanceof Text && n.startOffset === n.startContainer.length && n.startContainer.nextSibling && n.setStartBefore(n.startContainer.nextSibling), !n.collapsed && n.endContainer instanceof Text && n.endOffset === 0 && n.endContainer.previousSibling && n.setEndAfter(n.endContainer.previousSibling);
-    let o = this._root, s = n.commonAncestorContainer;
-    if (N(s, o, t, e)) return true;
+    let i = this._root, s = n.commonAncestorContainer;
+    if (g(s, i, t, e)) return true;
     if (s instanceof Text) return false;
-    let r = new T(s, 4, (d) => z(n, d, true)), l = false, a;
+    let r = new _(s, 4, (d) => z(n, d, true)), l = false, a;
     for (; a = r.nextNode(); ) {
-      if (!N(a, o, t, e)) return false;
+      if (!g(a, i, t, e)) return false;
       l = true;
     }
     return l;
   }
-  changeFormat(t, e, n, o) {
-    return n || (n = this.getSelection()), this.saveUndoState(n), e && (n = this._removeFormat(e.tag.toUpperCase(), e.attributes || {}, n, o)), t && (n = this._addFormat(t.tag.toUpperCase(), t.attributes || {}, n)), this.setSelection(n), this._updatePath(n, true), this.focus();
+  changeFormat(t, e, n, i) {
+    return n || (n = this.getSelection()), this.saveUndoState(n), e && (n = this._removeFormat(e.tag.toUpperCase(), e.attributes || {}, n, i)), t && (n = this._addFormat(t.tag.toUpperCase(), t.attributes || {}, n)), this.setSelection(n), this._updatePath(n, true), this.focus();
   }
   _addFormat(t, e, n) {
-    let o = this._root;
+    let i = this._root;
     if (n.collapsed) {
-      let s = x(m(t, e));
-      Z(n, s);
+      let s = x(h(t, e));
+      X(n, s);
       let r = s.firstChild || s, l = r instanceof Text ? r.length : 0;
       n.setStart(r, l), n.collapse(true);
       let a = s;
-      for (; g(a); ) a = a.parentNode;
+      for (; N(a); ) a = a.parentNode;
       le(a, s);
     } else {
-      let s = new T(n.commonAncestorContainer, 5, (c) => (c instanceof Text || c.nodeName === "BR" || c.nodeName === "IMG") && z(n, c, true)), { startContainer: r, startOffset: l, endContainer: a, endOffset: d } = n;
+      let s = new _(n.commonAncestorContainer, 5, (c) => (c instanceof Text || c.nodeName === "BR" || c.nodeName === "IMG") && z(n, c, true)), { startContainer: r, startOffset: l, endContainer: a, endOffset: d } = n;
       if (s.currentNode = r, !(r instanceof Element) && !(r instanceof Text) || !s.filter(r)) {
         let c = s.nextNode();
         if (!c) return n;
@@ -1524,43 +1529,43 @@ var xe = class {
       }
       do {
         let c = s.currentNode;
-        if (!N(c, o, t, e)) {
+        if (!g(c, i, t, e)) {
           c === a && c.length > d && c.splitText(d), c === r && l && (c = c.splitText(l), a === r ? (a = c, d -= l) : a === r.parentNode && (d += 1), r = c, l = 0);
-          let u = m(t, e);
-          k(c, u), u.appendChild(c);
+          let f = h(t, e);
+          k(c, f), f.appendChild(c);
         }
       } while (s.nextNode());
       n = Q(r, l, a, d);
     }
     return n;
   }
-  _removeFormat(t, e, n, o) {
+  _removeFormat(t, e, n, i) {
     this._saveRangeToBookmark(n);
     let s;
-    n.collapsed && (oe ? s = document.createTextNode("\u200B") : s = document.createTextNode(""), Z(n, s));
+    n.collapsed && (ie ? s = document.createTextNode("\u200B") : s = document.createTextNode(""), X(n, s));
     let r = n.commonAncestorContainer;
-    for (; g(r); ) r = r.parentNode;
-    let l = n.startContainer, a = n.startOffset, d = n.endContainer, c = n.endOffset, f = [], u = (h, E) => {
-      if (z(n, h, false)) return;
+    for (; N(r); ) r = r.parentNode;
+    let l = n.startContainer, a = n.startOffset, d = n.endContainer, c = n.endOffset, u = [], f = (m, S) => {
+      if (z(n, m, false)) return;
       let R, O;
-      if (!z(n, h, true)) {
-        !(h instanceof HTMLInputElement) && (!(h instanceof Text) || h.data) && f.push([E, h]);
+      if (!z(n, m, true)) {
+        !(m instanceof HTMLInputElement) && (!(m instanceof Text) || m.data) && u.push([S, m]);
         return;
       }
-      if (h instanceof Text) h === d && c !== h.length && f.push([E, h.splitText(c)]), h === l && a && (h.splitText(a), f.push([E, h]));
-      else for (R = h.firstChild; R; R = O) O = R.nextSibling, u(R, E);
-    }, p = Array.from(r.getElementsByTagName(t)).filter((h) => z(n, h, true) && pe(h, t, e));
-    if (o || p.forEach((h) => {
-      u(h, h);
-    }), f.forEach(([h, E]) => {
-      h = h.cloneNode(false), k(E, h), h.appendChild(E);
-    }), p.forEach((h) => {
-      k(h, _(h));
-    }), oe && s) {
+      if (m instanceof Text) m === d && c !== m.length && u.push([S, m.splitText(c)]), m === l && a && (m.splitText(a), u.push([S, m]));
+      else for (R = m.firstChild; R; R = O) O = R.nextSibling, f(R, S);
+    }, p = Array.from(r.getElementsByTagName(t)).filter((m) => z(n, m, true) && pe(m, t, e));
+    if (i || p.forEach((m) => {
+      f(m, m);
+    }), u.forEach(([m, S]) => {
+      m = m.cloneNode(false), k(S, m), m.appendChild(S);
+    }), p.forEach((m) => {
+      k(m, T(m));
+    }), ie && s) {
       s = s.parentNode;
-      let h = s;
-      for (; h && g(h); ) h = h.parentNode;
-      h && le(h, s);
+      let m = s;
+      for (; m && N(m); ) m = m.parentNode;
+      m && le(m, s);
     }
     return this._getRangeAndRemoveBookmark(n), s && n.collapse(false), ne(r, n), n;
   }
@@ -1603,9 +1608,9 @@ var xe = class {
   makeLink(t, e) {
     let n = this.getSelection();
     if (n.collapsed) {
-      let o = t.indexOf(":") + 1;
-      if (o) for (; t[o] === "/"; ) o += 1;
-      Z(n, document.createTextNode(t.slice(o)));
+      let i = t.indexOf(":") + 1;
+      if (i) for (; t[i] === "/"; ) i += 1;
+      X(n, document.createTextNode(t.slice(i)));
     }
     return e = Object.assign({ href: t }, this._config.tagAttributes.a, e), this.changeFormat({ tag: "A", attributes: e }, { tag: "A" }, n);
   }
@@ -1613,14 +1618,14 @@ var xe = class {
     return this.changeFormat(null, { tag: "A" }, this.getSelection(), true);
   }
   addDetectedLinks(t, e) {
-    let n = new T(t, 4, (l) => !N(l, e || this._root, "A")), o = this.linkRegExp, s = this._config.tagAttributes.a, r;
+    let n = new _(t, 4, (l) => !g(l, e || this._root, "A")), i = this.linkRegExp, s = this._config.tagAttributes.a, r;
     for (; r = n.nextNode(); ) {
       let l = r.parentNode, a = r.data, d;
-      for (; d = o.exec(a); ) {
-        let c = d.index, f = c + d[0].length;
+      for (; d = i.exec(a); ) {
+        let c = d.index, u = c + d[0].length;
         c && l.insertBefore(document.createTextNode(a.slice(0, c)), r);
-        let u = m("A", Object.assign({ href: d[1] ? /^(?:ht|f)tps?:/i.test(d[1]) ? d[1] : "http://" + d[1] : "mailto:" + d[0] }, s));
-        u.textContent = a.slice(c, f), l.insertBefore(u, r), r.data = a = a.slice(f);
+        let f = h("A", Object.assign({ href: d[1] ? /^(?:ht|f)tps?:/i.test(d[1]) ? d[1] : "http://" + d[1] : "mailto:" + d[0] }, s));
+        f.textContent = a.slice(c, u), l.insertBefore(f, r), r.data = a = a.slice(u);
       }
     }
     return this;
@@ -1642,65 +1647,68 @@ var xe = class {
     return this.changeFormat(t ? { tag: "SPAN", attributes: { class: e, style: "background-color:" + t } } : null, { tag: "SPAN", attributes: { class: e } });
   }
   _ensureBottomLine() {
-    let t = this._root, e = t.lastElementChild;
-    (!e || e.nodeName !== this._config.blockTag || !q(e)) && t.appendChild(this.createDefaultBlock());
+    let t = this._root, e = t;
+    do
+      e = e.lastElementChild;
+    while (e && K(e));
+    (!e || !F(e)) && t.appendChild(this.createDefaultBlock());
   }
   createDefaultBlock(t) {
     let e = this._config;
-    return x(m(e.blockTag, e.blockAttributes, t));
+    return x(h(e.blockTag, e.blockAttributes, t));
   }
   splitBlock(t, e) {
     e || (e = this.getSelection());
-    let n = this._root, o, s, r, l;
-    if (this._recordUndoState(e), this._removeZWS(), this._getRangeAndRemoveBookmark(e), e.collapsed || F(e, n), this._config.addLinks) {
+    let n = this._root, i, s, r, l;
+    if (this._recordUndoState(e), this._removeZWS(), this._getRangeAndRemoveBookmark(e), e.collapsed || P(e, n), this._config.addLinks) {
       C(e);
-      let u = e.startContainer, p = e.startOffset;
+      let f = e.startContainer, p = e.startOffset;
       setTimeout(() => {
-        Ce(this, u, p);
+        Ce(this, f, p);
       }, 0);
     }
-    if (o = v(e, n), o && (s = N(o, n, "PRE"))) {
+    if (i = v(e, n), i && (s = g(i, n, "PRE"))) {
       C(e), r = e.startContainer;
-      let u = e.startOffset;
-      return r instanceof Text || (r = document.createTextNode(""), s.insertBefore(r, s.firstChild), u = 0), !t && r instanceof Text && (r.data.charAt(u - 1) === `
-` || j(e, n)) && (r.data.charAt(u) === `
-` || G(e, n)) ? (r.deleteData(u && u - 1, u ? 2 : 1), l = I(r, u && u - 1, n, n), r = l.previousSibling, r.textContent || S(r), r = this.createDefaultBlock(), l.parentNode.insertBefore(r, l), l.textContent || S(l), e.setStart(r, 0)) : (r.insertData(u, `
-`), r.nextSibling || s.appendChild(m("BR")), r.length === u + 1 ? e.setStartAfter(r) : e.setStart(r, u + 1)), e.collapse(true), this.setSelection(e), this._updatePath(e, true), this._docWasChanged(), this;
+      let f = e.startOffset;
+      return r instanceof Text || (r = document.createTextNode(""), s.insertBefore(r, s.firstChild), f = 0), !t && r instanceof Text && (r.data.charAt(f - 1) === `
+` || j(e, n)) && (r.data.charAt(f) === `
+` || G(e, n)) ? (r.deleteData(f && f - 1, f ? 2 : 1), l = I(r, f && f - 1, n, n), r = l.previousSibling, r.textContent || E(r), r = this.createDefaultBlock(), l.parentNode.insertBefore(r, l), l.textContent || E(l), e.setStart(r, 0)) : (r.insertData(f, `
+`), r.nextSibling || s.appendChild(h("BR")), r.length === f + 1 ? e.setStartAfter(r) : e.setStart(r, f + 1)), e.collapse(true), this.setSelection(e), this._updatePath(e, true), this._docWasChanged(), this;
     }
-    if (!o || t || /^T[HD]$/.test(o.nodeName)) return Be(e, "A", n), Z(e, m("BR")), e.collapse(false), this.setSelection(e), this._updatePath(e, true), this;
-    if ((s = N(o, n, "LI")) && (o = s), de(o)) {
-      if (N(o, n, "UL") || N(o, n, "OL")) return this.decreaseListLevel(e), this;
-      if (N(o, n, "BLOCKQUOTE")) return this.replaceWithBlankLine(e), this;
+    if (!i || t || /^T[HD]$/.test(i.nodeName)) return Ae(e, "A", n), X(e, h("BR")), e.collapse(false), this.setSelection(e), this._updatePath(e, true), this;
+    if ((s = g(i, n, "LI")) && (i = s), de(i)) {
+      if (g(i, n, "UL") || g(i, n, "OL")) return this.decreaseListLevel(e), this;
+      if (g(i, n, "BLOCKQUOTE")) return this.replaceWithBlankLine(e), this;
     }
     r = e.startContainer;
-    let a = e.startOffset, d = this.tagAfterSplit[o.nodeName];
-    l = I(r, a, o.parentNode, this._root);
-    let c = this._config, f = null;
-    for (d || (d = c.blockTag, f = c.blockAttributes), pe(l, d, f) || (o = m(d, f), l.dir && (o.dir = l.dir), k(l, o), o.appendChild(_(l)), l = o), le(o), Ee(o), x(o); l instanceof Element; ) {
-      let u = l.firstChild, p;
+    let a = e.startOffset, d = this.tagAfterSplit[i.nodeName];
+    l = I(r, a, i.parentNode, this._root);
+    let c = this._config, u = null;
+    for (d || (d = c.blockTag, u = c.blockAttributes), pe(l, d, u) || (i = h(d, u), l.dir && (i.dir = l.dir), k(l, i), i.appendChild(T(l)), l = i), le(i), Se(i), x(i); l instanceof Element; ) {
+      let f = l.firstChild, p;
       if (l.nodeName === "A" && (!l.textContent || l.textContent === "\u200B")) {
-        u = document.createTextNode(""), k(l, u), l = u;
+        f = document.createTextNode(""), k(l, f), l = f;
         break;
       }
-      for (; u && u instanceof Text && !u.data && (p = u.nextSibling, !(!p || p.nodeName === "BR")); ) S(u), u = p;
-      if (!u || u.nodeName === "BR" || u instanceof Text) break;
-      l = u;
+      for (; f && f instanceof Text && !f.data && (p = f.nextSibling, !(!p || p.nodeName === "BR")); ) E(f), f = p;
+      if (!f || f.nodeName === "BR" || f instanceof Text) break;
+      l = f;
     }
     return e = Q(l, 0), this.setSelection(e), this._updatePath(e, true), this;
   }
   forEachBlock(t, e, n) {
     n || (n = this.getSelection()), e && this.saveUndoState(n);
-    let o = this._root, s = v(n, o), r = $(n, o);
+    let i = this._root, s = v(n, i), r = Z(n, i);
     if (s && r) do
       if (t(s) || s === r) break;
-    while (s = M(s, o));
+    while (s = M(s, i));
     return e && (this.setSelection(n), this._updatePath(n, true)), this;
   }
   modifyBlocks(t, e) {
     e || (e = this.getSelection()), this._recordUndoState(e, this._isInUndoState);
     let n = this._root;
-    Ae(e, n), K(e, n, n, n);
-    let o = we(e, n, n);
+    Ie(e, n), $(e, n, n, n);
+    let i = Me(e, n, n);
     if (!e.collapsed) {
       let s = e.endContainer;
       if (s === n) e.collapse(false);
@@ -1709,11 +1717,11 @@ var xe = class {
         e.setStartBefore(s), e.collapse(true);
       }
     }
-    return Z(e, t.call(this, o)), e.endOffset < e.endContainer.childNodes.length && P(e.endContainer.childNodes[e.endOffset], n), P(e.startContainer.childNodes[e.startOffset], n), this._getRangeAndRemoveBookmark(e), this.setSelection(e), this._updatePath(e, true), this;
+    return X(e, t.call(this, i)), e.endOffset < e.endContainer.childNodes.length && H(e.endContainer.childNodes[e.endOffset], n), H(e.startContainer.childNodes[e.startOffset], n), this._getRangeAndRemoveBookmark(e), this.setSelection(e), this._updatePath(e, true), this;
   }
   setTextAlignment(t) {
     return this.forEachBlock((e) => {
-      let n = e.className.split(/\s+/).filter((o) => !!o && !/^align/.test(o)).join(" ");
+      let n = e.className.split(/\s+/).filter((i) => !!i && !/^align/.test(i)).join(" ");
       t ? (e.className = n + " align-" + t, e.style.textAlign = t) : (e.className = n, e.style.textAlign = "");
     }, true), this.focus();
   }
@@ -1723,58 +1731,58 @@ var xe = class {
     }, true), this.focus();
   }
   _getListSelection(t, e) {
-    let n = t.commonAncestorContainer, o = t.startContainer, s = t.endContainer;
+    let n = t.commonAncestorContainer, i = t.startContainer, s = t.endContainer;
     for (; n && n !== e && !/^[OU]L$/.test(n.nodeName); ) n = n.parentNode;
     if (!n || n === e) return null;
-    for (o === n && (o = o.childNodes[t.startOffset]), s === n && (s = s.childNodes[t.endOffset]); o && o.parentNode !== n; ) o = o.parentNode;
+    for (i === n && (i = i.childNodes[t.startOffset]), s === n && (s = s.childNodes[t.endOffset]); i && i.parentNode !== n; ) i = i.parentNode;
     for (; s && s.parentNode !== n; ) s = s.parentNode;
-    return [n, o, s];
+    return [n, i, s];
   }
   increaseListLevel(t) {
     t || (t = this.getSelection());
     let e = this._root, n = this._getListSelection(t, e);
     if (!n) return this.focus();
-    let [o, s, r] = n;
-    if (!s || s === o.firstChild) return this.focus();
+    let [i, s, r] = n;
+    if (!s || s === i.firstChild) return this.focus();
     this._recordUndoState(t, this._isInUndoState);
-    let l = o.nodeName, a = s.previousSibling, d, c;
-    a.nodeName !== l && (d = this._config.tagAttributes[l.toLowerCase()], a = m(l, d), o.insertBefore(a, s));
+    let l = i.nodeName, a = s.previousSibling, d, c;
+    a.nodeName !== l && (d = this._config.tagAttributes[l.toLowerCase()], a = h(l, d), i.insertBefore(a, s));
     do
       c = s === r ? null : s.nextSibling, a.appendChild(s);
     while (s = c);
-    return c = a.nextSibling, c && P(c, e), this._getRangeAndRemoveBookmark(t), this.setSelection(t), this._updatePath(t, true), this.focus();
+    return c = a.nextSibling, c && H(c, e), this._getRangeAndRemoveBookmark(t), this.setSelection(t), this._updatePath(t, true), this.focus();
   }
   decreaseListLevel(t) {
     t || (t = this.getSelection());
     let e = this._root, n = this._getListSelection(t, e);
     if (!n) return this.focus();
-    let [o, s, r] = n;
-    s || (s = o.firstChild), r || (r = o.lastChild), this._recordUndoState(t, this._isInUndoState);
+    let [i, s, r] = n;
+    s || (s = i.firstChild), r || (r = i.lastChild), this._recordUndoState(t, this._isInUndoState);
     let l, a = null;
     if (s) {
-      let d = o.parentNode;
-      if (a = r.nextSibling ? I(o, r.nextSibling, d, e) : o.nextSibling, d !== e && d.nodeName === "LI") {
+      let d = i.parentNode;
+      if (a = r.nextSibling ? I(i, r.nextSibling, d, e) : i.nextSibling, d !== e && d.nodeName === "LI") {
         for (d = d.parentNode; a; ) l = a.nextSibling, r.appendChild(a), a = l;
-        a = o.parentNode.nextSibling;
+        a = i.parentNode.nextSibling;
       }
       let c = !/^[OU]L$/.test(d.nodeName);
       do
-        l = s === r ? null : s.nextSibling, o.removeChild(s), c && s.nodeName === "LI" && (s = this.createDefaultBlock([_(s)])), d.insertBefore(s, a);
+        l = s === r ? null : s.nextSibling, i.removeChild(s), c && s.nodeName === "LI" && (s = this.createDefaultBlock([T(s)])), d.insertBefore(s, a);
       while (s = l);
     }
-    return o.firstChild || S(o), a && P(a, e), this._getRangeAndRemoveBookmark(t), this.setSelection(t), this._updatePath(t, true), this.focus();
+    return i.firstChild || E(i), a && H(a, e), this._getRangeAndRemoveBookmark(t), this.setSelection(t), this._updatePath(t, true), this.focus();
   }
   _makeList(t, e) {
-    let n = ce(t, this._root), o = this._config.tagAttributes, s = o[e.toLowerCase()], r = o.li, l;
+    let n = ce(t, this._root), i = this._config.tagAttributes, s = i[e.toLowerCase()], r = i.li, l;
     for (; l = n.nextNode(); ) if (l.parentNode instanceof HTMLLIElement && (l = l.parentNode, n.currentNode = l.lastChild), l instanceof HTMLLIElement) {
       l = l.parentNode;
       let a = l.nodeName;
-      a !== e && /^[OU]L$/.test(a) && k(l, m(e, s, [_(l)]));
+      a !== e && /^[OU]L$/.test(a) && k(l, h(e, s, [T(l)]));
     } else {
-      let a = m("LI", r);
+      let a = h("LI", r);
       l.dir && (a.dir = l.dir);
       let d = l.previousSibling;
-      d && d.nodeName === e ? (d.appendChild(a), S(l)) : k(l, m(e, s, [a])), a.appendChild(_(l)), n.currentNode = a;
+      d && d.nodeName === e ? (d.appendChild(a), E(l)) : k(l, h(e, s, [a])), a.appendChild(T(l)), n.currentNode = a;
     }
     return t;
   }
@@ -1786,85 +1794,85 @@ var xe = class {
   }
   removeList() {
     return this.modifyBlocks((t) => {
-      let e = t.querySelectorAll("UL, OL"), n = t.querySelectorAll("LI"), o = this._root;
+      let e = t.querySelectorAll("UL, OL"), n = t.querySelectorAll("LI"), i = this._root;
       for (let s = 0, r = e.length; s < r; s += 1) {
-        let l = e[s], a = _(l);
-        D(a, o), k(l, a);
+        let l = e[s], a = T(l);
+        B(a, i), k(l, a);
       }
       for (let s = 0, r = n.length; s < r; s += 1) {
         let l = n[s];
-        q(l) ? k(l, this.createDefaultBlock([_(l)])) : (D(l, o), k(l, _(l)));
+        F(l) ? k(l, this.createDefaultBlock([T(l)])) : (B(l, i), k(l, T(l)));
       }
       return t;
     }), this.focus();
   }
   increaseQuoteLevel(t) {
-    return this.modifyBlocks((e) => m("BLOCKQUOTE", this._config.tagAttributes.blockquote, [e]), t), this.focus();
+    return this.modifyBlocks((e) => h("BLOCKQUOTE", this._config.tagAttributes.blockquote, [e]), t), this.focus();
   }
   decreaseQuoteLevel(t) {
-    return this.modifyBlocks((e) => (Array.from(e.querySelectorAll("blockquote")).filter((n) => !N(n.parentNode, e, "BLOCKQUOTE")).forEach((n) => {
-      k(n, _(n));
+    return this.modifyBlocks((e) => (Array.from(e.querySelectorAll("blockquote")).filter((n) => !g(n.parentNode, e, "BLOCKQUOTE")).forEach((n) => {
+      k(n, T(n));
     }), e), t), this.focus();
   }
   removeQuote(t) {
     return this.modifyBlocks((e) => (Array.from(e.querySelectorAll("blockquote")).forEach((n) => {
-      k(n, _(n));
+      k(n, T(n));
     }), e), t), this.focus();
   }
   replaceWithBlankLine(t) {
-    return this.modifyBlocks(() => this.createDefaultBlock([m("INPUT", { id: this.startSelectionId, type: "hidden" }), m("INPUT", { id: this.endSelectionId, type: "hidden" })]), t), this.focus();
+    return this.modifyBlocks(() => this.createDefaultBlock([h("INPUT", { id: this.startSelectionId, type: "hidden" }), h("INPUT", { id: this.endSelectionId, type: "hidden" })]), t), this.focus();
   }
   code() {
     let t = this.getSelection();
-    return t.collapsed || X(t.commonAncestorContainer) ? (this.modifyBlocks((e) => {
-      let n = this._root, o = document.createDocumentFragment(), s = ce(e, n), r;
+    return t.collapsed || K(t.commonAncestorContainer) ? (this.modifyBlocks((e) => {
+      let n = this._root, i = document.createDocumentFragment(), s = ce(e, n), r;
       for (; r = s.nextNode(); ) {
         let a = r.querySelectorAll("BR"), d = [], c = a.length;
-        for (let f = 0; f < c; f += 1) d[f] = te(a[f], false);
+        for (let u = 0; u < c; u += 1) d[u] = te(a[u], false);
         for (; c--; ) {
-          let f = a[c];
-          d[c] ? k(f, document.createTextNode(`
-`)) : S(f);
+          let u = a[c];
+          d[c] ? k(u, document.createTextNode(`
+`)) : E(u);
         }
-        for (a = r.querySelectorAll("CODE"), c = a.length; c--; ) k(a[c], _(a[c]));
-        o.childNodes.length && o.appendChild(document.createTextNode(`
-`)), o.appendChild(_(r));
+        for (a = r.querySelectorAll("CODE"), c = a.length; c--; ) k(a[c], T(a[c]));
+        i.childNodes.length && i.appendChild(document.createTextNode(`
+`)), i.appendChild(T(r));
       }
-      let l = new T(o, 4);
+      let l = new _(i, 4);
       for (; r = l.nextNode(); ) r.data = r.data.replace(/ /g, " ");
-      return o.normalize(), x(m("PRE", this._config.tagAttributes.pre, [o]));
+      return i.normalize(), x(h("PRE", this._config.tagAttributes.pre, [i]));
     }, t), this.focus()) : this.changeFormat({ tag: "CODE", attributes: this._config.tagAttributes.code }, null, t), this;
   }
   removeCode() {
     let t = this.getSelection(), e = t.commonAncestorContainer;
-    return N(e, this._root, "PRE") ? (this.modifyBlocks((o) => {
-      let s = this._root, r = o.querySelectorAll("PRE"), l = r.length;
+    return g(e, this._root, "PRE") ? (this.modifyBlocks((i) => {
+      let s = this._root, r = i.querySelectorAll("PRE"), l = r.length;
       for (; l--; ) {
-        let a = r[l], d = new T(a, 4), c;
+        let a = r[l], d = new _(a, 4), c;
         for (; c = d.nextNode(); ) {
-          let f = c.data;
-          f = f.replace(/ (?= )/g, "\xA0");
-          let u = document.createDocumentFragment(), p;
-          for (; (p = f.indexOf(`
-`)) > -1; ) u.appendChild(document.createTextNode(f.slice(0, p))), u.appendChild(m("BR")), f = f.slice(p + 1);
-          c.parentNode.insertBefore(u, c), c.data = f;
+          let u = c.data;
+          u = u.replace(/ (?= )/g, "\xA0");
+          let f = document.createDocumentFragment(), p;
+          for (; (p = u.indexOf(`
+`)) > -1; ) f.appendChild(document.createTextNode(u.slice(0, p))), f.appendChild(h("BR")), u = u.slice(p + 1);
+          c.parentNode.insertBefore(f, c), c.data = u;
         }
-        D(a, s), k(a, _(a));
+        B(a, s), k(a, T(a));
       }
-      return o;
+      return i;
     }, t), this.focus()) : this.changeFormat(null, { tag: "CODE" }, t), this;
   }
   toggleCode() {
     return this.hasFormat("PRE") || this.hasFormat("CODE") ? this.removeCode() : this.code(), this;
   }
   _removeFormatting(t, e) {
-    for (let n = t.firstChild, o; n; n = o) {
-      if (o = n.nextSibling, g(n)) {
+    for (let n = t.firstChild, i; n; n = i) {
+      if (i = n.nextSibling, N(n)) {
         if (n instanceof Text || n.nodeName === "BR" || n.nodeName === "IMG") {
           e.appendChild(n);
           continue;
         }
-      } else if (q(n)) {
+      } else if (F(n)) {
         e.appendChild(this.createDefaultBlock([this._removeFormatting(n, document.createDocumentFragment())]));
         continue;
       }
@@ -1875,20 +1883,20 @@ var xe = class {
   removeAllFormatting(t) {
     if (t || (t = this.getSelection()), t.collapsed) return this.focus();
     let e = this._root, n = t.commonAncestorContainer;
-    for (; n && !q(n); ) n = n.parentNode;
-    if (n || (Ae(t, e), n = e), n instanceof Text) return this.focus();
-    this.saveUndoState(t), K(t, n, n, e);
-    let o = t.startContainer, s = t.startOffset, r = t.endContainer, l = t.endOffset, a = document.createDocumentFragment(), d = document.createDocumentFragment(), c = I(r, l, n, e), f = I(o, s, n, e), u;
-    for (; f !== c; ) u = f.nextSibling, a.appendChild(f), f = u;
-    if (this._removeFormatting(a, d), d.normalize(), f = d.firstChild, u = d.lastChild, f) {
+    for (; n && !F(n); ) n = n.parentNode;
+    if (n || (Ie(t, e), n = e), n instanceof Text) return this.focus();
+    this.saveUndoState(t), $(t, n, n, e);
+    let i = t.startContainer, s = t.startOffset, r = t.endContainer, l = t.endOffset, a = document.createDocumentFragment(), d = document.createDocumentFragment(), c = I(r, l, n, e), u = I(i, s, n, e), f;
+    for (; u !== c; ) f = u.nextSibling, a.appendChild(u), u = f;
+    if (this._removeFormatting(a, d), d.normalize(), u = d.firstChild, f = d.lastChild, u) {
       n.insertBefore(d, c);
       let p = Array.from(n.childNodes);
-      s = p.indexOf(f), l = u ? p.indexOf(u) + 1 : 0;
+      s = p.indexOf(u), l = f ? p.indexOf(f) + 1 : 0;
     } else c && (s = Array.from(n.childNodes).indexOf(c), l = s);
     return t.setStart(n, s), t.setEnd(n, l), ne(n, t), C(t), this.setSelection(t), this._updatePath(t, true), this.focus();
   }
 };
-var Ji = xe;
+var ni = xe;
 export {
-  Ji as default
+  ni as default
 };

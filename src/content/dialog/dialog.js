@@ -1,262 +1,188 @@
-import {onMount, onCleanup, createSignal, createEffect, mergeProps} from 'solid-js'
-import {render} from 'solid-js/web'
+/*
+ * Template dialog, in the frame of the editor.
+ *
+ * Finds where to show the dialog, and shows it in the top frame,
+ * even when the editor is in an iframe.
+ */
 
-import DialogContent from './dialog-content.js'
-
-import { eventShowDialog, dialogTagPrefix } from '../../config.js'
-import {
-  on as storeOn,
-  off as storeOff,
-} from '../../store/store-content.js'
-import {isContentEditable} from '../editors/editor-contenteditable.js'
+import { eventShowDialog, eventDialogShow, eventDialogClose, eventDialogVisibility, frameRelayRequest } from '../../config.js'
+import { on, off, trigger, createRequest } from '../../store/store-content.js'
+import { isContentEditable } from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
-import {getEditableCaret, getContentEditableCaret, getDialogPosition} from './dialog-position.js'
+import { getEditableCaret, getContentEditableCaret, getTargetRect } from './dialog-position.js'
 import autocomplete from '../autocomplete.js'
-import { getSelectionRange }  from '../utils/selection.js'
-import restoreSelection from '../utils/restore-selection.js'
+import { saveSelection, restoreSelection } from '../utils/restore-selection.js'
 import { getActiveElement } from '../utils/active-element.js'
-import stopPageEvents from '../utils/stop-page-events.js'
-import { isBubbleElement, scopeTagName } from '../utils/extension-element.js'
-import {keybind, keyunbind} from '../keybind.js'
+import { isBubbleElement } from '../utils/extension-element.js'
+import getFrameOffset from '../utils/frame-offset.js'
+import { keybind, keyunbind } from '../keybind.js'
+import debug from '../../debug.js'
 
-let dialogInstance = null
+const relay = createRequest(frameRelayRequest)
+const topFrameId = 0
 
-const dialogTagName = scopeTagName(dialogTagPrefix)
+let settingsCache = {}
 
-const openAnimationClass = 'b-dialog-open-animation'
-const dialogSelector = '.briskine-dialog'
+// the editor the dialog was opened for,
+// to restore its selection and insert templates.
+let editor = null
+let cachedSelection = null
+// a show request is waiting for the top frame
+let showing = false
 
-function Dialog (originalProps) {
-  const props = mergeProps({
-    keyboardShortcut: '',
-  }, originalProps)
-
-  let element = null
-
-  const [visible, setVisible] = createSignal(false)
-  let editor
-  let cachedRange
-
-  createEffect((prev) => {
-    if (
-      visible() === true
-      && prev === false
-    ) {
-      element.classList.add(openAnimationClass)
-    } else if (
-      visible() === false
-      && prev == true
-    ) {
-      element.classList.remove(openAnimationClass)
-    }
-
-    return visible()
-  }, false)
-
-  function show (node) {
-    // dialog is already visible
-    if (visible()) {
-      return
-    }
-
-    // if not triggered on a specific element, get the active element.
-    // node is defined only when opened from the bubble.
-    if (!node) {
-      node = getActiveElement()
-    }
-
-    let target
-    let removeCaretParent
-    let placement = 'top-left'
-
-    // detect rtl
-    const targetStyle = window.getComputedStyle(node)
-    const direction = targetStyle.direction || 'ltr'
-    element.setAttribute('dir', direction)
-
-    cachedRange = null
-
-    if (isTextfieldEditor(node)) {
-      // input, textarea
-      [target, removeCaretParent] = getEditableCaret(node)
-      if (direction === 'rtl') {
-        placement = 'bottom-left-flip'
-      } else {
-        placement = 'bottom-right'
-      }
-    } else if (isContentEditable(node)) {
-      // contenteditable
-      target = getContentEditableCaret(node)
-
-      // only use the targetMetrics width when caret is a range.
-      // workaround for when the contenteditable caret is the endContainer.
-      const isRange = target instanceof Range
-
-      if (direction === 'rtl') {
-        if (isRange) {
-          placement = 'bottom-left-flip'
-        } else {
-          placement = 'top-right-flip'
-        }
-      } else {
-        if (isRange) {
-          placement = 'bottom-right'
-        }
-      }
-    } else if (isBubbleElement(node)) {
-      // bubble, when the dialog is opened from the bubble button
-      target = node
-      if (direction === 'rtl') {
-        placement = 'bottom-left'
-      } else {
-        placement = 'bottom-right-flip'
-      }
-    } else {
-      return
-    }
-
-    // cache editor,
-    // to use for restoring selection and inserting templates later.
-    editor = getActiveElement()
-
-    // cache selection details, to restore later
-    cachedRange = getSelectionRange(editor)
-
-    setVisible(true)
-    const position = getDialogPosition(target, element, placement)
-    Object.assign(element.style, {
-      top: `${position.top}px`,
-      left: `${position.left}px`,
-    })
-
-    // clean-up the virtual caret mirror,
-    // used on input and textarea
-    if (removeCaretParent) {
-      removeCaretParent()
-    }
-  }
-
-  // will also hide dialog because of focusout
-  function restoreEditorSelection () {
-    return restoreSelection(editor, cachedRange)
-  }
-
-  function hideOnFocusout (e) {
-    if (e.target === dialogInstance) {
-      setVisible(false)
-    }
-  }
-
-  function hideOnEsc (e) {
-    if (e.key === 'Escape' && visible()) {
-      e.stopPropagation()
-      // prevent triggering the keyup event on the page.
-      // causes some websites (eg. linkedin) to also close the underlying modal
-      // when closing our dialog.
-      window.addEventListener('keyup', (e) => { e.stopPropagation() }, { capture: true, once: true })
-
-      restoreEditorSelection()
-    }
-  }
-
-  let globalAbortController
-  onMount(() => {
-    globalAbortController = new AbortController()
-    const globalListenerOptions = {
-      capture: true,
-      signal: globalAbortController.signal,
-    }
-
-    window.addEventListener('focusout', hideOnFocusout, globalListenerOptions)
-    window.addEventListener('keydown', hideOnEsc, globalListenerOptions)
-
-    stopPageEvents(element, globalAbortController.signal)
-
-    // expose show on element
-    element.show = show
+// where the dialog opens, below an anchor in the target's rect.
+// start and end follow the direction of the dialog.
+function getTarget (node, rtl = false) {
+  // the caret, with the dialog starting after it
+  const caretAnchor = (rect) => ({
+    ...rect,
+    left: rtl ? rect.left : rect.left + rect.width,
+    width: 0,
   })
 
-  onCleanup(() => {
-    globalAbortController.abort()
+  if (isTextfieldEditor(node)) {
+    // input, textarea
+    const [target, removeCaretParent] = getEditableCaret(node)
+    return {
+      target,
+      removeCaretParent,
+      anchor: caretAnchor,
+      placement: 'bottom-start',
+    }
+  }
+
+  if (isContentEditable(node)) {
+    const target = getContentEditableCaret(node)
+    if (target instanceof Range) {
+      return {
+        target,
+        anchor: caretAnchor,
+        placement: 'bottom-start',
+      }
+    }
+
+    // the caret is in an empty element, at its top start corner
+    return {
+      target,
+      anchor: (rect) => ({
+        top: rect.top,
+        left: rtl ? rect.left + rect.width : rect.left,
+        width: 0,
+        height: 0,
+      }),
+      placement: 'bottom-start',
+    }
+  }
+
+  // when the dialog is opened from the bubble button,
+  // open it toward the inside of the textfield.
+  if (isBubbleElement(node)) {
+    return {
+      target: node,
+      anchor: (rect) => rect,
+      placement: 'bottom-end',
+    }
+  }
+
+  return null
+}
+
+// asks the top frame to show the dialog, next to the target
+async function requestShow (target, direction) {
+  let targetRect
+  try {
+    targetRect = getTargetRect(target.target)
+  } finally {
+    // clean-up the virtual caret mirror, used on input and textarea
+    target.removeCaretParent?.()
+  }
+
+  let rect = null
+  if (targetRect) {
+    const offset = await getFrameOffset()
+    const anchor = target.anchor(targetRect)
+    rect = offset ? {
+      ...anchor,
+      top: anchor.top + offset.top,
+      left: anchor.left + offset.left,
+    } : null
+  }
+
+  return relay({
+    event: eventDialogShow,
+    details: {
+      rect,
+      placement: target.placement,
+      direction,
+      keyboardShortcut: settingsCache.dialog_shortcut,
+    },
+    frameId: topFrameId,
   })
+}
 
-  async function insertTemplate (template) {
-    await restoreEditorSelection()
+// node is defined only when opened from the bubble
+async function show ({ target: node } = {}) {
+  if (showing) {
+    return
+  }
 
+  node ??= getActiveElement()
+  if (!node) {
+    return
+  }
+
+  const direction = window.getComputedStyle(node).direction || 'ltr'
+  const target = getTarget(node, direction === 'rtl')
+  if (!target) {
+    return
+  }
+
+  showing = true
+  editor = getActiveElement()
+  cachedSelection = saveSelection(editor)
+  // before focus moves to the dialog
+  trigger(eventDialogVisibility, {visible: true})
+
+  let shown = false
+  try {
+    shown = await requestShow(target, direction)
+  } catch (err) {
+    debug(['dialog show', err], 'error')
+  } finally {
+    showing = false
+  }
+
+  if (shown !== true) {
+    trigger(eventDialogVisibility, {visible: false})
+  }
+}
+
+async function respondToClose ({ template } = {}) {
+  let restored = false
+  try {
+    if (editor?.isConnected) {
+      await restoreSelection(editor, cachedSelection)
+      restored = true
+    }
+  } catch (err) {
+    debug(['dialog restore selection', err], 'error')
+  }
+
+  trigger(eventDialogVisibility, {visible: false})
+
+  if (restored && template) {
     autocomplete({
       template: template,
     })
   }
-
-  return (
-    <div
-      ref={element}
-      class="briskine-dialog briskine-ui"
-      classList={{
-        'briskine-dialog-visible': visible(),
-      }}
-      >
-        <DialogContent
-          keyboardShortcut={props.keyboardShortcut}
-          visible={visible()}
-          onInsert={insertTemplate}
-        />
-    </div>
-  )
 }
 
-customElements.define(dialogTagName, class extends HTMLElement {
-  #shadowRoot = null
-
-  constructor () {
-    super()
-
-    this.keyboardShortcut = ''
-    this.disposer = () => {}
-
-    this.show = function (target) {
-      this.#shadowRoot.querySelector(dialogSelector).show(target)
-    }
-  }
-  connectedCallback () {
-    if (!this.isConnected) {
-      return
-    }
-
-    this.#shadowRoot = this.attachShadow({mode: 'closed'})
-    this.disposer = render(() => (
-      <div class="briskine-dialog-popover">
-        <Dialog keyboardShortcut={this.keyboardShortcut} />
-      </div>
-    ), this.#shadowRoot)
-  }
-  disconnectedCallback () {
-    this.disposer()
-  }
-})
-
-function createDialog (settings = {}) {
-  const instance = document.createElement(dialogTagName)
-  instance.keyboardShortcut = settings.dialog_shortcut
-  document.documentElement.appendChild(instance)
-
-  return instance
-}
-
-let settingsCache = {}
-function createAndShow ({ target } = {}) {
-  if (!dialogInstance) {
-    dialogInstance = createDialog(settingsCache)
-  }
-  return dialogInstance.show(target)
-}
-
-function keyboardCreateAndShow (e) {
+function keyboardShow (e) {
   // prevent capturing keystrokes by the parent
   e.stopPropagation()
   e.preventDefault()
 
-  createAndShow()
+  show()
 }
 
 export function setup (settings = {}) {
@@ -265,16 +191,17 @@ export function setup (settings = {}) {
   }
 
   settingsCache = settings
-  keybind(settingsCache.dialog_shortcut, keyboardCreateAndShow)
-  storeOn(eventShowDialog, createAndShow)
+  keybind(settingsCache.dialog_shortcut, keyboardShow)
+  on(eventShowDialog, show)
+  on(eventDialogClose, respondToClose)
 }
 
 export function destroy () {
-  keyunbind(settingsCache.dialog_shortcut, keyboardCreateAndShow)
-  storeOff(eventShowDialog, createAndShow)
+  keyunbind(settingsCache.dialog_shortcut, keyboardShow)
+  off(eventShowDialog, show)
+  off(eventDialogClose, respondToClose)
 
-  if (dialogInstance) {
-    dialogInstance.remove()
-    dialogInstance = null
-  }
+  editor = null
+  cachedSelection = null
+  showing = false
 }

@@ -32,9 +32,9 @@ var __toESM = (mod30, isNodeMode, target) => (target = mod30 != null ? __create(
   mod30
 ));
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react/cjs/react.development.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react/cjs/react.development.js
 var require_react_development = __commonJS({
-  "../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react/cjs/react.development.js"(exports, module) {
+  "../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react/cjs/react.development.js"(exports, module) {
     "use strict";
     (function() {
       function defineDeprecationWarning(methodName, info) {
@@ -1023,15 +1023,15 @@ var require_react_development = __commonJS({
       exports.useTransition = function() {
         return resolveDispatcher().useTransition();
       };
-      exports.version = "19.3.0";
+      exports.version = "19.3.1";
       "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
     })();
   }
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react/index.js
 var require_react = __commonJS({
-  "../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react/index.js"(exports, module) {
+  "../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react/index.js"(exports, module) {
     "use strict";
     if (false) {
       module.exports = null;
@@ -1041,9 +1041,9 @@ var require_react = __commonJS({
   }
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/scheduler/cjs/scheduler.development.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/scheduler/cjs/scheduler.development.js
 var require_scheduler_development = __commonJS({
-  "../../../../../tmp/tmp.3aB95HS7Ua/node_modules/scheduler/cjs/scheduler.development.js"(exports) {
+  "../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/scheduler/cjs/scheduler.development.js"(exports) {
     "use strict";
     (function() {
       function performWorkUntilDeadline() {
@@ -1300,9 +1300,9 @@ var require_scheduler_development = __commonJS({
   }
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/scheduler/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/scheduler/index.js
 var require_scheduler = __commonJS({
-  "../../../../../tmp/tmp.3aB95HS7Ua/node_modules/scheduler/index.js"(exports, module) {
+  "../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/scheduler/index.js"(exports, module) {
     "use strict";
     if (false) {
       module.exports = null;
@@ -1312,9 +1312,9 @@ var require_scheduler = __commonJS({
   }
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react-dom/cjs/react-dom.development.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react-dom/cjs/react-dom.development.js
 var require_react_dom_development = __commonJS({
-  "../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react-dom/cjs/react-dom.development.js"(exports) {
+  "../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react-dom/cjs/react-dom.development.js"(exports) {
     "use strict";
     (function() {
       function noop2() {
@@ -1561,15 +1561,15 @@ var require_react_dom_development = __commonJS({
       exports.useFormStatus = function() {
         return resolveDispatcher().useHostTransitionStatus();
       };
-      exports.version = "19.3.0";
+      exports.version = "19.3.1";
       "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
     })();
   }
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react-dom/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react-dom/index.js
 var require_react_dom = __commonJS({
-  "../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react-dom/index.js"(exports, module) {
+  "../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react-dom/index.js"(exports, module) {
     "use strict";
     if (false) {
       checkDCE();
@@ -1580,9 +1580,9 @@ var require_react_dom = __commonJS({
   }
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react-dom/cjs/react-dom-client.development.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react-dom/cjs/react-dom-client.development.js
 var require_react_dom_client_development = __commonJS({
-  "../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react-dom/cjs/react-dom-client.development.js"(exports) {
+  "../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react-dom/cjs/react-dom-client.development.js"(exports) {
     "use strict";
     (function() {
       function findHook(fiber, id) {
@@ -23415,9 +23415,9 @@ var require_react_dom_client_development = __commonJS({
       };
       (function() {
         var isomorphicReactPackageVersion = React.version;
-        if ("19.3.0" !== isomorphicReactPackageVersion)
+        if ("19.3.1" !== isomorphicReactPackageVersion)
           throw Error(
-            'Incompatible React versions: The "react" and "react-dom" packages must have the exact same version. Instead got:\n  - react:      ' + (isomorphicReactPackageVersion + "\n  - react-dom:  19.3.0\nLearn more: https://react.dev/warnings/version-mismatch")
+            'Incompatible React versions: The "react" and "react-dom" packages must have the exact same version. Instead got:\n  - react:      ' + (isomorphicReactPackageVersion + "\n  - react-dom:  19.3.1\nLearn more: https://react.dev/warnings/version-mismatch")
           );
       })();
       "function" === typeof Map && null != Map.prototype && "function" === typeof Map.prototype.forEach && "function" === typeof Set && null != Set.prototype && "function" === typeof Set.prototype.clear && "function" === typeof Set.prototype.forEach || console.error(
@@ -23441,10 +23441,10 @@ var require_react_dom_client_development = __commonJS({
       if (!(function() {
         var internals = {
           bundleType: 1,
-          version: "19.3.0",
+          version: "19.3.1",
           rendererPackageName: "react-dom",
           currentDispatcherRef: ReactSharedInternals,
-          reconcilerVersion: "19.3.0"
+          reconcilerVersion: "19.3.1"
         };
         internals.overrideHookState = overrideHookState;
         internals.overrideHookStateDeletePath = overrideHookStateDeletePath;
@@ -23535,15 +23535,15 @@ var require_react_dom_client_development = __commonJS({
         listenToAllSupportedEvents(container);
         return new ReactDOMHydrationRoot(initialChildren);
       };
-      exports.version = "19.3.0";
+      exports.version = "19.3.1";
       "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
     })();
   }
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react-dom/client.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react-dom/client.js
 var require_client = __commonJS({
-  "../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react-dom/client.js"(exports, module) {
+  "../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react-dom/client.js"(exports, module) {
     "use strict";
     if (false) {
       checkDCE();
@@ -23554,9 +23554,9 @@ var require_client = __commonJS({
   }
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react/cjs/react-jsx-runtime.development.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react/cjs/react-jsx-runtime.development.js
 var require_react_jsx_runtime_development = __commonJS({
-  "../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react/cjs/react-jsx-runtime.development.js"(exports) {
+  "../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react/cjs/react-jsx-runtime.development.js"(exports) {
     "use strict";
     (function() {
       function getComponentNameFromType(type) {
@@ -23825,9 +23825,9 @@ var require_react_jsx_runtime_development = __commonJS({
   }
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react/jsx-runtime.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react/jsx-runtime.js
 var require_jsx_runtime = __commonJS({
-  "../../../../../tmp/tmp.3aB95HS7Ua/node_modules/react/jsx-runtime.js"(exports, module) {
+  "../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/react/jsx-runtime.js"(exports, module) {
     "use strict";
     if (false) {
       module.exports = null;
@@ -23837,17 +23837,17 @@ var require_jsx_runtime = __commonJS({
   }
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/lexical-entry.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/lexical-entry.js
 var import_react6 = __toESM(require_react());
 var import_client = __toESM(require_client());
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/LexicalComposer.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/LexicalComposer.dev.js
 var LexicalComposer_dev_exports = {};
 __export(LexicalComposer_dev_exports, {
   LexicalComposer: () => LexicalComposer
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/LexicalComposerContext.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/LexicalComposerContext.dev.js
 var LexicalComposerContext_dev_exports = {};
 __export(LexicalComposerContext_dev_exports, {
   LexicalComposerContext: () => LexicalComposerContext,
@@ -23889,13 +23889,13 @@ function useLexicalComposerContext() {
   return composerContext;
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/LexicalComposerContext.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/LexicalComposerContext.js
 var mod = true ? LexicalComposerContext_dev_exports : LexicalComposerContext_prod_exports;
 var LexicalComposerContext2 = mod.LexicalComposerContext;
 var createLexicalComposerContext2 = mod.createLexicalComposerContext;
 var useLexicalComposerContext2 = mod.useLexicalComposerContext;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/lexical/dist/Lexical.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/lexical/dist/Lexical.dev.js
 var Lexical_dev_exports = {};
 __export(Lexical_dev_exports, {
   $addUpdateTag: () => $addUpdateTag,
@@ -23942,6 +23942,7 @@ __export(Lexical_dev_exports, {
   $getDocument: () => $getDocument,
   $getEditor: () => $getEditor,
   $getEditorDOMRenderConfig: () => $getEditorDOMRenderConfig,
+  $getElementAndOffsetForPoint: () => $getElementAndOffsetForPoint,
   $getNearestNodeFromDOMNode: () => $getNearestNodeFromDOMNode,
   $getNearestRootOrShadowRoot: () => $getNearestRootOrShadowRoot,
   $getNodeByKey: () => $getNodeByKey,
@@ -23963,6 +23964,7 @@ __export(Lexical_dev_exports, {
   $getTextNodeOffset: () => $getTextNodeOffset,
   $getTextPointCaret: () => $getTextPointCaret,
   $getTextPointCaretSlice: () => $getTextPointCaretSlice,
+  $getTextPointCaretSliceForNode: () => $getTextPointCaretSliceForNode,
   $getWritableNodeState: () => $getWritableNodeState,
   $hasAncestor: () => $hasAncestor,
   $hasUpdateTag: () => $hasUpdateTag,
@@ -23976,6 +23978,7 @@ __export(Lexical_dev_exports, {
   $isEditorState: () => $isEditorState,
   $isElementDOMSlot: () => $isElementDOMSlot,
   $isElementNode: () => $isElementNode,
+  $isEventFromEmbeddedInput: () => $isEventFromEmbeddedInput,
   $isExtendableTextPointCaret: () => $isExtendableTextPointCaret,
   $isInlineElementOrDecoratorNode: () => $isInlineElementOrDecoratorNode,
   $isInlineFormattable: () => $isInlineFormattable,
@@ -24022,6 +24025,7 @@ __export(Lexical_dev_exports, {
   $setTextFormat: () => $setTextFormat,
   $splitAtPointCaretNext: () => $splitAtPointCaretNext,
   $splitNode: () => $splitNode,
+  $splitTextPointCaretSlice: () => $splitTextPointCaretSlice,
   $updateDOMSelection: () => $updateDOMSelection,
   $updateRangeSelectionFromCaretRange: () => $updateRangeSelectionFromCaretRange,
   $withCompactExport: () => $withCompactExport,
@@ -24080,6 +24084,9 @@ __export(Lexical_dev_exports, {
   INSERT_TAB_COMMAND: () => INSERT_TAB_COMMAND,
   INTERNAL_$expandSelectionToWholeDocument: () => INTERNAL_$expandSelectionToWholeDocument,
   INTERNAL_$isBlock: () => INTERNAL_$isBlock,
+  INTERNAL_$normalizeNodeStructure: () => INTERNAL_$normalizeNodeStructure,
+  INTERNAL_isNodeStructureEnforced: () => INTERNAL_isNodeStructureEnforced,
+  INTERNAL_registerNodeStructure: () => INTERNAL_registerNodeStructure,
   IS_ALL_FORMATTING: () => IS_ALL_FORMATTING,
   IS_ANDROID: () => IS_ANDROID,
   IS_ANDROID_CHROME: () => IS_ANDROID_CHROME,
@@ -24137,6 +24144,7 @@ __export(Lexical_dev_exports, {
   addClassNamesToElement: () => addClassNamesToElement,
   aliasTableOf: () => aliasTableOf,
   aliasedValue: () => aliasedValue,
+  arraySetValue: () => arraySetValue,
   arrayValue: () => arrayValue,
   booleanValue: () => booleanValue,
   buildImportMap: () => buildImportMap,
@@ -24166,6 +24174,7 @@ __export(Lexical_dev_exports, {
   getDOMSelectionRangeAndPoints: () => getDOMSelectionRangeAndPoints,
   getDOMShadowRoots: () => getDOMShadowRoots,
   getDOMTextNode: () => getDOMTextNode,
+  getDeclaredNodeStructure: () => getDeclaredNodeStructure,
   getDeclaredSlots: () => getDeclaredSlots,
   getEditorPropertyFromDOMNode: () => getEditorPropertyFromDOMNode,
   getNearestEditorFromDOMNode: () => getNearestEditorFromDOMNode,
@@ -24375,6 +24384,495 @@ var TEXT_TYPE_TO_MODE = /* @__PURE__ */ invertRecord(TEXT_MODE_TO_TYPE);
 var NODE_STATE_KEY = "$";
 var CONTROL_OR_OTHER_KEY = /* @__PURE__ */ Symbol.for("@lexical/ctrlOrOtherKey");
 var PROTOTYPE_CONFIG_METHOD = "$config";
+// @__NO_SIDE_EFFECTS__
+function warnOnlyOnce(message) {
+  {
+    let run = false;
+    return () => {
+      if (!run) {
+        console.warn(message);
+      }
+      run = true;
+    };
+  }
+}
+// @__NO_SIDE_EFFECTS__
+function createCommand(type) {
+  return {
+    type
+  };
+}
+var SELECTION_CHANGE_COMMAND = /* @__PURE__ */ createCommand("SELECTION_CHANGE_COMMAND");
+var SELECTION_INSERT_CLIPBOARD_NODES_COMMAND = /* @__PURE__ */ createCommand("SELECTION_INSERT_CLIPBOARD_NODES_COMMAND");
+var CLICK_COMMAND = /* @__PURE__ */ createCommand("CLICK_COMMAND");
+var BEFORE_INPUT_COMMAND = /* @__PURE__ */ createCommand("BEFORE_INPUT_COMMAND");
+var INPUT_COMMAND = /* @__PURE__ */ createCommand("INPUT_COMMAND");
+var COMPOSITION_START_COMMAND = /* @__PURE__ */ createCommand("COMPOSITION_START_COMMAND");
+var COMPOSITION_END_COMMAND = /* @__PURE__ */ createCommand("COMPOSITION_END_COMMAND");
+var DELETE_CHARACTER_COMMAND = /* @__PURE__ */ createCommand("DELETE_CHARACTER_COMMAND");
+var INSERT_LINE_BREAK_COMMAND = /* @__PURE__ */ createCommand("INSERT_LINE_BREAK_COMMAND");
+var INSERT_PARAGRAPH_COMMAND = /* @__PURE__ */ createCommand("INSERT_PARAGRAPH_COMMAND");
+var CONTROLLED_TEXT_INSERTION_COMMAND = /* @__PURE__ */ createCommand("CONTROLLED_TEXT_INSERTION_COMMAND");
+var PASTE_COMMAND = /* @__PURE__ */ createCommand("PASTE_COMMAND");
+var REMOVE_TEXT_COMMAND = /* @__PURE__ */ createCommand("REMOVE_TEXT_COMMAND");
+var DELETE_WORD_COMMAND = /* @__PURE__ */ createCommand("DELETE_WORD_COMMAND");
+var DELETE_LINE_COMMAND = /* @__PURE__ */ createCommand("DELETE_LINE_COMMAND");
+var FORMAT_TEXT_COMMAND = /* @__PURE__ */ createCommand("FORMAT_TEXT_COMMAND");
+var SET_TEXT_FORMAT_COMMAND = /* @__PURE__ */ createCommand("SET_TEXT_FORMAT_COMMAND");
+var UNDO_COMMAND = /* @__PURE__ */ createCommand("UNDO_COMMAND");
+var REDO_COMMAND = /* @__PURE__ */ createCommand("REDO_COMMAND");
+var KEY_DOWN_COMMAND = /* @__PURE__ */ createCommand("KEYDOWN_COMMAND");
+var KEY_ARROW_RIGHT_COMMAND = /* @__PURE__ */ createCommand("KEY_ARROW_RIGHT_COMMAND");
+var MOVE_TO_END = /* @__PURE__ */ createCommand("MOVE_TO_END");
+var KEY_ARROW_LEFT_COMMAND = /* @__PURE__ */ createCommand("KEY_ARROW_LEFT_COMMAND");
+var MOVE_TO_START = /* @__PURE__ */ createCommand("MOVE_TO_START");
+var KEY_ARROW_UP_COMMAND = /* @__PURE__ */ createCommand("KEY_ARROW_UP_COMMAND");
+var KEY_ARROW_DOWN_COMMAND = /* @__PURE__ */ createCommand("KEY_ARROW_DOWN_COMMAND");
+var KEY_ENTER_COMMAND = /* @__PURE__ */ createCommand("KEY_ENTER_COMMAND");
+var KEY_SPACE_COMMAND = /* @__PURE__ */ createCommand("KEY_SPACE_COMMAND");
+var KEY_BACKSPACE_COMMAND = /* @__PURE__ */ createCommand("KEY_BACKSPACE_COMMAND");
+var KEY_ESCAPE_COMMAND = /* @__PURE__ */ createCommand("KEY_ESCAPE_COMMAND");
+var KEY_DELETE_COMMAND = /* @__PURE__ */ createCommand("KEY_DELETE_COMMAND");
+var KEY_TAB_COMMAND = /* @__PURE__ */ createCommand("KEY_TAB_COMMAND");
+var INSERT_TAB_COMMAND = /* @__PURE__ */ createCommand("INSERT_TAB_COMMAND");
+var INDENT_CONTENT_COMMAND = /* @__PURE__ */ createCommand("INDENT_CONTENT_COMMAND");
+var OUTDENT_CONTENT_COMMAND = /* @__PURE__ */ createCommand("OUTDENT_CONTENT_COMMAND");
+var DROP_COMMAND = /* @__PURE__ */ createCommand("DROP_COMMAND");
+var FORMAT_ELEMENT_COMMAND = /* @__PURE__ */ createCommand("FORMAT_ELEMENT_COMMAND");
+var DRAGSTART_COMMAND = /* @__PURE__ */ createCommand("DRAGSTART_COMMAND");
+var DRAGOVER_COMMAND = /* @__PURE__ */ createCommand("DRAGOVER_COMMAND");
+var DRAGEND_COMMAND = /* @__PURE__ */ createCommand("DRAGEND_COMMAND");
+var COPY_COMMAND = /* @__PURE__ */ createCommand("COPY_COMMAND");
+var CUT_COMMAND = /* @__PURE__ */ createCommand("CUT_COMMAND");
+var SELECT_ALL_COMMAND = /* @__PURE__ */ createCommand("SELECT_ALL_COMMAND");
+var CLEAR_EDITOR_COMMAND = /* @__PURE__ */ createCommand("CLEAR_EDITOR_COMMAND");
+var CLEAR_HISTORY_COMMAND = /* @__PURE__ */ createCommand("CLEAR_HISTORY_COMMAND");
+var CAN_REDO_COMMAND = /* @__PURE__ */ createCommand("CAN_REDO_COMMAND");
+var CAN_UNDO_COMMAND = /* @__PURE__ */ createCommand("CAN_UNDO_COMMAND");
+var FOCUS_COMMAND = /* @__PURE__ */ createCommand("FOCUS_COMMAND");
+var BLUR_COMMAND = /* @__PURE__ */ createCommand("BLUR_COMMAND");
+var KEY_MODIFIER_COMMAND = /* @__PURE__ */ createCommand("KEY_MODIFIER_COMMAND");
+// @__NO_SIDE_EFFECTS__
+function controlOrOther(key, mask) {
+  return {
+    ...mask,
+    [CONTROL_OR_OTHER_KEY]: key
+  };
+}
+var CONTROL_OR_META = /* @__PURE__ */ controlOrOther("metaKey", {
+  ctrlKey: !IS_APPLE,
+  metaKey: IS_APPLE
+});
+var CONTROL_OR_ALT = /* @__PURE__ */ controlOrOther("altKey", {
+  altKey: IS_APPLE,
+  ctrlKey: !IS_APPLE
+});
+var MODIFIER_BITS = [["altKey", 1], ["ctrlKey", 2], ["metaKey", 4], ["shiftKey", 8]];
+function getEventModifierBits(event) {
+  let bits = 0;
+  for (const [prop, bit] of MODIFIER_BITS) {
+    if (event[prop]) {
+      bits |= bit;
+    }
+  }
+  return bits;
+}
+function getMaskModifierBits(mask) {
+  let combos = [0];
+  for (const [prop, bit] of MODIFIER_BITS) {
+    const expected = mask[prop] || false;
+    if (expected === "any") {
+      combos = combos.concat(combos.map((bits) => bits | bit));
+    } else if (expected) {
+      combos = combos.map((bits) => bits | bit);
+    }
+  }
+  return combos;
+}
+function pushEntry(map, mapKey, shortcut) {
+  const entry = map.get(mapKey);
+  if (entry) {
+    entry.push(shortcut);
+  } else {
+    map.set(mapKey, [shortcut]);
+  }
+}
+var CompiledKeyboardShortcuts = class {
+  /** `${modifierBits}:${key.toLowerCase()}` -> shortcuts in insertion order */
+  byKey = /* @__PURE__ */ (() => /* @__PURE__ */ new Map())();
+  /**
+   * `${modifierBits}:${code}` (e.g. `Digit1`, `KeyB`) -> shortcuts, used
+   * only when `event.key` is not a single ASCII character so that
+   * single-character shortcuts still work on non-Latin keyboard layouts
+   * (the same fallback as {@link isExactShortcutMatch})
+   */
+  byCode = /* @__PURE__ */ (() => /* @__PURE__ */ new Map())();
+  add(shortcut) {
+    const {
+      key,
+      modifiers = {}
+    } = shortcut;
+    if (!(key.length > 0)) {
+      formatDevErrorMessage2(`KeyboardShortcutMatch: key must be non-empty`);
+    }
+    const lowerKey = key.toLowerCase();
+    for (const bits of getMaskModifierBits(modifiers)) {
+      pushEntry(this.byKey, `${bits}:${lowerKey}`, shortcut);
+      if (key.length === 1) {
+        if (/[0-9]/.test(key)) {
+          pushEntry(this.byCode, `${bits}:Digit${key}`, shortcut);
+        } else if (/[a-z]/.test(lowerKey)) {
+          pushEntry(this.byCode, `${bits}:Key${lowerKey.toUpperCase()}`, shortcut);
+        }
+      }
+    }
+    return this;
+  }
+  /**
+   * All shortcuts matching the event, in insertion order.
+   * Matches by `key` precede matches by the `code` fallback.
+   * @see {@link match} for the single-result fast path.
+   */
+  matches(event) {
+    const key = event.key;
+    if (!key) {
+      return [];
+    }
+    const bits = getEventModifierBits(event);
+    const byKey = this.byKey.get(`${bits}:${key.toLowerCase()}`);
+    const matches = byKey ? byKey.slice() : [];
+    if (this.byCode.size > 0 && !(key.length === 1 && key.charCodeAt(0) <= 127)) {
+      const byCode = this.byCode.get(`${bits}:${event.code}`);
+      if (byCode) {
+        matches.push(...byCode);
+      }
+    }
+    return matches;
+  }
+  /**
+   * The first shortcut matching the event, if any.
+   * @see {@link matches} for the full list of matching shortcuts.
+   */
+  match(event) {
+    return this.matches(event)[0];
+  }
+};
+function compileKeyboardShortcuts(shortcuts) {
+  const compiled = new CompiledKeyboardShortcuts();
+  for (const shortcut of shortcuts) {
+    compiled.add(shortcut);
+  }
+  return compiled;
+}
+// @__NO_SIDE_EFFECTS__
+function createRefCountedRegistry(activate) {
+  const entries = /* @__PURE__ */ new Map();
+  return {
+    dispose() {
+      for (const entry of entries.values()) {
+        entry.dispose();
+      }
+      entries.clear();
+    },
+    register(key, options) {
+      let entry = entries.get(key);
+      if (entry === void 0) {
+        entry = {
+          dispose: activate(key, options),
+          holders: /* @__PURE__ */ new Set()
+        };
+        entries.set(key, entry);
+      }
+      const release = () => {
+        const current = entries.get(key);
+        if (current && current.holders.delete(release) && current.holders.size === 0) {
+          entries.delete(key);
+          current.dispose();
+        }
+      };
+      entry.holders.add(release);
+      return release;
+    }
+  };
+}
+function createDevError(message) {
+  return new Error(message);
+}
+// @__NO_SIDE_EFFECTS__
+function readLexicalVersion() {
+  let envLexicalVersion;
+  try {
+    envLexicalVersion = "0.53.0+dev.esm";
+  } catch {
+  }
+  return envLexicalVersion ?? '"<unknown>+source"';
+}
+var LEXICAL_VERSION = /* @__PURE__ */ readLexicalVersion();
+var DequeSet = class {
+  _front = /* @__PURE__ */ (() => /* @__PURE__ */ new Set())();
+  _back = /* @__PURE__ */ (() => /* @__PURE__ */ new Set())();
+  _cache;
+  get size() {
+    return this._front.size + this._back.size;
+  }
+  addBack(v2) {
+    delete this._cache;
+    if (!this._front.has(v2)) {
+      this._back.add(v2);
+    }
+    return this;
+  }
+  addFront(v2) {
+    delete this._cache;
+    if (!this._back.has(v2)) {
+      this._front.add(v2);
+    }
+    return this;
+  }
+  delete(v2) {
+    delete this._cache;
+    return this._front.delete(v2) || this._back.delete(v2);
+  }
+  toArray() {
+    const arr = Array.from(this._front).reverse();
+    for (const v2 of this._back) {
+      arr.push(v2);
+    }
+    return arr;
+  }
+  toReadonlyArray() {
+    this._cache = this._cache || this.toArray();
+    return this._cache;
+  }
+  [Symbol.iterator]() {
+    return this.toReadonlyArray()[Symbol.iterator]();
+  }
+};
+var TOMBSTONE = null;
+var GEN_MAP_SIZE_THRESHOLD = 1e3;
+function cloneMap(map, minGenMapSize = GEN_MAP_SIZE_THRESHOLD) {
+  if (map instanceof GenMap) {
+    return map.clone();
+  }
+  if (map.size < minGenMapSize) {
+    return new Map(map);
+  }
+  return new GenMap().init(new Map(map), void 0, map.size);
+}
+var GenMap = class _GenMap {
+  _mutable = false;
+  _old = /* @__PURE__ */ (() => void 0)();
+  _nursery = /* @__PURE__ */ (() => void 0)();
+  _size = 0;
+  /**
+   * Returns a new GenMap that initially shares `_old` and `_nursery`
+   * with this one. Marks both as not-mutable so the next write on either
+   * side triggers a copy-on-write of the nursery before mutating.
+   */
+  clone() {
+    this._mutable = false;
+    return new _GenMap().init(this._old, this._nursery, this._size);
+  }
+  init(old, nursery, size) {
+    this._old = old;
+    this._nursery = nursery;
+    this._size = size;
+    return this;
+  }
+  get size() {
+    return this._size;
+  }
+  has(key) {
+    return this.get(key) !== void 0;
+  }
+  /**
+   * Returns the raw value for `key`, including TOMBSTONE for keys deleted
+   * since the last compaction. Used internally to distinguish "missing"
+   * from "deleted" without doing a second lookup.
+   */
+  getWithTombstone(key) {
+    const v2 = this._nursery && this._nursery.get(key);
+    if (v2 !== void 0) {
+      return v2;
+    }
+    return this._old && this._old.get(key);
+  }
+  get(key) {
+    const v2 = this.getWithTombstone(key);
+    return v2 === TOMBSTONE ? void 0 : v2;
+  }
+  shouldCompact() {
+    return this._nursery !== void 0 && this._nursery.size * 2 > this._size;
+  }
+  /**
+   * Returns the nursery for in-place writes. If this GenMap is currently
+   * sharing its nursery with an ancestor clone, this either compacts (if
+   * the nursery has grown large enough) or makes a shallow copy.
+   */
+  getNursery() {
+    if (!this._mutable || !this._nursery) {
+      this.compact();
+      this._nursery = new Map(this._nursery);
+      this._mutable = true;
+    }
+    return this._nursery;
+  }
+  /**
+   * Fold the nursery into a new `_old` snapshot when it has grown large
+   * enough that lookup overhead outweighs the savings from sharing.
+   * Triggered automatically from `getNursery` once `_nursery.size * 2 >
+   * _size`; can be forced via `compact(true)`.
+   */
+  compact(force = false) {
+    if (this._nursery && this._nursery.size > 0 && (force || this.shouldCompact())) {
+      const compact = new Map(this._old);
+      for (const [k, v2] of this._nursery) {
+        if (v2 !== TOMBSTONE) {
+          compact.set(k, v2);
+        } else {
+          compact.delete(k);
+        }
+      }
+      this._old = compact;
+      this._nursery = void 0;
+    }
+    this._mutable = false;
+    return this;
+  }
+  set(key, value) {
+    const v2 = this.getWithTombstone(key);
+    if (v2 === value) {
+      return this;
+    }
+    const nursery = this.getNursery();
+    if (v2 === TOMBSTONE || v2 === void 0) {
+      this._size++;
+      if (v2 === TOMBSTONE) {
+        nursery.delete(key);
+      }
+    }
+    nursery.set(key, value);
+    return this;
+  }
+  delete(key) {
+    const deleted = this.has(key);
+    if (deleted) {
+      this.getNursery().set(key, TOMBSTONE);
+      this._size--;
+    }
+    return deleted;
+  }
+  getOrInsert(key, defaultValue) {
+    const existing = this.get(key);
+    if (existing !== void 0) {
+      return existing;
+    }
+    this.set(key, defaultValue);
+    return defaultValue;
+  }
+  getOrInsertComputed(key, computer) {
+    const existing = this.get(key);
+    if (existing !== void 0) {
+      return existing;
+    }
+    const value = computer(key);
+    this.set(key, value);
+    return value;
+  }
+  clear() {
+    this._mutable = false;
+    this._old = void 0;
+    this._nursery = void 0;
+    this._size = 0;
+  }
+  *keys() {
+    for (const pair of this.entries()) {
+      yield pair[0];
+    }
+  }
+  *values() {
+    for (const pair of this.entries()) {
+      yield pair[1];
+    }
+  }
+  *entries() {
+    const nursery = this._nursery;
+    const old = this._old;
+    if (!nursery) {
+      if (old) {
+        yield* old;
+      }
+      return;
+    }
+    if (old) {
+      for (const pair of old) {
+        const k = pair[0];
+        const v2 = nursery.get(k);
+        if (v2 === TOMBSTONE) {
+          continue;
+        } else if (v2 !== void 0) {
+          pair[1] = v2;
+        }
+        yield pair;
+      }
+    }
+    for (const pair of nursery) {
+      if (pair[1] !== TOMBSTONE && !(old && old.has(pair[0]))) {
+        yield pair;
+      }
+    }
+  }
+  forEach(callbackfn, thisArg) {
+    if (thisArg !== void 0) {
+      callbackfn = callbackfn.bind(thisArg);
+    }
+    for (const [k, v2] of this.entries()) {
+      callbackfn(v2, k, this);
+    }
+  }
+  get [Symbol.toStringTag]() {
+    return "GenMap";
+  }
+  [Symbol.iterator]() {
+    return this.entries();
+  }
+};
+var compactExport = false;
+function $withCompactExport(compact, f2, ...reject) {
+  const previous = compactExport;
+  let result;
+  try {
+    compactExport = compact;
+    result = f2();
+  } finally {
+    compactExport = previous;
+  }
+  if (!!isThenable(result)) {
+    formatDevErrorMessage2(`$withCompactExport: f returned a thenable. The export form is restored synchronously, so an async callback gives it up at its first await; export inside a synchronous callback instead.`);
+  }
+  return result;
+}
+function $isCompactExport() {
+  return compactExport;
+}
+function isThenable(value) {
+  return value !== null && (typeof value === "object" || typeof value === "function") && typeof value.then === "function";
+}
+function $exportNodeJSON(node) {
+  const serializedNode = node.exportJSON(compactExport);
+  const nodeClass = node.constructor;
+  if (serializedNode.type !== nodeClass.getType()) {
+    {
+      formatDevErrorMessage2(`LexicalNode: Node ${nodeClass.name} does not match the serialized type. Check if .exportJSON() is implemented and it is returning the correct type.`);
+    }
+  }
+  if ($isElementNode(node) && !Array.isArray(serializedNode.children)) {
+    {
+      formatDevErrorMessage2(`LexicalNode: Node ${nodeClass.name} is an element but .exportJSON() does not have a children array.`);
+    }
+  }
+  return serializedNode;
+}
 function $getActiveBlockCursorElement() {
   return $getEditor()._blockCursorElement;
 }
@@ -24659,27 +25157,27 @@ var ElementDOMSlot = class _ElementDOMSlot extends DOMSlot {
   }
   /** @internal */
   removeManagedLineBreak() {
-    const br = this.getManagedLineBreak();
-    if (br) {
-      const element = this.element;
-      const sibling = br.nodeName === "IMG" ? br.nextSibling : null;
-      if (sibling) {
-        element.removeChild(sibling);
+    const element = this.element;
+    const lineBreak = this.getManagedLineBreak();
+    if (lineBreak) {
+      lineBreak.remove();
+      for (const node of element.querySelectorAll(":scope > [data-lexical-managed-linebreak]")) {
+        node.remove();
       }
-      element.removeChild(br);
       element.__lexicalLineBreak = void 0;
     }
   }
   /** @internal */
   insertManagedLineBreak(webkitHack) {
+    const element = this.element;
     const prevBreak = this.getManagedLineBreak();
     if (prevBreak) {
-      if (webkitHack === (prevBreak.nodeName === "IMG")) {
+      const lastNode = webkitHack ? prevBreak.nextSibling : prevBreak;
+      if (lastNode && lastNode === element.querySelector(":scope > br[data-lexical-managed-linebreak]")) {
         return;
       }
       this.removeManagedLineBreak();
     }
-    const element = this.element;
     const before = this.before || this.getDecoratorBoundaryAnchor("trailing");
     const br = $getDocument().createElement("br");
     br.setAttribute("data-lexical-managed-linebreak", "true");
@@ -24765,383 +25263,20 @@ function indexPath(root, child) {
   }
   return path.reverse();
 }
-// @__NO_SIDE_EFFECTS__
-function readLexicalVersion() {
-  let envLexicalVersion;
-  try {
-    envLexicalVersion = "0.51.0+dev.esm";
-  } catch (_unused) {
-  }
-  return envLexicalVersion ?? '"<unknown>+source"';
-}
-var LEXICAL_VERSION = /* @__PURE__ */ readLexicalVersion();
-var DequeSet = class {
-  _front = /* @__PURE__ */ new Set();
-  _back = /* @__PURE__ */ new Set();
-  _cache;
-  get size() {
-    return this._front.size + this._back.size;
-  }
-  addBack(v2) {
-    delete this._cache;
-    if (!this._front.has(v2)) {
-      this._back.add(v2);
-    }
-    return this;
-  }
-  addFront(v2) {
-    delete this._cache;
-    if (!this._back.has(v2)) {
-      this._front.add(v2);
-    }
-    return this;
-  }
-  delete(v2) {
-    delete this._cache;
-    return this._front.delete(v2) || this._back.delete(v2);
-  }
-  toArray() {
-    const arr = Array.from(this._front).reverse();
-    for (const v2 of this._back) {
-      arr.push(v2);
-    }
-    return arr;
-  }
-  toReadonlyArray() {
-    this._cache = this._cache || this.toArray();
-    return this._cache;
-  }
-  [Symbol.iterator]() {
-    return this.toReadonlyArray()[Symbol.iterator]();
-  }
-};
-var TOMBSTONE = null;
-var GEN_MAP_SIZE_THRESHOLD = 1e3;
-function cloneMap(map, minGenMapSize = GEN_MAP_SIZE_THRESHOLD) {
-  if (map instanceof GenMap) {
-    return map.clone();
-  }
-  if (map.size < minGenMapSize) {
-    return new Map(map);
-  }
-  return new GenMap().init(new Map(map), void 0, map.size);
-}
-var GenMap = class _GenMap {
-  _mutable = false;
-  _old = void 0;
-  _nursery = void 0;
-  _size = 0;
-  /**
-   * Returns a new GenMap that initially shares `_old` and `_nursery`
-   * with this one. Marks both as not-mutable so the next write on either
-   * side triggers a copy-on-write of the nursery before mutating.
-   */
-  clone() {
-    this._mutable = false;
-    return new _GenMap().init(this._old, this._nursery, this._size);
-  }
-  init(old, nursery, size) {
-    this._old = old;
-    this._nursery = nursery;
-    this._size = size;
-    return this;
-  }
-  get size() {
-    return this._size;
-  }
-  has(key) {
-    return this.get(key) !== void 0;
-  }
-  /**
-   * Returns the raw value for `key`, including TOMBSTONE for keys deleted
-   * since the last compaction. Used internally to distinguish "missing"
-   * from "deleted" without doing a second lookup.
-   */
-  getWithTombstone(key) {
-    const v2 = this._nursery && this._nursery.get(key);
-    if (v2 !== void 0) {
-      return v2;
-    }
-    return this._old && this._old.get(key);
-  }
-  get(key) {
-    const v2 = this.getWithTombstone(key);
-    return v2 === TOMBSTONE ? void 0 : v2;
-  }
-  shouldCompact() {
-    return this._nursery !== void 0 && this._nursery.size * 2 > this._size;
-  }
-  /**
-   * Returns the nursery for in-place writes. If this GenMap is currently
-   * sharing its nursery with an ancestor clone, this either compacts (if
-   * the nursery has grown large enough) or makes a shallow copy.
-   */
-  getNursery() {
-    if (!this._mutable || !this._nursery) {
-      this.compact();
-      this._nursery = new Map(this._nursery);
-      this._mutable = true;
-    }
-    return this._nursery;
-  }
-  /**
-   * Fold the nursery into a new `_old` snapshot when it has grown large
-   * enough that lookup overhead outweighs the savings from sharing.
-   * Triggered automatically from `getNursery` once `_nursery.size * 2 >
-   * _size`; can be forced via `compact(true)`.
-   */
-  compact(force = false) {
-    if (this._nursery && this._nursery.size > 0 && (force || this.shouldCompact())) {
-      const compact = new Map(this._old);
-      for (const [k, v2] of this._nursery) {
-        if (v2 !== TOMBSTONE) {
-          compact.set(k, v2);
-        } else {
-          compact.delete(k);
-        }
-      }
-      this._old = compact;
-      this._nursery = void 0;
-    }
-    this._mutable = false;
-    return this;
-  }
-  set(key, value) {
-    const v2 = this.getWithTombstone(key);
-    if (v2 === value) {
-      return this;
-    }
-    const nursery = this.getNursery();
-    if (v2 === TOMBSTONE || v2 === void 0) {
-      this._size++;
-      if (v2 === TOMBSTONE) {
-        nursery.delete(key);
-      }
-    }
-    nursery.set(key, value);
-    return this;
-  }
-  delete(key) {
-    const deleted = this.has(key);
-    if (deleted) {
-      this.getNursery().set(key, TOMBSTONE);
-      this._size--;
-    }
-    return deleted;
-  }
-  getOrInsert(key, defaultValue) {
-    const existing = this.get(key);
-    if (existing !== void 0) {
-      return existing;
-    }
-    this.set(key, defaultValue);
-    return defaultValue;
-  }
-  getOrInsertComputed(key, computer) {
-    const existing = this.get(key);
-    if (existing !== void 0) {
-      return existing;
-    }
-    const value = computer(key);
-    this.set(key, value);
-    return value;
-  }
-  clear() {
-    this._mutable = false;
-    this._old = void 0;
-    this._nursery = void 0;
-    this._size = 0;
-  }
-  *keys() {
-    for (const pair of this.entries()) {
-      yield pair[0];
-    }
-  }
-  *values() {
-    for (const pair of this.entries()) {
-      yield pair[1];
-    }
-  }
-  *entries() {
-    const nursery = this._nursery;
-    const old = this._old;
-    if (!nursery) {
-      if (old) {
-        yield* old;
-      }
-      return;
-    }
-    if (old) {
-      for (const pair of old) {
-        const k = pair[0];
-        const v2 = nursery.get(k);
-        if (v2 === TOMBSTONE) {
-          continue;
-        } else if (v2 !== void 0) {
-          pair[1] = v2;
-        }
-        yield pair;
-      }
-    }
-    for (const pair of nursery) {
-      if (pair[1] !== TOMBSTONE && !(old && old.has(pair[0]))) {
-        yield pair;
-      }
-    }
-  }
-  forEach(callbackfn, thisArg) {
-    if (thisArg !== void 0) {
-      callbackfn = callbackfn.bind(thisArg);
-    }
-    for (const [k, v2] of this.entries()) {
-      callbackfn(v2, k, this);
-    }
-  }
-  get [Symbol.toStringTag]() {
-    return "GenMap";
-  }
-  [Symbol.iterator]() {
-    return this.entries();
-  }
-};
-var compactExport = false;
-function $withCompactExport(compact, f2, ...reject) {
-  const previous = compactExport;
-  let result;
-  try {
-    compactExport = compact;
-    result = f2();
-  } finally {
-    compactExport = previous;
-  }
-  if (!!isThenable(result)) {
-    formatDevErrorMessage2(`$withCompactExport: f returned a thenable. The export form is restored synchronously, so an async callback gives it up at its first await; export inside a synchronous callback instead.`);
-  }
-  return result;
-}
-function $isCompactExport() {
-  return compactExport;
-}
-function isThenable(value) {
-  return value !== null && (typeof value === "object" || typeof value === "function") && typeof value.then === "function";
-}
-function $exportNodeJSON(node) {
-  const serializedNode = node.exportJSON(compactExport);
-  const nodeClass = node.constructor;
-  if (serializedNode.type !== nodeClass.getType()) {
-    {
-      formatDevErrorMessage2(`LexicalNode: Node ${nodeClass.name} does not match the serialized type. Check if .exportJSON() is implemented and it is returning the correct type.`);
-    }
-  }
-  if ($isElementNode(node) && !Array.isArray(serializedNode.children)) {
-    {
-      formatDevErrorMessage2(`LexicalNode: Node ${nodeClass.name} is an element but .exportJSON() does not have a children array.`);
-    }
-  }
-  return serializedNode;
-}
-function $garbageCollectDetachedDecorators(editor, pendingEditorState) {
-  const currentDecorators = editor._decorators;
-  const pendingDecorators = editor._pendingDecorators;
-  let decorators = pendingDecorators || currentDecorators;
-  const nodeMap = pendingEditorState._nodeMap;
-  let key;
-  for (key in decorators) {
-    if (!nodeMap.has(key)) {
-      if (decorators === currentDecorators) {
-        decorators = cloneDecorators(editor);
-      }
-      delete decorators[key];
-    }
-  }
-}
-function $garbageCollectDetachedDeepChildNodes(node, parentKey, prevNodeMap, nodeMap, nodeMapDelete, dirtyNodes) {
-  if ($isElementNode(node)) {
-    let child = node.getFirstChild();
-    while (child !== null) {
-      const childKey = child.__key;
-      if (child.__parent === parentKey) {
-        if ($isElementNode(child) || $isSlotHost(child) && child.__slots !== null) {
-          $garbageCollectDetachedDeepChildNodes(child, childKey, prevNodeMap, nodeMap, nodeMapDelete, dirtyNodes);
-        }
-        if (!prevNodeMap.has(childKey)) {
-          dirtyNodes.delete(childKey);
-        }
-        nodeMapDelete.push(childKey);
-      }
-      child = child.getNextSibling();
-    }
-  }
-  for (const slotKey of $isSlotHost(node) && node.__slots !== null ? node.__slots.values() : []) {
-    const slotNode = nodeMap.get(slotKey);
-    if (slotNode !== void 0 && $isSlotChild(slotNode) && slotNode.__slotHost === parentKey) {
-      if ($isElementNode(slotNode) || $isSlotHost(slotNode) && slotNode.__slots !== null) {
-        $garbageCollectDetachedDeepChildNodes(slotNode, slotKey, prevNodeMap, nodeMap, nodeMapDelete, dirtyNodes);
-      }
-      if (!prevNodeMap.has(slotKey)) {
-        dirtyNodes.delete(slotKey);
-      }
-      nodeMapDelete.push(slotKey);
-    }
-  }
-}
-function $garbageCollectDetachedNodes(prevEditorState, editorState, dirtyLeaves, dirtyElements) {
-  const prevNodeMap = prevEditorState._nodeMap;
-  const nodeMap = editorState._nodeMap;
-  const nodeMapDelete = [];
-  for (const [nodeKey] of dirtyElements) {
-    const node = nodeMap.get(nodeKey);
-    if (node !== void 0) {
-      if (!node.isAttached()) {
-        if ($isElementNode(node)) {
-          $garbageCollectDetachedDeepChildNodes(node, nodeKey, prevNodeMap, nodeMap, nodeMapDelete, dirtyElements);
-        }
-        if (!prevNodeMap.has(nodeKey)) {
-          dirtyElements.delete(nodeKey);
-        }
-        nodeMapDelete.push(nodeKey);
-      }
-    }
-  }
-  for (const nodeKey of dirtyLeaves) {
-    const node = nodeMap.get(nodeKey);
-    if (node !== void 0 && !node.isAttached()) {
-      if ($isSlotHost(node) && node.__slots !== null) {
-        $garbageCollectDetachedDeepChildNodes(node, nodeKey, prevNodeMap, nodeMap, nodeMapDelete, dirtyLeaves);
-      }
-      if (!prevNodeMap.has(nodeKey)) {
-        dirtyLeaves.delete(nodeKey);
-      }
-      nodeMapDelete.push(nodeKey);
-    }
-  }
-  for (const nodeKey of nodeMapDelete) {
-    nodeMap.delete(nodeKey);
-  }
-  const editor = getActiveEditor();
-  const compositionKey = editor._compositionKey;
-  if (compositionKey !== null && !nodeMap.has(compositionKey)) {
-    editor._compositionKey = null;
-  }
-}
 var TEXT_MUTATION_VARIANCE = 100;
 var isProcessingMutations = false;
 var lastTextEntryTimeStamp = 0;
 function getIsProcessingMutations() {
   return isProcessingMutations;
 }
-function updateTimeStamp(event) {
-  lastTextEntryTimeStamp = event.timeStamp;
+function updateTimeStamp() {
+  lastTextEntryTimeStamp = performance.now();
 }
 function initTextEntryListener(editor) {
-  if (lastTextEntryTimeStamp === 0) {
-    getWindow(editor).addEventListener("textInput", updateTimeStamp, true);
-  }
+  getWindow(editor).addEventListener("textInput", updateTimeStamp, true);
 }
-function isEditorManagedLineBreak(dom, target, editor) {
-  const isBR = dom.nodeName === "BR";
-  const lexicalLineBreak = target.__lexicalLineBreak;
-  return lexicalLineBreak && (dom === lexicalLineBreak || isBR && dom.previousSibling === lexicalLineBreak) || isBR && getNodeKeyFromDOMNode(dom, editor) !== void 0;
+function isManagedLineBreakDOM(dom) {
+  return isHTMLElement(dom) && dom.hasAttribute("data-lexical-managed-linebreak");
 }
 function getLastSelection(editor) {
   return editor.read("latest", () => {
@@ -25183,9 +25318,15 @@ function $getNearestManagedNodePairFromDOMNode(startingDOM, editor, editorState)
     }
   }
 }
-function flushMutations(editor, mutations, observer) {
+function flushMutations(editor, mutations, observer, rerenderText) {
   isProcessingMutations = true;
-  const shouldFlushTextMutations = performance.now() - lastTextEntryTimeStamp > TEXT_MUTATION_VARIANCE;
+  const shouldFlushTextMutations = (
+    // Not while the browser makes an insertion the editor left to it: the
+    // editor's input listener reads that text, and an input listener that
+    // runs before it (React has one above the root) lets this run first,
+    // however long after the text entry.
+    editor._inputState.unprocessedBeforeInputData === null && performance.now() - lastTextEntryTimeStamp > TEXT_MUTATION_VARIANCE
+  );
   try {
     updateEditorSync(editor, () => {
       const selection = $getSelection() || getLastSelection(editor);
@@ -25194,8 +25335,7 @@ function flushMutations(editor, mutations, observer) {
       const blockCursorElement = editor._blockCursorElement;
       let shouldRevertSelection = false;
       let possibleTextForFirefoxPaste = "";
-      for (let i2 = 0; i2 < mutations.length; i2++) {
-        const mutation = mutations[i2];
+      for (const mutation of mutations) {
         const type = mutation.type;
         const targetDOM = mutation.target;
         const pair = $getNearestManagedNodePairFromDOMNode(targetDOM, editor, currentEditorState);
@@ -25204,7 +25344,13 @@ function flushMutations(editor, mutations, observer) {
         }
         const [nodeDOM, targetNode] = pair;
         if (type === "characterData") {
-          if (
+          if (rerenderText) {
+            if ($isTextNode(targetNode) && targetNode.isAttached()) {
+              targetNode.markDirty();
+            }
+          } else if (
+            // Text mutations are deferred and passed to mutation listeners to
+            // be processed outside of the Lexical engine.
             // TODO there is an edge case here if a mutation happens too quickly
             //      after text input, it may never be handled since we do not
             //      track the ignored mutations in any way
@@ -25212,76 +25358,65 @@ function flushMutations(editor, mutations, observer) {
           ) {
             $handleTextMutation(targetDOM, targetNode, editor);
           }
-        } else if (type === "childList") {
+        } else {
           shouldRevertSelection = true;
-          const addedDOMs = mutation.addedNodes;
-          for (let s2 = 0; s2 < addedDOMs.length; s2++) {
-            const addedDOM = addedDOMs[s2];
-            const node = $getNodeFromDOMNode(addedDOM);
-            const parentDOM = addedDOM.parentNode;
-            if (parentDOM != null && addedDOM !== blockCursorElement && node === null && !isEditorManagedLineBreak(addedDOM, parentDOM, editor) && // The zero-size selection anchors the reconciler parks outside
-            // a leading / trailing block decorator (#8922) are keyless
-            // scaffolding, like the managed line break — don't evict them
-            // as foreign DOM.
-            !isDecoratorBoundaryAnchorDOM(addedDOM) && // @experimental named-slots. Slot containers are keyless
-            // reconciler scaffolding: a flush that observes one being
-            // parked in its host or relocated by an explicit mount must
-            // not evict it as foreign DOM. Gated on the editor slot latch so
-            // a non-slot editor still evicts foreign DOM that happens to
-            // carry a `data-lexical-slot` attribute.
-            !(editor._slotsUsed && isHTMLElement(addedDOM) && addedDOM.hasAttribute("data-lexical-slot")) && // Skip externally-added DOM that's explicitly opted out of
-            // mutation tracking (e.g. an extension-rendered decoration
-            // inside a TextNode's span, like the autocomplete ghost).
-            !isDOMUnmanaged(addedDOM)) {
+          for (const addedDOM of mutation.addedNodes) {
+            const key = getNodeKeyFromDOMNode(addedDOM, editor);
+            if (addedDOM !== blockCursorElement && // Not when it has moved on: scaffolding is put back below.
+            addedDOM.parentNode === targetDOM && // Keyed DOM stays only when it is the DOM its node renders
+            // to: a stale copy (of a removed node, or from before a node
+            // was rendered anew) is evicted like foreign DOM. So is a node
+            // of a managed line break: an edit that moved one took it from
+            // an element that reconcileObservedMutation puts back together.
+            // The reconciler adds a decorator boundary anchor (#8922) only
+            // while nothing observes, so one added here was moved or copied
+            // by something else and is evicted too.
+            (key ? editor.getElementByKey(key) !== addedDOM : (
+              // @experimental named-slots. Slot containers are keyless
+              // reconciler scaffolding: a flush that observes one being
+              // parked in its host or relocated by an explicit mount must
+              // not evict it as foreign DOM. Gated on the editor slot
+              // latch so a non-slot editor still evicts foreign DOM that
+              // happens to carry a `data-lexical-slot` attribute.
+              !(editor._slotsUsed && isHTMLElement(addedDOM) && addedDOM.hasAttribute("data-lexical-slot")) && // Skip externally-added DOM that's explicitly opted out of
+              // mutation tracking (e.g. an extension-rendered decoration
+              // inside a TextNode's span, like the autocomplete ghost).
+              !isDOMUnmanaged(addedDOM)
+            ))) {
               if (IS_FIREFOX) {
                 const possibleText = (isHTMLElement(addedDOM) ? addedDOM.innerText : null) || addedDOM.nodeValue;
                 if (possibleText) {
                   possibleTextForFirefoxPaste += possibleText;
                 }
               }
-              parentDOM.removeChild(addedDOM);
+              targetDOM.removeChild(addedDOM);
             }
           }
-          const removedDOMs = mutation.removedNodes;
-          const removedDOMsLength = removedDOMs.length;
-          if (removedDOMsLength > 0) {
-            let unremovedBRs = 0;
-            for (let s2 = 0; s2 < removedDOMsLength; s2++) {
-              const removedDOM = removedDOMs[s2];
-              if (isEditorManagedLineBreak(removedDOM, targetDOM, editor) || blockCursorElement === removedDOM) {
-                targetDOM.appendChild(removedDOM);
-                unremovedBRs++;
-              } else if (isDecoratorBoundaryAnchorDOM(removedDOM)) {
-                unremovedBRs++;
-              }
+          for (const removedDOM of mutation.removedNodes) {
+            const isBlockCursor = blockCursorElement === removedDOM;
+            if (isBlockCursor || isDecoratorBoundaryAnchorDOM(removedDOM) || isManagedLineBreakDOM(removedDOM)) {
+              const next = mutation.nextSibling;
+              const prev = mutation.previousSibling;
+              targetDOM.insertBefore(removedDOM, !next || next.parentNode === targetDOM ? next : !prev ? targetDOM.firstChild : prev.parentNode === targetDOM ? prev.nextSibling : null);
             }
-            if (removedDOMsLength !== unremovedBRs) {
+            if (!isBlockCursor) {
               badDOMTargets.set(nodeDOM, targetNode);
             }
           }
         }
       }
-      if (badDOMTargets.size > 0) {
-        for (const [nodeDOM, targetNode] of badDOMTargets) {
-          targetNode.reconcileObservedMutation(nodeDOM, editor);
-        }
+      for (const [nodeDOM, targetNode] of badDOMTargets) {
+        targetNode.reconcileObservedMutation(nodeDOM, editor);
       }
       const records = observer.takeRecords();
-      if (records.length > 0) {
-        for (let i2 = 0; i2 < records.length; i2++) {
-          const record = records[i2];
-          const addedNodes = record.addedNodes;
-          const target = record.target;
-          for (let s2 = 0; s2 < addedNodes.length; s2++) {
-            const addedDOM = addedNodes[s2];
-            const parentDOM = addedDOM.parentNode;
-            if (parentDOM != null && addedDOM.nodeName === "BR" && !isEditorManagedLineBreak(addedDOM, target, editor)) {
-              parentDOM.removeChild(addedDOM);
-            }
+      for (const record of records) {
+        for (const addedDOM of record.addedNodes) {
+          if (addedDOM.nodeName === "BR" && !getNodeKeyFromDOMNode(addedDOM, editor) && !isManagedLineBreakDOM(addedDOM)) {
+            addedDOM.remove();
           }
         }
-        observer.takeRecords();
       }
+      observer.takeRecords();
       if (selection !== null) {
         if (shouldRevertSelection) {
           $setSelection(selection);
@@ -25295,11 +25430,13 @@ function flushMutations(editor, mutations, observer) {
     isProcessingMutations = false;
   }
 }
-function flushRootMutations(editor) {
+function flushRootMutations(editor, rerenderText, ifRecorded) {
   const observer = editor._observer;
   if (observer !== null) {
     const mutations = observer.takeRecords();
-    flushMutations(editor, mutations, observer);
+    if (!ifRecorded || mutations.length > 0) {
+      flushMutations(editor, mutations, observer, rerenderText);
+    }
   }
 }
 function initMutationObserver(editor) {
@@ -25421,6 +25558,13 @@ function undeclared(combinator, inner) {
     if (!(inner.getter === void 0 && inner.setter === void 0 && !isNodeSchema(inner))) {
       formatDevErrorMessage2(`${combinator}: the schema it wraps names an accessor. Accessors are named once, on the outermost schema of a property, both directions in that one call`);
     }
+    notNestedSet(combinator, inner);
+  }
+}
+function notNestedSet(combinator, inner) {
+  const meta = inner == null ? void 0 : inner.meta;
+  if (!(meta == null || meta.kind !== "set")) {
+    formatDevErrorMessage2(`${combinator}: arraySetValue can only be the whole value of a createState, not part of another schema or a node property`);
   }
 }
 var DERIVED_ACCEPTS = /* @__PURE__ */ new WeakSet();
@@ -26072,6 +26216,64 @@ function arrayValue(item) {
   );
 }
 // @__NO_SIDE_EFFECTS__
+function arraySetValue(item) {
+  undeclared("arraySetValue", item);
+  {
+    if (!(typeof item.defaultValue === "string")) {
+      formatDevErrorMessage2(`arraySetValue: the item schema must produce strings`);
+    }
+  }
+  return makeSchema((value) => {
+    if (!Array.isArray(value)) {
+      return Object.freeze([]);
+    }
+    if (Object.isFrozen(value) && $isCanonicalSet(item, value)) {
+      return value;
+    }
+    const members = [];
+    for (let i2 = 0; i2 < value.length; i2++) {
+      const member = value[i2];
+      if (member !== void 0 && $acceptsValue(item, member)) {
+        members.push(item(member));
+      }
+    }
+    members.sort();
+    const result = [];
+    for (let i2 = 0; i2 < members.length; i2++) {
+      if (i2 === 0 || members[i2] !== members[i2 - 1]) {
+        result.push(members[i2]);
+      }
+    }
+    return Object.freeze(result);
+  }, {
+    item,
+    kind: "set"
+  }, void 0, isArraySetEqual, (value) => Array.isArray(value));
+}
+function $isCanonicalSet(item, value) {
+  for (let i2 = 0; i2 < value.length; i2++) {
+    const member = value[i2];
+    if (typeof member !== "string" || i2 > 0 && !(value[i2 - 1] < member) || !$acceptsValue(item, member) || item(member) !== member) {
+      return false;
+    }
+  }
+  return true;
+}
+function isArraySetEqual(a2, b2) {
+  if (a2 === b2) {
+    return true;
+  }
+  if (!Array.isArray(a2) || !Array.isArray(b2) || a2.length !== b2.length) {
+    return false;
+  }
+  for (let i2 = 0; i2 < a2.length; i2++) {
+    if (a2[i2] !== b2[i2]) {
+      return false;
+    }
+  }
+  return true;
+}
+// @__NO_SIDE_EFFECTS__
 function objectValue(fields) {
   const schema = /* @__PURE__ */ objectSchema("objectValue", fields);
   {
@@ -26153,17 +26355,23 @@ function withField(schema, field) {
       method: field.setter,
       setterTable: field.setterTable
     }
-  });
+  }, field.derived === true);
 }
 // @__NO_SIDE_EFFECTS__
 function withAccessors(schema, accessors) {
-  return named("withAccessors", schema, accessors);
+  return named("withAccessors", schema, {
+    getter: accessors.getter,
+    setter: accessors.setter
+  }, accessors.derived === true);
 }
-function named(combinator, schema, accessors) {
+function named(combinator, schema, accessors, derived = false) {
   undeclared(combinator, schema);
   return Object.assign((value) => schema(value), {
     accepts: schema.accepts,
     defaultValue: schema.defaultValue,
+    ...derived ? {
+      derived: true
+    } : {},
     getter: accessors.getter,
     isEqual: schema.isEqual,
     meta: schema.meta,
@@ -26195,6 +26403,8 @@ var StateConfig = class {
    */
   defaultValue;
   resetOnCopyNode;
+  /** @experimental See {@link StateValueConfig.derived}. */
+  derived;
   /**
    * The {@link SerializationSchema} for this state's value, present when its
    * `parse` is a schema (e.g. `createState('mode', {parse: enumValue([...])})`).
@@ -26205,6 +26415,7 @@ var StateConfig = class {
   schema;
   constructor(key, stateValueConfig) {
     this.key = key;
+    this.derived = stateValueConfig.derived === true;
     const schema = isIntrospectableSchema(stateValueConfig.parse) ? stateValueConfig.parse : void 0;
     this.schema = schema;
     this.parse = stateValueConfig.parse.bind(stateValueConfig);
@@ -26241,18 +26452,24 @@ function $setState(node, stateConfig, valueOrUpdater) {
   if (typeof valueOrUpdater === "function") {
     const latest = node.getLatest();
     const prevValue = $getState(latest, stateConfig);
-    value = valueOrUpdater(prevValue);
+    value = canonicalValue(stateConfig, valueOrUpdater(prevValue));
     if (stateConfig.isEqual(prevValue, value)) {
       return latest;
     }
   } else {
-    value = valueOrUpdater;
+    value = canonicalValue(stateConfig, valueOrUpdater);
   }
   const writable = node.getWritable();
   const state = $getWritableNodeState(writable);
   $checkCollision(node, stateConfig, state);
   state.updateFromKnown(stateConfig, value);
   return writable;
+}
+function canonicalValue(stateConfig, value) {
+  const {
+    schema
+  } = stateConfig;
+  return schema !== void 0 && schema.meta.kind === "set" ? stateConfig.parse(value) : value;
 }
 function $checkCollision(node, stateConfig, state) {
   {
@@ -26324,8 +26541,8 @@ var NodeState = class _NodeState {
    * A copy of serializedNode[NODE_STATE_KEY] that is made when JSON is
    * imported but has not been parsed yet.
    *
-   * It stays here until a get state requires us to parse it, and since we
-   * then know the value is safe we move it to knownState.
+   * It stays here until a set state replaces it with a known value, or the
+   * node is next cloned and its key is known to the node type.
    *
    * Note that since only string keys are used here, we can only allow this
    * state to pass-through on export or on the next version since there is
@@ -26378,10 +26595,9 @@ var NodeState = class _NodeState {
    * @internal
    *
    * Get the value from knownState, or parse it from unknownState
-   * if it contains the given key.
+   * and cache in knownState if it contains the given key.
    *
    * Updates the sharedConfigMap when no known state is found.
-   * Updates unknownState and knownState when an unknownState is parsed.
    */
   getValue(stateConfig) {
     const known = this.knownState.get(stateConfig);
@@ -26395,7 +26611,7 @@ var NodeState = class _NodeState {
       if (jsonValue !== void 0) {
         parsed = stateConfig.parse(jsonValue);
       }
-      this.updateFromKnown(stateConfig, parsed);
+      this.knownState.set(stateConfig, parsed);
     }
     return parsed;
   }
@@ -26483,11 +26699,10 @@ var NodeState = class _NodeState {
       knownState,
       unknownState
     } = this;
-    if (!(knownState.has(stateConfig) || unknownState && key in unknownState)) {
-      if (unknownState) {
-        delete unknownState[key];
-        this.unknownState = undefinedIfEmpty(unknownState);
-      }
+    if (unknownState && key in unknownState) {
+      delete unknownState[key];
+      this.unknownState = undefinedIfEmpty(unknownState);
+    } else if (!knownState.has(stateConfig)) {
       this.size++;
     }
     knownState.set(stateConfig, value);
@@ -26651,79 +26866,8 @@ function $cloneNodeState(from, to) {
   const state = from.__state;
   return state && state.node === from ? state.getWritable(to) : state;
 }
-function $canSimpleTextNodesBeMerged(node1, node2) {
-  const node1Mode = node1.__mode;
-  const node1Format = node1.__format;
-  const node1Style = node1.__style;
-  const node2Mode = node2.__mode;
-  const node2Format = node2.__format;
-  const node2Style = node2.__style;
-  const node1State = node1.__state;
-  const node2State = node2.__state;
-  return (node1Mode === null || node1Mode === node2Mode) && (node1Format === null || node1Format === node2Format) && (node1Style === null || node1Style === node2Style) && (node1.__state === null || node1State === node2State || nodeStatesAreEquivalent(node1State, node2State));
-}
-function $mergeTextNodes(node1, node2) {
-  const writableNode1 = node1.mergeWithSibling(node2);
-  const normalizedNodes = getActiveEditor()._normalizedNodes;
-  normalizedNodes.add(node1.__key);
-  normalizedNodes.add(node2.__key);
-  return writableNode1;
-}
-function $normalizeTextNode(textNode) {
-  let node = textNode;
-  if (node.__text === "" && node.isSimpleText() && !node.isUnmergeable()) {
-    node.remove();
-    return;
-  }
-  let previousNode;
-  while ((previousNode = node.getPreviousSibling()) !== null && $isTextNode(previousNode) && previousNode.isSimpleText() && !previousNode.isUnmergeable()) {
-    if (previousNode.__text === "") {
-      previousNode.remove();
-    } else if ($canSimpleTextNodesBeMerged(previousNode, node)) {
-      node = $mergeTextNodes(previousNode, node);
-      break;
-    } else {
-      break;
-    }
-  }
-  let nextNode;
-  while ((nextNode = node.getNextSibling()) !== null && $isTextNode(nextNode) && nextNode.isSimpleText() && !nextNode.isUnmergeable()) {
-    if (nextNode.__text === "") {
-      nextNode.remove();
-    } else if ($canSimpleTextNodesBeMerged(node, nextNode)) {
-      node = $mergeTextNodes(node, nextNode);
-      break;
-    } else {
-      break;
-    }
-  }
-}
-function $normalizeSelection(selection) {
-  $normalizePoint(selection.anchor);
-  $normalizePoint(selection.focus);
-  return selection;
-}
-function $normalizePoint(point) {
-  while (point.type === "element") {
-    const node = point.getNode();
-    const offset = point.offset;
-    let nextNode;
-    let nextOffsetAtEnd;
-    if (offset === node.getChildrenSize()) {
-      nextNode = node.getChildAtIndex(offset - 1);
-      nextOffsetAtEnd = true;
-    } else {
-      nextNode = node.getChildAtIndex(offset);
-      nextOffsetAtEnd = false;
-    }
-    if ($isTextNode(nextNode)) {
-      point.set(nextNode.__key, nextOffsetAtEnd ? nextNode.getTextContentSize() : 0, "text", true);
-      break;
-    } else if (!$isElementNode(nextNode)) {
-      break;
-    }
-    point.set(nextNode.__key, nextOffsetAtEnd ? nextNode.getChildrenSize() : 0, "element", true);
-  }
+function $hasCustomTextContent(node) {
+  return !$isRootNode(node) && node.getTextContent !== ElementNode.prototype.getTextContent;
 }
 var CACHED_TEXT_SIZE_KEY = /* @__PURE__ */ Symbol.for("@lexical/CachedTextSize");
 function $prevSuffixTextSize(startKey, count) {
@@ -26750,6 +26894,8 @@ function $prevSuffixTextSize(startKey, count) {
         if (i2 < count - 1 && !prevNode.isInline()) {
           size += DOUBLE_LINE_BREAK.length;
         }
+      } else if ($readSlots(prevNode).size > 0) {
+        size += prevNode.getTextContentSize();
       } else {
         const cached = prevNode[CACHED_TEXT_SIZE_KEY];
         if (!(cached !== void 0)) {
@@ -26765,7 +26911,7 @@ function $prevSuffixTextSize(startKey, count) {
   });
 }
 function $setCachedTextSize(node) {
-  if ($isElementNode(node)) {
+  if ($isElementNode(node) || $readSlots(node).size > 0) {
     return;
   }
   if (node[CACHED_TEXT_SIZE_KEY] !== void 0) {
@@ -27064,6 +27210,7 @@ function $createNode(key, slot) {
     });
   }
   if ($isElementNode(node)) {
+    const outerBefore = subTreeTextContent;
     const indent = node.__indent;
     const childrenSize = node.__size;
     $setElementDirection(dom, node);
@@ -27080,7 +27227,6 @@ function $createNode(key, slot) {
         dom.__lexicalSlotTextLength = slotTextContent.length;
       }
     } else {
-      const outerBefore = subTreeTextContent;
       const endIndex = childrenSize - 1;
       const children = $createChildrenArray(node, activeNextNodeMap);
       $createChildren(children, node, 0, endIndex, $getDOMSlot(node, dom, activeEditor$1));
@@ -27092,6 +27238,11 @@ function $createNode(key, slot) {
       if (slots.size > 0) {
         dom.__lexicalSlotTextLength = slotTextContent.length;
       }
+    }
+    if ($hasCustomTextContent(node)) {
+      const text = node.getTextContent();
+      dom.__lexicalTextContent = text;
+      subTreeTextContent = outerBefore + text;
     }
     const format = node.__format;
     if (format !== 0) {
@@ -27175,17 +27326,12 @@ function $isLastChildLineBreakOrDecorator(element, nodeMap) {
   }
   return null;
 }
-function $isBlockDecoratorChild(key, nodeMap) {
-  if (!key) {
-    return false;
-  }
-  const node = nodeMap.get(key);
+function $isBlockDecoratorChild(node) {
   return $isDecoratorNode(node) && !node.isInline();
 }
-function $reconcileDecoratorBoundaryAnchors(nextElement, dom) {
-  const slot = $getDOMSlot(nextElement, dom, activeEditor$1);
-  slot.setDecoratorBoundaryAnchor("leading", $isBlockDecoratorChild(nextElement.__first, activeNextNodeMap));
-  slot.setDecoratorBoundaryAnchor("trailing", $isBlockDecoratorChild(nextElement.__last, activeNextNodeMap));
+function $reconcileDecoratorBoundaryAnchors(nextElement, dom, slot = $getDOMSlot(nextElement, dom, activeEditor$1)) {
+  slot.setDecoratorBoundaryAnchor("leading", $isBlockDecoratorChild(nextElement.getFirstChild()));
+  slot.setDecoratorBoundaryAnchor("trailing", $isBlockDecoratorChild(nextElement.getLastChild()));
 }
 function $reconcileElementTerminatingLineBreak(prevElement, nextElement, dom) {
   const slot = $getDOMSlot(nextElement, dom, activeEditor$1);
@@ -27478,7 +27624,8 @@ function $reconcileChildren(prevElement, nextElement, slot) {
   ) {
     const cachedParentText = cacheDom.__lexicalTextContent;
     const dirtyChildren = activeDirtyChildrenByParent.get(prevElement.__key);
-    if (!treatAllNodesAsDirty && typeof cachedParentText === "string" && dirtyChildren !== void 0) {
+    if (!treatAllNodesAsDirty && // Custom element text need not be a concatenation of child text.
+    !$hasCustomTextContent(nextElement) && typeof cachedParentText === "string" && dirtyChildren !== void 0) {
       const suffixStartKey = $suffixStartIfContiguous(nextElement, dirtyChildren);
       if (suffixStartKey !== null) {
         const k = dirtyChildren.size;
@@ -27730,6 +27877,11 @@ function $reconcileNode(key, parentDOM) {
       } else if ($readSlots(nextNode).size > 0 || $readSlots(prevNode).size > 0) {
         dom.__lexicalSlotTextLength = 0;
       }
+      if ($hasCustomTextContent(nextNode)) {
+        const text = nextNode.getTextContent();
+        dom.__lexicalTextContent = text;
+        subTreeTextContent = outerBefore + text;
+      }
     } else {
       const previousSubTreeTextContent = dom.__lexicalTextContent;
       if (!(typeof previousSubTreeTextContent === "string")) {
@@ -27835,7 +27987,10 @@ function $reconcileNodeChildren(nextElement, prevChildren, nextChildren, prevChi
         continue;
       }
       if (!nextChildrenSet.has(prevKey)) {
-        siblingDOM = getNextSibling(getPrevElementByKeyOrThrow(prevKey));
+        const prevDOM = getPrevElementByKeyOrThrow(prevKey);
+        if (prevDOM.parentNode === slot.element) {
+          siblingDOM = getNextSibling(prevDOM);
+        }
         $destroyNode(prevKey, slot.element);
         prevIndex++;
         prevChildrenSet.delete(prevKey);
@@ -27938,1414 +28093,6 @@ function getPrevElementByKeyOrThrow(key) {
   }
   return element;
 }
-// @__NO_SIDE_EFFECTS__
-function warnOnlyOnce(message) {
-  {
-    let run = false;
-    return () => {
-      if (!run) {
-        console.warn(message);
-      }
-      run = true;
-    };
-  }
-}
-// @__NO_SIDE_EFFECTS__
-function createCommand(type) {
-  return {
-    type
-  };
-}
-var SELECTION_CHANGE_COMMAND = /* @__PURE__ */ createCommand("SELECTION_CHANGE_COMMAND");
-var SELECTION_INSERT_CLIPBOARD_NODES_COMMAND = /* @__PURE__ */ createCommand("SELECTION_INSERT_CLIPBOARD_NODES_COMMAND");
-var CLICK_COMMAND = /* @__PURE__ */ createCommand("CLICK_COMMAND");
-var BEFORE_INPUT_COMMAND = /* @__PURE__ */ createCommand("BEFORE_INPUT_COMMAND");
-var INPUT_COMMAND = /* @__PURE__ */ createCommand("INPUT_COMMAND");
-var COMPOSITION_START_COMMAND = /* @__PURE__ */ createCommand("COMPOSITION_START_COMMAND");
-var COMPOSITION_END_COMMAND = /* @__PURE__ */ createCommand("COMPOSITION_END_COMMAND");
-var DELETE_CHARACTER_COMMAND = /* @__PURE__ */ createCommand("DELETE_CHARACTER_COMMAND");
-var INSERT_LINE_BREAK_COMMAND = /* @__PURE__ */ createCommand("INSERT_LINE_BREAK_COMMAND");
-var INSERT_PARAGRAPH_COMMAND = /* @__PURE__ */ createCommand("INSERT_PARAGRAPH_COMMAND");
-var CONTROLLED_TEXT_INSERTION_COMMAND = /* @__PURE__ */ createCommand("CONTROLLED_TEXT_INSERTION_COMMAND");
-var PASTE_COMMAND = /* @__PURE__ */ createCommand("PASTE_COMMAND");
-var REMOVE_TEXT_COMMAND = /* @__PURE__ */ createCommand("REMOVE_TEXT_COMMAND");
-var DELETE_WORD_COMMAND = /* @__PURE__ */ createCommand("DELETE_WORD_COMMAND");
-var DELETE_LINE_COMMAND = /* @__PURE__ */ createCommand("DELETE_LINE_COMMAND");
-var FORMAT_TEXT_COMMAND = /* @__PURE__ */ createCommand("FORMAT_TEXT_COMMAND");
-var SET_TEXT_FORMAT_COMMAND = /* @__PURE__ */ createCommand("SET_TEXT_FORMAT_COMMAND");
-var UNDO_COMMAND = /* @__PURE__ */ createCommand("UNDO_COMMAND");
-var REDO_COMMAND = /* @__PURE__ */ createCommand("REDO_COMMAND");
-var KEY_DOWN_COMMAND = /* @__PURE__ */ createCommand("KEYDOWN_COMMAND");
-var KEY_ARROW_RIGHT_COMMAND = /* @__PURE__ */ createCommand("KEY_ARROW_RIGHT_COMMAND");
-var MOVE_TO_END = /* @__PURE__ */ createCommand("MOVE_TO_END");
-var KEY_ARROW_LEFT_COMMAND = /* @__PURE__ */ createCommand("KEY_ARROW_LEFT_COMMAND");
-var MOVE_TO_START = /* @__PURE__ */ createCommand("MOVE_TO_START");
-var KEY_ARROW_UP_COMMAND = /* @__PURE__ */ createCommand("KEY_ARROW_UP_COMMAND");
-var KEY_ARROW_DOWN_COMMAND = /* @__PURE__ */ createCommand("KEY_ARROW_DOWN_COMMAND");
-var KEY_ENTER_COMMAND = /* @__PURE__ */ createCommand("KEY_ENTER_COMMAND");
-var KEY_SPACE_COMMAND = /* @__PURE__ */ createCommand("KEY_SPACE_COMMAND");
-var KEY_BACKSPACE_COMMAND = /* @__PURE__ */ createCommand("KEY_BACKSPACE_COMMAND");
-var KEY_ESCAPE_COMMAND = /* @__PURE__ */ createCommand("KEY_ESCAPE_COMMAND");
-var KEY_DELETE_COMMAND = /* @__PURE__ */ createCommand("KEY_DELETE_COMMAND");
-var KEY_TAB_COMMAND = /* @__PURE__ */ createCommand("KEY_TAB_COMMAND");
-var INSERT_TAB_COMMAND = /* @__PURE__ */ createCommand("INSERT_TAB_COMMAND");
-var INDENT_CONTENT_COMMAND = /* @__PURE__ */ createCommand("INDENT_CONTENT_COMMAND");
-var OUTDENT_CONTENT_COMMAND = /* @__PURE__ */ createCommand("OUTDENT_CONTENT_COMMAND");
-var DROP_COMMAND = /* @__PURE__ */ createCommand("DROP_COMMAND");
-var FORMAT_ELEMENT_COMMAND = /* @__PURE__ */ createCommand("FORMAT_ELEMENT_COMMAND");
-var DRAGSTART_COMMAND = /* @__PURE__ */ createCommand("DRAGSTART_COMMAND");
-var DRAGOVER_COMMAND = /* @__PURE__ */ createCommand("DRAGOVER_COMMAND");
-var DRAGEND_COMMAND = /* @__PURE__ */ createCommand("DRAGEND_COMMAND");
-var COPY_COMMAND = /* @__PURE__ */ createCommand("COPY_COMMAND");
-var CUT_COMMAND = /* @__PURE__ */ createCommand("CUT_COMMAND");
-var SELECT_ALL_COMMAND = /* @__PURE__ */ createCommand("SELECT_ALL_COMMAND");
-var CLEAR_EDITOR_COMMAND = /* @__PURE__ */ createCommand("CLEAR_EDITOR_COMMAND");
-var CLEAR_HISTORY_COMMAND = /* @__PURE__ */ createCommand("CLEAR_HISTORY_COMMAND");
-var CAN_REDO_COMMAND = /* @__PURE__ */ createCommand("CAN_REDO_COMMAND");
-var CAN_UNDO_COMMAND = /* @__PURE__ */ createCommand("CAN_UNDO_COMMAND");
-var FOCUS_COMMAND = /* @__PURE__ */ createCommand("FOCUS_COMMAND");
-var BLUR_COMMAND = /* @__PURE__ */ createCommand("BLUR_COMMAND");
-var KEY_MODIFIER_COMMAND = /* @__PURE__ */ createCommand("KEY_MODIFIER_COMMAND");
-// @__NO_SIDE_EFFECTS__
-function controlOrOther(key, mask) {
-  return {
-    ...mask,
-    [CONTROL_OR_OTHER_KEY]: key
-  };
-}
-var CONTROL_OR_META = /* @__PURE__ */ controlOrOther("metaKey", {
-  ctrlKey: !IS_APPLE,
-  metaKey: IS_APPLE
-});
-var CONTROL_OR_ALT = /* @__PURE__ */ controlOrOther("altKey", {
-  altKey: IS_APPLE,
-  ctrlKey: !IS_APPLE
-});
-var MODIFIER_BITS = [["altKey", 1], ["ctrlKey", 2], ["metaKey", 4], ["shiftKey", 8]];
-function getEventModifierBits(event) {
-  let bits = 0;
-  for (const [prop, bit] of MODIFIER_BITS) {
-    if (event[prop]) {
-      bits |= bit;
-    }
-  }
-  return bits;
-}
-function getMaskModifierBits(mask) {
-  let combos = [0];
-  for (const [prop, bit] of MODIFIER_BITS) {
-    const expected = mask[prop] || false;
-    if (expected === "any") {
-      combos = combos.concat(combos.map((bits) => bits | bit));
-    } else if (expected) {
-      combos = combos.map((bits) => bits | bit);
-    }
-  }
-  return combos;
-}
-function pushEntry(map, mapKey, shortcut) {
-  const entry = map.get(mapKey);
-  if (entry) {
-    entry.push(shortcut);
-  } else {
-    map.set(mapKey, [shortcut]);
-  }
-}
-var CompiledKeyboardShortcuts = class {
-  /** `${modifierBits}:${key.toLowerCase()}` -> shortcuts in insertion order */
-  byKey = /* @__PURE__ */ new Map();
-  /**
-   * `${modifierBits}:${code}` (e.g. `Digit1`, `KeyB`) -> shortcuts, used
-   * only when `event.key` is not a single ASCII character so that
-   * single-character shortcuts still work on non-Latin keyboard layouts
-   * (the same fallback as {@link isExactShortcutMatch})
-   */
-  byCode = /* @__PURE__ */ new Map();
-  add(shortcut) {
-    const {
-      key,
-      modifiers = {}
-    } = shortcut;
-    if (!(key.length > 0)) {
-      formatDevErrorMessage2(`KeyboardShortcutMatch: key must be non-empty`);
-    }
-    const lowerKey = key.toLowerCase();
-    for (const bits of getMaskModifierBits(modifiers)) {
-      pushEntry(this.byKey, `${bits}:${lowerKey}`, shortcut);
-      if (key.length === 1) {
-        if (/[0-9]/.test(key)) {
-          pushEntry(this.byCode, `${bits}:Digit${key}`, shortcut);
-        } else if (/[a-z]/.test(lowerKey)) {
-          pushEntry(this.byCode, `${bits}:Key${lowerKey.toUpperCase()}`, shortcut);
-        }
-      }
-    }
-    return this;
-  }
-  /**
-   * All shortcuts matching the event, in insertion order.
-   * Matches by `key` precede matches by the `code` fallback.
-   * @see {@link match} for the single-result fast path.
-   */
-  matches(event) {
-    const key = event.key;
-    if (!key) {
-      return [];
-    }
-    const bits = getEventModifierBits(event);
-    const byKey = this.byKey.get(`${bits}:${key.toLowerCase()}`);
-    const matches = byKey ? byKey.slice() : [];
-    if (this.byCode.size > 0 && !(key.length === 1 && key.charCodeAt(0) <= 127)) {
-      const byCode = this.byCode.get(`${bits}:${event.code}`);
-      if (byCode) {
-        matches.push(...byCode);
-      }
-    }
-    return matches;
-  }
-  /**
-   * The first shortcut matching the event, if any.
-   * @see {@link matches} for the full list of matching shortcuts.
-   */
-  match(event) {
-    return this.matches(event)[0];
-  }
-};
-function compileKeyboardShortcuts(shortcuts) {
-  const compiled = new CompiledKeyboardShortcuts();
-  for (const shortcut of shortcuts) {
-    compiled.add(shortcut);
-  }
-  return compiled;
-}
-// @__NO_SIDE_EFFECTS__
-function createRefCountedRegistry(activate) {
-  const entries = /* @__PURE__ */ new Map();
-  return {
-    dispose() {
-      for (const entry of entries.values()) {
-        entry.dispose();
-      }
-      entries.clear();
-    },
-    register(key, options) {
-      let entry = entries.get(key);
-      if (entry === void 0) {
-        entry = {
-          dispose: activate(key, options),
-          holders: /* @__PURE__ */ new Set()
-        };
-        entries.set(key, entry);
-      }
-      const release = () => {
-        const current = entries.get(key);
-        if (current && current.holders.delete(release) && current.holders.size === 0) {
-          entries.delete(key);
-          current.dispose();
-        }
-      };
-      entry.holders.add(release);
-      return release;
-    }
-  };
-}
-function registerEventListener(target, type, listener, options) {
-  target.addEventListener(type, listener, options);
-  return target.removeEventListener.bind(target, type, listener, options);
-}
-var PASS_THROUGH_COMMAND = /* @__PURE__ */ Object.freeze({});
-var ANDROID_COMPOSITION_LATENCY = 30;
-var rootElementEvents;
-function getRootElementEvents() {
-  if (rootElementEvents !== void 0) {
-    return rootElementEvents;
-  }
-  const events = [["keydown", onKeyDown], ["pointerdown", onPointerDown], ["compositionstart", onCompositionStart], ["compositionend", onCompositionEnd], ["input", onInput], ["click", onClick], ["cut", PASS_THROUGH_COMMAND], ["copy", PASS_THROUGH_COMMAND], ["dragstart", PASS_THROUGH_COMMAND], ["dragover", PASS_THROUGH_COMMAND], ["dragend", PASS_THROUGH_COMMAND], ["paste", PASS_THROUGH_COMMAND], ["focus", PASS_THROUGH_COMMAND], ["blur", PASS_THROUGH_COMMAND], ["drop", PASS_THROUGH_COMMAND]];
-  if (CAN_USE_BEFORE_INPUT) {
-    events.push(["beforeinput", (event, editor) => onBeforeInput(event, editor)]);
-  }
-  rootElementEvents = events;
-  return events;
-}
-var rootElementToDocument = /* @__PURE__ */ new WeakMap();
-var documentRegistrations = /* @__PURE__ */ new WeakMap();
-var documentSelectionChange = /* @__PURE__ */ createRefCountedRegistry((doc) => {
-  doc.addEventListener("selectionchange", onDocumentSelectionChange);
-  return () => doc.removeEventListener("selectionchange", onDocumentSelectionChange);
-});
-function $shouldPreventDefaultAndInsertText(selection, domTargetRange, text, timeStamp, isBeforeInput, cachedDOMSelectionPoints) {
-  const anchor = selection.anchor;
-  const focus = selection.focus;
-  const anchorNode = anchor.getNode();
-  const editor = getActiveEditor();
-  let domSelectionPoints;
-  if (cachedDOMSelectionPoints !== void 0) {
-    domSelectionPoints = cachedDOMSelectionPoints;
-  } else {
-    const domSelection = getDOMSelection(getWindow(editor));
-    domSelectionPoints = domSelection !== null ? getDOMSelectionPoints(domSelection, editor._rootElement) : null;
-  }
-  const domAnchorNode = domSelectionPoints !== null ? domSelectionPoints.anchorNode : null;
-  const anchorKey = anchor.key;
-  const backingAnchorElement = editor.getElementByKey(anchorKey);
-  const textLength = text.length;
-  return anchorKey !== focus.key || // If we're working with a non-text node.
-  !$isTextNode(anchorNode) || // If we are replacing a range with a single character or grapheme, and not composing.
-  (!isBeforeInput && (!CAN_USE_BEFORE_INPUT || // We check to see if there has been
-  // a recent beforeinput event for "textInput". If there has been one in the last
-  // 50ms then we proceed as normal. However, if there is not, then this is likely
-  // a dangling `input` event caused by execCommand('insertText').
-  editor._inputState.lastBeforeInputInsertTextTimeStamp < timeStamp + 50) || anchorNode.isDirty() && textLength < 2 || // TODO consider if there are other scenarios when multiple code units
-  //      should be addressed here
-  doesContainSurrogatePair(text)) && anchor.offset !== focus.offset && !anchorNode.isComposing() || // Any non standard text node.
-  $isTokenOrSegmented(anchorNode) || // If the text length is more than a single character and we're either
-  // dealing with this in "beforeinput" or where the node has already recently
-  // been changed (thus is dirty).
-  anchorNode.isDirty() && textLength > 1 || // If the DOM selection element is not the same as the backing node during beforeinput.
-  (isBeforeInput || !CAN_USE_BEFORE_INPUT) && backingAnchorElement !== null && !anchorNode.isComposing() && domAnchorNode !== $getDOMTextNode(anchorNode, backingAnchorElement, editor) || // If TargetRange is not the same as the DOM selection; browser trying to edit random parts
-  // of the editor.
-  domSelectionPoints !== null && domTargetRange !== null && (!domTargetRange.collapsed || domTargetRange.startContainer !== domSelectionPoints.anchorNode || domTargetRange.startOffset !== domSelectionPoints.anchorOffset) || // Check if we're changing from bold to italics, or some other format.
-  !anchorNode.isComposing() && (anchorNode.getFormat() !== selection.format || anchorNode.getStyle() !== selection.style) || // One last set of heuristics to check against.
-  $shouldInsertTextAfterOrBeforeTextNode(selection, anchorNode);
-}
-function shouldSkipSelectionChange(domNode, offset) {
-  return isDOMTextNode(domNode) && domNode.nodeValue !== null && offset !== 0 && offset !== domNode.nodeValue.length;
-}
-function onSelectionChange(domSelection, editor, isActive) {
-  const {
-    anchorNode: anchorDOM,
-    anchorOffset,
-    focusNode: focusDOM,
-    focusOffset
-  } = getDOMSelectionPoints(domSelection, editor._rootElement);
-  const inputState = editor._inputState;
-  const isSelectionChangeFromDOMUpdate = inputState.isSelectionChangeFromDOMUpdate;
-  if (isSelectionChangeFromDOMUpdate) {
-    inputState.isSelectionChangeFromDOMUpdate = false;
-    const appliedPoints = inputState.selectionChangeFromDOMUpdatePoints;
-    inputState.selectionChangeFromDOMUpdatePoints = null;
-    if (shouldSkipSelectionChange(anchorDOM, anchorOffset) && shouldSkipSelectionChange(focusDOM, focusOffset) && !inputState.postDeleteSelectionToRestore && (appliedPoints === null || appliedPoints.anchorNode === anchorDOM && appliedPoints.anchorOffset === anchorOffset && appliedPoints.focusNode === focusDOM && appliedPoints.focusOffset === focusOffset)) {
-      return;
-    }
-  }
-  updateEditorSync(editor, () => {
-    if (!isActive) {
-      $setSelection(null);
-      return;
-    }
-    if (!isSelectionWithinEditor(editor, anchorDOM, focusDOM)) {
-      return;
-    }
-    let selection = $getSelection();
-    if (inputState.postDeleteSelectionToRestore && $isRangeSelection(selection) && selection.isCollapsed()) {
-      const curAnchor = selection.anchor;
-      const prevAnchor = inputState.postDeleteSelectionToRestore.anchor;
-      if (
-        // Rightward shift in same node
-        curAnchor.key === prevAnchor.key && curAnchor.offset === prevAnchor.offset + 1 || // Or rightward shift into sibling node
-        curAnchor.offset === 1 && prevAnchor.getNode().is(curAnchor.getNode().getPreviousSibling())
-      ) {
-        selection = inputState.postDeleteSelectionToRestore.clone();
-        $setSelection(selection);
-      }
-    }
-    inputState.postDeleteSelectionToRestore = null;
-    if ($isRangeSelection(selection)) {
-      const anchor = selection.anchor;
-      const anchorNode = anchor.getNode();
-      if (selection.isCollapsed()) {
-        if (domSelection.type === "Range" && anchorDOM === focusDOM) {
-          selection.dirty = true;
-        }
-        const windowEvent = getWindow(editor).event;
-        const currentTimeStamp = windowEvent ? windowEvent.timeStamp : performance.now();
-        const {
-          format: lastFormat,
-          style: lastStyle,
-          offset: lastOffset,
-          key: lastKey,
-          timeStamp
-        } = inputState.collapsedSelectionFormat;
-        const root = $getRoot();
-        const isRootTextContentEmpty = editor.isComposing() === false && root.getTextContent() === "";
-        if (currentTimeStamp < timeStamp + 200 && anchor.offset === lastOffset && anchor.key === lastKey) {
-          $updateSelectionFormatStyle(selection, lastFormat, lastStyle);
-        } else {
-          if (anchor.type === "text") {
-            if (!$isTextNode(anchorNode)) {
-              formatDevErrorMessage2(`Point.getNode() must return TextNode when type is text`);
-            }
-            $updateSelectionFormatStyleFromTextNode(selection, anchorNode);
-          } else if (anchor.type === "element" && !isRootTextContentEmpty) {
-            if (!$isElementNode(anchorNode)) {
-              formatDevErrorMessage2(`Point.getNode() must return ElementNode when type is element`);
-            }
-            const lastNode = anchor.getNode();
-            if (
-              // This previously applied to all ParagraphNode
-              lastNode.isEmpty()
-            ) {
-              $updateSelectionFormatStyleFromElementNode(selection, lastNode);
-            } else {
-              $updateSelectionFormatStyle(selection, selection.format, "");
-            }
-          }
-        }
-      } else {
-        const anchorKey = anchor.key;
-        const focus = selection.focus;
-        const focusKey = focus.key;
-        const nodes = selection.getNodes();
-        const nodesLength = nodes.length;
-        const isBackward = selection.isBackward();
-        const startOffset = isBackward ? focusOffset : anchorOffset;
-        const endOffset = isBackward ? anchorOffset : focusOffset;
-        const startKey = isBackward ? focusKey : anchorKey;
-        const endKey = isBackward ? anchorKey : focusKey;
-        let combinedFormat = IS_ALL_FORMATTING;
-        let hasTextNodes = false;
-        for (let i2 = 0; i2 < nodesLength; i2++) {
-          const node = nodes[i2];
-          const textContentSize = node.getTextContentSize();
-          if ($isTextNode(node) && textContentSize !== 0 && // Exclude empty text nodes at boundaries resulting from user's selection
-          !(i2 === 0 && node.__key === startKey && startOffset === textContentSize || i2 === nodesLength - 1 && node.__key === endKey && endOffset === 0)) {
-            hasTextNodes = true;
-            combinedFormat &= node.getFormat();
-            if (combinedFormat === 0) {
-              break;
-            }
-          }
-        }
-        selection.format = hasTextNodes ? combinedFormat : 0;
-      }
-    }
-    const previousSelection = $getPreviousSelection();
-    const hasSelectionChanged = isSelectionChangeFromDOMUpdate || (selection !== null ? selection.dirty || !$isRangeSelection(selection) || !selection.is(previousSelection) : previousSelection !== null);
-    if (hasSelectionChanged) {
-      dispatchCommand(editor, SELECTION_CHANGE_COMMAND);
-    }
-  });
-}
-function $updateSelectionFormatStyle(selection, format, style) {
-  if (selection.format !== format || selection.style !== style) {
-    selection.format = format;
-    selection.style = style;
-    selection.dirty = true;
-  }
-}
-function $updateSelectionFormatStyleFromTextNode(selection, node) {
-  const format = node.getFormat();
-  const style = node.getStyle();
-  $updateSelectionFormatStyle(selection, format, style);
-}
-function $updateSelectionFormatStyleFromElementNode(selection, node) {
-  const format = node.getTextFormat();
-  const style = node.getTextStyle();
-  $updateSelectionFormatStyle(selection, format, style);
-}
-function onClick(event, editor) {
-  updateEditorSync(editor, () => {
-    const selection = $getSelection();
-    const domSelection = getDOMSelection(getWindow(editor));
-    const lastSelection = $getPreviousSelection();
-    if (domSelection) {
-      if ($isRangeSelection(selection)) {
-        const anchor = selection.anchor;
-        const anchorNode = anchor.getNode();
-        if (anchor.type === "element" && anchor.offset === 0 && selection.isCollapsed() && !$isRootNode(anchorNode) && $getRoot().getChildrenSize() === 1 && anchorNode.getTopLevelElementOrThrow().isEmpty() && lastSelection !== null && selection.is(lastSelection)) {
-          domSelection.removeAllRanges();
-          selection.dirty = true;
-        }
-      } else if (event.pointerType === "touch" || event.pointerType === "pen") {
-        const domSelectionPoints = getDOMSelectionPoints(domSelection, editor._rootElement);
-        const domAnchorNode = domSelectionPoints.anchorNode;
-        if (isHTMLElement(domAnchorNode) || isDOMTextNode(domAnchorNode)) {
-          const newSelection = $internalCreateRangeSelection(lastSelection, domSelection, editor, event);
-          $setSelection(newSelection);
-        }
-      }
-    }
-    if (IS_FIREFOX && domSelection !== null && domSelection.rangeCount === 0) {
-      const rootElement = editor._rootElement;
-      if (rootElement !== null && event.target === rootElement) {
-        const clientY = event.clientY;
-        let offset = rootElement.childNodes.length;
-        for (let i2 = 0; i2 < rootElement.childNodes.length; i2++) {
-          const child = rootElement.childNodes[i2];
-          if (isHTMLElement(child)) {
-            const rect = child.getBoundingClientRect();
-            if (clientY <= (rect.top + rect.bottom) / 2) {
-              offset = i2;
-              break;
-            }
-          }
-        }
-        domSelection.setBaseAndExtent(rootElement, offset, rootElement, offset);
-        const newSelection = $internalCreateRangeSelection(lastSelection, domSelection, editor, event);
-        if (newSelection !== null) {
-          $setSelection(newSelection);
-        } else {
-          domSelection.removeAllRanges();
-        }
-      }
-    }
-    dispatchCommand(editor, CLICK_COMMAND, event);
-  });
-}
-function onPointerDown(event, editor) {
-  const target = getComposedEventTarget(event);
-  const pointerType = event.pointerType;
-  if (isDOMNode(target) && pointerType !== "touch" && pointerType !== "pen" && event.button === 0) {
-    updateEditorSync(editor, () => {
-      if (!isDOMCapturingSelection(target, editor)) {
-        editor._inputState.isSelectionChangeFromMouseDown = true;
-      }
-    });
-  }
-}
-function getTargetRange(event) {
-  if (!event.getTargetRanges) {
-    return null;
-  }
-  const targetRanges = event.getTargetRanges();
-  if (targetRanges.length === 0) {
-    return null;
-  }
-  return targetRanges[0];
-}
-function $maybeMoveSelectionPastTrailingAcceptanceBoundary(insertedText) {
-  const {
-    lastKeyCode
-  } = getActiveEditor()._inputState;
-  if (insertedText == null || insertedText.length <= 1 || lastKeyCode == null) {
-    return;
-  }
-  const characterToSearchFor = lastKeyCode.length === 1 ? lastKeyCode : lastKeyCode === "Enter" ? "\n" : lastKeyCode === "Tab" ? "	" : null;
-  if (!characterToSearchFor) {
-    return;
-  }
-  const selection = $getSelection();
-  if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
-    return;
-  }
-  const anchorNode = selection.anchor.getNode();
-  if (!$isTextNode(anchorNode)) {
-    return;
-  }
-  const {
-    offset
-  } = selection.anchor;
-  if (anchorNode.getTextContentSize() === offset) {
-    const nextSibling = anchorNode.getNextSibling();
-    if (characterToSearchFor === "\n") {
-      if (IS_IOS) {
-        return;
-      }
-      if ($isLineBreakNode(nextSibling)) {
-        nextSibling.selectEnd();
-      } else if (!nextSibling) {
-        const block = $findMatchingParent(anchorNode, $isBlockElementNode);
-        const nextBlock = block && block.getNextSibling();
-        if ($isElementNode(nextBlock)) {
-          nextBlock.selectStart();
-        }
-      }
-    } else if (characterToSearchFor === "	") {
-      if ($isTabNode(nextSibling)) {
-        nextSibling.selectEnd();
-      }
-    } else if ($isTextNode(nextSibling) && nextSibling.getTextContent()[0] === characterToSearchFor) {
-      nextSibling.select(1, 1);
-    }
-  } else if (anchorNode.getTextContent()[offset] === characterToSearchFor) {
-    anchorNode.select(offset + 1, offset + 1);
-  }
-}
-function $canRemoveText(anchorNode, focusNode) {
-  return anchorNode !== focusNode || $isElementNode(anchorNode) || $isElementNode(focusNode) || !$isTokenOrTab(anchorNode) || !$isTokenOrTab(focusNode);
-}
-function isPossiblyAndroidKeyPress(inputState, timeStamp) {
-  return inputState.lastKeyCode === "MediaLast" && timeStamp < inputState.lastKeyDownTimeStamp + ANDROID_COMPOSITION_LATENCY;
-}
-function clearHandledSelectionCommandInsertText(inputState) {
-  inputState.isInsertTextAfterHandledSelectionCommand = false;
-  if (inputState.handledSelectionCommandTimeoutId !== null) {
-    clearTimeout(inputState.handledSelectionCommandTimeoutId);
-    inputState.handledSelectionCommandTimeoutId = null;
-  }
-}
-function markHandledSelectionCommandInsertText(inputState) {
-  clearHandledSelectionCommandInsertText(inputState);
-  inputState.isInsertTextAfterHandledSelectionCommand = true;
-  inputState.handledSelectionCommandTimeoutId = setTimeout(() => clearHandledSelectionCommandInsertText(inputState), 0);
-}
-function registerDefaultCommandHandlers(editor) {
-  editor.registerCommand(BEFORE_INPUT_COMMAND, $handleBeforeInput, COMMAND_PRIORITY_EDITOR);
-  editor.registerCommand(INPUT_COMMAND, $handleInput, COMMAND_PRIORITY_EDITOR);
-  editor.registerCommand(COMPOSITION_START_COMMAND, $handleCompositionStart, COMMAND_PRIORITY_EDITOR);
-  editor.registerCommand(COMPOSITION_END_COMMAND, $handleCompositionEnd, COMMAND_PRIORITY_EDITOR);
-  editor.registerCommand(KEY_DOWN_COMMAND, $handleKeyDown, COMMAND_PRIORITY_EDITOR);
-}
-function isInputEventTargetingCapturedSelection(event, editor) {
-  const composedTarget = getComposedEventTarget(event);
-  if (isHTMLElement(composedTarget) && isDOMCapturingSelection(composedTarget, editor)) {
-    return true;
-  }
-  const rootElement = editor.getRootElement();
-  if (rootElement === null) {
-    return false;
-  }
-  const activeElement = getActiveElementDeep(rootElement.ownerDocument);
-  return activeElement !== null && rootElement.contains(activeElement) && isDOMCapturingSelection(activeElement, editor);
-}
-function onBeforeInput(event, editor) {
-  const inputType = event.inputType;
-  if (inputType === "deleteCompositionText" || // If we're pasting in FF, we shouldn't get this event
-  // as the `paste` event should have triggered, unless the
-  // user has dom.event.clipboardevents.enabled disabled in
-  // about:config. In that case, we need to process the
-  // pasted content in the DOM mutation phase.
-  IS_FIREFOX && isFirefoxClipboardEvents(editor)) {
-    return;
-  } else if (inputType === "insertCompositionText") {
-    return;
-  }
-  updateEditorSync(editor, () => {
-    if (!isInputEventTargetingCapturedSelection(event, editor)) {
-      dispatchCommand(editor, BEFORE_INPUT_COMMAND, event);
-    }
-  }, {
-    event
-  });
-}
-function $handleBeforeInput(event) {
-  const inputType = event.inputType;
-  const targetRange = getTargetRange(event);
-  const editor = getActiveEditor();
-  const inputState = editor._inputState;
-  const selection = $getSelection();
-  if (inputType === "insertText" && event.data && inputState.isInsertTextAfterHandledSelectionCommand) {
-    clearHandledSelectionCommandInsertText(inputState);
-    event.preventDefault();
-    if ($isRangeSelection(selection) && !selection.isCollapsed()) {
-      const point = selection.isBackward() ? selection.anchor : selection.focus;
-      selection.anchor.set(point.key, point.offset, point.type);
-      selection.focus.set(point.key, point.offset, point.type);
-    }
-    return true;
-  }
-  if (inputType === "deleteContentBackward") {
-    if (selection === null) {
-      const prevSelection = $getPreviousSelection();
-      if (!$isRangeSelection(prevSelection)) {
-        return true;
-      }
-      $setSelection(prevSelection.clone());
-    }
-    if ($isRangeSelection(selection)) {
-      const isSelectionAnchorSameAsFocus = selection.anchor.key === selection.focus.key;
-      if (isPossiblyAndroidKeyPress(inputState, event.timeStamp) && editor.isComposing() && isSelectionAnchorSameAsFocus) {
-        $setCompositionKey(null);
-        inputState.lastKeyDownTimeStamp = 0;
-        setTimeout(() => {
-          updateEditorSync(editor, () => {
-            $setCompositionKey(null);
-          });
-        }, ANDROID_COMPOSITION_LATENCY);
-        if ($isRangeSelection(selection)) {
-          const anchorNode2 = selection.anchor.getNode();
-          anchorNode2.markDirty();
-          if (!$isTextNode(anchorNode2)) {
-            formatDevErrorMessage2(`Anchor node must be a TextNode`);
-          }
-          $updateSelectionFormatStyleFromTextNode(selection, anchorNode2);
-        }
-      } else {
-        $setCompositionKey(null);
-        if (IS_IOS && targetRange !== null && !targetRange.collapsed) {
-          selection.applyDOMRange(targetRange);
-          if (!selection.isCollapsed()) {
-            event.preventDefault();
-            selection.removeText();
-            return true;
-          }
-        }
-        event.preventDefault();
-        const selectedNode = selection.anchor.getNode();
-        const selectedNodeText = selectedNode.getTextContent();
-        const selectedNodeCanInsertTextAfter = selectedNode.canInsertTextAfter();
-        const hasSelectedAllTextInNode = selection.anchor.offset === 0 && selection.focus.offset === selectedNodeText.length;
-        let shouldLetBrowserHandleDelete = IS_ANDROID_CHROME && isSelectionAnchorSameAsFocus && !hasSelectedAllTextInNode && selectedNodeCanInsertTextAfter;
-        if (shouldLetBrowserHandleDelete && selection.isCollapsed()) {
-          shouldLetBrowserHandleDelete = !$isDecoratorNode($getAdjacentNode(selection.anchor, true));
-        }
-        if (!shouldLetBrowserHandleDelete) {
-          dispatchCommand(editor, DELETE_CHARACTER_COMMAND, true);
-          const selectionAfterDelete = $getSelection();
-          if (IS_ANDROID_CHROME && $isRangeSelection(selectionAfterDelete) && selectionAfterDelete.isCollapsed()) {
-            inputState.postDeleteSelectionToRestore = selectionAfterDelete;
-            setTimeout(() => inputState.postDeleteSelectionToRestore = null);
-          }
-        }
-      }
-      return true;
-    }
-  }
-  if (!$isRangeSelection(selection)) {
-    if (inputType === "historyUndo" || inputType === "historyRedo") {
-      event.preventDefault();
-      dispatchCommand(editor, inputType === "historyUndo" ? UNDO_COMMAND : REDO_COMMAND);
-    }
-    return true;
-  }
-  const data = event.data;
-  if (inputState.unprocessedBeforeInputData !== null) {
-    $updateSelectedTextFromDOM(false, editor, inputState.unprocessedBeforeInputData);
-  }
-  if ((!selection.dirty || inputState.unprocessedBeforeInputData !== null) && selection.isCollapsed() && !$isRootNode(selection.anchor.getNode()) && targetRange !== null) {
-    selection.applyDOMRange(targetRange);
-  }
-  inputState.unprocessedBeforeInputData = null;
-  const anchor = selection.anchor;
-  const focus = selection.focus;
-  const anchorNode = anchor.getNode();
-  const focusNode = focus.getNode();
-  if (inputType === "insertText" || inputType === "insertTranspose") {
-    if (data === "\n") {
-      event.preventDefault();
-      dispatchCommand(editor, INSERT_LINE_BREAK_COMMAND, false);
-    } else if (data === DOUBLE_LINE_BREAK) {
-      event.preventDefault();
-      dispatchCommand(editor, INSERT_PARAGRAPH_COMMAND);
-    } else if (data == null && event.dataTransfer) {
-      const text = event.dataTransfer.getData("text/plain");
-      event.preventDefault();
-      selection.insertRawText(text);
-    } else if (data != null && $shouldPreventDefaultAndInsertText(selection, targetRange, data, event.timeStamp, true)) {
-      event.preventDefault();
-      dispatchCommand(editor, CONTROLLED_TEXT_INSERTION_COMMAND, data);
-      $maybeMoveSelectionPastTrailingAcceptanceBoundary(data);
-    } else {
-      inputState.unprocessedBeforeInputData = data;
-    }
-    inputState.lastBeforeInputInsertTextTimeStamp = event.timeStamp;
-    return true;
-  }
-  event.preventDefault();
-  switch (inputType) {
-    case "insertFromYank":
-    case "insertFromDrop":
-    case "insertReplacementText": {
-      dispatchCommand(editor, CONTROLLED_TEXT_INSERTION_COMMAND, event);
-      const textFromDataTransfer = event.dataTransfer ? event.dataTransfer.getData("text/plain") : null;
-      $maybeMoveSelectionPastTrailingAcceptanceBoundary(textFromDataTransfer ?? event.data);
-      break;
-    }
-    case "insertFromComposition": {
-      const skipRedundantInsert = inputState.hadOrphanedCompositionEvents;
-      inputState.hadOrphanedCompositionEvents = false;
-      const prevCompositionKey = editor._compositionKey;
-      $setCompositionKey(null);
-      if (!skipRedundantInsert) {
-        dispatchCommand(editor, CONTROLLED_TEXT_INSERTION_COMMAND, event);
-      }
-      $cleanupComposedSubclass(prevCompositionKey);
-      break;
-    }
-    case "insertLineBreak": {
-      $setCompositionKey(null);
-      dispatchCommand(editor, INSERT_LINE_BREAK_COMMAND, false);
-      break;
-    }
-    case "insertParagraph": {
-      $setCompositionKey(null);
-      if (inputState.isInsertLineBreak && !IS_IOS) {
-        inputState.isInsertLineBreak = false;
-        dispatchCommand(editor, INSERT_LINE_BREAK_COMMAND, false);
-      } else {
-        dispatchCommand(editor, INSERT_PARAGRAPH_COMMAND);
-      }
-      break;
-    }
-    case "insertFromPaste":
-    case "insertFromPasteAsQuotation": {
-      dispatchCommand(editor, PASTE_COMMAND, event);
-      break;
-    }
-    case "deleteByComposition": {
-      if ($canRemoveText(anchorNode, focusNode)) {
-        dispatchCommand(editor, REMOVE_TEXT_COMMAND, event);
-      }
-      break;
-    }
-    case "deleteByDrag": {
-      $addUpdateTag(SKIP_SELECTION_FOCUS_TAG);
-      dispatchCommand(editor, REMOVE_TEXT_COMMAND, event);
-      break;
-    }
-    case "deleteByCut": {
-      dispatchCommand(editor, REMOVE_TEXT_COMMAND, event);
-      break;
-    }
-    case "deleteContent": {
-      dispatchCommand(editor, DELETE_CHARACTER_COMMAND, false);
-      break;
-    }
-    case "deleteWordBackward": {
-      dispatchCommand(editor, DELETE_WORD_COMMAND, true);
-      break;
-    }
-    case "deleteWordForward": {
-      dispatchCommand(editor, DELETE_WORD_COMMAND, false);
-      break;
-    }
-    case "deleteHardLineBackward":
-    case "deleteSoftLineBackward": {
-      dispatchCommand(editor, DELETE_LINE_COMMAND, true);
-      break;
-    }
-    case "deleteContentForward":
-    case "deleteHardLineForward":
-    case "deleteSoftLineForward": {
-      dispatchCommand(editor, DELETE_LINE_COMMAND, false);
-      break;
-    }
-    case "formatStrikeThrough": {
-      dispatchCommand(editor, FORMAT_TEXT_COMMAND, "strikethrough");
-      break;
-    }
-    case "formatBold": {
-      dispatchCommand(editor, FORMAT_TEXT_COMMAND, "bold");
-      break;
-    }
-    case "formatItalic": {
-      dispatchCommand(editor, FORMAT_TEXT_COMMAND, "italic");
-      break;
-    }
-    case "formatUnderline": {
-      dispatchCommand(editor, FORMAT_TEXT_COMMAND, "underline");
-      break;
-    }
-    case "historyUndo": {
-      dispatchCommand(editor, UNDO_COMMAND);
-      break;
-    }
-    case "historyRedo": {
-      dispatchCommand(editor, REDO_COMMAND);
-      break;
-    }
-  }
-  return true;
-}
-function onInput(event, editor) {
-  event.stopPropagation();
-  const inputState = editor._inputState;
-  clearHandledSelectionCommandInsertText(inputState);
-  updateEditorSync(editor, () => {
-    if (!isInputEventTargetingCapturedSelection(event, editor)) {
-      editor.dispatchCommand(INPUT_COMMAND, event);
-    }
-  }, {
-    event
-  });
-  inputState.unprocessedBeforeInputData = null;
-}
-function $handleInput(event) {
-  const editor = getActiveEditor();
-  const inputState = editor._inputState;
-  const selection = $getSelection();
-  const data = event.data;
-  const targetRange = getTargetRange(event);
-  let handled = false;
-  if (data != null && $isRangeSelection(selection)) {
-    const domSelection = getDOMSelection(getWindow(editor));
-    const domSelectionPoints = domSelection !== null ? getDOMSelectionPoints(domSelection, editor._rootElement) : null;
-    const isOrphanedCompositionEnd = event.inputType === "insertCompositionText" && inputState.compositionPhase !== "ending-firefox" && !editor.isComposing();
-    if (isOrphanedCompositionEnd) {
-      inputState.hadOrphanedCompositionEvents = true;
-    }
-    const inputAnchorNode = selection.anchor.getNode();
-    const isCompositionOnToken = event.inputType === "insertCompositionText" && inputState.compositionPhase !== "ending-firefox" && editor.isComposing() && $isTextNode(inputAnchorNode) && $isTokenOrSegmented(inputAnchorNode);
-    if (!isOrphanedCompositionEnd && !isCompositionOnToken && $shouldPreventDefaultAndInsertText(selection, targetRange, data, event.timeStamp, false, domSelectionPoints)) {
-      handled = true;
-      if (inputState.compositionPhase === "ending-firefox") {
-        const tokenRedirected = $onCompositionEndImpl(editor, data);
-        inputState.compositionPhase = "idle";
-        if (tokenRedirected) {
-          $addUpdateTag(COMPOSITION_END_TAG);
-          $flushMutations();
-          return true;
-        }
-      }
-      const anchor = selection.anchor;
-      const anchorNode = anchor.getNode();
-      if (domSelection === null || domSelectionPoints === null) {
-        return true;
-      }
-      const isBackward = selection.isBackward();
-      const startOffset = isBackward ? selection.anchor.offset : selection.focus.offset;
-      const endOffset = isBackward ? selection.focus.offset : selection.anchor.offset;
-      if (!CAN_USE_BEFORE_INPUT || selection.isCollapsed() || !$isTextNode(anchorNode) || domSelectionPoints.anchorNode === null || anchorNode.getTextContent().slice(0, startOffset) + data + anchorNode.getTextContent().slice(startOffset + endOffset) !== getAnchorTextFromDOM(domSelectionPoints.anchorNode)) {
-        dispatchCommand(editor, CONTROLLED_TEXT_INSERTION_COMMAND, data);
-      }
-      const textLength = data.length;
-      if (IS_FIREFOX && textLength > 1 && event.inputType === "insertCompositionText" && !editor.isComposing()) {
-        selection.anchor.offset -= textLength;
-        selection._cachedNodes = null;
-        selection._cachedIsBackward = null;
-      }
-      if (IS_ANDROID_CHROME && editor.isComposing()) {
-        inputState.lastKeyDownTimeStamp = 0;
-        $setCompositionKey(null);
-      }
-    }
-  }
-  if (!handled) {
-    const characterData = data !== null ? data : void 0;
-    $updateSelectedTextFromDOM(false, editor, characterData);
-    if (inputState.compositionPhase === "ending-firefox") {
-      $onCompositionEndImpl(editor, data || void 0);
-      $addUpdateTag(COMPOSITION_END_TAG);
-      inputState.compositionPhase = "idle";
-    }
-  }
-  $flushMutations();
-  return true;
-}
-function onCompositionStart(event, editor) {
-  dispatchCommand(editor, COMPOSITION_START_COMMAND, event);
-}
-function $handleCompositionStart(event) {
-  const editor = getActiveEditor();
-  const inputState = editor._inputState;
-  const selection = $getSelection();
-  if ($isRangeSelection(selection) && !editor.isComposing()) {
-    inputState.compositionPhase = "composing";
-    inputState.hadOrphanedCompositionEvents = false;
-    const anchor = selection.anchor;
-    const node = selection.anchor.getNode();
-    $setCompositionKey(anchor.key);
-    $addUpdateTag(COMPOSITION_START_TAG);
-    if (
-      // If it has been 30ms since the last keydown, then we should
-      // apply the empty space heuristic. We can't do this for Safari,
-      // as the keydown fires after composition start.
-      event.timeStamp < inputState.lastKeyDownTimeStamp + ANDROID_COMPOSITION_LATENCY || // FF has issues around composing multibyte characters, so we also
-      // need to invoke the empty space heuristic below.
-      anchor.type === "element" || !selection.isCollapsed() || !IS_ANDROID_CHROME && (node.getFormat() !== selection.format || $isTextNode(node) && node.getStyle() !== selection.style) || $isTextNode(node) && ($isTokenOrSegmented(node) || anchor.offset === 0 && !node.canInsertTextBefore() || anchor.offset === node.getTextContentSize() && !node.canInsertTextAfter())
-    ) {
-      dispatchCommand(editor, CONTROLLED_TEXT_INSERTION_COMMAND, COMPOSITION_START_CHAR);
-      const updatedSelection = $getSelection();
-      if ($isRangeSelection(updatedSelection)) {
-        $setCompositionKey(updatedSelection.anchor.key);
-      }
-    }
-  }
-  return true;
-}
-function $handleCompositionEnd(event) {
-  const editor = getActiveEditor();
-  editor._inputState.compositionPhase = "idle";
-  $onCompositionEndImpl(editor, event.data);
-  $addUpdateTag(COMPOSITION_END_TAG);
-  return true;
-}
-function $cleanupComposedSubclass(compositionKey) {
-  if (compositionKey === null) {
-    return;
-  }
-  const composedNode = $getNodeByKey(compositionKey);
-  if (!$isTextNode(composedNode) || composedNode.getType() === "text" || $isTokenOrSegmented(composedNode) || !composedNode.isAttached()) {
-    return;
-  }
-  const sel3 = $getSelection();
-  const offset = $isRangeSelection(sel3) && sel3.anchor.key === compositionKey ? sel3.anchor.offset : null;
-  const replacement = $createTextNode(composedNode.getTextContent());
-  replacement.setFormat(composedNode.getFormat());
-  replacement.setStyle(composedNode.getStyle());
-  composedNode.replace(replacement);
-  if (offset !== null) {
-    const safeOffset = Math.min(offset, replacement.getTextContentSize());
-    replacement.select(safeOffset, safeOffset);
-  }
-}
-function $onCompositionEndImpl(editor, data) {
-  const compositionKey = editor._compositionKey;
-  $setCompositionKey(null);
-  if (compositionKey !== null && data != null) {
-    if (data === "") {
-      const node2 = $getNodeByKey(compositionKey);
-      const domElement = editor.getElementByKey(compositionKey);
-      const textNode = domElement !== null && $isTextNode(node2) ? $getDOMTextNode(node2, domElement, editor) : null;
-      if (textNode !== null && textNode.nodeValue !== null && $isTextNode(node2)) {
-        const domSelection = getDOMSelection(getWindow(editor));
-        const domSelectionPoints = domSelection && getDOMSelectionPoints(domSelection, editor._rootElement);
-        let anchorOffset = null;
-        let focusOffset = null;
-        if (domSelectionPoints !== null && domSelectionPoints.anchorNode === textNode) {
-          anchorOffset = domSelectionPoints.anchorOffset;
-          focusOffset = domSelectionPoints.focusOffset;
-        }
-        $updateTextNodeFromDOMContent(node2, textNode.nodeValue, anchorOffset, focusOffset, true);
-      }
-      $cleanupComposedSubclass(compositionKey);
-      return false;
-    } else if (data[data.length - 1] === "\n") {
-      const selection = $getSelection();
-      if ($isRangeSelection(selection) || $isNodeSelection(selection)) {
-        if ($isRangeSelection(selection)) {
-          const focus = selection.focus;
-          selection.anchor.set(focus.key, focus.offset, focus.type);
-        }
-        dispatchCommand(editor, KEY_ENTER_COMMAND, null);
-        $cleanupComposedSubclass(compositionKey);
-        return false;
-      }
-    }
-    const node = $getNodeByKey(compositionKey);
-    if (node !== null && $isTextNode(node) && $isTokenOrSegmented(node)) {
-      node.markDirty();
-      const selection = $getSelection();
-      const textLen = node.getTextContentSize();
-      const offset = $isRangeSelection(selection) && selection.anchor.key === compositionKey ? selection.anchor.offset : textLen;
-      node.select(offset, offset).insertText(data);
-      return true;
-    }
-  }
-  $updateSelectedTextFromDOM(true, editor, data);
-  $cleanupComposedSubclass(compositionKey);
-  return false;
-}
-function onCompositionEnd(event, editor) {
-  const inputState = editor._inputState;
-  if (IS_FIREFOX) {
-    inputState.compositionPhase = "ending-firefox";
-  } else if (!IS_IOS && (IS_SAFARI || IS_APPLE_WEBKIT)) {
-    inputState.compositionPhase = "ending-safari";
-    inputState.compositionEndData = event.data;
-  } else {
-    dispatchCommand(editor, COMPOSITION_END_COMMAND, event);
-  }
-}
-function onKeyDown(event, editor) {
-  const inputState = editor._inputState;
-  inputState.lastKeyDownTimeStamp = event.timeStamp;
-  inputState.lastKeyCode = event.key;
-  if (event.key !== "Backspace") {
-    clearHandledSelectionCommandInsertText(inputState);
-  }
-  if (editor.isComposing()) {
-    return;
-  }
-  dispatchCommand(editor, KEY_DOWN_COMMAND, event);
-}
-var ANY_MODIFIERS = {
-  altKey: "any",
-  ctrlKey: "any",
-  metaKey: "any",
-  shiftKey: "any"
-};
-var CTRL_KEY = {
-  ctrlKey: true
-};
-var META_KEY = {
-  metaKey: true
-};
-var SHIFT_KEY_ANY = {
-  shiftKey: "any"
-};
-var ALT_SHIFT_KEY_ANY = {
-  altKey: "any",
-  shiftKey: "any"
-};
-function buildKeyDownShortcuts() {
-  const dispatch = (key, modifiers, command) => ({
-    key,
-    modifiers,
-    onMatch: (event, editor) => {
-      dispatchCommand(editor, command, event);
-    }
-  });
-  const prevent = (key, modifiers, command, payload) => ({
-    key,
-    modifiers,
-    onMatch: (event, editor) => {
-      event.preventDefault();
-      dispatchCommand(editor, command, payload);
-    }
-  });
-  const enter = (modifiers, isInsertLineBreak) => ({
-    key: "Enter",
-    modifiers,
-    onMatch: (event, editor) => {
-      editor._inputState.isInsertLineBreak = isInsertLineBreak;
-      dispatchCommand(editor, KEY_ENTER_COMMAND, event);
-    }
-  });
-  const copyOrCut = (key, command) => ({
-    key,
-    modifiers: CONTROL_OR_META,
-    onMatch: (event, editor) => {
-      const prevSelection = editor._editorState._selection;
-      if (prevSelection !== null && !$isRangeSelection(prevSelection)) {
-        event.preventDefault();
-        dispatchCommand(editor, command, event);
-      }
-    }
-  });
-  return [
-    // moveForward / moveToEnd / moveBackward / moveToStart / moveUp / moveDown
-    dispatch("ArrowRight", SHIFT_KEY_ANY, KEY_ARROW_RIGHT_COMMAND),
-    dispatch("ArrowLeft", SHIFT_KEY_ANY, KEY_ARROW_LEFT_COMMAND),
-    dispatch("ArrowUp", ALT_SHIFT_KEY_ANY, KEY_ARROW_UP_COMMAND),
-    dispatch("ArrowDown", ALT_SHIFT_KEY_ANY, KEY_ARROW_DOWN_COMMAND),
-    // lineBreak / paragraph
-    enter({
-      ...ANY_MODIFIERS,
-      shiftKey: true
-    }, true),
-    enter({
-      ...ANY_MODIFIERS,
-      shiftKey: false
-    }, false),
-    dispatch(" ", ANY_MODIFIERS, KEY_SPACE_COMMAND),
-    // deleteBackward
-    {
-      key: "Backspace",
-      modifiers: SHIFT_KEY_ANY,
-      onMatch: (event, editor) => {
-        if (dispatchCommand(editor, KEY_BACKSPACE_COMMAND, event)) {
-          markHandledSelectionCommandInsertText(editor._inputState);
-        }
-      }
-    },
-    dispatch("Escape", ANY_MODIFIERS, KEY_ESCAPE_COMMAND),
-    // deleteForward
-    dispatch("Delete", {}, KEY_DELETE_COMMAND),
-    // deleteWordBackward / deleteWordForward
-    prevent("Backspace", CONTROL_OR_ALT, DELETE_WORD_COMMAND, true),
-    prevent("Delete", CONTROL_OR_ALT, DELETE_WORD_COMMAND, false),
-    prevent("b", CONTROL_OR_META, FORMAT_TEXT_COMMAND, "bold"),
-    prevent("u", CONTROL_OR_META, FORMAT_TEXT_COMMAND, "underline"),
-    prevent("i", CONTROL_OR_META, FORMAT_TEXT_COMMAND, "italic"),
-    dispatch("Tab", SHIFT_KEY_ANY, KEY_TAB_COMMAND),
-    // undo / redo
-    prevent("z", CONTROL_OR_META, UNDO_COMMAND, void 0),
-    prevent("z", {
-      ...CONTROL_OR_META,
-      shiftKey: true
-    }, REDO_COMMAND, void 0),
-    ...IS_APPLE ? [
-      // openLineBreak
-      {
-        key: "o",
-        modifiers: CTRL_KEY,
-        onMatch: (event, editor) => {
-          event.preventDefault();
-          editor._inputState.isInsertLineBreak = true;
-          dispatchCommand(editor, INSERT_LINE_BREAK_COMMAND, true);
-        }
-      },
-      // moveToStart / moveToEnd mac
-      dispatch("ArrowLeft", {
-        metaKey: true,
-        ...SHIFT_KEY_ANY
-      }, MOVE_TO_START),
-      dispatch("ArrowRight", {
-        metaKey: true,
-        ...SHIFT_KEY_ANY
-      }, MOVE_TO_END),
-      // deleteBackward / deleteForward
-      prevent("h", CTRL_KEY, DELETE_CHARACTER_COMMAND, true),
-      prevent("d", CTRL_KEY, DELETE_CHARACTER_COMMAND, false),
-      // deleteLineBackward / deleteLineForward
-      prevent("Backspace", META_KEY, DELETE_LINE_COMMAND, true),
-      prevent("Delete", META_KEY, DELETE_LINE_COMMAND, false),
-      prevent("k", CTRL_KEY, DELETE_LINE_COMMAND, false)
-    ] : [dispatch("Home", SHIFT_KEY_ANY, MOVE_TO_START), dispatch("End", SHIFT_KEY_ANY, MOVE_TO_END), prevent("y", CTRL_KEY, REDO_COMMAND, void 0)],
-    // selectAll
-    {
-      key: "a",
-      modifiers: CONTROL_OR_META,
-      onMatch: (event, editor) => {
-        event.preventDefault();
-        if (dispatchCommand(editor, SELECT_ALL_COMMAND, event)) {
-          markHandledSelectionCommandInsertText(editor._inputState);
-        }
-      }
-    },
-    copyOrCut("c", COPY_COMMAND),
-    copyOrCut("x", CUT_COMMAND)
-  ];
-}
-function $handleKeyDown(event) {
-  const editor = getActiveEditor();
-  const inputState = editor._inputState;
-  if (event.key == null) {
-    return true;
-  }
-  if (inputState.compositionPhase === "ending-safari") {
-    const isBack = isBackspace(event);
-    if (isBack) {
-      updateEditorSync(editor, () => {
-        $onCompositionEndImpl(editor, inputState.compositionEndData);
-      });
-    }
-    inputState.compositionPhase = "idle";
-    inputState.compositionEndData = "";
-    if (isBack) {
-      return true;
-    }
-  }
-  let keyDownShortcuts = editor._keyDownShortcuts;
-  if (keyDownShortcuts === null) {
-    keyDownShortcuts = compileKeyboardShortcuts(buildKeyDownShortcuts());
-    editor._keyDownShortcuts = keyDownShortcuts;
-  }
-  const shortcut = keyDownShortcuts.match(event);
-  if (shortcut) {
-    shortcut.onMatch(event, editor);
-  }
-  if (isModifier(event)) {
-    editor.dispatchCommand(KEY_MODIFIER_COMMAND, event);
-  }
-  return true;
-}
-function getRootElementRemoveHandles(rootElement) {
-  let eventHandles = rootElement.__lexicalEventHandles;
-  if (eventHandles === void 0) {
-    eventHandles = [];
-    rootElement.__lexicalEventHandles = eventHandles;
-  }
-  return eventHandles;
-}
-var activeNestedEditorsMap = /* @__PURE__ */ new Map();
-function onDocumentSelectionChange(event) {
-  const domSelection = getDOMSelectionFromTarget(event.target);
-  if (domSelection === null) {
-    return;
-  }
-  const ownerDocument = getDOMOwnerDocument(event.target);
-  let nextActiveEditor = null;
-  let resolvedAnchorNode = null;
-  const registration = ownerDocument !== null ? documentRegistrations.get(ownerDocument) : void 0;
-  if (ownerDocument !== null) {
-    if (registration !== void 0) {
-      const editorsForDoc = registration.editors;
-      let hasShadow = registration.hasShadowEditor;
-      if (hasShadow === void 0) {
-        hasShadow = false;
-        for (const ed of editorsForDoc) {
-          if (ed._rootElement !== null && isDOMShadowRoot(ed._rootElement.getRootNode())) {
-            hasShadow = true;
-            break;
-          }
-        }
-        registration.hasShadowEditor = hasShadow;
-      }
-      if (!hasShadow) {
-        const anchorNode = domSelection.anchorNode;
-        if (anchorNode !== null && !(isHTMLElement(anchorNode) && anchorNode.shadowRoot !== null)) {
-          nextActiveEditor = getNearestEditorFromDOMNode(anchorNode);
-          if (nextActiveEditor !== null) {
-            resolvedAnchorNode = anchorNode;
-          }
-        }
-      } else {
-        let deferredLightEditor = null;
-        let deferredLightAnchor = null;
-        for (const candidate of editorsForDoc) {
-          const candidateRoot = candidate._rootElement;
-          if (candidateRoot === null) {
-            continue;
-          }
-          const anchorNode = getDOMSelectionPoints(domSelection, candidateRoot).anchorNode;
-          if (anchorNode === null) {
-            continue;
-          }
-          if (getNearestEditorFromDOMNode(anchorNode) !== candidate) {
-            continue;
-          }
-          if (isDOMShadowRoot(candidateRoot.getRootNode())) {
-            nextActiveEditor = candidate;
-            resolvedAnchorNode = anchorNode;
-            break;
-          }
-          if (deferredLightEditor === null) {
-            deferredLightEditor = candidate;
-            deferredLightAnchor = anchorNode;
-          }
-        }
-        if (nextActiveEditor === null && deferredLightEditor !== null) {
-          nextActiveEditor = deferredLightEditor;
-          resolvedAnchorNode = deferredLightAnchor;
-        }
-      }
-    }
-    if (nextActiveEditor === null) {
-      const activeElement = getActiveElementDeep(ownerDocument);
-      nextActiveEditor = activeElement !== null ? getNearestEditorFromDOMNode(activeElement) : null;
-    }
-  }
-  if (nextActiveEditor === null) {
-    return;
-  }
-  if (nextActiveEditor._inputState.isSelectionChangeFromMouseDown) {
-    if (registration !== void 0) {
-      for (const ed of registration.editors) {
-        ed._inputState.isSelectionChangeFromMouseDown = false;
-      }
-    }
-    updateEditorSync(nextActiveEditor, () => {
-      const lastSelection = $getPreviousSelection();
-      const domAnchorNode = resolvedAnchorNode ?? getDOMSelectionPoints(domSelection, nextActiveEditor._rootElement).anchorNode;
-      if (isHTMLElement(domAnchorNode) || isDOMTextNode(domAnchorNode)) {
-        const newSelection = $internalCreateRangeSelection(lastSelection, domSelection, nextActiveEditor, event);
-        $setSelection(newSelection);
-      }
-    });
-  }
-  const editors = getEditorsToPropagate(nextActiveEditor);
-  const rootEditor = editors[editors.length - 1];
-  const rootEditorKey = rootEditor._key;
-  const activeNestedEditor = activeNestedEditorsMap.get(rootEditorKey);
-  const prevActiveEditor = activeNestedEditor || rootEditor;
-  if (prevActiveEditor !== nextActiveEditor) {
-    onSelectionChange(domSelection, prevActiveEditor, false);
-  }
-  onSelectionChange(domSelection, nextActiveEditor, true);
-  if (nextActiveEditor !== rootEditor) {
-    activeNestedEditorsMap.set(rootEditorKey, nextActiveEditor);
-  } else if (activeNestedEditor) {
-    activeNestedEditorsMap.delete(rootEditorKey);
-  }
-}
-function stopLexicalPropagation(event) {
-  event._lexicalHandled = true;
-}
-function hasStoppedLexicalPropagation(event) {
-  const stopped = event._lexicalHandled === true;
-  return stopped;
-}
-function addRootElementEvents(rootElement, editor) {
-  const doc = rootElement.ownerDocument;
-  rootElementToDocument.set(rootElement, doc);
-  let registration = documentRegistrations.get(doc);
-  if (registration === void 0) {
-    registration = {
-      editors: /* @__PURE__ */ new Set(),
-      hasShadowEditor: void 0
-    };
-    documentRegistrations.set(doc, registration);
-  }
-  registration.editors.add(editor);
-  registration.hasShadowEditor = void 0;
-  rootElement.__lexicalEditor = editor;
-  const removeHandles = getRootElementRemoveHandles(rootElement);
-  removeHandles.push(documentSelectionChange.register(doc));
-  const events = getRootElementEvents();
-  for (let i2 = 0; i2 < events.length; i2++) {
-    const [eventName, onEvent] = events[i2];
-    const eventHandler = typeof onEvent === "function" ? (event) => {
-      if (hasStoppedLexicalPropagation(event)) {
-        return;
-      }
-      stopLexicalPropagation(event);
-      if (editor.isEditable() || eventName === "click") {
-        onEvent(event, editor);
-      }
-    } : (event) => {
-      if (hasStoppedLexicalPropagation(event)) {
-        return;
-      }
-      stopLexicalPropagation(event);
-      const isEditable = editor.isEditable();
-      switch (eventName) {
-        case "cut":
-          return isEditable && dispatchCommand(editor, CUT_COMMAND, event);
-        case "copy":
-          return dispatchCommand(editor, COPY_COMMAND, event);
-        case "paste":
-          return isEditable && dispatchCommand(editor, PASTE_COMMAND, event);
-        case "dragstart":
-          return isEditable && dispatchCommand(editor, DRAGSTART_COMMAND, event);
-        case "dragover":
-          return isEditable && dispatchCommand(editor, DRAGOVER_COMMAND, event);
-        case "dragend":
-          return isEditable && dispatchCommand(editor, DRAGEND_COMMAND, event);
-        case "focus":
-          return isEditable && dispatchCommand(editor, FOCUS_COMMAND, event);
-        case "blur": {
-          return isEditable && dispatchCommand(editor, BLUR_COMMAND, event);
-        }
-        case "drop":
-          return isEditable && dispatchCommand(editor, DROP_COMMAND, event);
-      }
-    };
-    removeHandles.push(registerEventListener(rootElement, eventName, eventHandler));
-  }
-}
-var rootElementNotRegisteredWarning = /* @__PURE__ */ warnOnlyOnce("Root element not registered");
-function removeRootElementEvents(rootElement) {
-  const doc = rootElementToDocument.get(rootElement);
-  if (doc === void 0) {
-    rootElementNotRegisteredWarning();
-    return;
-  }
-  const registration = documentRegistrations.get(doc);
-  if (registration === void 0) {
-    rootElementNotRegisteredWarning();
-    return;
-  }
-  rootElementToDocument.delete(rootElement);
-  const editor = getEditorPropertyFromDOMNode(rootElement);
-  if (isLexicalEditor(editor)) {
-    cleanActiveNestedEditorsMap(editor);
-    registration.editors.delete(editor);
-    registration.hasShadowEditor = void 0;
-    rootElement.__lexicalEditor = null;
-  } else if (editor) {
-    {
-      formatDevErrorMessage2(`Attempted to remove event handlers from a node that does not belong to this build of Lexical`);
-    }
-  }
-  const removeHandles = getRootElementRemoveHandles(rootElement);
-  for (let i2 = 0; i2 < removeHandles.length; i2++) {
-    removeHandles[i2]();
-  }
-  rootElement.__lexicalEventHandles = [];
-}
-function cleanActiveNestedEditorsMap(editor) {
-  if (editor._parentEditor !== null) {
-    const editors = getEditorsToPropagate(editor);
-    const rootEditor = editors[editors.length - 1];
-    const rootEditorKey = rootEditor._key;
-    if (activeNestedEditorsMap.get(rootEditorKey) === editor) {
-      activeNestedEditorsMap.delete(rootEditorKey);
-    }
-  } else {
-    activeNestedEditorsMap.delete(editor._key);
-  }
-}
-function markSelectionChangeFromDOMUpdate(editor, anchorNode, anchorOffset, focusNode, focusOffset) {
-  const inputState = editor._inputState;
-  inputState.isSelectionChangeFromDOMUpdate = true;
-  inputState.selectionChangeFromDOMUpdatePoints = anchorNode !== void 0 && anchorOffset !== void 0 && focusNode !== void 0 && focusOffset !== void 0 ? {
-    anchorNode,
-    anchorOffset,
-    focusNode,
-    focusOffset
-  } : null;
-}
-function markCollapsedSelectionFormat(editor, format, style, offset, key, timeStamp) {
-  editor._inputState.collapsedSelectionFormat = {
-    format,
-    key,
-    offset,
-    style,
-    timeStamp
-  };
-}
 function $removeNode(nodeToRemove, restoreSelection, preserveEmptyParent) {
   errorOnReadOnly();
   const key = nodeToRemove.__key;
@@ -29372,15 +28119,7 @@ function $removeNode(nodeToRemove, restoreSelection, preserveEmptyParent) {
   } else if ($isNodeSelection(selection) && restoreSelection && nodeToRemove.isSelected()) {
     nodeToRemove.selectPrevious();
   }
-  if ($isRangeSelection(selection) && restoreSelection && !selectionMoved && // getIndexWithinParent is O(n) in the parent's child count, so skip it
-  // unless the update below can observe the index (#5194).
-  $selectionTouchesElement(selection, parent)) {
-    const index = nodeToRemove.getIndexWithinParent();
-    $removeFromParent(nodeToRemove);
-    $updateElementSelectionOnCreateDeleteNode(selection, parent, index, -1);
-  } else {
-    $removeFromParent(nodeToRemove);
-  }
+  $detachNodeWithSelection(nodeToRemove.getWritable(), restoreSelection && !selectionMoved && $isRangeSelection(selection) ? selection : null);
   if (!preserveEmptyParent && !$isRootOrShadowRoot(parent) && !parent.canBeEmpty() && parent.isEmpty()) {
     $removeNode(parent, restoreSelection);
   }
@@ -29672,12 +28411,6 @@ var LexicalNode = class {
   /**
    * Returns the parent of this node, or null if none is found.
    */
-  /**
-   * @deprecated The type parameter is an unchecked and unsafe cast,
-   * equivalent to `node.getParent() as T | null`, and will be removed
-   * in a future release. Call this method without a type argument and
-   * narrow the result with a type guard instead.
-   */
   getParent() {
     const parent = this.getLatest().__parent;
     if (parent === null) {
@@ -29687,12 +28420,6 @@ var LexicalNode = class {
   }
   /**
    * Returns the parent of this node, or throws if none is found.
-   */
-  /**
-   * @deprecated The type parameter is an unchecked and unsafe cast,
-   * equivalent to `node.getParentOrThrow() as T`, and will be removed
-   * in a future release. Call this method without a type argument and
-   * narrow the result with a type guard instead.
    */
   getParentOrThrow() {
     const parent = this.getParent();
@@ -29768,12 +28495,6 @@ var LexicalNode = class {
    * Returns the node before this one in the same parent, or null
    * if there is no such node.
    */
-  /**
-   * @deprecated The type parameter is an unchecked and unsafe cast,
-   * equivalent to `node.getPreviousSibling() as T | null`, and will be
-   * removed in a future release. Call this method without a type argument
-   * and narrow the result with a type guard instead.
-   */
   getPreviousSibling() {
     const self = this.getLatest();
     const prevKey = self.__prev;
@@ -29783,37 +28504,12 @@ var LexicalNode = class {
    * Returns all nodes before this one in the same parent,
    * in document order.
    */
-  /**
-   * @deprecated The type parameter is an unchecked and unsafe cast,
-   * equivalent to `node.getPreviousSiblings() as T[]`, and will be
-   * removed in a future release. Call this method without a type argument
-   * and narrow the results with a type guard instead.
-   */
   getPreviousSiblings() {
-    const siblings = [];
-    const parent = this.getParent();
-    if (parent === null) {
-      return siblings;
-    }
-    let node = parent.getFirstChild();
-    while (node !== null) {
-      if (node.is(this)) {
-        break;
-      }
-      siblings.push(node);
-      node = node.getNextSibling();
-    }
-    return siblings;
+    return $collectSiblingNodes(this.getPreviousSibling(), "previous").reverse();
   }
   /**
    * Returns the node after this one in the same parent, or null
    * if there is no such node.
-   */
-  /**
-   * @deprecated The type parameter is an unchecked and unsafe cast,
-   * equivalent to `node.getNextSibling() as T | null`, and will be
-   * removed in a future release. Call this method without a type argument
-   * and narrow the result with a type guard instead.
    */
   getNextSibling() {
     const self = this.getLatest();
@@ -29824,34 +28520,8 @@ var LexicalNode = class {
    * Returns all nodes after this one in the same parent,
    * in document order.
    */
-  /**
-   * @deprecated The type parameter is an unchecked and unsafe cast,
-   * equivalent to `node.getNextSiblings() as T[]`, and will be
-   * removed in a future release. Call this method without a type argument
-   * and narrow the results with a type guard instead.
-   */
   getNextSiblings() {
-    const siblings = [];
-    let node = this.getNextSibling();
-    while (node !== null) {
-      siblings.push(node);
-      node = node.getNextSibling();
-    }
-    return siblings;
-  }
-  /**
-   * @deprecated use {@link $getCommonAncestor}
-   *
-   * Returns the closest common ancestor of this node and the provided one or null
-   * if one cannot be found.
-   *
-   * @param node - the other node to find the common ancestor of.
-   */
-  getCommonAncestor(node) {
-    const a2 = $isElementNode(this) ? this : this.getParent();
-    const b2 = $isElementNode(node) ? node : node.getParent();
-    const result = a2 && b2 ? $getCommonAncestor(a2, b2) : null;
-    return result ? result.commonAncestor : null;
+    return $collectSiblingNodes(this.getNextSibling(), "next");
   }
   /**
    * Returns true if the provided node is the exact same one as this node, from Lexical's perspective.
@@ -29900,7 +28570,6 @@ var LexicalNode = class {
   isParentOf(targetNode) {
     return $hasAncestor(targetNode, this);
   }
-  // TO-DO: this function can be simplified a lot
   /**
    * Returns a list of nodes that are between this node and
    * the target node in the EditorState.
@@ -29908,63 +28577,30 @@ var LexicalNode = class {
    * @param targetNode - the node that marks the other end of the range of nodes to be returned.
    */
   getNodesBetween(targetNode) {
-    const isBefore = this.isBefore(targetNode);
+    const forward = this.isBefore(targetNode);
     const nodes = [];
-    const visited = /* @__PURE__ */ new Set();
     let node = this;
-    while (true) {
-      if (node === null) {
-        break;
-      }
-      const key = node.__key;
-      if (!visited.has(key)) {
-        visited.add(key);
+    let entering = true;
+    let openElements = 0;
+    while (node !== null) {
+      if (entering || openElements === 0) {
         nodes.push(node);
       }
-      if (node === targetNode) {
+      if (node.is(targetNode)) {
         break;
       }
-      const child = $isElementNode(node) ? isBefore ? node.getFirstChild() : node.getLastChild() : null;
+      if (!entering && openElements > 0) {
+        openElements--;
+      }
+      const child = entering && $isElementNode(node) ? forward ? node.getFirstChild() : node.getLastChild() : null;
       if (child !== null) {
-        node = child;
-        continue;
+        openElements++;
       }
-      const nextSibling = isBefore ? node.getNextSibling() : node.getPreviousSibling();
-      if (nextSibling !== null) {
-        node = nextSibling;
-        continue;
-      }
-      const parent = node.getParentOrThrow();
-      if (!visited.has(parent.__key)) {
-        nodes.push(parent);
-      }
-      if (parent === targetNode) {
-        break;
-      }
-      let parentSibling = null;
-      let ancestor = parent;
-      do {
-        if (ancestor === null) {
-          {
-            formatDevErrorMessage2(`getNodesBetween: ancestor is null`);
-          }
-        }
-        parentSibling = isBefore ? ancestor.getNextSibling() : ancestor.getPreviousSibling();
-        ancestor = ancestor.getParent();
-        if (ancestor !== null) {
-          if (parentSibling === null && !visited.has(ancestor.__key)) {
-            nodes.push(ancestor);
-          }
-        } else {
-          break;
-        }
-      } while (parentSibling === null);
-      node = parentSibling;
+      const adjacent = child || (forward ? node.getNextSibling() : node.getPreviousSibling());
+      entering = adjacent !== null;
+      node = adjacent || node.getParent();
     }
-    if (!isBefore) {
-      nodes.reverse();
-    }
-    return nodes;
+    return forward ? nodes : nodes.reverse();
   }
   /**
    * Returns true if this node has been marked dirty during this update cycle.
@@ -29987,7 +28623,7 @@ var LexicalNode = class {
     const latest = $getNodeByKey(this.__key);
     if (latest === null) {
       {
-        formatDevErrorMessage2(`Lexical node does not exist in active editor state. Avoid using the same node references between nested closures from editorState.read/editor.update.`);
+        formatDevErrorMessage2(`Lexical node does not exist in active editor state (key ${this.__key}, type ${this.__type}). The reference was probably kept from another read or update, for example in a closure, event handler or component state, and the node has since been removed or is not part of this editor state. Before using a node reference that may be stale, check node.isAttached() or look the node up again with $getNodeByKey(node.getKey()), inside the read or update where it is used.`);
       }
     }
     return latest;
@@ -30005,22 +28641,26 @@ var LexicalNode = class {
     errorOnReadOnly();
     const editorState = getActiveEditorState();
     const editor = getActiveEditor();
-    const nodeMap = editorState._nodeMap;
     const key = this.__key;
-    const latestNode = this.getLatest();
     const cloneNotNeeded = editor._cloneNotNeeded;
-    const selection = $getSelection();
+    const writableNode = cloneNotNeeded.get(key);
+    const selection = editorState._selection;
     if (selection !== null) {
       selection.setCachedNodes(null);
     }
-    if (cloneNotNeeded.has(key)) {
-      internalMarkNodeAsDirty(latestNode);
-      return latestNode;
+    if (writableNode !== void 0) {
+      internalMarkNodeAsDirty(writableNode);
+      return writableNode;
+    }
+    const nodeMap = editorState._nodeMap;
+    const latestNode = nodeMap.get(key);
+    if (!(latestNode !== void 0)) {
+      formatDevErrorMessage2(`Lexical node does not exist in active editor state (key ${key}, type ${this.__type}). The reference was probably kept from another read or update, for example in a closure, event handler or component state, and the node has since been removed or is not part of this editor state. Before using a node reference that may be stale, check node.isAttached() or look the node up again with $getNodeByKey(node.getKey()), inside the read or update where it is used.`);
     }
     const mutableNode = $cloneWithProperties(latestNode);
-    cloneNotNeeded.add(key);
-    internalMarkNodeAsDirty(mutableNode);
+    cloneNotNeeded.set(key, mutableNode);
     nodeMap.set(key, mutableNode);
+    internalMarkNodeAsDirty(mutableNode);
     return mutableNode;
   }
   /**
@@ -30098,7 +28738,7 @@ var LexicalNode = class {
    *
    * */
   exportDOM(editor) {
-    const element = this.createDOM(editor._config, editor);
+    const element = $getEditorDOMRenderConfig(editor).$createDOM(this, editor);
     return {
       element
     };
@@ -30107,7 +28747,7 @@ var LexicalNode = class {
    * Controls how the this node is serialized to JSON. This is important for
    * copy and paste between Lexical editors sharing the same namespace. It's also important
    * if you're serializing to JSON for persistent storage somewhere.
-   * See [Serialization & Deserialization](https://lexical.dev/docs/concepts/serialization#lexical---html).
+   * See [Serialization & Deserialization](https://lexical.dev/docs/serialization/serialization#json).
    *
    * The base implementation writes every property the node's schema declares
    * (its own and those it inherits), reading each through its getter —
@@ -30159,7 +28799,7 @@ var LexicalNode = class {
    * Controls how the this node is deserialized from JSON. This is usually boilerplate,
    * but provides an abstraction between the node implementation and serialized interface that can
    * be important if you ever make breaking changes to a node schema (by adding or removing properties).
-   * See [Serialization & Deserialization](https://lexical.dev/docs/concepts/serialization#lexical---html).
+   * See [Serialization & Deserialization](https://lexical.dev/docs/serialization/serialization#json).
    *
    * */
   static importJSON(_serializedNode) {
@@ -30263,33 +28903,11 @@ var LexicalNode = class {
     $errorOnSlotCycleChild(writableParent, writableReplaceWith);
     const size = writableParent.__size;
     const replaceWithOldParent = writableReplaceWith.getParent();
-    const restoreInReplaceWithOldParent = replaceWithOldParent !== null && $isRangeSelection(selection) && $selectionTouchesElement(selection, replaceWithOldParent);
-    const replaceWithOldIndex = restoreInReplaceWithOldParent ? writableReplaceWith.getIndexWithinParent() : -1;
-    $removeFromParent(writableReplaceWith);
-    if (restoreInReplaceWithOldParent && replaceWithOldParent !== null && $isRangeSelection(selection)) {
-      $updateElementSelectionOnCreateDeleteNode(selection, replaceWithOldParent, replaceWithOldIndex, -1);
-    }
+    $detachNodeWithSelection(writableReplaceWith, $isRangeSelection(selection) ? selection : null);
     const prevSibling = self.getPreviousSibling();
     const nextSibling = self.getNextSibling();
-    const prevKey = self.__prev;
-    const nextKey = self.__next;
-    const parentKey = self.__parent;
     $removeNode(self, false, true);
-    if (prevSibling === null) {
-      writableParent.__first = key;
-    } else {
-      const writablePrevSibling = prevSibling.getWritable();
-      writablePrevSibling.__next = key;
-    }
-    writableReplaceWith.__prev = prevKey;
-    if (nextSibling === null) {
-      writableParent.__last = key;
-    } else {
-      const writableNextSibling = nextSibling.getWritable();
-      writableNextSibling.__prev = key;
-    }
-    writableReplaceWith.__next = nextKey;
-    writableReplaceWith.__parent = parentKey;
+    $insertNodeBetween(writableParent, writableReplaceWith, prevSibling && prevSibling.getWritable(), nextSibling && nextSibling.getWritable());
     writableParent.__size = replaceWithOldParent !== null && replaceWithOldParent.is(writableParent) ? size - 1 : size;
     let prevSizeBeforeChildrenTransfer = 0;
     if (includeChildren) {
@@ -30301,20 +28919,13 @@ var LexicalNode = class {
     }
     if ($isRangeSelection(selection)) {
       $setSelection(selection);
-      const anchor = selection.anchor;
-      const focus = selection.focus;
-      if (anchor.key === toReplaceKey) {
-        if (includeChildren && anchor.type === "element") {
-          anchor.set(writableReplaceWith.__key, prevSizeBeforeChildrenTransfer + anchor.offset, "element");
-        } else {
-          $moveSelectionPointToEnd(anchor, writableReplaceWith);
-        }
-      }
-      if (focus.key === toReplaceKey) {
-        if (includeChildren && focus.type === "element") {
-          focus.set(writableReplaceWith.__key, prevSizeBeforeChildrenTransfer + focus.offset, "element");
-        } else {
-          $moveSelectionPointToEnd(focus, writableReplaceWith);
+      for (const point of [selection.anchor, selection.focus]) {
+        if (point.key === toReplaceKey) {
+          if (includeChildren && point.type === "element") {
+            point.set(writableReplaceWith.__key, prevSizeBeforeChildrenTransfer + point.offset, "element");
+          } else {
+            $moveSelectionPointToEnd(point, writableReplaceWith);
+          }
         }
       }
     }
@@ -30331,57 +28942,7 @@ var LexicalNode = class {
    * selection to the appropriate place after the operation is complete.
    * */
   insertAfter(nodeToInsert, restoreSelection = true) {
-    errorOnReadOnly();
-    errorOnInsertTextNodeOnRoot(this, nodeToInsert);
-    const writableSelf = this.getWritable();
-    const writableNodeToInsert = nodeToInsert.getWritable();
-    $errorOnSlotCycleChild(this.getParentOrThrow(), writableNodeToInsert);
-    const oldParent = writableNodeToInsert.getParent();
-    const selection = $getSelection();
-    let elementAnchorSelectionOnNode = false;
-    let elementFocusSelectionOnNode = false;
-    let oldIndex = -1;
-    if (oldParent !== null && restoreSelection && $isRangeSelection(selection) && $selectionTouchesElement(selection, oldParent)) {
-      const oldParentKey = oldParent.__key;
-      const anchor = selection.anchor;
-      const focus = selection.focus;
-      oldIndex = nodeToInsert.getIndexWithinParent();
-      elementAnchorSelectionOnNode = anchor.type === "element" && anchor.key === oldParentKey && anchor.offset === oldIndex + 1;
-      elementFocusSelectionOnNode = focus.type === "element" && focus.key === oldParentKey && focus.offset === oldIndex + 1;
-    }
-    $removeFromParent(writableNodeToInsert);
-    if (oldIndex !== -1 && oldParent !== null && $isRangeSelection(selection)) {
-      $updateElementSelectionOnCreateDeleteNode(selection, oldParent, oldIndex, -1);
-    }
-    const nextSibling = this.getNextSibling();
-    const writableParent = this.getParentOrThrow().getWritable();
-    const insertKey = writableNodeToInsert.__key;
-    const nextKey = writableSelf.__next;
-    if (nextSibling === null) {
-      writableParent.__last = insertKey;
-    } else {
-      const writableNextSibling = nextSibling.getWritable();
-      writableNextSibling.__prev = insertKey;
-    }
-    writableParent.__size++;
-    writableSelf.__next = insertKey;
-    writableNodeToInsert.__next = nextKey;
-    writableNodeToInsert.__prev = writableSelf.__key;
-    writableNodeToInsert.__parent = writableSelf.__parent;
-    if (restoreSelection && $isRangeSelection(selection)) {
-      const writableParentKey = writableParent.__key;
-      if (elementAnchorSelectionOnNode || elementFocusSelectionOnNode || $selectionTouchesElement(selection, writableParent)) {
-        const index = this.getIndexWithinParent();
-        $updateElementSelectionOnCreateDeleteNode(selection, writableParent, index + 1);
-        if (elementAnchorSelectionOnNode) {
-          selection.anchor.set(writableParentKey, index + 2, "element");
-        }
-        if (elementFocusSelectionOnNode) {
-          selection.focus.set(writableParentKey, index + 2, "element");
-        }
-      }
-    }
-    return nodeToInsert;
+    return $insertSibling(this, "next", nodeToInsert, restoreSelection);
   }
   /**
    * Inserts a node before this LexicalNode (as the previous sibling).
@@ -30391,40 +28952,7 @@ var LexicalNode = class {
    * selection to the appropriate place after the operation is complete.
    * */
   insertBefore(nodeToInsert, restoreSelection = true) {
-    errorOnReadOnly();
-    errorOnInsertTextNodeOnRoot(this, nodeToInsert);
-    const writableSelf = this.getWritable();
-    const writableNodeToInsert = nodeToInsert.getWritable();
-    $errorOnSlotCycleChild(this.getParentOrThrow(), writableNodeToInsert);
-    const insertKey = writableNodeToInsert.__key;
-    const selection = $getSelection();
-    const insertOldParent = writableNodeToInsert.getParent();
-    const restoreInOldParent = insertOldParent !== null && restoreSelection && $isRangeSelection(selection) && $selectionTouchesElement(selection, insertOldParent);
-    const insertOldIndex = restoreInOldParent ? writableNodeToInsert.getIndexWithinParent() : -1;
-    $removeFromParent(writableNodeToInsert);
-    if (restoreInOldParent && insertOldParent !== null && $isRangeSelection(selection)) {
-      $updateElementSelectionOnCreateDeleteNode(selection, insertOldParent, insertOldIndex, -1);
-    }
-    const prevSibling = this.getPreviousSibling();
-    const writableParent = this.getParentOrThrow().getWritable();
-    const prevKey = writableSelf.__prev;
-    const restoreInNewParent = restoreSelection && $isRangeSelection(selection) && $selectionTouchesElement(selection, writableParent);
-    const index = restoreInNewParent ? this.getIndexWithinParent() : -1;
-    if (prevSibling === null) {
-      writableParent.__first = insertKey;
-    } else {
-      const writablePrevSibling = prevSibling.getWritable();
-      writablePrevSibling.__next = insertKey;
-    }
-    writableParent.__size++;
-    writableSelf.__prev = insertKey;
-    writableNodeToInsert.__prev = prevKey;
-    writableNodeToInsert.__next = writableSelf.__key;
-    writableNodeToInsert.__parent = writableSelf.__parent;
-    if (restoreInNewParent && $isRangeSelection(selection)) {
-      $updateElementSelectionOnCreateDeleteNode(selection, writableParent, index);
-    }
-    return nodeToInsert;
+    return $insertSibling(this, "previous", nodeToInsert, restoreSelection);
   }
   /**
    * Whether or not this node has a required parent. Used during copy + paste operations
@@ -30455,23 +28983,7 @@ var LexicalNode = class {
    * @param focusOffset -  The focus offset for selection
    * */
   selectPrevious(anchorOffset, focusOffset) {
-    errorOnReadOnly();
-    const slotHost = $getSlotHost(this);
-    if (slotHost !== null) {
-      return slotHost.selectPrevious(anchorOffset, focusOffset);
-    }
-    const prevSibling = this.getPreviousSibling();
-    const parent = this.getParentOrThrow();
-    if (prevSibling === null) {
-      return parent.select(0, 0);
-    }
-    if ($isElementNode(prevSibling)) {
-      return prevSibling.select();
-    } else if (!$isTextNode(prevSibling)) {
-      const index = prevSibling.getIndexWithinParent() + 1;
-      return parent.select(index, index);
-    }
-    return prevSibling.select(anchorOffset, focusOffset);
+    return $selectAdjacentNode($getSiblingCaret(this, "previous"), anchorOffset, focusOffset);
   }
   /**
    * Moves selection to the next sibling of this node, at the specified offsets.
@@ -30480,23 +28992,7 @@ var LexicalNode = class {
    * @param focusOffset -  The focus offset for selection
    * */
   selectNext(anchorOffset, focusOffset) {
-    errorOnReadOnly();
-    const slotHost = $getSlotHost(this);
-    if (slotHost !== null) {
-      return slotHost.selectNext(anchorOffset, focusOffset);
-    }
-    const nextSibling = this.getNextSibling();
-    const parent = this.getParentOrThrow();
-    if (nextSibling === null) {
-      return parent.select();
-    }
-    if ($isElementNode(nextSibling)) {
-      return nextSibling.select(0, 0);
-    } else if (!$isTextNode(nextSibling)) {
-      const index = nextSibling.getIndexWithinParent();
-      return parent.select(index, index);
-    }
-    return nextSibling.select(anchorOffset, focusOffset);
+    return $selectAdjacentNode($getSiblingCaret(this, "next"), anchorOffset, focusOffset);
   }
   /**
    * Marks a node dirty, triggering transforms and
@@ -30551,19 +29047,89 @@ function insertRangeAfter(node, firstToInsert, lastToInsert) {
 function $isLexicalNode(node) {
   return node instanceof LexicalNode;
 }
-var HISTORIC_TAG = "historic";
-var HISTORY_PUSH_TAG = "history-push";
-var HISTORY_MERGE_TAG = "history-merge";
-var PASTE_TAG = "paste";
-var CUT_TAG = "cut";
-var COLLABORATION_TAG = "collaboration";
-var SKIP_COLLAB_TAG = "skip-collab";
-var SKIP_SCROLL_INTO_VIEW_TAG = "skip-scroll-into-view";
-var SKIP_DOM_SELECTION_TAG = "skip-dom-selection";
-var SKIP_SELECTION_FOCUS_TAG = "skip-selection-focus";
-var FOCUS_TAG = "focus";
-var COMPOSITION_START_TAG = "composition-start";
-var COMPOSITION_END_TAG = "composition-end";
+function $canSimpleTextNodesBeMerged(node1, node2) {
+  const node1Mode = node1.__mode;
+  const node1Format = node1.__format;
+  const node1Style = node1.__style;
+  const node2Mode = node2.__mode;
+  const node2Format = node2.__format;
+  const node2Style = node2.__style;
+  const node1State = node1.__state;
+  const node2State = node2.__state;
+  return (node1Mode === null || node1Mode === node2Mode) && (node1Format === null || node1Format === node2Format) && (node1Style === null || node1Style === node2Style) && (node1.__state === null || node1State === node2State || nodeStatesAreEquivalent(node1State, node2State));
+}
+function $mergeTextNodes(node1, node2) {
+  const writableNode1 = node1.mergeWithSibling(node2);
+  const normalizedNodes = getActiveEditor()._normalizedNodes;
+  normalizedNodes.add(node1.__key);
+  normalizedNodes.add(node2.__key);
+  return writableNode1;
+}
+function $normalizeTextNode(textNode) {
+  let node = textNode;
+  if ($isEmptyCompositionTarget(node)) {
+    return;
+  }
+  if (node.__text === "" && node.isSimpleText() && !node.isUnmergeable()) {
+    node.remove();
+    return;
+  }
+  let previousNode;
+  while ((previousNode = node.getPreviousSibling()) !== null && $isTextNode(previousNode) && previousNode.isSimpleText() && !previousNode.isUnmergeable()) {
+    if ($isEmptyCompositionTarget(previousNode)) {
+      break;
+    }
+    if (previousNode.__text === "") {
+      previousNode.remove();
+    } else if ($canSimpleTextNodesBeMerged(previousNode, node)) {
+      node = $mergeTextNodes(previousNode, node);
+      break;
+    } else {
+      break;
+    }
+  }
+  let nextNode;
+  while ((nextNode = node.getNextSibling()) !== null && $isTextNode(nextNode) && nextNode.isSimpleText() && !nextNode.isUnmergeable()) {
+    if ($isEmptyCompositionTarget(nextNode)) {
+      break;
+    }
+    if (nextNode.__text === "") {
+      nextNode.remove();
+    } else if ($canSimpleTextNodesBeMerged(node, nextNode)) {
+      node = $mergeTextNodes(node, nextNode);
+      break;
+    } else {
+      break;
+    }
+  }
+}
+function $normalizeSelection(selection) {
+  $normalizePoint(selection.anchor);
+  $normalizePoint(selection.focus);
+  return selection;
+}
+function $normalizePoint(point) {
+  while (point.type === "element") {
+    const node = point.getNode();
+    const offset = point.offset;
+    let nextNode;
+    let nextOffsetAtEnd;
+    if (offset === node.getChildrenSize()) {
+      nextNode = node.getChildAtIndex(offset - 1);
+      nextOffsetAtEnd = true;
+    } else {
+      nextNode = node.getChildAtIndex(offset);
+      nextOffsetAtEnd = false;
+    }
+    if ($isTextNode(nextNode)) {
+      point.set(nextNode.__key, nextOffsetAtEnd ? nextNode.getTextContentSize() : 0, "text", true);
+      break;
+    } else if (!$isElementNode(nextNode)) {
+      break;
+    }
+    point.set(nextNode.__key, nextOffsetAtEnd ? nextNode.getChildrenSize() : 0, "element", true);
+  }
+}
 var JSON_NUMBER = /^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$/;
 function num(v2, d2) {
   if (typeof v2 === "number") {
@@ -30842,6 +29408,2053 @@ var GENERATED_TAB = (fields) => {
     updateFromJSON: updateTabNode
   };
 };
+var structureCache = /* @__PURE__ */ new WeakMap();
+function probeOwnIsInline(klass, until) {
+  for (let k = klass; k !== null && k !== until; k = Object.getPrototypeOf(k)) {
+    const proto = k.prototype;
+    if (proto !== void 0 && Object.prototype.hasOwnProperty.call(proto, "isInline") && typeof proto.isInline === "function" && !isSynthesizedIsInline(proto.isInline)) {
+      try {
+        const value = klass.prototype.isInline.call(Object.create(klass.prototype));
+        return typeof value === "boolean" ? value : null;
+      } catch (_e) {
+        return null;
+      }
+    }
+  }
+  return void 0;
+}
+function invalidMergeBy(klass, config, derived) {
+  const fields = getComposedSchemaFields(klass);
+  for (const entry of config.by) {
+    if (typeof entry === "string") {
+      if (!(entry in fields)) {
+        return {
+          entry,
+          reason: "unknown"
+        };
+      }
+      if (derived.has(entry)) {
+        return {
+          entry,
+          reason: "derived"
+        };
+      }
+    } else if (entry.derived) {
+      return {
+        entry: String(entry.key),
+        reason: "derived-state"
+      };
+    }
+  }
+  return null;
+}
+function declaredChildren(klass) {
+  for (const {
+    ownNodeConfig
+  } of iterStaticNodeConfigChain(klass)) {
+    if (ownNodeConfig && ownNodeConfig.children !== void 0) {
+      return ownNodeConfig.children;
+    }
+  }
+  return void 0;
+}
+function mergingChildNotInline(klass, children) {
+  if (!Array.isArray(children) || children.includes("inline")) {
+    return null;
+  }
+  for (const entry of children) {
+    if (entry === "inline") {
+      continue;
+    }
+    const item = declaredChildren(entry);
+    const ok = item === "inline" || Array.isArray(item) && item.includes("inline") && item.every((e2) => e2 === "inline" || e2 === klass || klass.prototype instanceof e2);
+    if (!ok) {
+      return entry;
+    }
+  }
+  return null;
+}
+function derivedNamesOf(klass) {
+  const derived = /* @__PURE__ */ new Set();
+  const fields = getComposedSchemaFields(klass);
+  for (const name of Object.keys(fields)) {
+    if (fields[name].derived === true) {
+      derived.add(name);
+    }
+  }
+  for (const {
+    ownNodeConfig
+  } of iterStaticNodeConfigChain(klass)) {
+    const states = ownNodeConfig && ownNodeConfig.stateConfigs;
+    if (states) {
+      for (const entry of states) {
+        const config = entry instanceof StateConfig ? entry : entry.stateConfig;
+        if (config.derived) {
+          derived.add(config.key);
+        }
+      }
+    }
+  }
+  return derived;
+}
+function cachedNodeStructure(klass) {
+  let result = structureCache.get(klass);
+  if (result === void 0) {
+    const out = {};
+    const by = {};
+    let mergeSeen = false;
+    for (const {
+      klass: k,
+      ownNodeConfig
+    } of iterStaticNodeConfigChain(klass)) {
+      if (!ownNodeConfig) {
+        continue;
+      }
+      if (by.inline === void 0 && ownNodeConfig.inline !== void 0) {
+        out.inline = ownNodeConfig.inline;
+        by.inline = k;
+      }
+      if (by.children === void 0 && ownNodeConfig.children !== void 0) {
+        out.children = ownNodeConfig.children;
+        by.children = k;
+      }
+      if (!mergeSeen && ownNodeConfig.mergeAdjacent !== void 0) {
+        mergeSeen = true;
+        if (ownNodeConfig.mergeAdjacent !== false) {
+          out.mergeAdjacent = ownNodeConfig.mergeAdjacent;
+          by.mergeAdjacent = k;
+        }
+      }
+    }
+    const derivedNames = derivedNamesOf(klass);
+    if (by.inline !== void 0 && by.inline !== klass && probeOwnIsInline(klass, by.inline) !== void 0 && probeOwnIsInline(klass, by.inline) !== out.inline) {
+      delete out.inline;
+      delete by.inline;
+    }
+    if (by.mergeAdjacent !== void 0 && by.mergeAdjacent !== klass && (invalidMergeBy(klass, out.mergeAdjacent, derivedNames) !== null || mergingChildNotInline(klass, out.children) !== null)) {
+      delete out.mergeAdjacent;
+      delete by.mergeAdjacent;
+    }
+    result = Object.freeze({
+      ...out,
+      declaredBy: Object.freeze(by),
+      derived: derivedNames,
+      derivedNames
+    });
+    structureCache.set(klass, result);
+  }
+  return result;
+}
+function getDeclaredNodeStructure(klass) {
+  const {
+    derivedNames,
+    ...rest
+  } = cachedNodeStructure(klass);
+  return Object.freeze({
+    ...rest,
+    derived: new Set(derivedNames)
+  });
+}
+function isOverflowClass(klass) {
+  let result = overflowCache.get(klass);
+  if (result === void 0) {
+    result = false;
+    for (const {
+      ownNodeConfig,
+      ownNodeType
+    } of iterStaticNodeConfigChain(klass)) {
+      if (ownNodeConfig !== void 0 && ownNodeType === "overflow" && ownNodeConfig.extends === ElementNode) {
+        result = true;
+        break;
+      }
+    }
+    overflowCache.set(klass, result);
+  }
+  return result;
+}
+var overflowCache = /* @__PURE__ */ new WeakMap();
+function isOverflowNode(node) {
+  return isOverflowClass(node.constructor);
+}
+function isInlineChild(node) {
+  if ($isTextNode(node) || $isLineBreakNode(node) || isOverflowNode(node)) {
+    return true;
+  }
+  try {
+    return node.isInline();
+  } catch (_e) {
+    return true;
+  }
+}
+function isInlineLeaf(node) {
+  return $isTextNode(node) || $isLineBreakNode(node) || $isDecoratorNode(node) && isInlineChild(node);
+}
+function allows(children, child) {
+  if (isOverflowNode(child)) {
+    return true;
+  }
+  if (children === "inline") {
+    return isInlineChild(child);
+  }
+  if (children === "block") {
+    return !isInlineChild(child);
+  }
+  if (isInlineChild(child)) {
+    return children.includes("inline");
+  }
+  for (const entry of children) {
+    if (entry !== "inline" && child instanceof entry) {
+      return true;
+    }
+  }
+  return false;
+}
+function effectiveChildren(node) {
+  return $isRootOrShadowRoot(node) ? "block" : cachedNodeStructure(node.constructor).children;
+}
+function isJoinableParagraph(holderChildren, node) {
+  return $isParagraphNode(node) && !node.isShadowRoot() && node.getChildren().every((c2) => allows(holderChildren, c2));
+}
+function descend(node, last) {
+  const keys = [];
+  for (let n2 = node; n2 !== null; n2 = $isElementNode(n2) ? last ? n2.getLastChild() : n2.getFirstChild() : null) {
+    keys.push(n2.getKey());
+  }
+  return keys;
+}
+function $saveAnchor(point) {
+  if (point.type === "text") {
+    return {
+      offset: point.offset,
+      text: point.key
+    };
+  }
+  const node = point.getNode();
+  if (!$isElementNode(node)) {
+    return null;
+  }
+  const offset = Math.min(point.offset, node.getChildrenSize());
+  const prevNode = offset > 0 ? node.getChildAtIndex(offset - 1) : null;
+  const nextNode = node.getChildAtIndex(offset);
+  if (prevNode !== null && isInlineLeaf(prevNode)) {
+    return {
+      after: true,
+      keys: [prevNode.getKey()]
+    };
+  }
+  if (nextNode !== null && isInlineLeaf(nextNode)) {
+    return {
+      after: false,
+      keys: [nextNode.getKey()]
+    };
+  }
+  let prev = prevNode;
+  let next = nextNode;
+  const rule = effectiveChildren(node);
+  if (rule === "inline" || Array.isArray(rule) && rule.includes("inline")) {
+    while (prev !== null && isPassedOver(prev)) {
+      prev = prev.getPreviousSibling();
+    }
+    while (next !== null && isPassedOver(next)) {
+      next = next.getNextSibling();
+    }
+    if (prev === null && next === null) {
+      prev = prevNode;
+      next = nextNode;
+    }
+  }
+  if (prev !== null && isInlineLeaf(prev)) {
+    return {
+      after: true,
+      keys: [prev.getKey()]
+    };
+  }
+  if (next !== null && isInlineLeaf(next)) {
+    return {
+      after: false,
+      keys: [next.getKey()]
+    };
+  }
+  if (next !== null) {
+    return {
+      after: false,
+      keys: descend(next, false)
+    };
+  }
+  if (prev !== null) {
+    return {
+      after: true,
+      keys: descend(prev, true)
+    };
+  }
+  return {
+    inside: node.getKey()
+  };
+}
+function isPassedOver(node) {
+  if (!$isElementNode(node) || $isParagraphNode(node) || isInlineChild(node)) {
+    return false;
+  }
+  const holdsLeaf = (n2) => n2.getChildren().some((c2) => !$isElementNode(c2) || holdsLeaf(c2));
+  return !holdsLeaf(node);
+}
+var Normalization = class {
+  /**
+   * The dirty nodes and all their ancestors, and what the repairs put in a
+   * parent: the only nodes visited (unless `full`).
+   */
+  path = /* @__PURE__ */ (() => /* @__PURE__ */ new Set())();
+  /** The keys in `path` by the parent they were added under. */
+  pathByParent = /* @__PURE__ */ (() => /* @__PURE__ */ new Map())();
+  /** Nodes the repairs put in a parent (lifted blocks, copies, wrappers). */
+  touched = /* @__PURE__ */ (() => /* @__PURE__ */ new Set())();
+  /** Where a removed childless element's caret goes. */
+  substitutes = /* @__PURE__ */ (() => /* @__PURE__ */ new Map())();
+  /** Elements whose children the repairs changed. */
+  written = /* @__PURE__ */ (() => /* @__PURE__ */ new Set())();
+  changed = false;
+  /** Whether every descendant is visited, not only those in `path`. */
+  full = false;
+  /**
+   * The roots and shadow roots whose inline children are all wrapped, as
+   * core's own shadow root transform wraps them every time it runs (on the
+   * root in every update, on a shadow root when it is written).
+   */
+  wrapsAll = /* @__PURE__ */ (() => /* @__PURE__ */ new Set())();
+  /** Add `node`, under its current parent, to the nodes visited. */
+  addPath(node) {
+    const key = node.getKey();
+    this.path.add(key);
+    const parent = node.getLatest().__parent;
+    if (parent !== null) {
+      let keys = this.pathByParent.get(parent);
+      if (keys === void 0) {
+        keys = /* @__PURE__ */ new Set();
+        this.pathByParent.set(parent, keys);
+      }
+      keys.add(key);
+    }
+  }
+  /**
+   * The children of `parent` to visit: all of them when `full`, otherwise
+   * those in `path` (a child no transform wrote and no repair moved holds
+   * what the previous pass left, which is normalized).
+   */
+  $children(parent) {
+    if (this.full) {
+      return parent.getChildren();
+    }
+    const parentKey = parent.getKey();
+    const keys = this.pathByParent.get(parentKey);
+    if (keys === void 0) {
+      return [];
+    }
+    const cached = this.childrenCache.get(parentKey);
+    if (cached !== void 0 && cached.size === keys.size) {
+      return cached.nodes;
+    }
+    const nodes = [];
+    for (const key of keys) {
+      const node = $getNodeByKey(key);
+      if (node !== null && node.getLatest().__parent === parentKey) {
+        nodes.push(node);
+      }
+    }
+    this.childrenCache.set(parentKey, {
+      nodes,
+      size: keys.size
+    });
+    return nodes;
+  }
+  childrenCache = /* @__PURE__ */ (() => /* @__PURE__ */ new Map())();
+  /**
+   * Add `node`, and its ancestors up to one already visited under its current
+   * parent, to the nodes visited.
+   */
+  addPathChain(node) {
+    for (let n2 = node; n2 !== null; n2 = n2.getParent()) {
+      const parent = n2.getLatest().__parent;
+      const keys = parent === null ? void 0 : this.pathByParent.get(parent);
+      if (keys !== void 0 && keys.has(n2.getKey())) {
+        return;
+      }
+      this.addPath(n2);
+    }
+  }
+  /**
+   * After a class's own seam hook (which moves children from nodes it then
+   * removes): the entries of every removed parent go to where its children
+   * are now, so that they are still visited.
+   */
+  repath() {
+    for (const [parentKey, keys] of Array.from(this.pathByParent)) {
+      const parent = $getNodeByKey(parentKey);
+      if (parent !== null && parent.isAttached()) {
+        continue;
+      }
+      this.pathByParent.delete(parentKey);
+      for (const key of keys) {
+        const node = $getNodeByKey(key);
+        if (node !== null && node.isAttached()) {
+          this.addPathChain(node);
+        }
+      }
+    }
+  }
+  /** `from`'s children were moved to `to` (a merge): so are their entries. */
+  movePath(from, to) {
+    const keys = this.pathByParent.get(from);
+    if (keys !== void 0) {
+      this.pathByParent.delete(from);
+      for (const key of keys) {
+        const node = $getNodeByKey(key);
+        if (node !== null) {
+          this.addPath(node);
+        }
+      }
+    }
+    this.addPath(to);
+  }
+  $resolve(anchor, depth = 0) {
+    if ("text" in anchor) {
+      const node = $getNodeByKey(anchor.text);
+      return node !== null && node.isAttached() ? [anchor.text, anchor.offset, "text"] : null;
+    }
+    if ("inside" in anchor) {
+      const node = $getNodeByKey(anchor.inside);
+      if (node !== null && node.isAttached()) {
+        return [anchor.inside, 0, "element"];
+      }
+      const substitute = this.substitutes.get(anchor.inside);
+      return substitute !== void 0 && depth < 16 ? this.$resolve(substitute, depth + 1) : null;
+    }
+    const {
+      keys,
+      after
+    } = anchor;
+    for (let i2 = keys.length - 1; i2 >= 0; i2--) {
+      const node = $getNodeByKey(keys[i2]);
+      if (node === null || !node.isAttached() || node.getParent() === null) {
+        const substitute = this.substitutes.get(keys[i2]);
+        if (substitute !== void 0 && depth < 16) {
+          return this.$resolve(substitute, depth + 1);
+        }
+        continue;
+      }
+      let at = node;
+      for (let level = 0; level < i2; level++) {
+        const parent = at.getParent();
+        if (parent === null || $isRootOrShadowRoot(parent) || (after ? at.getNextSibling() : at.getPreviousSibling()) !== null) {
+          break;
+        }
+        at = parent;
+      }
+      if ($isTextNode(at)) {
+        return [at.getKey(), after ? at.getTextContentSize() : 0, "text"];
+      }
+      return [at.getParentOrThrow().getKey(), at.getIndexWithinParent() + (after ? 1 : 0), "element"];
+    }
+    return null;
+  }
+};
+function $append(parent, nodes) {
+  if (nodes.length > 0) {
+    ElementNode.prototype.splice.call(parent, parent.getChildrenSize(), 0, nodes);
+  }
+}
+function $detach(node) {
+  $removeNode(node, false, true);
+}
+function $canMergeAdjacent(a2, b2) {
+  if (a2.constructor !== b2.constructor || !$isElementNode(a2) || !$isElementNode(b2)) {
+    return false;
+  }
+  const klass = a2.constructor;
+  const declared = cachedNodeStructure(klass);
+  const config = declared.mergeAdjacent;
+  if (config === void 0 || declared.declaredBy.mergeAdjacent !== klass) {
+    return false;
+  }
+  let ja;
+  let jb;
+  for (const entry of config.by) {
+    if (typeof entry === "string") {
+      ja = ja || a2.exportJSON();
+      jb = jb || b2.exportJSON();
+      const va = ja[entry];
+      const vb = jb[entry];
+      if (va !== vb && JSON.stringify(va) !== JSON.stringify(vb)) {
+        return false;
+      }
+    } else if (!entry.isEqual($getState(a2, entry), $getState(b2, entry))) {
+      return false;
+    }
+  }
+  return true;
+}
+function $mergeInto(a2, b2, ctx) {
+  const aLast = a2.getLastChild();
+  const bFirst = b2.getFirstChild();
+  ctx.substitutes.set(b2.getKey(), aLast !== null ? {
+    after: true,
+    keys: descend(aLast, true)
+  } : {
+    inside: a2.getKey()
+  });
+  $append(a2, b2.getChildren());
+  $detach(b2);
+  ctx.movePath(b2.getKey(), a2);
+  ctx.changed = true;
+  ctx.written.add(a2.getKey());
+  if (aLast === null || bFirst === null) {
+    return;
+  }
+  if ($isElementNode(aLast) && $canMergeAdjacent(aLast, bFirst)) {
+    $mergeInto(aLast, bFirst, ctx);
+    return;
+  }
+  const hook = a2.INTERNAL_$afterStructureMerge;
+  if (typeof hook === "function") {
+    hook.call(a2, aLast, bFirst);
+    if (!ctx.full) {
+      ctx.repath();
+    }
+  }
+}
+function $mergeRun(node, ctx) {
+  let first = node;
+  for (let prev = first.getPreviousSibling(); prev !== null && $canMergeAdjacent(prev, first); prev = first.getPreviousSibling()) {
+    first = prev;
+  }
+  for (let next = first.getNextSibling(); next !== null && $canMergeAdjacent(first, next); next = first.getNextSibling()) {
+    $mergeInto(first, next, ctx);
+  }
+  return first;
+}
+function $mergeChildren(parent, ctx, all = false) {
+  if (all || ctx.full) {
+    for (let c2 = parent.getFirstChild(); c2 !== null; ) {
+      c2 = $mergeRun(c2, ctx).getNextSibling();
+    }
+    return;
+  }
+  for (const child of ctx.$children(parent)) {
+    const klass = child.constructor;
+    if (cachedNodeStructure(klass).declaredBy.mergeAdjacent === klass && child.getLatest().__parent === parent.getKey()) {
+      $mergeRun(child, ctx);
+    }
+  }
+}
+function $rebuild(holder, pieces, ctx) {
+  ctx.changed = true;
+  for (const child of holder.getChildren()) {
+    $detach(child);
+  }
+  const placed = [];
+  const holders = [];
+  const preceding = [];
+  let holderPlaced = false;
+  for (const piece of pieces) {
+    if ("lifted" in piece) {
+      placed.push(piece.lifted);
+      continue;
+    }
+    if (!piece.hadChildren) {
+      continue;
+    }
+    let target;
+    if (!holderPlaced) {
+      holderPlaced = true;
+      target = holder;
+    } else {
+      target = $copyNode(holder);
+      const hook = target.INTERNAL_$afterStructureSplit;
+      if (typeof hook === "function") {
+        hook.call(target, holder, preceding);
+      }
+    }
+    $append(target, piece.content);
+    piece.holder = target;
+    preceding.push(...piece.content);
+    placed.push(target);
+    holders.push(target);
+  }
+  const parent = holder.getParentOrThrow();
+  ctx.written.add(parent.getKey());
+  const at = placed.indexOf(holder);
+  let anchor = holder;
+  for (let i2 = at - 1; i2 >= 0; i2--) {
+    $insertSibling(anchor, "previous", placed[i2], false);
+    anchor = placed[i2];
+  }
+  anchor = holder;
+  for (let i2 = at + 1; i2 < placed.length; i2++) {
+    $insertSibling(anchor, "next", placed[i2], false);
+    anchor = placed[i2];
+  }
+  for (const node of placed) {
+    ctx.addPath(node);
+    ctx.touched.add(node.getKey());
+  }
+  if (at === -1) {
+    if (placed.length > 0) {
+      ctx.substitutes.set(holder.getKey(), {
+        after: false,
+        keys: descend(placed[0], false)
+      });
+    }
+    $detach(holder);
+  }
+  return holders;
+}
+function inlineRuleKinds(holder, rule, children) {
+  const inlineHolder = holder.isInline();
+  return children.map((c2) => allows(rule, c2) ? "keep" : !inlineHolder && isJoinableParagraph(rule, c2) ? "join" : isInlineChild(c2) ? "keep" : "lift");
+}
+function classRuleKinds(rule, children) {
+  const wrapper = rule[0];
+  const wrapperChildren = wrapper === void 0 ? void 0 : declaredChildren(wrapper);
+  return children.map((c2) => allows(rule, c2) ? "keep" : wrapper !== void 0 && (wrapperChildren === void 0 || allows(wrapperChildren, c2)) ? "wrap" : wrapper !== void 0 && wrapperChildren !== void 0 && isJoinableParagraph(wrapperChildren, c2) ? "flatten" : isInlineChild(c2) ? "keep" : "lift");
+}
+function $wrapLiftedContent(block, holder, ctx) {
+  const copies = [];
+  let run = [];
+  const flush = () => {
+    if (run.length > 0) {
+      const copy = $copyNode(holder);
+      $insertSibling(run[0], "previous", copy, false);
+      $append(copy, run);
+      copies.push(copy);
+      run = [];
+    }
+  };
+  for (const child of block.getChildren()) {
+    if (isInlineChild(child) && !isOverflowNode(child)) {
+      run.push(child);
+      continue;
+    }
+    flush();
+    if ($isElementNode(child)) {
+      $wrapLiftedContent(child, holder, ctx);
+    }
+  }
+  flush();
+  if (copies.length === 0) {
+    return;
+  }
+  ctx.changed = true;
+  ctx.written.add(block.getKey());
+  const rule = effectiveChildren(block);
+  if (rule !== void 0 && copies.some((copy) => !allows(rule, copy))) {
+    $applyRules(block, rule, true, ctx);
+  }
+}
+function $applyInlineRule(holder, rule, ctx) {
+  const inlineHolder = holder.isInline();
+  const children = holder.getChildren();
+  const kinds = inlineRuleKinds(holder, rule, children);
+  if (kinds.every((k) => k === "keep")) {
+    return [holder];
+  }
+  const pieces = [];
+  const emptyLines = [];
+  let segment = {
+    content: [],
+    hadChildren: false,
+    holder: null
+  };
+  let last = "none";
+  for (let i2 = 0; i2 < children.length; i2++) {
+    const child = children[i2];
+    const kind = kinds[i2];
+    if (kind === "lift") {
+      if (inlineHolder && $isElementNode(child)) {
+        $wrapLiftedContent(child, holder, ctx);
+      }
+      pieces.push(segment, {
+        lifted: child
+      });
+      segment = {
+        content: [],
+        hadChildren: false,
+        holder: null
+      };
+      last = "none";
+      continue;
+    }
+    segment.hadChildren = true;
+    if (kind === "join") {
+      if (last === "inline" || last === "line") {
+        segment.content.push($createLineBreakNode());
+      }
+      const content = child.getChildren();
+      if (content.length === 0) {
+        emptyLines.push({
+          at: segment.content.length,
+          paragraph: child,
+          segment
+        });
+      }
+      segment.content.push(...content);
+      last = "line";
+      continue;
+    }
+    const unit = isInlineChild(child) ? "inline" : "block";
+    if (unit === "inline" && last === "line") {
+      segment.content.push($createLineBreakNode());
+    }
+    segment.content.push(child);
+    last = unit;
+  }
+  pieces.push(segment);
+  const holders = $rebuild(holder, pieces, ctx);
+  for (const {
+    paragraph,
+    segment: s2,
+    at
+  } of emptyLines) {
+    const before = at > 0 ? s2.content[at - 1] : void 0;
+    const after = s2.content[at];
+    ctx.substitutes.set(paragraph.getKey(), before !== void 0 ? {
+      after: true,
+      keys: descend(before, true)
+    } : after !== void 0 ? {
+      after: false,
+      keys: descend(after, false)
+    } : {
+      inside: (s2.holder || holder).getKey()
+    });
+  }
+  return holders;
+}
+function $applyClassRule(holder, rule, ctx) {
+  const wrapper = rule[0];
+  const children = holder.getChildren();
+  const kinds = classRuleKinds(rule, children);
+  if (kinds.every((k) => k === "keep")) {
+    return [holder];
+  }
+  const pieces = [];
+  let segment = {
+    content: [],
+    hadChildren: false,
+    holder: null
+  };
+  for (let i2 = 0; i2 < children.length; i2++) {
+    const child = children[i2];
+    const kind = kinds[i2];
+    if (kind === "lift") {
+      pieces.push(segment, {
+        lifted: child
+      });
+      segment = {
+        content: [],
+        hadChildren: false,
+        holder: null
+      };
+      continue;
+    }
+    segment.hadChildren = true;
+    if (kind === "keep") {
+      segment.content.push(child);
+    } else if (kind === "flatten") {
+      const w2 = $create(wrapper);
+      $append(w2, child.getChildren());
+      ctx.substitutes.set(child.getKey(), {
+        inside: w2.getKey()
+      });
+      segment.content.push(w2);
+    } else {
+      const run = [child];
+      while (isInlineChild(child) && i2 + 1 < children.length && kinds[i2 + 1] === "wrap" && isInlineChild(children[i2 + 1])) {
+        run.push(children[++i2]);
+      }
+      const w2 = $create(wrapper);
+      $append(w2, run);
+      segment.content.push(w2);
+    }
+  }
+  pieces.push(segment);
+  return $rebuild(holder, pieces, ctx);
+}
+function $wrapInlineRun(child, ctx) {
+  const blocked = (n2) => n2 !== null && !allows("block", n2);
+  if (!blocked(child)) {
+    return;
+  }
+  let first = child;
+  for (let p2 = first.getPreviousSibling(); blocked(p2); p2 = first.getPreviousSibling()) {
+    first = p2;
+  }
+  const run = [first];
+  for (let n2 = first.getNextSibling(); blocked(n2); n2 = n2.getNextSibling()) {
+    run.push(n2);
+  }
+  const w2 = first.createParentElementNode();
+  $insertSibling(first, "previous", w2, false);
+  $append(w2, run);
+  ctx.changed = true;
+  ctx.written.add(w2.getKey());
+  ctx.addPath(w2);
+  ctx.touched.add(w2.getKey());
+}
+var ruleInputs = /* @__PURE__ */ new WeakMap();
+function hasInstanceRuleInputs(klass) {
+  let result = instanceRuleInputsCache.get(klass);
+  if (result === void 0) {
+    const proto = klass.prototype;
+    result = proto.isShadowRoot !== ElementNode.prototype.isShadowRoot || proto.isInline !== ElementNode.prototype.isInline && !isSynthesizedIsInline(proto.isInline);
+    instanceRuleInputsCache.set(klass, result);
+  }
+  return result;
+}
+var instanceRuleInputsCache = /* @__PURE__ */ new WeakMap();
+function $checksAllChildren(holder, ctx) {
+  if ($isRootNode(holder) || !hasInstanceRuleInputs(holder.constructor)) {
+    return ctx.full;
+  }
+  const latest = holder.getLatest();
+  const inputs = ($isRootOrShadowRoot(holder) ? 1 : 0) + (isInlineChild(holder) ? 2 : 0);
+  let before = ruleInputs.get(latest);
+  if (before === void 0) {
+    const committed = $getEditor().getEditorState()._nodeMap.get(holder.getKey());
+    before = committed === void 0 ? void 0 : ruleInputs.get(committed);
+  }
+  ruleInputs.set(latest, inputs);
+  return ctx.full || before !== inputs;
+}
+function $applyRules(holder, rule, checksAll, ctx) {
+  if (rule === "block" && checksAll && !$holdsInline(holder)) {
+    return null;
+  }
+  const holderKey = holder.getKey();
+  const children = checksAll ? holder.getChildren() : ctx.$children(holder).filter((c2) => c2.getLatest().__parent === holderKey);
+  if (rule === "block") {
+    for (const c2 of children) {
+      if (c2.getLatest().__parent === holderKey) {
+        $wrapInlineRun(c2, ctx);
+      }
+    }
+    return null;
+  }
+  if (rule === "inline" || rule.includes("inline")) {
+    return inlineRuleKinds(holder, rule, children).every((k) => k === "keep") ? null : $applyInlineRule(holder, rule, ctx);
+  }
+  return classRuleKinds(rule, children).every((k) => k === "keep") ? null : $applyClassRule(holder, rule, ctx);
+}
+function $normalizeElement(node, ctx) {
+  const rule = effectiveChildren(node);
+  const checksAll = rule !== void 0 && ($checksAllChildren(node, ctx) || rule === "block" && ctx.wrapsAll.has(node.getKey()));
+  if (!ctx.full && !ctx.pathByParent.has(node.getKey())) {
+    if (node.isEmpty() && !$isRootOrShadowRoot(node) && isRemovedWhenEmpty(node)) {
+      $removeEmpty(node, ctx);
+      return true;
+    }
+    if (!checksAll) {
+      return false;
+    }
+  }
+  $mergeChildren(node, ctx);
+  let removedChild = false;
+  for (const c2 of ctx.$children(node)) {
+    if ($isElementNode(c2) && c2.getLatest().__parent === node.getKey() && $normalizeElement(c2, ctx)) {
+      removedChild = true;
+    }
+  }
+  if (node.isEmpty() && !$isRootOrShadowRoot(node) && (isRemovedWhenEmpty(node) || removedChild && !node.canBeEmpty())) {
+    $removeEmpty(node, ctx);
+    return true;
+  }
+  const holders = rule === void 0 ? null : $applyRules(node, rule, checksAll, ctx);
+  if (holders === null) {
+    $mergeChildren(node, ctx);
+  } else {
+    for (const holder of holders) {
+      $mergeChildren(holder, ctx, true);
+    }
+  }
+  return false;
+}
+function isRemovedWhenEmpty(node) {
+  return isOverflowNode(node) || isInlineChild(node) && !node.canBeEmpty();
+}
+function $removeEmpty(node, ctx) {
+  const prev = node.getPreviousSibling();
+  const next = node.getNextSibling();
+  const parent = node.getParentOrThrow();
+  ctx.substitutes.set(node.getKey(), prev !== null ? {
+    after: true,
+    keys: descend(prev, true)
+  } : next !== null ? {
+    after: false,
+    keys: descend(next, false)
+  } : {
+    inside: parent.getKey()
+  });
+  $detach(node);
+  for (const sibling of [prev, next]) {
+    if (sibling !== null) {
+      ctx.addPath(sibling);
+      ctx.touched.add(sibling.getKey());
+    }
+  }
+  ctx.changed = true;
+  ctx.written.add(parent.getKey());
+}
+function isStructurallyStatic(klass) {
+  let result = structurallyStaticCache.get(klass);
+  if (result === void 0) {
+    result = !hasInstanceRuleInputs(klass) && cachedNodeStructure(klass).declaredBy.mergeAdjacent !== klass;
+    structurallyStaticCache.set(klass, result);
+  }
+  return result;
+}
+var structurallyStaticCache = /* @__PURE__ */ new WeakMap();
+function isStructurallyUnchanged(node, committed) {
+  if (committed === void 0 || !$isElementNode(node)) {
+    return false;
+  }
+  const klass = node.constructor;
+  if (committed.constructor !== klass || !isStructurallyStatic(klass)) {
+    return false;
+  }
+  const n2 = node;
+  const c2 = committed;
+  return c2.__parent === n2.__parent && c2.__prev === n2.__prev && c2.__next === n2.__next && c2.__first === n2.__first && c2.__last === n2.__last && c2.__size === n2.__size;
+}
+function $normalizeDirty(dirty, full, committedNormalized) {
+  const root = $getRoot();
+  if (dirty.length === 0 && !full && !$holdsInline(root)) {
+    return;
+  }
+  const ctx = new Normalization();
+  ctx.full = full;
+  const rootKey = root.getKey();
+  ctx.wrapsAll.add(rootKey);
+  ctx.path.add(rootKey);
+  const committed = committedNormalized ? $getEditor().getEditorState()._nodeMap : null;
+  const chain = [];
+  for (const key of full ? [] : dirty) {
+    chain.length = 0;
+    let attached = false;
+    const node = $getNodeByKey(key);
+    if ($isElementNode(node) && node.isShadowRoot()) {
+      ctx.wrapsAll.add(key);
+    }
+    if (committed !== null && node !== null && isStructurallyUnchanged(node, committed.get(key))) {
+      continue;
+    }
+    for (let n2 = node; n2 !== null; n2 = n2.getParent()) {
+      if (ctx.path.has(n2.getKey())) {
+        attached = true;
+        break;
+      }
+      chain.push(n2);
+    }
+    if (attached) {
+      for (const n2 of chain) {
+        ctx.addPath(n2);
+      }
+    }
+  }
+  dirty.length = 0;
+  if (ctx.path.size > 1 || full || $holdsInline(root)) {
+    $normalize(ctx, () => {
+      $normalizeElement(root, ctx);
+    });
+  }
+}
+function isBlockElement(node) {
+  if (!$isElementNode(node)) {
+    return false;
+  }
+  try {
+    return !node.isInline();
+  } catch (_e) {
+    return false;
+  }
+}
+function $holdsInline(node) {
+  for (let c2 = node.getFirstChild(); c2 !== null; c2 = c2.getNextSibling()) {
+    if (!isBlockElement(c2) && !allows("block", c2)) {
+      return true;
+    }
+  }
+  return false;
+}
+function $normalize(ctx, repair) {
+  const selection = $getSelection();
+  const saved = $isRangeSelection(selection) ? [selection.anchor, selection.focus].map((point) => ({
+    anchor: $saveAnchor(point),
+    point
+  })) : [];
+  repair(ctx);
+  for (const key of ctx.written) {
+    const node = $getNodeByKey(key);
+    if (node !== null && node.isAttached()) {
+      for (let n2 = node; n2 !== null && !$isRootNode(n2); n2 = n2.getParent()) {
+        n2.markDirty();
+      }
+    }
+  }
+  if (ctx.changed) {
+    for (const {
+      point,
+      anchor
+    } of saved) {
+      const at = anchor && ctx.$resolve(anchor);
+      if (at) {
+        point.set(at[0], at[1], at[2]);
+      }
+    }
+  }
+}
+function INTERNAL_$normalizeNodeStructure(node) {
+  if (!$isElementNode(node) || !node.isAttached()) {
+    return;
+  }
+  const ctx = new Normalization();
+  ctx.full = true;
+  const parent = node.getParent();
+  $normalize(ctx, () => {
+    if (parent === null || $isRootOrShadowRoot(node)) {
+      $normalizeElement(node, ctx);
+      return;
+    }
+    const parentKey = parent.getKey();
+    ctx.touched.add(node.getKey());
+    $normalizeElement(node, ctx);
+    for (const key of Array.from(ctx.touched)) {
+      const piece = $getNodeByKey(key);
+      if (piece !== null && piece.getLatest().__parent === parentKey) {
+        $mergeRun(piece, ctx);
+      }
+    }
+  });
+}
+var structureRegistrations;
+function INTERNAL_registerNodeStructure(editor) {
+  const registry = structureRegistrations || (structureRegistrations = /* @__PURE__ */ new WeakMap());
+  let registration = registry.get(editor);
+  if (registration === void 0) {
+    const dirty = [];
+    const collected = /* @__PURE__ */ new Set();
+    const collect = (node) => {
+      const key = node.__key;
+      dirty.push(key);
+      collected.add(key);
+    };
+    const unnormalized = new WeakSet([editor.getEditorState()]);
+    let full = true;
+    const $normalizeTransform = () => {
+      const all = full;
+      full = false;
+      $normalizeDirty(dirty, all, !unnormalized.has($getEditor().getEditorState()));
+    };
+    const disposeListener = editor.registerUpdateListener(({
+      editorState,
+      dirtyElements,
+      dirtyLeaves
+    }) => {
+      const nodeMap = editorState._nodeMap;
+      const skipped = (key) => !collected.has(key) && nodeMap.has(key);
+      let complete = true;
+      for (const [key, intentional] of dirtyElements) {
+        if (intentional && key !== "root" && skipped(key)) {
+          complete = false;
+          break;
+        }
+      }
+      if (complete) {
+        for (const key of dirtyLeaves) {
+          if (skipped(key)) {
+            complete = false;
+            break;
+          }
+        }
+      }
+      collected.clear();
+      if (!complete) {
+        unnormalized.add(editorState);
+      }
+    });
+    const added = [];
+    const types = [];
+    for (const [type, {
+      klass,
+      transforms
+    }] of editor._nodes) {
+      const fn = type === "root" ? $normalizeTransform : collect;
+      transforms.add(fn);
+      added.push([transforms, fn]);
+      if (klass.prototype instanceof ElementNode || klass.prototype instanceof DecoratorNode) {
+        types.push(type);
+      }
+    }
+    registration = {
+      dispose: () => {
+        disposeListener();
+        for (const [transforms, fn] of added) {
+          transforms.delete(fn);
+        }
+      },
+      refs: 0
+    };
+    registry.set(editor, registration);
+    markNodesWithTypesAsDirty(editor, types);
+  }
+  registration.refs++;
+  let disposed = false;
+  const current = registration;
+  return () => {
+    if (!disposed) {
+      disposed = true;
+      if (--current.refs === 0) {
+        current.dispose();
+        registry.delete(editor);
+      }
+    }
+  };
+}
+function INTERNAL_isNodeStructureEnforced(editor) {
+  return structureRegistrations !== void 0 && structureRegistrations.has(editor);
+}
+function validateNodeStructure(klass) {
+  const declared = cachedNodeStructure(klass);
+  const name = klass.name || "node class";
+  if (declared.mergeAdjacent !== void 0 && declared.declaredBy.mergeAdjacent === klass) {
+    const invalid = invalidMergeBy(klass, declared.mergeAdjacent, declared.derivedNames);
+    if (invalid !== null) {
+      if (!(invalid.reason !== "unknown")) {
+        formatDevErrorMessage2(`${name}: mergeAdjacent.by names ${invalid.entry}, which is not a schema field of the class`);
+      }
+      if (!(invalid.reason !== "derived")) {
+        formatDevErrorMessage2(`${name}: mergeAdjacent.by names ${invalid.entry}, which is derived`);
+      }
+      {
+        formatDevErrorMessage2(`${name}: mergeAdjacent.by names the derived NodeState ${invalid.entry}`);
+      }
+    }
+    const item = mergingChildNotInline(klass, declared.children);
+    if (!(item === null)) {
+      formatDevErrorMessage2(`${name}: a merging class that lists child classes must list classes that hold inline content (${item === null ? "" : item.name} does not)`);
+    }
+  }
+  if (declared.inline !== void 0 && declared.declaredBy.inline === klass) {
+    const value = probeOwnIsInline(klass, Object.getPrototypeOf(klass));
+    if (!(value === void 0 || value === null || value === declared.inline)) {
+      formatDevErrorMessage2(`${name}: $config inline is ${String(declared.inline)} but isInline() returns ${String(value)}`);
+    }
+  }
+}
+// @__NO_SIDE_EFFECTS__
+function formatGetterTable() {
+  return {
+    ...ELEMENT_FORMAT_TO_TYPE,
+    0: ""
+  };
+}
+// @__NO_SIDE_EFFECTS__
+function formatSetterTable() {
+  return {
+    ...ELEMENT_TYPE_TO_FORMAT,
+    "": 0
+  };
+}
+var FORMAT_GETTER_TABLE = /* @__PURE__ */ formatGetterTable();
+var FORMAT_SETTER_TABLE = /* @__PURE__ */ formatSetterTable();
+var elementNodeSchema = /* @__PURE__ */ (/* @__PURE__ */ nodeSchema())({
+  // `direction` and `indent` *are* these fields in both directions —
+  // get/setDirection and get/setIndent do nothing else — so they are declared
+  // as the fields they are. Each still stands in for the conventional
+  // accessor, so a subclass that overrides one reclaims its property (see
+  // SchemaFieldBase.method).
+  direction: /* @__PURE__ */ withField(/* @__PURE__ */ enumValue([null, "ltr", "rtl"]), {
+    field: "__dir"
+  }),
+  // The serialized `format` is the ElementFormatType string, not the numeric
+  // format getFormat() returns — which is the whole of what `getFormatType`
+  // and `setFormat` do, so the schema does it instead and reads and writes
+  // `__format` directly. Both accessors are still named: the conventional
+  // `getFormat` a field would otherwise stand in for returns the flag, not the
+  // string, so the read has to say which accessor it means.
+  format: /* @__PURE__ */ withField(/* @__PURE__ */ enumValue(["", "left", "start", "center", "right", "end", "justify"]), {
+    field: "__format",
+    getter: "getFormatType",
+    getterTable: FORMAT_GETTER_TABLE,
+    setter: "setFormat",
+    setterTable: FORMAT_SETTER_TABLE
+  }),
+  // A whole, non-negative number. That is the domain an indent has always
+  // had — every writer of one is an indent/outdent step — but nothing used to
+  // check it: `ElementNode.setIndent` is a bare field write, so a fractional
+  // or negative value in a document was stored verbatim rather than rejected.
+  // Stating the domain is what makes such a value parse to 0 instead.
+  // Deliberately not capped —
+  // `numberValue` falls back to its default rather than clamping, so a maximum
+  // here would silently flatten a legitimately deep document to indent 0. The
+  // unbounded walk that motivated a cap is ListItemNode.setIndent's, and it is
+  // bounded there.
+  indent: /* @__PURE__ */ withField(/* @__PURE__ */ numberValue(0, {
+    integer: true,
+    min: 0
+  }), {
+    field: "__indent"
+  }),
+  // Persisted only for an element with no TextNode child (see #7968), which
+  // `shouldSerializeTextStyles` decides. Declaring that as the field it is
+  // plus the predicate that gates it — rather than reading through
+  // `getSerializedTextFormat`/`getSerializedTextStyle` — keeps both on the
+  // direct-field path, and lets generated code call the shared predicate once
+  // instead of once per property.
+  //
+  // Naming the wrapper keeps a subclass in charge of its own property: an
+  // override of it, or of the `getTextFormat`/`getTextStyle` it computes from
+  // — the accessors `exportJSON` read before this schema existed, and the ones
+  // a subclass would reach for — abandons the field and calls the wrapper.
+  //
+  // The write is the field too. `setTextFormat`/`setTextStyle` are bare field
+  // writes, so naming them is naming the field; each still stands in for its
+  // conventional setter, so a subclass that overrides one reclaims the
+  // property on the way in as it does on the way out.
+  textFormat: /* @__PURE__ */ withAccessors(/* @__PURE__ */ numberValue(), {
+    getter: {
+      field: "__textFormat",
+      method: "getSerializedTextFormat",
+      when: "shouldSerializeTextStyles"
+    },
+    setter: {
+      field: "__textFormat"
+    }
+  }),
+  textStyle: /* @__PURE__ */ withAccessors(/* @__PURE__ */ stringValue(), {
+    getter: {
+      field: "__textStyle",
+      method: "getSerializedTextStyle",
+      when: "shouldSerializeTextStyles"
+    },
+    setter: {
+      field: "__textStyle"
+    }
+  })
+});
+function $normalizeShadowRootChildren(node) {
+  if ($isRootOrShadowRoot(node) && !INTERNAL_isNodeStructureEnforced(getActiveEditor())) {
+    let block = null;
+    for (const child of node.getChildren()) {
+      block = child.isInline() ? (block || child.replace(child.createParentElementNode())).append(child) : null;
+    }
+  }
+}
+var ElementNode = class extends LexicalNode {
+  /** @internal */
+  /** @internal */
+  __first;
+  /** @internal */
+  __last;
+  /** @internal */
+  __size;
+  /** @internal */
+  __format;
+  /** @internal */
+  __style;
+  /** @internal */
+  __indent;
+  /** @internal */
+  __dir;
+  /** @internal */
+  __textFormat;
+  /** @internal */
+  __textStyle;
+  /** @internal */
+  __slotHost;
+  /** @internal */
+  __slots;
+  // Left to inference rather than annotated `: BaseStaticNodeConfig`. The
+  // annotation discarded the record, and with it every element's schema — what
+  // `LexicalSchemaInput` walks to compose the properties a node accepts. The
+  // cost is that a subclass overriding `$config()` has to name its `extends`,
+  // which is the convention every config in the tree already follows.
+  $config() {
+    return this.config(/* @__PURE__ */ Symbol.for("ElementNode"), {
+      /*
+       * Built-in normalize for shadow-root ElementNodes: wraps any direct child
+       * that is neither an ElementNode nor a DecoratorNode in a paragraph, so
+       * the slot-frame invariant set by `getTopLevelElement` continues to hold
+       * for external inputs (URL doc payloads, imported JSON, paste round-trips)
+       * that may carry shapes the in-editor mutation paths can no longer
+       * produce. In-editor mutation paths still fail-fast on the invariant.
+       *
+       * Runs as a static transform so the existing dirty-node transform cycle
+       * drives it — typing paths cover their own dirty bookkeeping, hydrate
+       * paths (`setEditorState`) dirty-mark slot hosts so the cycle picks them
+       * up.
+       */
+      $transform: $normalizeShadowRootChildren,
+      extends: LexicalNode,
+      generated: GENERATED_ELEMENT,
+      json: elementNodeSchema
+    });
+  }
+  constructor(key) {
+    super(key);
+    this.__first = null;
+    this.__last = null;
+    this.__size = 0;
+    this.__format = 0;
+    this.__style = "";
+    this.__indent = 0;
+    this.__dir = null;
+    this.__textFormat = 0;
+    this.__textStyle = "";
+    this.__slotHost = null;
+    this.__slots = null;
+  }
+  // Written rather than synthesized from the schema: an element's children
+  // and its slot bookkeeping are structure, not serialized properties, so no
+  // schema describes where they live. The key test is the other half of that —
+  // a clone under a *new* key is a copy of the node, not of its place in the
+  // tree, and must not adopt the original's children.
+  //
+  // Declaring one of these takes the class out of the synthesized
+  // `afterCloneFrom` entirely, so the schema's own fields are this method's
+  // responsibility too — but not its boilerplate: `afterCloneElementNode` is
+  // generated from the same declaration, so adding a property to the schema
+  // needs no line here.
+  afterCloneFrom(prevNode) {
+    super.afterCloneFrom(prevNode);
+    if (this.__key === prevNode.__key) {
+      this.__first = prevNode.__first;
+      this.__last = prevNode.__last;
+      this.__size = prevNode.__size;
+      this.__slotHost = prevNode.__slotHost;
+      if (!(this.__slotHost === null || this.__parent === null)) {
+        formatDevErrorMessage2(`ElementNode: node ${this.__key} is both slotted into host ${String(this.__slotHost)} and a child of parent ${String(this.__parent)}; __slotHost and __parent are mutually exclusive`);
+      }
+      this.__slots = prevNode.__slots;
+    }
+    this.__style = prevNode.__style;
+    afterCloneElementNode(this, prevNode);
+  }
+  getFormat() {
+    const self = this.getLatest();
+    return self.__format;
+  }
+  getFormatType() {
+    const format = this.getFormat();
+    return ELEMENT_FORMAT_TO_TYPE[format] || "";
+  }
+  getStyle() {
+    const self = this.getLatest();
+    return self.__style;
+  }
+  getIndent() {
+    const self = this.getLatest();
+    return self.__indent;
+  }
+  /**
+   * Returns the children of this node, in document order.
+   */
+  getChildren() {
+    return $collectSiblingNodes(this.getFirstChild(), "next");
+  }
+  getChildrenKeys() {
+    const children = [];
+    let child = this.getFirstChild();
+    while (child !== null) {
+      children.push(child.__key);
+      child = child.getNextSibling();
+    }
+    return children;
+  }
+  getChildrenSize() {
+    const self = this.getLatest();
+    return self.__size;
+  }
+  isEmpty() {
+    return this.getChildrenSize() === 0 && $getSlotNames(this).length === 0;
+  }
+  isDirty() {
+    const editor = getActiveEditor();
+    const dirtyElements = editor._dirtyElements;
+    return dirtyElements !== null && dirtyElements.has(this.__key);
+  }
+  isLastChild() {
+    const self = this.getLatest();
+    const parentLastChild = this.getParentOrThrow().getLastChild();
+    return parentLastChild !== null && parentLastChild.is(self);
+  }
+  getAllTextNodes() {
+    const textNodes = [];
+    for (const name of $getSlotNames(this)) {
+      const slot = $getSlot(this, name);
+      if ($isElementNode(slot)) {
+        for (const textNode of slot.getAllTextNodes()) {
+          textNodes.push(textNode);
+        }
+      }
+    }
+    let child = this.getFirstChild();
+    while (child !== null) {
+      if ($isTextNode(child)) {
+        textNodes.push(child);
+      }
+      if ($isElementNode(child)) {
+        for (const textNode of child.getAllTextNodes()) {
+          textNodes.push(textNode);
+        }
+      }
+      child = child.getNextSibling();
+    }
+    return textNodes;
+  }
+  /**
+   * Returns the deepest first descendant of this node,
+   * or null if it has no children.
+   *
+   * Descendant navigation is children-only by design: it feeds selectStart /
+   * selectEnd and selection, which must not see slots (slots are isolated).
+   */
+  getFirstDescendant() {
+    let node = this.getFirstChild();
+    while ($isElementNode(node)) {
+      const child = node.getFirstChild();
+      if (child === null) {
+        break;
+      }
+      node = child;
+    }
+    return node;
+  }
+  /**
+   * Returns the deepest last descendant of this node,
+   * or null if it has no children.
+   */
+  getLastDescendant() {
+    let node = this.getLastChild();
+    while ($isElementNode(node)) {
+      const child = node.getLastChild();
+      if (child === null) {
+        break;
+      }
+      node = child;
+    }
+    return node;
+  }
+  /**
+   * Returns the deepest descendant corresponding to the child at the given
+   * index, or null if this node has no children.
+   */
+  getDescendantByIndex(index) {
+    const atEnd = index >= this.getChildrenSize();
+    const child = atEnd ? this.getLastChild() : this.getChildAtIndex(index);
+    return $isElementNode(child) && (atEnd ? child.getLastDescendant() : child.getFirstDescendant()) || child;
+  }
+  /**
+   * Returns the first child of this node, or null if it has no children.
+   */
+  getFirstChild() {
+    const self = this.getLatest();
+    const firstKey = self.__first;
+    return firstKey === null ? null : $getNodeByKey(firstKey);
+  }
+  /**
+   * Returns the first child of this node, or throws if it has no children.
+   */
+  getFirstChildOrThrow() {
+    const firstChild = this.getFirstChild();
+    if (firstChild === null) {
+      {
+        formatDevErrorMessage2(`Expected node ${this.__key} to have a first child.`);
+      }
+    }
+    return firstChild;
+  }
+  /**
+   * Returns the last child of this node, or null if it has no children.
+   */
+  getLastChild() {
+    const self = this.getLatest();
+    const lastKey = self.__last;
+    return lastKey === null ? null : $getNodeByKey(lastKey);
+  }
+  /**
+   * Returns the last child of this node, or throws if it has no children.
+   */
+  getLastChildOrThrow() {
+    const lastChild = this.getLastChild();
+    if (lastChild === null) {
+      {
+        formatDevErrorMessage2(`Expected node ${this.__key} to have a last child.`);
+      }
+    }
+    return lastChild;
+  }
+  /**
+   * Returns the child of this node at the given index, or null if
+   * the index is out of range.
+   */
+  getChildAtIndex(index) {
+    const size = this.getChildrenSize();
+    let node;
+    let i2;
+    if (index < size / 2) {
+      node = this.getFirstChild();
+      i2 = 0;
+      while (node !== null && i2 <= index) {
+        if (i2 === index) {
+          return node;
+        }
+        node = node.getNextSibling();
+        i2++;
+      }
+      return null;
+    }
+    node = this.getLastChild();
+    i2 = size - 1;
+    while (node !== null && i2 >= index) {
+      if (i2 === index) {
+        return node;
+      }
+      node = node.getPreviousSibling();
+      i2--;
+    }
+    return null;
+  }
+  getTextContent() {
+    let textContent = $getSlotsTextContent(this);
+    const children = this.getChildren();
+    const childrenLength = children.length;
+    for (let i2 = 0; i2 < childrenLength; i2++) {
+      const child = children[i2];
+      textContent += child.getTextContent();
+      if (
+        // this is an inline $textContentRequiresDoubleLinebreakAtEnd(child)
+        $isElementNode(child) && i2 !== childrenLength - 1 && !child.isInline()
+      ) {
+        textContent += DOUBLE_LINE_BREAK;
+      }
+    }
+    return textContent;
+  }
+  getTextContentSize() {
+    let textContentSize = $getSlotsTextContentSize(this);
+    const children = this.getChildren();
+    const childrenLength = children.length;
+    for (let i2 = 0; i2 < childrenLength; i2++) {
+      const child = children[i2];
+      textContentSize += child.getTextContentSize();
+      if (
+        // This is an inline $textContentRequiresDoubleLinebreakAtEnd(child)
+        $isElementNode(child) && i2 !== childrenLength - 1 && !child.isInline()
+      ) {
+        textContentSize += DOUBLE_LINE_BREAK.length;
+      }
+    }
+    return textContentSize;
+  }
+  getDirection() {
+    const self = this.getLatest();
+    return self.__dir;
+  }
+  getTextFormat() {
+    const self = this.getLatest();
+    return self.__textFormat;
+  }
+  hasFormat(type) {
+    if (type !== "") {
+      const formatFlag = ELEMENT_TYPE_TO_FORMAT[type];
+      return (this.getFormat() & formatFlag) !== 0;
+    }
+    return false;
+  }
+  hasTextFormat(type) {
+    const formatFlag = TEXT_TYPE_TO_FORMAT[type];
+    return (this.getTextFormat() & formatFlag) !== 0;
+  }
+  /**
+   * Returns the format flags applied to the node as a 32-bit integer.
+   *
+   * @returns a number representing the TextFormatTypes applied to the node.
+   */
+  getFormatFlags(type, alignWithFormat) {
+    const self = this.getLatest();
+    const format = self.__textFormat;
+    return toggleTextFormatType(format, type, alignWithFormat);
+  }
+  getTextStyle() {
+    const self = this.getLatest();
+    return self.__textStyle;
+  }
+  // Mutators
+  select(_anchorOffset, _focusOffset) {
+    errorOnReadOnly();
+    const selection = $getSelection();
+    let anchorOffset = _anchorOffset;
+    let focusOffset = _focusOffset;
+    const childrenCount = this.getChildrenSize();
+    if (!this.canBeEmpty()) {
+      if (_anchorOffset === 0 && _focusOffset === 0) {
+        const firstChild = this.getFirstChild();
+        if ($isTextNode(firstChild) || $isElementNode(firstChild)) {
+          return firstChild.select(0, 0);
+        }
+      } else if ((_anchorOffset === void 0 || _anchorOffset === childrenCount) && (_focusOffset === void 0 || _focusOffset === childrenCount)) {
+        const lastChild = this.getLastChild();
+        if ($isTextNode(lastChild) || $isElementNode(lastChild)) {
+          return lastChild.select();
+        }
+      }
+    }
+    if (anchorOffset === void 0) {
+      anchorOffset = childrenCount;
+    }
+    if (focusOffset === void 0) {
+      focusOffset = childrenCount;
+    }
+    const key = this.__key;
+    if (!$isRangeSelection(selection)) {
+      return $internalMakeRangeSelection(key, anchorOffset, key, focusOffset, "element", "element");
+    } else {
+      selection.anchor.set(key, anchorOffset, "element");
+      selection.focus.set(key, focusOffset, "element");
+      selection.dirty = true;
+    }
+    return selection;
+  }
+  selectStart() {
+    const firstNode = this.getFirstDescendant();
+    return firstNode ? firstNode.selectStart() : this.select();
+  }
+  selectEnd() {
+    const lastNode = this.getLastDescendant();
+    return lastNode ? lastNode.selectEnd() : this.select();
+  }
+  clear() {
+    const writableSelf = this.getWritable();
+    const children = this.getChildren();
+    children.forEach((child) => child.remove());
+    return writableSelf;
+  }
+  append(...nodesToAppend) {
+    return this.splice(this.getChildrenSize(), 0, nodesToAppend);
+  }
+  setDirection(direction) {
+    const self = this.getWritable();
+    self.__dir = direction;
+    return self;
+  }
+  setFormat(type) {
+    const self = this.getWritable();
+    self.__format = type !== "" ? ELEMENT_TYPE_TO_FORMAT[type] || 0 : 0;
+    return self;
+  }
+  setStyle(style) {
+    const self = this.getWritable();
+    self.__style = style || "";
+    return self;
+  }
+  setTextFormat(type) {
+    const self = this.getWritable();
+    self.__textFormat = type;
+    return self;
+  }
+  setTextStyle(style) {
+    const self = this.getWritable();
+    self.__textStyle = style;
+    return self;
+  }
+  setIndent(indentLevel) {
+    const self = this.getWritable();
+    self.__indent = indentLevel;
+    return self;
+  }
+  splice(start, deleteCount, nodesToInsert) {
+    if (!!$isEphemeral(this)) {
+      formatDevErrorMessage2(`ElementNode.splice: Ephemeral nodes can not mutate their children (key ${this.__key} type ${this.__type})`);
+    }
+    const oldSize = this.getChildrenSize();
+    const writableSelf = this.getWritable();
+    if (!(start + deleteCount <= oldSize)) {
+      formatDevErrorMessage2(`ElementNode.splice: start + deleteCount > oldSize (${String(start)} + ${String(deleteCount)} > ${String(oldSize)})`);
+    }
+    for (const nodeToInsert of nodesToInsert) {
+      $errorOnSlotCycleChild(writableSelf, nodeToInsert);
+    }
+    const writableSelfKey = writableSelf.__key;
+    const nodesToInsertKeys = [];
+    let nodesToRemoveKeys = [];
+    let nodeAfterRange = this.getChildAtIndex(start + deleteCount);
+    let nodeBeforeRange = null;
+    let newSize = oldSize - deleteCount + nodesToInsert.length;
+    if (start !== 0) {
+      if (start === oldSize) {
+        nodeBeforeRange = this.getLastChild();
+      } else {
+        const node = this.getChildAtIndex(start);
+        if (node !== null) {
+          nodeBeforeRange = node.getPreviousSibling();
+        }
+      }
+    }
+    if (deleteCount > 0) {
+      nodesToRemoveKeys = $detachSiblingRange(writableSelf, nodeBeforeRange === null ? this.getFirstChild() : nodeBeforeRange.getNextSibling(), deleteCount, nodeBeforeRange);
+    }
+    let writablePrevNode = nodesToInsert.length > 0 && nodeBeforeRange !== null ? nodeBeforeRange.getWritable() : null;
+    for (const nodeToInsert of nodesToInsert) {
+      if (writablePrevNode !== null && nodeToInsert.is(writablePrevNode)) {
+        nodeBeforeRange = writablePrevNode.getPreviousSibling();
+        writablePrevNode = nodeBeforeRange && nodeBeforeRange.getWritable();
+      }
+      if (nodeAfterRange !== null && nodeToInsert.is(nodeAfterRange)) {
+        nodeAfterRange = nodeAfterRange.getNextSibling();
+      }
+      const writableNodeToInsert = nodeToInsert.getWritable();
+      if (writableNodeToInsert.__parent === writableSelfKey) {
+        newSize--;
+      }
+      $detachNode(writableNodeToInsert);
+      const nodeKeyToInsert = nodeToInsert.__key;
+      $insertNodeBetween(writableSelf, writableNodeToInsert, writablePrevNode, nodeAfterRange && nodeAfterRange.getWritable());
+      if (nodeToInsert.__key === writableSelfKey) {
+        {
+          formatDevErrorMessage2(`append: attempting to append self`);
+        }
+      }
+      nodesToInsertKeys.push(nodeKeyToInsert);
+      writablePrevNode = writableNodeToInsert;
+    }
+    writableSelf.__size = newSize;
+    if (nodesToRemoveKeys.length) {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const nodesToRemoveKeySet = new Set(nodesToRemoveKeys);
+        const nodesToInsertKeySet = new Set(nodesToInsertKeys);
+        for (const point of [selection.anchor, selection.focus]) {
+          if (isPointRemoved(point, nodesToRemoveKeySet, nodesToInsertKeySet)) {
+            moveSelectionPointToSibling(point, point.getNode(), this, nodeBeforeRange, nodeAfterRange);
+          }
+        }
+        if (newSize === 0 && !this.canBeEmpty() && !$isRootOrShadowRoot(this)) {
+          this.remove();
+        }
+      }
+    }
+    return writableSelf;
+  }
+  /**
+   * @experimental
+   *
+   * An ElementNode subclass can override this to control where its children
+   * are inserted into the DOM, e.g. to add a wrapping node or accessory nodes
+   * before or after the children. The root of the node returned by createDOM
+   * must still be exactly one HTMLElement.
+   */
+  getDOMSlot(element) {
+    return new ElementDOMSlot(element);
+  }
+  exportDOM(editor) {
+    const {
+      element
+    } = super.exportDOM(editor);
+    if (isHTMLElement(element)) {
+      const indent = this.getIndent();
+      if (indent > 0) {
+        element.style.paddingInlineStart = `${indent * 40}px`;
+        element.setAttribute("data-lexical-indent", String(indent));
+      }
+      const direction = this.getDirection();
+      if (direction) {
+        element.dir = direction;
+      }
+    }
+    return {
+      element
+    };
+  }
+  // JSON serialization
+  /**
+   * Whether `textFormat`/`textStyle` are persisted at all: only when there are
+   * no TextNode children from which they would be set on reconcile (#7968).
+   *
+   * @internal
+   */
+  shouldSerializeTextStyles() {
+    if ($isRootOrShadowRoot(this)) {
+      return false;
+    }
+    for (let child = this.getFirstChild(); child !== null; child = child.getNextSibling()) {
+      if ($isTextNode(child)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  /** @internal Serialized `textFormat`, or undefined to omit it. */
+  getSerializedTextFormat() {
+    const textFormat = this.getTextFormat();
+    return textFormat !== 0 && this.shouldSerializeTextStyles() ? textFormat : void 0;
+  }
+  /** @internal Serialized `textStyle`, or undefined to omit it. */
+  getSerializedTextStyle() {
+    const textStyle = this.getTextStyle();
+    return textStyle !== "" && this.shouldSerializeTextStyles() ? textStyle : void 0;
+  }
+  // These are intended to be extends for specific element heuristics.
+  insertNewAfter(selection, restoreSelection) {
+    return null;
+  }
+  canIndent() {
+    return true;
+  }
+  /*
+   * This method controls the behavior of the node during backwards
+   * deletion (i.e., backspace) when selection is at the beginning of
+   * the node (offset 0). You may use this to have the node replace
+   * itself, change its state, or do nothing. When you do make such
+   * a change, you should return true.
+   *
+   * When true is returned, the collapse phase will stop.
+   * When false is returned, and isInline() is true, and getPreviousSibling() is null,
+   * then this function will be called on its parent.
+   */
+  collapseAtStart(selection) {
+    return false;
+  }
+  excludeFromCopy(destination) {
+    return false;
+  }
+  /** @deprecated @internal */
+  canReplaceWith(replacement) {
+    return true;
+  }
+  /** @deprecated @internal */
+  canInsertAfter(node) {
+    return true;
+  }
+  canBeEmpty() {
+    return true;
+  }
+  canInsertTextBefore() {
+    return true;
+  }
+  canInsertTextAfter() {
+    return true;
+  }
+  /**
+   * If the method is overridden and returns true, ensure that `canBeEmpty()`
+   * returns false for the inline node to work correctly
+   */
+  isInline() {
+    return false;
+  }
+  // A shadow root is a Node that behaves like RootNode. The shadow root (and RootNode) mark the
+  // end of the hierarchy, most implementations should treat it as there's nothing (upwards)
+  // beyond this point. For example, node.getTopLevelElement(), when performed inside a TableCellNode
+  // will return the immediate first child underneath TableCellNode instead of RootNode.
+  isShadowRoot() {
+    return false;
+  }
+  /** @deprecated @internal */
+  canMergeWith(node) {
+    return false;
+  }
+  extractWithChild(child, selection, destination) {
+    return false;
+  }
+  /**
+   * Determines whether this node, when empty, can merge with a first block
+   * of nodes being inserted.
+   *
+   * This method is specifically called in {@link RangeSelection.insertNodes}
+   * to determine merging behavior during nodes insertion.
+   *
+   * @example
+   * // In a ListItemNode or QuoteNode implementation:
+   * canMergeWhenEmpty(): true {
+   *  return true;
+   * }
+   */
+  canMergeWhenEmpty() {
+    return false;
+  }
+  /** @internal */
+  reconcileObservedMutation(dom, editor) {
+    editor.read("latest", () => {
+      let slot = $getDOMSlot(this, dom, editor);
+      const element = slot.element;
+      if (slot.after && slot.after.parentNode !== element) {
+        slot = slot.withAfter(null);
+      }
+      if (slot.before && slot.before.parentNode !== element) {
+        slot = slot.withBefore(null);
+      }
+      const lineBreak = slot.getManagedLineBreak();
+      if (lineBreak) {
+        slot.insertManagedLineBreak(lineBreak.nodeName === "IMG");
+      }
+      let currentDOM = slot.getFirstChild();
+      for (const key of this.getChildrenKeys()) {
+        const correctDOM = editor.getElementByKey(key);
+        if (!correctDOM) {
+          continue;
+        }
+        let nextDOM = currentDOM;
+        let nextKey;
+        while (nextDOM && !(nextKey = getNodeKeyFromDOMNode(nextDOM, editor)) && isDOMUnmanaged(nextDOM)) {
+          nextDOM = nextDOM.nextSibling;
+        }
+        if (nextDOM !== correctDOM) {
+          element.insertBefore(correctDOM, nextKey ? nextDOM : currentDOM || slot.getInsertionAnchor());
+        }
+        currentDOM = correctDOM.nextSibling;
+      }
+      $reconcileDecoratorBoundaryAnchors(this, dom, slot);
+    });
+  }
+};
+function $isElementNode(node) {
+  return node instanceof ElementNode;
+}
+function isPointRemoved(point, nodesToRemoveKeySet, nodesToInsertKeySet) {
+  let node = point.getNode();
+  while (node) {
+    const nodeKey = node.__key;
+    if (nodesToRemoveKeySet.has(nodeKey) && !nodesToInsertKeySet.has(nodeKey)) {
+      return true;
+    }
+    node = node.getParent();
+  }
+  return false;
+}
+var DecoratorNode = class extends LexicalNode {
+  /** @internal */
+  /** @internal */
+  __slotHost;
+  /** @internal */
+  __slots;
+  constructor(key) {
+    super(key);
+    this.__slotHost = null;
+    this.__slots = null;
+  }
+  // Written rather than synthesized from the schema, for ElementNode's
+  // reason: `__slotHost` is structure rather than a serialized property, and
+  // it belongs to the node's place in the tree, so a clone under a new key
+  // must not adopt it.
+  afterCloneFrom(prevNode) {
+    super.afterCloneFrom(prevNode);
+    if (this.__key === prevNode.__key) {
+      this.__slotHost = prevNode.__slotHost;
+      if (!(this.__slotHost === null || this.__parent === null)) {
+        formatDevErrorMessage2(`DecoratorNode: node ${this.__key} is both slotted into host ${String(this.__slotHost)} and a child of parent ${String(this.__parent)}; __slotHost and __parent are mutually exclusive`);
+      }
+      this.__slots = prevNode.__slots;
+    }
+  }
+  /**
+   * The returned value is added to the LexicalEditor._decorators
+   */
+  decorate(editor, config) {
+    return null;
+  }
+  /**
+   * Whether this decorator is isolated from caret interaction: an isolated
+   * decorator can not be traversed, extended over, selected as a node, or
+   * deleted by an adjacent caret operation. A caret that reaches one stops
+   * there, so an inline isolated decorator is only reachable by pointer.
+   *
+   * Defaults to false, which lets the caret step over the decorator (and
+   * select it, when {@link DecoratorNode.isKeyboardSelectable} is also true).
+   */
+  isIsolated() {
+    return false;
+  }
+  isInline() {
+    return true;
+  }
+  isKeyboardSelectable() {
+    return true;
+  }
+};
+function $isDecoratorNode(node) {
+  return node instanceof DecoratorNode;
+}
+function $getCachedText(node) {
+  const cachedText = node.getLatest().__cachedText;
+  return cachedText !== null && (isCurrentlyReadOnlyMode() || getActiveEditor()._dirtyType === NO_DIRTY_NODES) ? cachedText : null;
+}
+var RootNode = class extends ElementNode {
+  /** @internal */
+  __cachedText;
+  $config() {
+    return this.config("root", {
+      extends: ElementNode
+    });
+  }
+  constructor() {
+    super("root");
+    this.__cachedText = null;
+  }
+  getTopLevelElementOrThrow() {
+    {
+      formatDevErrorMessage2(`getTopLevelElementOrThrow: root nodes are not top level elements`);
+    }
+  }
+  getTextContent() {
+    const cachedText = $getCachedText(this);
+    return cachedText !== null ? cachedText : super.getTextContent();
+  }
+  getTextContentSize() {
+    const cachedText = $getCachedText(this);
+    return cachedText !== null ? cachedText.length : super.getTextContentSize();
+  }
+  remove() {
+    {
+      formatDevErrorMessage2(`remove: cannot be called on root nodes`);
+    }
+  }
+  replace(node) {
+    {
+      formatDevErrorMessage2(`replace: cannot be called on root nodes`);
+    }
+  }
+  insertBefore(nodeToInsert) {
+    {
+      formatDevErrorMessage2(`insertBefore: cannot be called on root nodes`);
+    }
+  }
+  insertAfter(nodeToInsert) {
+    {
+      formatDevErrorMessage2(`insertAfter: cannot be called on root nodes`);
+    }
+  }
+  // View
+  updateDOM(prevNode, dom) {
+    return false;
+  }
+  // Mutate
+  splice(start, deleteCount, nodesToInsert) {
+    for (const node of nodesToInsert) {
+      if (!($isElementNode(node) || $isDecoratorNode(node))) {
+        formatDevErrorMessage2(`rootNode.splice: Only element or decorator nodes can be inserted to the root node`);
+      }
+    }
+    return super.splice(start, deleteCount, nodesToInsert);
+  }
+  static importJSON(serializedNode) {
+    return $getRoot().updateFromJSON(serializedNode);
+  }
+  collapseAtStart() {
+    return true;
+  }
+};
+function $createRootNode() {
+  return new RootNode();
+}
+function $isRootNode(node) {
+  return node instanceof RootNode;
+}
 var IMPORTANT_FLAG = "!important";
 function getStyleObjectFromCSS(css) {
   const styles = {};
@@ -31121,12 +31734,9 @@ function $setTextContent(nextText, dom, node) {
   if (nodeValue === text) {
     return;
   }
-  if (isComposing || IS_FIREFOX) {
+  if (isComposing || IS_FIREFOX || IS_CHROME) {
     const [index, remove, insert] = diffComposedText(nodeValue, text);
-    if (remove !== 0) {
-      textChild.deleteData(index, remove);
-    }
-    textChild.insertData(index, insert);
+    textChild.replaceData(index, remove, insert);
   } else {
     textChild.nodeValue = text;
   }
@@ -32046,4583 +32656,6 @@ function applyTextFormatFromStyle(style, shouldApply) {
     return lexicalNode;
   };
 }
-var tabNodeSchema = /* @__PURE__ */ (/* @__PURE__ */ nodeSchema())({
-  // Read straight off the inherited fields — mode through the `getterTable`,
-  // since it is stored as a bitmask. All three are export-only: the values are
-  // fixed for a tab, so they are derived on import rather than applied.
-  detail: /* @__PURE__ */ withAccessors(/* @__PURE__ */ numberValue(IS_UNMERGEABLE), {
-    getter: {
-      field: "__detail"
-    },
-    setter: null
-  }),
-  mode: /* @__PURE__ */ withAccessors(/* @__PURE__ */ enumValue(["normal"]), {
-    getter: {
-      field: "__mode",
-      // Only the mode a tab can hold, rather than TextNode's whole table: that
-      // one also maps the token and segmented bits, which this schema does not
-      // serialize, and a `getterTable`'s values are held to the schema's domain.
-      getterTable: {
-        0: "normal"
-      }
-    },
-    setter: null
-  }),
-  text: /* @__PURE__ */ withAccessors(/* @__PURE__ */ stringValue("	"), {
-    getter: {
-      field: "__text",
-      method: "getTextContent"
-    },
-    setter: null
-  })
-});
-var TabNode = class extends TextNode {
-  $config() {
-    return this.config("tab", {
-      extends: TextNode,
-      generated: GENERATED_TAB,
-      json: tabNodeSchema
-    });
-  }
-  // `key` carries an explicit `undefined` default (rather than the usual `?`)
-  // so the constructor reports zero required arguments, which lets `$config`
-  // synthesize the static `clone` by invoking the no-argument constructor.
-  constructor(key = void 0) {
-    super("	", key);
-    this.__detail = IS_UNMERGEABLE;
-  }
-  createDOM(config) {
-    const dom = super.createDOM(config);
-    const classNames = getCachedClassNameArray(config.theme, "tab");
-    if (classNames !== void 0) {
-      const domClassList = dom.classList;
-      domClassList.add(...classNames);
-    }
-    return dom;
-  }
-  /**
-   * Always normalizes the stored content to `'\t'` regardless of input — see
-   * comment below for the rationale.
-   */
-  setTextContent(_text) {
-    return super.setTextContent("	");
-  }
-  spliceText(offset, delCount, newText, moveSelection) {
-    if (!(newText === "" && delCount === 0 || newText === "	" && delCount === 1)) {
-      formatDevErrorMessage2(`TabNode does not support spliceText`);
-    }
-    return this;
-  }
-  setDetail(detail) {
-    if (!(detail === IS_UNMERGEABLE)) {
-      formatDevErrorMessage2(`TabNode does not support setDetail`);
-    }
-    return this;
-  }
-  setMode(type) {
-    if (!(type === "normal")) {
-      formatDevErrorMessage2(`TabNode does not support setMode`);
-    }
-    return this;
-  }
-  canInsertTextBefore() {
-    return false;
-  }
-  canInsertTextAfter() {
-    return false;
-  }
-};
-function $createTabNode() {
-  return $applyNodeReplacement(new TabNode());
-}
-function $isTabNode(node) {
-  return node instanceof TabNode;
-}
-var Point = class {
-  key;
-  offset;
-  type;
-  _selection;
-  constructor(key, offset, type) {
-    {
-      Object.defineProperty(this, "_selection", {
-        enumerable: false,
-        writable: true
-      });
-    }
-    this._selection = null;
-    this.key = key;
-    this.offset = offset;
-    this.type = type;
-  }
-  is(point) {
-    return this.key === point.key && this.offset === point.offset && this.type === point.type;
-  }
-  isBefore(b2) {
-    if (this.key === b2.key) {
-      return this.offset < b2.offset;
-    }
-    const aCaret = $normalizeCaret($caretFromPoint(this, "next"));
-    const bCaret = $normalizeCaret($caretFromPoint(b2, "next"));
-    return $comparePointCaretNext(aCaret, bCaret) < 0;
-  }
-  getNode() {
-    const key = this.key;
-    const node = $getNodeByKey(key);
-    if (node === null) {
-      {
-        formatDevErrorMessage2(`Point.getNode: node not found`);
-      }
-    }
-    return node;
-  }
-  set(key, offset, type, onlyIfChanged) {
-    const selection = this._selection;
-    const oldKey = this.key;
-    if (onlyIfChanged && this.key === key && this.offset === offset && this.type === type) {
-      return;
-    }
-    this.key = key;
-    this.offset = offset;
-    this.type = type;
-    {
-      const node = $getNodeByKey(key);
-      if (!(type === "text" ? $isTextNode(node) : $isElementNode(node))) {
-        formatDevErrorMessage2(`PointType.set: node with key ${key} is ${node ? node.__type : "[not found]"} and can not be used for a ${type} point`);
-      }
-    }
-    if (!isCurrentlyReadOnlyMode()) {
-      if ($getCompositionKey() === oldKey) {
-        $setCompositionKey(key);
-      }
-      if (selection !== null) {
-        selection.setCachedNodes(null);
-        if ($isRangeSelection(selection)) {
-          selection._cachedIsBackward = null;
-        }
-        selection.dirty = true;
-      }
-    }
-  }
-};
-function $createPoint(key, offset, type) {
-  return new Point(key, offset, type);
-}
-function selectPointOnNode(point, node) {
-  let key = node.__key;
-  let offset = point.offset;
-  let type = "element";
-  if ($isTextNode(node)) {
-    type = "text";
-    const textContentLength = node.getTextContentSize();
-    if (offset > textContentLength) {
-      offset = textContentLength;
-    }
-  } else if (!$isElementNode(node)) {
-    const nextSibling = node.getNextSibling();
-    if ($isTextNode(nextSibling)) {
-      key = nextSibling.__key;
-      offset = 0;
-      type = "text";
-    } else {
-      const parentNode = node.getParent();
-      if (parentNode) {
-        key = parentNode.__key;
-        offset = node.getIndexWithinParent() + 1;
-      }
-    }
-  }
-  point.set(key, offset, type);
-}
-function $moveSelectionPointToEnd(point, node) {
-  if ($isElementNode(node)) {
-    const lastNode = node.getLastDescendant();
-    if ($isElementNode(lastNode) || $isTextNode(lastNode)) {
-      selectPointOnNode(point, lastNode);
-    } else {
-      selectPointOnNode(point, node);
-    }
-  } else {
-    selectPointOnNode(point, node);
-  }
-}
-function $transferStartingElementPointToTextPoint(start, end, format, style) {
-  const element = start.getNode();
-  const placementNode = element.getChildAtIndex(start.offset);
-  const textNode = $createTextNode();
-  textNode.setFormat(format);
-  textNode.setStyle(style);
-  if ($isParagraphNode(placementNode)) {
-    placementNode.splice(0, 0, [textNode]);
-  } else if (placementNode !== null) {
-    const target = $isRootOrShadowRoot(element) ? $createParagraphNode().append(textNode) : textNode;
-    placementNode.insertBefore(target);
-  } else if ($isRootOrShadowRoot(element)) {
-    const lastChild = element.getLastChild();
-    if ($isElementNode(lastChild) && !lastChild.isInline() && lastChild.isEmpty()) {
-      lastChild.append(textNode);
-    } else {
-      element.append($createParagraphNode().append(textNode));
-    }
-  } else {
-    element.append(textNode);
-  }
-  if (start.is(end)) {
-    end.set(textNode.__key, 0, "text");
-  }
-  start.set(textNode.__key, 0, "text");
-}
-function $insertTextAtPoint(selection, text, format, style) {
-  const anchorNode = selection.anchor.getNode();
-  if (!$isTextNode(anchorNode)) {
-    formatDevErrorMessage2(`insertText: anchor is not a text node`);
-  }
-  const offset = selection.anchor.offset;
-  const textNode = $createTextNode(text);
-  textNode.setFormat(format);
-  textNode.setStyle(style);
-  const parent = anchorNode.getParentOrThrow();
-  if (offset === 0) {
-    if (parent.isInline() && !anchorNode.__prev) {
-      parent.insertBefore(textNode);
-    } else {
-      anchorNode.insertBefore(textNode, false);
-    }
-  } else if (offset === anchorNode.getTextContentSize()) {
-    if (parent.isInline() && !anchorNode.__next) {
-      parent.insertAfter(textNode);
-    } else {
-      anchorNode.insertAfter(textNode, false);
-    }
-  } else {
-    const [before] = anchorNode.splitText(offset);
-    before.insertAfter(textNode, false);
-  }
-  if (anchorNode.getTextContent() === "" && anchorNode.isAttached()) {
-    anchorNode.remove();
-  }
-  textNode.selectEnd();
-  if (textNode.isComposing() && selection.anchor.type === "text") {
-    selection.anchor.set(selection.anchor.key, selection.anchor.offset - text.length, selection.anchor.type);
-  }
-}
-var NodeSelection = class _NodeSelection {
-  _nodes;
-  _cachedNodes;
-  dirty;
-  constructor(objects) {
-    this._cachedNodes = null;
-    this._nodes = objects;
-    this.dirty = false;
-  }
-  getCachedNodes() {
-    return this._cachedNodes;
-  }
-  setCachedNodes(nodes) {
-    this._cachedNodes = nodes;
-  }
-  is(selection) {
-    if (!$isNodeSelection(selection)) {
-      return false;
-    }
-    const a2 = this._nodes;
-    const b2 = selection._nodes;
-    return a2.size === b2.size && Array.from(a2).every((key) => b2.has(key));
-  }
-  isCollapsed() {
-    return false;
-  }
-  isBackward() {
-    return false;
-  }
-  getStartEndPoints() {
-    return null;
-  }
-  add(key) {
-    this.dirty = true;
-    this._nodes.add(key);
-    this._cachedNodes = null;
-  }
-  delete(key) {
-    this.dirty = true;
-    this._nodes.delete(key);
-    this._cachedNodes = null;
-  }
-  clear() {
-    this.dirty = true;
-    this._nodes.clear();
-    this._cachedNodes = null;
-  }
-  has(key) {
-    return this._nodes.has(key);
-  }
-  clone() {
-    return new _NodeSelection(new Set(this._nodes));
-  }
-  extract() {
-    return this.getNodes();
-  }
-  insertRawText(text) {
-  }
-  insertText() {
-  }
-  insertNodes(nodes) {
-    const selectedNodes = this.getNodes().filter((node) => $getSlotHostKey(node) === null);
-    const selectedNodesLength = selectedNodes.length;
-    if (selectedNodesLength === 0) {
-      return;
-    }
-    const lastSelectedNode = selectedNodes[selectedNodesLength - 1];
-    let selectionAtEnd;
-    if ($isTextNode(lastSelectedNode)) {
-      selectionAtEnd = lastSelectedNode.select();
-    } else {
-      const index = lastSelectedNode.getIndexWithinParent() + 1;
-      selectionAtEnd = lastSelectedNode.getParentOrThrow().select(index, index);
-    }
-    selectionAtEnd.insertNodes(nodes);
-    for (let i2 = 0; i2 < selectedNodesLength; i2++) {
-      selectedNodes[i2].remove();
-    }
-  }
-  getNodes() {
-    const cachedNodes = this._cachedNodes;
-    if (cachedNodes !== null) {
-      return cachedNodes;
-    }
-    const objects = this._nodes;
-    const nodes = [];
-    for (const object of objects) {
-      const node = $getNodeByKey(object);
-      if (node !== null) {
-        nodes.push(node);
-      }
-    }
-    if (!isCurrentlyReadOnlyMode()) {
-      this._cachedNodes = nodes;
-    }
-    return nodes;
-  }
-  getTextContent() {
-    const nodes = this.getNodes();
-    let textContent = "";
-    for (let i2 = 0; i2 < nodes.length; i2++) {
-      textContent += nodes[i2].getTextContent();
-    }
-    return textContent;
-  }
-  /**
-   * Remove all nodes in the NodeSelection. If there were any nodes,
-   * replace the selection with a new RangeSelection at the previous
-   * location of the first node.
-   */
-  deleteNodes() {
-    const nodes = this.getNodes().filter((node) => $getSlotHostKey(node) === null);
-    if (($getSelection() || $getPreviousSelection()) === this && nodes[0]) {
-      const firstCaret = $getSiblingCaret(nodes[0], "next");
-      $setSelectionFromCaretRange($getCaretRange(firstCaret, firstCaret));
-    }
-    for (const node of nodes) {
-      node.remove();
-    }
-    $ensureRootHasParagraph();
-  }
-};
-function $ensureRootHasParagraph() {
-  const root = $getRoot();
-  if (root.isEmpty()) {
-    const paragraph = $createParagraphNode();
-    root.append(paragraph);
-    paragraph.select();
-  }
-}
-function $getNodeBeforePoint(point) {
-  const node = point.getNode();
-  if (point.offset > 0) {
-    return point.type === "element" && $isElementNode(node) ? node.getChildAtIndex(point.offset - 1) : null;
-  }
-  for (let child = node; child !== null && !INTERNAL_$isBlock(child) && !$isRootOrShadowRoot(child); child = child.getParent()) {
-    const previousSibling = child.getPreviousSibling();
-    if (previousSibling !== null) {
-      return previousSibling;
-    }
-  }
-  return null;
-}
-function $isPointAfterEmptyLine(point) {
-  const nodeBefore = $getNodeBeforePoint(point);
-  return $isLineBreakNode(nodeBefore) && $isLineBreakNode(nodeBefore.getPreviousSibling());
-}
-function $isRangeSelection(x2) {
-  return x2 instanceof RangeSelection;
-}
-var RangeSelection = class _RangeSelection {
-  format;
-  style;
-  anchor;
-  focus;
-  _cachedNodes;
-  /** @internal */
-  _cachedIsBackward;
-  dirty;
-  constructor(anchor, focus, format, style) {
-    this.anchor = anchor;
-    this.focus = focus;
-    anchor._selection = this;
-    focus._selection = this;
-    this._cachedNodes = null;
-    this._cachedIsBackward = null;
-    this.format = format;
-    this.style = style;
-    this.dirty = false;
-  }
-  getCachedNodes() {
-    return this._cachedNodes;
-  }
-  setCachedNodes(nodes) {
-    this._cachedNodes = nodes;
-  }
-  /**
-   * Used to check if the provided selections is equal to this one by value,
-   * including anchor, focus, format, and style properties.
-   * @param selection - the Selection to compare this one to.
-   * @returns true if the Selections are equal, false otherwise.
-   */
-  is(selection) {
-    if (!$isRangeSelection(selection)) {
-      return false;
-    }
-    return this.anchor.is(selection.anchor) && this.focus.is(selection.focus) && this.format === selection.format && this.style === selection.style;
-  }
-  /**
-   * Returns whether the Selection is "collapsed", meaning the anchor and focus are
-   * the same node and have the same offset.
-   *
-   * @returns true if the Selection is collapsed, false otherwise.
-   */
-  isCollapsed() {
-    return this.anchor.is(this.focus);
-  }
-  /**
-   * Gets all the nodes in the Selection. Uses caching to make it generally suitable
-   * for use in hot paths.
-   *
-   * See also the {@link CaretRange} APIs (starting with
-   * {@link $caretRangeFromSelection}), which are likely to provide a better
-   * foundation for any operation where partial selection is relevant
-   * (e.g. the anchor or focus are inside an ElementNode and TextNode)
-   *
-   * @returns an Array containing all the nodes in the Selection
-   */
-  getNodes() {
-    const cachedNodes = this._cachedNodes;
-    if (cachedNodes !== null) {
-      return cachedNodes;
-    }
-    const range = $getCaretRangeInDirection($caretRangeFromSelection(this), "next");
-    const nodes = $getNodesFromCaretRangeCompat(range);
-    {
-      if (this.isCollapsed() && nodes.length > 1) {
-        {
-          formatDevErrorMessage2(`RangeSelection.getNodes() returned ${String(nodes.length)} > 1 nodes in a collapsed selection`);
-        }
-      }
-    }
-    if (!isCurrentlyReadOnlyMode()) {
-      this._cachedNodes = nodes;
-    }
-    return nodes;
-  }
-  /**
-   * Sets this Selection to be of type "text" at the provided anchor and focus values.
-   *
-   * @param anchorNode - the anchor node to set on the Selection
-   * @param anchorOffset - the offset to set on the Selection
-   * @param focusNode - the focus node to set on the Selection
-   * @param focusOffset - the focus offset to set on the Selection
-   */
-  setTextNodeRange(anchorNode, anchorOffset, focusNode, focusOffset) {
-    this.anchor.set(anchorNode.__key, anchorOffset, "text");
-    this.focus.set(focusNode.__key, focusOffset, "text");
-    return this;
-  }
-  /**
-   * Gets the (plain) text content of all the nodes in the selection.
-   *
-   * @returns a string representing the text content of all the nodes in the Selection
-   */
-  getTextContent() {
-    const nodes = this.getNodes();
-    if (nodes.length === 0) {
-      return "";
-    }
-    const firstNode = nodes[0];
-    const lastNode = nodes[nodes.length - 1];
-    const anchor = this.anchor;
-    const focus = this.focus;
-    const isBefore = anchor.isBefore(focus);
-    const [anchorOffset, focusOffset] = $getCharacterOffsets(this);
-    let textContent = "";
-    let prevWasElement = true;
-    for (let i2 = 0; i2 < nodes.length; i2++) {
-      const node = nodes[i2];
-      if ($isElementNode(node) && !node.isInline()) {
-        if (!prevWasElement) {
-          textContent += "\n";
-        }
-        let slotText = "";
-        for (const slotName of $getSlotNames(node)) {
-          const slot = $getSlot(node, slotName);
-          if (slot !== null) {
-            slotText += slot.getTextContent();
-          }
-        }
-        if (slotText !== "") {
-          textContent += slotText;
-          prevWasElement = false;
-        } else if (node.isEmpty()) {
-          prevWasElement = false;
-        } else {
-          prevWasElement = true;
-        }
-      } else {
-        prevWasElement = false;
-        if ($isTextNode(node)) {
-          let text = node.getTextContent();
-          if (node === firstNode) {
-            if (node === lastNode) {
-              if (anchor.type !== "element" || focus.type !== "element" || focus.offset === anchor.offset) {
-                text = anchorOffset < focusOffset ? text.slice(anchorOffset, focusOffset) : text.slice(focusOffset, anchorOffset);
-              }
-            } else {
-              text = isBefore ? text.slice(anchorOffset) : text.slice(focusOffset);
-            }
-          } else if (node === lastNode) {
-            text = isBefore ? text.slice(0, focusOffset) : text.slice(0, anchorOffset);
-          }
-          textContent += text;
-        } else if (($isDecoratorNode(node) || $isLineBreakNode(node)) && (node !== lastNode || !this.isCollapsed())) {
-          textContent += node.getTextContent();
-        }
-      }
-    }
-    return textContent;
-  }
-  /**
-   * Attempts to map a DOM selection range onto this Lexical Selection,
-   * setting the anchor, focus, and type accordingly
-   *
-   * @param range a DOM Selection range conforming to the StaticRange interface.
-   */
-  applyDOMRange(range) {
-    const editor = getActiveEditor();
-    const currentEditorState = editor.getEditorState();
-    const lastSelection = currentEditorState._selection;
-    const resolvedSelectionPoints = $internalResolveSelectionPoints(range.startContainer, range.startOffset, range.endContainer, range.endOffset, editor, lastSelection);
-    if (resolvedSelectionPoints === null) {
-      return;
-    }
-    const [anchorPoint, focusPoint, dirty] = resolvedSelectionPoints;
-    this.anchor.set(anchorPoint.key, anchorPoint.offset, anchorPoint.type, true);
-    this.focus.set(focusPoint.key, focusPoint.offset, focusPoint.type, true);
-    if (dirty) {
-      this.dirty = true;
-    }
-    $normalizeSelection(this);
-  }
-  /**
-   * Creates a new RangeSelection, copying over all the property values from this one.
-   *
-   * @returns a new RangeSelection with the same property values as this one.
-   */
-  clone() {
-    const anchor = this.anchor;
-    const focus = this.focus;
-    const selection = new _RangeSelection($createPoint(anchor.key, anchor.offset, anchor.type), $createPoint(focus.key, focus.offset, focus.type), this.format, this.style);
-    return selection;
-  }
-  /**
-   * Toggles the provided format on all the TextNodes in the Selection.
-   *
-   * @param format a string TextFormatType to toggle on the TextNodes in the selection
-   */
-  toggleFormat(format) {
-    this.format = toggleTextFormatType(this.format, format, null);
-    this.dirty = true;
-  }
-  /**
-   * Sets the value of the format property on the Selection
-   *
-   * @param format - the format to set at the value of the format property.
-   */
-  setFormat(format) {
-    this.format = format;
-    this.dirty = true;
-  }
-  /**
-   * Sets the value of the style property on the Selection
-   *
-   * @param style - the style to set at the value of the style property.
-   */
-  setStyle(style) {
-    this.style = style;
-    this.dirty = true;
-  }
-  /**
-   * Returns whether the provided TextFormatType is present on the Selection. This will be true if all text nodes in the Selection
-   * have the specified format.
-   *
-   * @param type the TextFormatType to check for.
-   * @returns true if the provided format is currently toggled on the Selection, false otherwise.
-   */
-  hasFormat(type) {
-    const formatFlag = TEXT_TYPE_TO_FORMAT[type];
-    return (this.format & formatFlag) !== 0;
-  }
-  /**
-   * Attempts to insert the provided text into the EditorState at the current Selection.
-   * converts tabs, newlines, and carriage returns into LexicalNodes.
-   *
-   * @param text the text to insert into the Selection
-   */
-  insertRawText(text) {
-    this.insertNodes($generateNodesFromRawText(text));
-  }
-  /**
-   * Insert the provided text into the EditorState at the current Selection.
-   *
-   * @param text the text to insert into the Selection
-   */
-  insertText(text) {
-    let format = this.format;
-    let style = this.style;
-    if (!this.isCollapsed()) {
-      const firstPoint = this.focus.isBefore(this.anchor) ? this.focus : this.anchor;
-      const firstNode = firstPoint.getNode();
-      if ($isTextNode(firstNode)) {
-        format = firstNode.getFormat();
-        style = firstNode.getStyle();
-      }
-      this.removeText();
-      this.format = format;
-      this.style = style;
-      if (text === "") {
-        return;
-      }
-      if ($getCompositionKey() === null) {
-        if (this.anchor.type === "element") {
-          $transferStartingElementPointToTextPoint(this.anchor, this.focus, format, style);
-        }
-        $insertTextAtPoint(this, text, format, style);
-        return;
-      }
-    }
-    if (this.anchor.type === "element") {
-      $transferStartingElementPointToTextPoint(this.anchor, this.focus, format, style);
-    }
-    const anchorNode = this.anchor.getNode();
-    if (!$isTextNode(anchorNode)) {
-      formatDevErrorMessage2(`insertText: anchor is not a text node`);
-    }
-    const offset = this.anchor.offset;
-    const anchorParent = anchorNode.getParentOrThrow();
-    const anchorSize = anchorNode.getTextContentSize();
-    const needsRedirect = $isTokenOrSegmented(anchorNode) || offset === 0 && (!anchorNode.canInsertTextBefore() || !anchorParent.canInsertTextBefore() && !anchorNode.__prev) || offset === anchorSize && (!anchorNode.canInsertTextAfter() || !anchorParent.canInsertTextAfter() && !anchorNode.__next);
-    if (needsRedirect) {
-      if (anchorNode.isSegmented() && offset !== 0 && offset !== anchorSize) {
-        if ($getCompositionKey() !== null) {
-          anchorNode.setMode("normal").setFormat(format).setStyle(style);
-        } else {
-          const replacement = $createTextNode(anchorNode.getTextContent());
-          replacement.setFormat(format);
-          replacement.setStyle(style);
-          const isCurrentSelection = $getSelection() === this;
-          anchorNode.replace(replacement);
-          this.setTextNodeRange(replacement, offset, replacement, offset);
-          if (isCurrentSelection && $getSelection() !== this) {
-            $setSelection(this);
-          }
-        }
-        if (text !== "") {
-          this.insertText(text);
-        }
-        return;
-      }
-      if (text === "") {
-        return;
-      }
-      if (offset === 0) {
-        const prev = anchorNode.getPreviousSibling();
-        if ($isTextNode(prev) && prev.canInsertTextAfter() && !$isTokenOrSegmented(prev)) {
-          prev.select();
-        } else {
-          const newNode2 = $createTextNode();
-          newNode2.setFormat(format);
-          newNode2.setStyle(style);
-          if (!anchorParent.canInsertTextBefore()) {
-            anchorParent.insertBefore(newNode2);
-          } else {
-            anchorNode.insertBefore(newNode2);
-          }
-          newNode2.select();
-        }
-        this.insertText(text);
-        return;
-      } else if (offset === anchorSize) {
-        const next = anchorNode.getNextSibling();
-        if ($isTextNode(next) && next.canInsertTextBefore() && !$isTokenOrSegmented(next)) {
-          next.select(0, 0);
-        } else {
-          const newNode2 = $createTextNode();
-          newNode2.setFormat(format);
-          newNode2.setStyle(style);
-          if (!anchorParent.canInsertTextAfter()) {
-            anchorParent.insertAfter(newNode2);
-          } else {
-            anchorNode.insertAfter(newNode2);
-          }
-          newNode2.select(0, 0);
-        }
-        this.insertText(text);
-        return;
-      }
-      const newNode = $createTextNode(text);
-      newNode.setFormat(format);
-      newNode.setStyle(style);
-      anchorNode.replace(newNode);
-      newNode.select();
-      return;
-    }
-    if (text === "") {
-      return;
-    }
-    const atStartOfInline = anchorParent.isInline() && offset === 0 && !anchorNode.__prev;
-    const atEndOfInline = anchorParent.isInline() && offset === anchorSize && !anchorNode.__next;
-    const formatDiffers = anchorNode.getFormat() !== format || anchorNode.getStyle() !== style;
-    if (atStartOfInline || atEndOfInline || formatDiffers) {
-      if (anchorNode.getTextContent() === "" && !atStartOfInline && !atEndOfInline) {
-        anchorNode.setFormat(format);
-        anchorNode.setStyle(style);
-      } else {
-        $insertTextAtPoint(this, text, format, style);
-        return;
-      }
-    }
-    anchorNode.spliceText(offset, 0, text, true);
-    if (anchorNode.isComposing() && this.anchor.type === "text") {
-      this.anchor.set(this.anchor.key, this.anchor.offset - text.length, this.anchor.type);
-    }
-  }
-  /**
-   * Removes the text in the Selection, adjusting the EditorState accordingly.
-   */
-  removeText() {
-    const isCurrentSelection = $getSelection() === this;
-    const previousAnchorKey = this.anchor.key;
-    const newRange = $removeTextFromCaretRange($caretRangeFromSelection(this));
-    $updateRangeSelectionFromCaretRange(this, newRange);
-    if (this.isCollapsed()) {
-      $internalRefreshSelectionFormatAndStyle(this, previousAnchorKey);
-    }
-    if (isCurrentSelection && $getSelection() !== this) {
-      $setSelection(this);
-    }
-  }
-  // TO-DO: Migrate this method to the new utility function $forEachSelectedTextNode (share similar logic)
-  /**
-   * Applies the provided format to the TextNodes in the Selection, splitting or
-   * merging nodes as necessary.
-   *
-   * @param formatType the format type to apply to the nodes in the Selection.
-   * @param alignWithFormat a 32-bit integer representing formatting flags to align with.
-   */
-  formatText(formatType, alignWithFormat = null) {
-    $formatText(this, formatType, alignWithFormat);
-  }
-  /**
-   * Attempts to "intelligently" insert an arbitrary list of Lexical nodes into the EditorState at the
-   * current Selection according to a set of heuristics that determine how surrounding nodes
-   * should be changed, replaced, or moved to accommodate the incoming ones.
-   *
-   * @param nodes - the nodes to insert
-   */
-  insertNodes(nodes) {
-    if (nodes.length === 0) {
-      return;
-    }
-    if (!this.isCollapsed()) {
-      this.removeText();
-    }
-    const anchorNode = this.anchor.getNode();
-    if (this.anchor.type === "element" && $isElementNode(anchorNode) && anchorNode.isShadowRoot() && $getSlotHostKey(anchorNode) !== null) {
-      let firstChild = anchorNode.getFirstChild() ?? anchorNode.append($createParagraphNode()).getFirstChild();
-      if (firstChild !== null && !$isElementNode(firstChild)) {
-        const seed = $createParagraphNode();
-        firstChild.insertBefore(seed);
-        firstChild = seed;
-      }
-      if (firstChild !== null) {
-        firstChild.selectStart();
-        const redirected = $getSelection();
-        if (!$isRangeSelection(redirected)) {
-          formatDevErrorMessage2(`Expected RangeSelection after redirecting into slot subtree`);
-        }
-        return redirected.insertNodes(nodes);
-      }
-    }
-    if (this.anchor.type === "element" && $isRootOrShadowRoot(anchorNode)) {
-      const blocksParent2 = $wrapInlineNodes(nodes);
-      const nodeToSelect2 = blocksParent2.getLastDescendant();
-      anchorNode.splice(this.anchor.offset, 0, blocksParent2.getChildren());
-      if (nodeToSelect2 !== null) {
-        nodeToSelect2.selectEnd();
-      }
-      return;
-    }
-    const firstPoint = this.isBackward() ? this.focus : this.anchor;
-    let firstNode = firstPoint.getNode();
-    let firstBlock = $findMatchingParent(firstNode, INTERNAL_$isBlock);
-    const last = nodes[nodes.length - 1];
-    if ($isElementNode(firstBlock) && "__language" in firstBlock) {
-      if ("__language" in nodes[0]) {
-        this.insertText(nodes[0].getTextContent());
-      } else {
-        const [, index] = $removeTextAndSplitBlock(this);
-        firstBlock.splice(index, 0, nodes);
-        last.selectEnd();
-      }
-      return;
-    }
-    const notInline = (node) => ($isElementNode(node) || $isDecoratorNode(node)) && !node.isInline();
-    if (!nodes.some(notInline)) {
-      if (!$isElementNode(firstBlock)) {
-        formatDevErrorMessage2(`Expected node ${firstNode.constructor.name} of type ${firstNode.getType()} to have a block ElementNode ancestor`);
-      }
-      const [container, index] = $removeTextAndSplitBlock(this, true);
-      const insertionParent = $isElementNode(container) ? container : firstBlock;
-      insertionParent.splice(index, 0, nodes);
-      last.selectEnd();
-      return;
-    }
-    if ($isElementNode(firstBlock) && $getSlotHostKey(firstBlock) !== null) {
-      const [, index] = $removeTextAndSplitBlock(this);
-      const inlineNodes = $extractInlineFromBlocks(nodes);
-      firstBlock.splice(index, 0, inlineNodes);
-      const lastInserted = inlineNodes[inlineNodes.length - 1];
-      if (lastInserted !== void 0) {
-        lastInserted.selectEnd();
-      } else {
-        firstBlock.select(index, index);
-      }
-      return;
-    }
-    if (firstBlock === null) {
-      const blocksParent2 = $wrapInlineNodes(nodes);
-      const nodeToSelect2 = blocksParent2.getLastDescendant();
-      let caret = $caretFromPoint(this.anchor, "next");
-      for (const block of blocksParent2.getChildren()) {
-        caret = $insertNodeToNearestRootAtCaret(block, caret);
-      }
-      if (nodeToSelect2 !== null) {
-        nodeToSelect2.selectEnd();
-      }
-      return;
-    }
-    if ($isElementNode(firstBlock) && !firstBlock.isParentRequired() && !$isRootOrShadowRoot(firstBlock.getParentOrThrow())) {
-      const [, index] = $removeTextAndSplitBlock(this);
-      const inlineNodes = $extractInlineFromBlocks(nodes);
-      firstBlock.splice(index, 0, inlineNodes);
-      const lastInserted = inlineNodes[inlineNodes.length - 1];
-      if (lastInserted !== void 0) {
-        lastInserted.selectEnd();
-      } else {
-        firstBlock.select(index, index);
-      }
-      return;
-    }
-    const blocksParent = $wrapInlineNodes(nodes);
-    const nodeToSelect = blocksParent.getLastDescendant();
-    const blocks = blocksParent.getChildren();
-    const isAfterEmptyLine = $isPointAfterEmptyLine(firstPoint);
-    const isMergeable = (node) => !isAfterEmptyLine && $isElementNode(node) && INTERNAL_$isBlock(node) && !node.isEmpty() && $isElementNode(firstBlock) && (!firstBlock.isEmpty() || firstBlock.canMergeWhenEmpty());
-    const shouldInsert = !$isElementNode(firstBlock) || !firstBlock.isEmpty();
-    const insertedParagraph = shouldInsert ? this.insertParagraph() : null;
-    if (insertedParagraph && !firstBlock.isAttached()) {
-      firstNode = this.anchor.getNode();
-      firstBlock = $findMatchingParent(firstNode, INTERNAL_$isBlock);
-    }
-    const lastToInsert = blocks[blocks.length - 1];
-    let firstToInsert = blocks[0];
-    if (isMergeable(firstToInsert)) {
-      if (!$isElementNode(firstBlock)) {
-        formatDevErrorMessage2(`Expected node ${firstNode.constructor.name} of type ${firstNode.getType()} to have a block ElementNode ancestor`);
-      }
-      firstBlock.append(...firstToInsert.getChildren());
-      firstToInsert = blocks[1];
-    }
-    if (firstToInsert) {
-      if (!(firstBlock !== null)) {
-        formatDevErrorMessage2(`Expected node ${firstNode.constructor.name} of type ${firstNode.getType()} to have a block ancestor`);
-      }
-      insertRangeAfter(firstBlock, firstToInsert);
-    }
-    const lastInsertedBlock = $findMatchingParent(nodeToSelect, INTERNAL_$isBlock);
-    const insertSelection = nodeToSelect.selectEnd();
-    if (insertedParagraph) {
-      if ($isElementNode(lastInsertedBlock) && (insertedParagraph.canMergeWhenEmpty() || INTERNAL_$isBlock(lastToInsert))) {
-        lastInsertedBlock.append(...insertedParagraph.getChildren());
-        insertedParagraph.remove();
-      } else if (insertedParagraph.isEmpty()) {
-        insertedParagraph.remove();
-      }
-    }
-    if ($isElementNode(firstBlock) && firstBlock.isEmpty()) {
-      firstBlock.remove();
-    }
-    const lastChild = $isElementNode(firstBlock) ? firstBlock.getLastChild() : null;
-    if ($isLineBreakNode(lastChild) && lastInsertedBlock !== firstBlock) {
-      lastChild.remove();
-    }
-    const normalizedCaret = $normalizeCaret($caretFromPoint(insertSelection.anchor, "next"));
-    $setPointFromCaret(insertSelection.anchor, normalizedCaret);
-    $setPointFromCaret(insertSelection.focus, normalizedCaret);
-  }
-  /**
-   * Inserts a new ParagraphNode into the EditorState at the current Selection
-   *
-   * @returns the newly inserted node.
-   */
-  insertParagraph() {
-    if (!this.isCollapsed()) {
-      this.removeText();
-    }
-    const anchorNode = this.anchor.getNode();
-    if (this.anchor.type === "element" && $isRootOrShadowRoot(anchorNode)) {
-      const paragraph = $createParagraphNode();
-      anchorNode.splice(this.anchor.offset, 0, [paragraph]);
-      paragraph.select();
-      return paragraph;
-    }
-    const [, index] = $removeTextAndSplitBlock(this);
-    const block = $findMatchingParent(this.anchor.getNode(), INTERNAL_$isBlock);
-    if (block !== null && $getSlotHostKey(block) !== null) {
-      return null;
-    }
-    if (!$isElementNode(block)) {
-      formatDevErrorMessage2(`Expected ancestor to be a block ElementNode`);
-    }
-    const firstToAppend = block.getChildAtIndex(index);
-    const nodesToInsert = firstToAppend ? [firstToAppend, ...firstToAppend.getNextSiblings()] : [];
-    const newBlock = block.insertNewAfter(this, false);
-    if (newBlock) {
-      newBlock.append(...nodesToInsert);
-      newBlock.selectStart();
-      return newBlock;
-    }
-    return null;
-  }
-  /**
-   * Inserts a logical linebreak, which may be a new LineBreakNode or a new ParagraphNode, into the EditorState at the
-   * current Selection.
-   */
-  insertLineBreak(selectStart) {
-    const lineBreak = $createLineBreakNode();
-    this.insertNodes([lineBreak]);
-    if (selectStart) {
-      const parent = lineBreak.getParentOrThrow();
-      const index = lineBreak.getIndexWithinParent();
-      parent.select(index, index);
-    }
-  }
-  /**
-   * Extracts the nodes in the Selection, splitting nodes where necessary
-   * to get offset-level precision.
-   *
-   * @returns The nodes in the Selection
-   */
-  extract() {
-    const selectedNodes = [...this.getNodes()];
-    const selectedNodesLength = selectedNodes.length;
-    let firstNode = selectedNodes[0];
-    let lastNode = selectedNodes[selectedNodesLength - 1];
-    const [anchorOffset, focusOffset] = $getCharacterOffsets(this);
-    const isBackward = this.isBackward();
-    const [startPoint, endPoint] = isBackward ? [this.focus, this.anchor] : [this.anchor, this.focus];
-    const [startOffset, endOffset] = isBackward ? [focusOffset, anchorOffset] : [anchorOffset, focusOffset];
-    if (selectedNodesLength === 0) {
-      return [];
-    } else if (selectedNodesLength === 1) {
-      if ($isTextNode(firstNode) && !this.isCollapsed()) {
-        const splitNodes = firstNode.splitText(startOffset, endOffset);
-        const node = startOffset === 0 ? splitNodes[0] : splitNodes[1];
-        if (node) {
-          startPoint.set(node.getKey(), 0, "text");
-          endPoint.set(node.getKey(), node.getTextContentSize(), "text");
-          return [node];
-        }
-        return [];
-      }
-      return [firstNode];
-    }
-    if ($isTextNode(firstNode)) {
-      if (startOffset === firstNode.getTextContentSize()) {
-        selectedNodes.shift();
-      } else if (startOffset !== 0) {
-        [, firstNode] = firstNode.splitText(startOffset);
-        selectedNodes[0] = firstNode;
-        startPoint.set(firstNode.getKey(), 0, "text");
-      }
-    }
-    if ($isTextNode(lastNode)) {
-      const lastNodeText = lastNode.getTextContent();
-      const lastNodeTextLength = lastNodeText.length;
-      if (endOffset === 0) {
-        selectedNodes.pop();
-      } else if (endOffset !== lastNodeTextLength) {
-        [lastNode] = lastNode.splitText(endOffset);
-        selectedNodes[selectedNodes.length - 1] = lastNode;
-        endPoint.set(lastNode.getKey(), lastNode.getTextContentSize(), "text");
-      }
-    }
-    return selectedNodes;
-  }
-  /**
-   * Modifies the Selection according to the parameters and a set of heuristics that account for
-   * various node types. Can be used to safely move or extend selection by one logical "unit" without
-   * dealing explicitly with all the possible node types.
-   *
-   * @param alter the type of modification to perform
-   * @param isBackward whether or not selection is backwards
-   * @param granularity the granularity at which to apply the modification
-   */
-  modify(alter, isBackward, granularity) {
-    if ($modifySelectionAroundDecoratorsAndBlocks(this, alter, isBackward, granularity)) {
-      return;
-    }
-    const collapse = alter === "move";
-    const editor = getActiveEditor();
-    const domSelection = getDOMSelection(getWindow(editor));
-    if (!domSelection) {
-      return;
-    }
-    const blockCursorElement = editor._blockCursorElement;
-    const rootElement = editor._rootElement;
-    const focusNode = this.focus.getNode();
-    if (rootElement !== null && blockCursorElement !== null && $isElementNode(focusNode) && !focusNode.isInline() && !focusNode.canBeEmpty()) {
-      removeDOMBlockCursorElement(blockCursorElement, editor, rootElement);
-    }
-    const focusKeyedDOM = getElementByKeyOrThrow(editor, this.focus.key);
-    let nextFocusDOM = focusKeyedDOM;
-    if (this.focus.type === "text") {
-      nextFocusDOM = $isTextNode(focusNode) ? $getDOMTextNode(focusNode, focusKeyedDOM, editor) : null;
-    }
-    if (this.dirty) {
-      const anchorKeyedDOM = getElementByKeyOrThrow(editor, this.anchor.key);
-      let nextAnchorDOM = anchorKeyedDOM;
-      if (this.anchor.type === "text") {
-        const node = this.anchor.getNode();
-        nextAnchorDOM = $isTextNode(node) ? $getDOMTextNode(node, anchorKeyedDOM, editor) : null;
-      }
-      if (nextAnchorDOM && nextFocusDOM) {
-        setDOMSelectionBaseAndExtent(domSelection, nextAnchorDOM, this.anchor.offset, nextFocusDOM, this.focus.offset);
-      }
-    }
-    if (granularity === "character" && $isTextNode(focusNode) && focusNode.isUnmergeable()) {
-      const atBoundary = isBackward ? this.focus.offset === 0 : this.focus.offset === focusNode.getTextContentSize();
-      if (atBoundary) {
-        const sibling = $getSiblingCaret(focusNode, isBackward ? "previous" : "next").getNodeAtCaret();
-        if ($isTextNode(sibling)) {
-          if (collapse) {
-            const sibKeyedDOM = editor.getElementByKey(sibling.getKey());
-            const sibDOM = sibKeyedDOM ? $getDOMTextNode(sibling, sibKeyedDOM, editor) : null;
-            if (sibDOM) {
-              const sibOffset = isBackward ? sibDOM.length : 0;
-              setDOMSelectionBaseAndExtent(domSelection, sibDOM, sibOffset, sibDOM, sibOffset);
-            }
-          } else {
-            const sibLen = sibling.getTextContentSize();
-            if (isBackward) {
-              this.focus.set(sibling.__key, sibLen - 1, "text");
-            } else {
-              this.focus.set(sibling.__key, 1, "text");
-            }
-            this.dirty = true;
-            return;
-          }
-        }
-      }
-    }
-    moveNativeSelection(domSelection, alter, isBackward ? "backward" : "forward", granularity, rootElement);
-    if (domSelection.rangeCount > 0) {
-      const composedRange = getComposedStaticRange(domSelection, editor._rootElement);
-      const range = composedRange || domSelection.getRangeAt(0);
-      const anchorNode = this.anchor.getNode();
-      const root = $isRootNode(anchorNode) ? anchorNode : $getNearestRootOrShadowRoot(anchorNode);
-      this.applyDOMRange(range);
-      this.dirty = true;
-      if (!collapse) {
-        $shrinkSelectionToRoot(this, isBackward, root);
-        const anchorIsAtRangeStart = composedRange ? domSelection.direction !== "backward" : domSelection.anchorNode === range.startContainer && domSelection.anchorOffset === range.startOffset;
-        if (!anchorIsAtRangeStart) {
-          $swapPoints(this);
-        }
-      }
-    }
-    if (granularity === "lineboundary") {
-      $modifySelectionAroundDecoratorsAndBlocks(this, alter, isBackward, granularity, "decorators");
-    }
-  }
-  /**
-   * Helper for handling forward character and word deletion that prevents element nodes
-   * like a table, columns layout being destroyed
-   *
-   * @param anchor the anchor
-   * @param anchorNode the anchor node in the selection
-   * @param isBackward whether or not selection is backwards
-   */
-  forwardDeletion(anchor, anchorNode, isBackward) {
-    if (!isBackward && // Delete forward handle case
-    (anchor.type === "element" && $isElementNode(anchorNode) && anchor.offset === anchorNode.getChildrenSize() || anchor.type === "text" && anchor.offset === anchorNode.getTextContentSize())) {
-      const parent = anchorNode.getParent();
-      const nextSibling = anchorNode.getNextSibling() || (parent === null ? null : parent.getNextSibling());
-      if ($isElementNode(nextSibling) && nextSibling.isShadowRoot()) {
-        return true;
-      }
-    }
-    return false;
-  }
-  /**
-   * Performs one logical character deletion operation on the EditorState based on the current Selection.
-   * Handles different node types.
-   *
-   * @param isBackward whether or not the selection is backwards.
-   */
-  deleteCharacter(isBackward) {
-    const wasCollapsed = this.isCollapsed();
-    if (this.isCollapsed()) {
-      const anchor = this.anchor;
-      let anchorNode = anchor.getNode();
-      if (this.forwardDeletion(anchor, anchorNode, isBackward)) {
-        const nextSibling = $isElementNode(anchorNode) ? anchorNode.getNextSibling() : null;
-        if (!($isElementNode(anchorNode) && anchorNode.isEmpty() && $isElementNode(nextSibling) && nextSibling.isShadowRoot())) {
-          return;
-        }
-      }
-      const direction = isBackward ? "previous" : "next";
-      const initialCaret = $caretFromPoint(anchor, direction);
-      const initialRange = $extendCaretToRange(initialCaret);
-      if (initialRange.getTextSlices().every((slice) => slice === null || slice.distance === 0)) {
-        if (anchor.type === "element") {
-          const adjacent = initialCaret.getNodeAtCaret();
-          if ($isElementNode(adjacent) && $needsBlockCursorBeside(adjacent)) {
-            const container = adjacent.getParent();
-            adjacent.remove();
-            const restored = $restoreEmptyContainerParagraph(container, adjacent);
-            if (restored !== null) {
-              restored.selectStart();
-            }
-            return;
-          }
-        }
-        let state = {
-          type: "initial"
-        };
-        for (const caret of initialRange.iterNodeCarets("shadowRoot")) {
-          if ($isChildCaret(caret)) {
-            if (caret.origin.isInline()) ;
-            else if (caret.origin.isShadowRoot()) {
-              if (state.type === "merge-block") {
-                break;
-              }
-              if ($isElementNode(initialRange.anchor.origin) && initialRange.anchor.origin.isEmpty()) {
-                const normCaret = $normalizeCaret(caret);
-                $updateRangeSelectionFromCaretRange(this, $getCaretRange(normCaret, normCaret));
-                initialRange.anchor.origin.remove();
-              }
-              return;
-            } else if (state.type === "merge-next-block" || state.type === "merge-block") {
-              state = {
-                block: state.block,
-                caret,
-                type: "merge-block"
-              };
-            }
-          } else if (state.type === "merge-block") {
-            break;
-          } else if ($isSiblingCaret(caret)) {
-            if ($isElementNode(caret.origin)) {
-              if (!caret.origin.isInline()) {
-                state = {
-                  block: caret.origin,
-                  type: "merge-next-block"
-                };
-              } else if (!caret.origin.isParentOf(initialRange.anchor.origin)) {
-                break;
-              }
-              continue;
-            } else if ($isDecoratorNode(caret.origin)) {
-              if (caret.origin.isIsolated()) ;
-              else if (state.type === "merge-next-block" && (caret.origin.isKeyboardSelectable() || !caret.origin.isInline()) && $isElementNode(initialRange.anchor.origin) && initialRange.anchor.origin.isEmpty()) {
-                initialRange.anchor.origin.remove();
-                const nodeSelection = $createNodeSelection();
-                nodeSelection.add(caret.origin.getKey());
-                $setSelection(nodeSelection);
-              } else {
-                const decorator = caret.origin;
-                const container = decorator.getParent();
-                decorator.remove();
-                const restored = $restoreEmptyContainerParagraph(container, decorator);
-                if (restored !== null) {
-                  restored.selectStart();
-                }
-              }
-              return;
-            } else if ($isLineBreakNode(caret.origin)) {
-              caret.origin.remove();
-              return;
-            }
-            break;
-          }
-        }
-        if (state.type === "merge-block") {
-          const {
-            caret,
-            block
-          } = state;
-          if ($getSlotNames(block).length > 0) {
-            return;
-          }
-          if (caret.origin.isEmpty() && !block.isEmpty() && caret.origin.getParent() === block.getParent()) {
-            caret.origin.remove(true);
-            return;
-          }
-          $updateRangeSelectionFromCaretRange(this, $getCaretRange(!caret.origin.isEmpty() && block.isEmpty() ? $rewindSiblingCaret($getSiblingCaret(block, caret.direction)) : initialRange.anchor, caret));
-          return this.removeText();
-        }
-        for (let node = anchor.getNode(); node !== null; ) {
-          if ($getSlotHostKey(node) !== null) {
-            return;
-          }
-          if ($isElementNode(node) && node.isShadowRoot()) {
-            break;
-          }
-          node = node.getParent();
-        }
-      }
-      const focus = this.focus;
-      $extendSelectionForDeletion(this, isBackward, "character");
-      if (!this.isCollapsed()) {
-        const focusNode = focus.type === "text" ? focus.getNode() : null;
-        anchorNode = anchor.type === "text" ? anchor.getNode() : null;
-        if (focusNode !== null && focusNode.isSegmented()) {
-          const offset = focus.offset;
-          const textContentSize = focusNode.getTextContentSize();
-          if (focusNode.is(anchorNode) || isBackward && offset !== textContentSize || !isBackward && offset !== 0) {
-            $removeSegment(focusNode, isBackward, offset);
-            return;
-          }
-        } else if (anchorNode !== null && anchorNode.isSegmented()) {
-          const offset = anchor.offset;
-          const textContentSize = anchorNode.getTextContentSize();
-          if (anchorNode.is(focusNode) || isBackward && offset !== 0 || !isBackward && offset !== textContentSize) {
-            $removeSegment(anchorNode, isBackward, offset);
-            return;
-          }
-        }
-        $updateCaretSelectionForUnicodeCharacter(this, isBackward);
-      } else if (isBackward && anchor.offset === 0) {
-        if ($collapseAtStart(this, anchor.getNode())) {
-          return;
-        }
-      }
-    }
-    if (!wasCollapsed) {
-      INTERNAL_$expandSelectionToWholeDocument(this);
-    }
-    this.removeText();
-    if (isBackward && !wasCollapsed && this.isCollapsed() && this.anchor.type === "element" && this.anchor.offset === 0) {
-      const anchorNode = this.anchor.getNode();
-      if (anchorNode.isEmpty() && $isRootNode(anchorNode.getParent()) && anchorNode.getPreviousSibling() === null) {
-        $collapseAtStart(this, anchorNode);
-      }
-      $ensureRootHasParagraph();
-    }
-  }
-  /**
-   * Performs one logical line deletion operation on the EditorState based on the current Selection.
-   * Handles different node types.
-   *
-   * @param isBackward whether or not the selection is backwards.
-   */
-  deleteLine(isBackward) {
-    const wasCollapsed = this.isCollapsed();
-    const anchorSlotFrame = $getPointSlotFrame(this.anchor);
-    if (anchorSlotFrame !== null && $isDecoratorNode($getSlotHost(anchorSlotFrame))) {
-      if (!this.isCollapsed()) {
-        this.focus.set(this.anchor.key, this.anchor.offset, this.anchor.type);
-      }
-      this.deleteCharacter(isBackward);
-      return;
-    }
-    if (this.isCollapsed()) {
-      $extendSelectionForDeletion(this, isBackward, "lineboundary");
-    }
-    if (this.isCollapsed()) {
-      this.deleteCharacter(isBackward);
-    } else {
-      const anchorBlock = $findMatchingParent(this.anchor.getNode(), INTERNAL_$isBlock);
-      const focusBlock = $findMatchingParent(this.focus.getNode(), INTERNAL_$isBlock);
-      if (anchorBlock !== focusBlock) {
-        this.focus.set(this.anchor.key, this.anchor.offset, this.anchor.type);
-        this.deleteCharacter(isBackward);
-      } else {
-        if (!wasCollapsed) {
-          INTERNAL_$expandSelectionToWholeDocument(this);
-        }
-        this.removeText();
-      }
-    }
-  }
-  /**
-   * Performs one logical word deletion operation on the EditorState based on the current Selection.
-   * Handles different node types.
-   *
-   * @param isBackward whether or not the selection is backwards.
-   */
-  deleteWord(isBackward) {
-    const wasCollapsed = this.isCollapsed();
-    if (this.isCollapsed()) {
-      const anchor = this.anchor;
-      const anchorNode = anchor.getNode();
-      if (this.forwardDeletion(anchor, anchorNode, isBackward)) {
-        return;
-      }
-      $extendSelectionForDeletion(this, isBackward, "word");
-    }
-    if (this.isCollapsed()) {
-      this.deleteCharacter(isBackward);
-    } else {
-      if (!wasCollapsed) {
-        INTERNAL_$expandSelectionToWholeDocument(this);
-      }
-      this.removeText();
-    }
-  }
-  /**
-   * Returns whether the Selection is "backwards", meaning the focus
-   * logically precedes the anchor in the EditorState.
-   * @returns true if the Selection is backwards, false otherwise.
-   */
-  isBackward() {
-    const cached = this._cachedIsBackward;
-    if (cached !== null) {
-      return cached;
-    }
-    const isBackward = this.focus.isBefore(this.anchor);
-    if (!isCurrentlyReadOnlyMode()) {
-      this._cachedIsBackward = isBackward;
-    }
-    return isBackward;
-  }
-  getStartEndPoints() {
-    return [this.anchor, this.focus];
-  }
-};
-function $isNodeSelection(x2) {
-  return x2 instanceof NodeSelection;
-}
-function $updateTextFormat(selection, applyFormat) {
-  if ($isNodeSelection(selection)) {
-    for (const node of selection.getNodes()) {
-      if ($isInlineFormattable(node)) {
-        node.setFormat(applyFormat(node.getFormat()));
-      }
-    }
-    return;
-  }
-  if (selection.isCollapsed()) {
-    selection.setFormat(applyFormat(selection.format));
-    $setCompositionKey(null);
-    return;
-  }
-  const selectedTextNodes = [];
-  for (const node of selection.getNodes()) {
-    if ($isTextNode(node)) {
-      selectedTextNodes.push(node);
-    } else if ($isElementNode(node)) {
-      node.setTextFormat(applyFormat(node.getTextFormat()));
-    } else if ($isInlineFormattable(node)) {
-      node.setFormat(applyFormat(node.getFormat()));
-    }
-  }
-  const selectedTextNodesLength = selectedTextNodes.length;
-  if (selectedTextNodesLength === 0) {
-    selection.setFormat(applyFormat(selection.format));
-    $setCompositionKey(null);
-    return;
-  }
-  const anchor = selection.anchor;
-  const focus = selection.focus;
-  const isBackward = selection.isBackward();
-  const startPoint = isBackward ? focus : anchor;
-  const endPoint = isBackward ? anchor : focus;
-  let firstIndex = 0;
-  let firstNode = selectedTextNodes[0];
-  let startOffset = startPoint.type === "element" ? 0 : startPoint.offset;
-  if (startPoint.type === "text" && startOffset === firstNode.getTextContentSize()) {
-    firstIndex = 1;
-    firstNode = selectedTextNodes[1];
-    startOffset = 0;
-  }
-  if (firstNode == null) {
-    return;
-  }
-  const lastIndex = selectedTextNodesLength - 1;
-  let lastNode = selectedTextNodes[lastIndex];
-  const endOffset = endPoint.type === "text" ? endPoint.offset : lastNode.getTextContentSize();
-  if (firstNode.is(lastNode)) {
-    if (startOffset === endOffset) {
-      return;
-    }
-    const newFormat = applyFormat(firstNode.getFormat());
-    if ($isTokenOrSegmented(firstNode) || startOffset === 0 && endOffset === firstNode.getTextContentSize()) {
-      firstNode.setFormat(newFormat);
-    } else {
-      const splitNodes = firstNode.splitText(startOffset, endOffset);
-      const replacement = startOffset === 0 ? splitNodes[0] : splitNodes[1];
-      replacement.setFormat(newFormat);
-      if (startPoint.type === "text") {
-        startPoint.set(replacement.__key, 0, "text");
-      }
-      if (endPoint.type === "text") {
-        endPoint.set(replacement.__key, endOffset - startOffset, "text");
-      }
-    }
-    selection.format = newFormat;
-    return;
-  }
-  if (startOffset !== 0 && !$isTokenOrSegmented(firstNode)) {
-    [, firstNode] = firstNode.splitText(startOffset);
-    startOffset = 0;
-  }
-  const firstNextFormat = applyFormat(firstNode.getFormat());
-  firstNode.setFormat(firstNextFormat);
-  const lastNextFormat = applyFormat(lastNode.getFormat());
-  if (endOffset > 0) {
-    if (endOffset !== lastNode.getTextContentSize() && !$isTokenOrSegmented(lastNode)) {
-      [lastNode] = lastNode.splitText(endOffset);
-    }
-    lastNode.setFormat(lastNextFormat);
-  }
-  for (let i2 = firstIndex + 1; i2 < lastIndex; i2++) {
-    const textNode = selectedTextNodes[i2];
-    textNode.setFormat(applyFormat(textNode.getFormat()));
-  }
-  if (startPoint.type === "text") {
-    startPoint.set(firstNode.__key, startOffset, "text");
-  }
-  if (endPoint.type === "text") {
-    endPoint.set(lastNode.__key, endOffset, "text");
-  }
-  selection.format = firstNextFormat | lastNextFormat;
-}
-function $setTextFormat(selection, formats) {
-  const entries = [];
-  for (const [type, value] of Object.entries(formats)) {
-    if (typeof value === "boolean") {
-      entries.push([type, value]);
-    }
-  }
-  if (entries.length === 0) {
-    return;
-  }
-  $updateTextFormat(selection, (format) => {
-    for (const [type, value] of entries) {
-      format = toggleTextFormatType(format, type, value ? TEXT_TYPE_TO_FORMAT[type] : 0);
-    }
-    return format;
-  });
-}
-function $formatText(selection, formatType, alignWithFormat = null) {
-  const effectiveAlign = alignWithFormat === null && $isRangeSelection(selection) ? toggleTextFormatType(selection.format, formatType, null) : alignWithFormat;
-  $updateTextFormat(selection, (format) => toggleTextFormatType(format, formatType, effectiveAlign));
-}
-function getCharacterOffset(point) {
-  const offset = point.offset;
-  if (point.type === "text") {
-    return offset;
-  }
-  const parent = point.getNode();
-  return offset === parent.getChildrenSize() ? parent.getTextContent().length : 0;
-}
-function $getCharacterOffsets(selection) {
-  const anchorAndFocus = selection.getStartEndPoints();
-  if (anchorAndFocus === null) {
-    return [0, 0];
-  }
-  const [anchor, focus] = anchorAndFocus;
-  if (anchor.type === "element" && focus.type === "element" && anchor.key === focus.key && anchor.offset === focus.offset) {
-    return [0, 0];
-  }
-  return [getCharacterOffset(anchor), getCharacterOffset(focus)];
-}
-function $collapseAtStart(selection, startNode) {
-  for (let node = startNode; node; node = node.getParent()) {
-    if ($isElementNode(node)) {
-      if (node.collapseAtStart(selection)) {
-        return true;
-      }
-      if ($isRootOrShadowRoot(node)) {
-        break;
-      }
-    }
-    if (node.getPreviousSibling()) {
-      break;
-    }
-  }
-  return false;
-}
-function INTERNAL_$expandSelectionToWholeDocument(selection) {
-  const root = $getRoot();
-  if (root.isEmpty() || !$isBlockFullySelected(root, selection)) {
-    return;
-  }
-  selection.anchor.set(root.getKey(), 0, "element");
-  selection.focus.set(root.getKey(), root.getChildrenSize(), "element");
-}
-function $swapPoints(selection) {
-  const focus = selection.focus;
-  const anchor = selection.anchor;
-  const anchorKey = anchor.key;
-  const anchorOffset = anchor.offset;
-  const anchorType = anchor.type;
-  anchor.set(focus.key, focus.offset, focus.type, true);
-  focus.set(anchorKey, anchorOffset, anchorType, true);
-}
-function canMoveWithinDOMText(node, offset, direction) {
-  if (node === null || node.nodeType !== DOM_TEXT_TYPE) {
-    return false;
-  }
-  if (direction === "backward") {
-    return offset > 0;
-  } else if (direction === "forward") {
-    return offset < node.length;
-  }
-  return false;
-}
-function moveNativeSelection(domSelection, alter, direction, granularity, rootElement) {
-  const points = granularity === "character" ? getDOMSelectionPoints(domSelection, rootElement) : null;
-  const focusNode = points && points.focusNode;
-  const focusOffset = points ? points.focusOffset : 0;
-  domSelection.modify(alter, direction, granularity);
-  if (points === null || !canMoveWithinDOMText(focusNode, focusOffset, direction)) {
-    return;
-  }
-  const nextPoints = getDOMSelectionPoints(domSelection, rootElement);
-  if (nextPoints.focusNode === focusNode && nextPoints.focusOffset === focusOffset) {
-    domSelection.modify(alter, direction, granularity);
-  }
-}
-function $shrinkSelectionToRoot(selection, isBackward, root) {
-  const nodes = selection.getNodes();
-  const validNodes = nodes.filter((node) => $hasAncestor(node, root));
-  if (validNodes.length === 0 || validNodes.length === nodes.length) {
-    return false;
-  }
-  const edgeNode = isBackward ? validNodes[0] : validNodes[validNodes.length - 1];
-  const edgeElement = $isElementNode(edgeNode) ? edgeNode : edgeNode.getParentOrThrow();
-  if (isBackward) {
-    edgeElement.selectStart();
-  } else {
-    edgeElement.selectEnd();
-  }
-  return true;
-}
-function $extendSelectionForDeletion(selection, isBackward, granularity) {
-  if ($modifySelectionAroundDecoratorsAndBlocks(selection, "extend", isBackward, granularity)) {
-    return;
-  }
-  const editor = getActiveEditor();
-  const domSelection = getDOMSelection(getWindow(editor));
-  if (!domSelection || typeof domSelection.modify !== "function") {
-    return;
-  }
-  const blockCursorElement = editor._blockCursorElement;
-  const rootElement = editor._rootElement;
-  const anchor = selection.anchor;
-  const focusNode = selection.focus.getNode();
-  if (rootElement !== null && blockCursorElement !== null && $isElementNode(focusNode) && !focusNode.isInline() && !focusNode.canBeEmpty()) {
-    removeDOMBlockCursorElement(blockCursorElement, editor, rootElement);
-  }
-  const $resolvePointDOM = (point) => {
-    const pointNode = point.getNode();
-    const keyedDOM = editor.getElementByKey(point.key);
-    return keyedDOM !== null && point.type === "text" && $isTextNode(pointNode) ? $getDOMTextNode(pointNode, keyedDOM, editor) : keyedDOM;
-  };
-  const anchorNode = anchor.getNode();
-  const anchorDOM = $resolvePointDOM(anchor);
-  if (anchorDOM === null) {
-    return;
-  }
-  const anchorOffset = anchor.offset;
-  const wasCollapsed = selection.isCollapsed();
-  const focus = selection.focus;
-  const focusDOM = wasCollapsed ? anchorDOM : $resolvePointDOM(focus);
-  if (focusDOM === null) {
-    return;
-  }
-  const focusOffset = focus.offset;
-  setDOMSelectionBaseAndExtent(domSelection, focusDOM, focusOffset, focusDOM, focusOffset);
-  moveNativeSelection(domSelection, "move", isBackward ? "backward" : "forward", granularity, rootElement);
-  if (domSelection.rangeCount === 0) {
-    return;
-  }
-  const landedRange = getComposedStaticRange(domSelection, rootElement) || domSelection.getRangeAt(0);
-  const landedContainer = landedRange.startContainer;
-  const landedOffset = landedRange.startOffset;
-  if (wasCollapsed && granularity === "character" && anchor.type === "text" && $isTextNode(anchorNode) && anchorNode.isUnmergeable()) {
-    const boundaryOffset = isBackward ? 0 : anchorNode.getTextContentSize();
-    if (anchorOffset === boundaryOffset) {
-      const sibling = $getSiblingCaret(anchorNode, isBackward ? "previous" : "next").getNodeAtCaret();
-      if ($isTextNode(sibling)) {
-        const sibOffset = isBackward ? sibling.getTextContentSize() - 1 : 1;
-        selection.focus.set(sibling.__key, sibOffset, "text");
-        selection.dirty = true;
-        return;
-      }
-    }
-  }
-  if (wasCollapsed && granularity === "character" && anchor.type === "text") {
-    const edgeOffset = isBackward ? 0 : anchorNode.getTextContentSize();
-    const clampedOffset = landedContainer === anchorDOM ? landedOffset : anchorOffset !== edgeOffset ? edgeOffset : -1;
-    if (clampedOffset >= 0) {
-      if (clampedOffset !== anchorOffset) {
-        selection.focus.set(anchor.key, clampedOffset, "text");
-        selection.dirty = true;
-      }
-      return;
-    }
-  }
-  const [startContainer, startOffset, endContainer, endOffset] = isBackward ? [landedContainer, landedOffset, anchorDOM, anchorOffset] : [anchorDOM, anchorOffset, landedContainer, landedOffset];
-  const root = $isRootNode(anchorNode) ? anchorNode : $getNearestRootOrShadowRoot(anchorNode);
-  selection.applyDOMRange({
-    collapsed: false,
-    endContainer,
-    endOffset,
-    startContainer,
-    startOffset
-  });
-  selection.dirty = true;
-  if (!$shrinkSelectionToRoot(selection, isBackward, root) && isBackward) {
-    $swapPoints(selection);
-  }
-  if (granularity === "lineboundary") {
-    $modifySelectionAroundDecoratorsAndBlocks(selection, "extend", isBackward, granularity, "decorators");
-  }
-}
-function $updateCaretSelectionForUnicodeCharacter(selection, isBackward) {
-  const anchor = selection.anchor;
-  const focus = selection.focus;
-  const anchorNode = anchor.getNode();
-  const focusNode = focus.getNode();
-  if (anchorNode === focusNode && anchor.type === "text" && focus.type === "text") {
-    const anchorOffset = anchor.offset;
-    const focusOffset = focus.offset;
-    const isBefore = anchorOffset < focusOffset;
-    const startOffset = isBefore ? anchorOffset : focusOffset;
-    const endOffset = isBefore ? focusOffset : anchorOffset;
-    const characterOffset = endOffset - 1;
-    if (startOffset !== characterOffset) {
-      const text = anchorNode.getTextContent().slice(startOffset, endOffset);
-      if (shouldDeleteExactlyOneCodeUnit(text)) {
-        if (isBackward) {
-          focus.set(focus.key, characterOffset, focus.type);
-        } else {
-          anchor.set(anchor.key, characterOffset, anchor.type);
-        }
-      }
-    }
-  }
-}
-function shouldDeleteExactlyOneCodeUnit(text) {
-  {
-    if (!(text.length > 1)) {
-      formatDevErrorMessage2(`shouldDeleteExactlyOneCodeUnit: expecting to be called only with sequences of two or more code units`);
-    }
-  }
-  return !(doesContainSurrogatePair(text) || doesContainEmoji(text));
-}
-// @__NO_SIDE_EFFECTS__
-function createEmojiTest() {
-  try {
-    const re = new RegExp("\\p{Emoji}", "u");
-    const test = re.test.bind(re);
-    if (
-      // Emoji in the BMP (heart) with variation selector
-      test("\u2764\uFE0F") && // Emoji in the BMP (#) with variation selector
-      test("#\uFE0F\u20E3") && // Emoji outside the BMP (thumbs up) that is encoded with a surrogate pair
-      test("\u{1F44D}")
-    ) {
-      return test;
-    }
-  } catch (_e) {
-  }
-  return () => false;
-}
-var doesContainEmoji = /* @__PURE__ */ createEmojiTest();
-function $removeSegment(node, isBackward, offset) {
-  const textNode = node;
-  const textContent = textNode.getTextContent();
-  const split = textContent.split(/(?=\s)/g);
-  const splitLength = split.length;
-  let segmentOffset = 0;
-  let restoreOffset = 0;
-  for (let i2 = 0; i2 < splitLength; i2++) {
-    const text = split[i2];
-    const isLast = i2 === splitLength - 1;
-    restoreOffset = segmentOffset;
-    segmentOffset += text.length;
-    if (isBackward && segmentOffset === offset || segmentOffset > offset || isLast) {
-      split.splice(i2, 1);
-      if (isLast) {
-        restoreOffset = void 0;
-      }
-      break;
-    }
-  }
-  const nextTextContent = split.join("").trim();
-  if (nextTextContent === "") {
-    textNode.remove();
-  } else {
-    textNode.setTextContent(nextTextContent);
-    textNode.select(restoreOffset, restoreOffset);
-  }
-}
-function shouldResolveAncestor(resolvedElement, resolvedOffset, lastPoint) {
-  const parent = resolvedElement.getParent();
-  return lastPoint === null || parent === null || !parent.canBeEmpty() || parent !== lastPoint.getNode();
-}
-function $internalResolveSelectionPoint(dom, offset, lastPoint, editor) {
-  let resolvedOffset = offset;
-  let resolvedNode;
-  let dirty = false;
-  if (isHTMLElement(dom)) {
-    let moveSelectionToEnd = false;
-    const childNodes = dom.childNodes;
-    const childNodesLength = childNodes.length;
-    const blockCursorElement = editor._blockCursorElement;
-    if (resolvedOffset === childNodesLength && childNodesLength > 0) {
-      moveSelectionToEnd = true;
-      resolvedOffset = childNodesLength - 1;
-    }
-    if (getNodeKeyFromDOMNode(dom, editor) === void 0 && !isDOMCapturingSelection(dom, editor)) {
-      dirty = true;
-    }
-    let childDOM = childNodes[resolvedOffset];
-    let hasBlockCursor = false;
-    if (childDOM === blockCursorElement) {
-      childDOM = childNodes[resolvedOffset + 1];
-      hasBlockCursor = true;
-    } else if (blockCursorElement !== null) {
-      const blockCursorElementParent = blockCursorElement.parentNode;
-      if (dom === blockCursorElementParent) {
-        const blockCursorOffset = Array.prototype.indexOf.call(blockCursorElementParent.children, blockCursorElement);
-        if (offset > blockCursorOffset) {
-          resolvedOffset--;
-        }
-      }
-    }
-    resolvedNode = $getNodeFromDOM(childDOM);
-    if ($isTextNode(resolvedNode)) {
-      resolvedOffset = $getTextNodeOffset(resolvedNode, moveSelectionToEnd ? "next" : "previous");
-    } else {
-      let resolvedElement = $getNodeFromDOM(dom);
-      if (resolvedElement === null) {
-        return null;
-      }
-      if ($isElementNode(resolvedElement)) {
-        const elementDOM = editor.getElementByKey(resolvedElement.getKey());
-        if (!(elementDOM !== null)) {
-          formatDevErrorMessage2(`$internalResolveSelectionPoint: node in DOM but not keyToDOMMap`);
-        }
-        const slot = $getDOMSlot(resolvedElement, elementDOM, editor);
-        [resolvedElement, resolvedOffset] = slot.resolveChildIndex(resolvedElement, elementDOM, dom, offset);
-        if (!$isElementNode(resolvedElement)) {
-          formatDevErrorMessage2(`$internalResolveSelectionPoint: resolvedElement is not an ElementNode`);
-        }
-        if (moveSelectionToEnd && resolvedOffset >= resolvedElement.getChildrenSize()) {
-          resolvedOffset = Math.max(0, resolvedElement.getChildrenSize() - 1);
-        }
-        let child = resolvedElement.getChildAtIndex(resolvedOffset);
-        if ($isElementNode(child) && shouldResolveAncestor(child, resolvedOffset, lastPoint)) {
-          const descendant = moveSelectionToEnd ? child.getLastDescendant() : child.getFirstDescendant();
-          if (descendant === null) {
-            resolvedElement = child;
-          } else {
-            child = descendant;
-            resolvedElement = $isElementNode(child) ? child : child.getParentOrThrow();
-          }
-          resolvedOffset = 0;
-        }
-        if ($isTextNode(child)) {
-          resolvedNode = child;
-          resolvedElement = null;
-          resolvedOffset = $getTextNodeOffset(child, moveSelectionToEnd ? "next" : "previous");
-        } else if (child !== resolvedElement && moveSelectionToEnd && !hasBlockCursor) {
-          if (!$isElementNode(resolvedElement)) {
-            formatDevErrorMessage2(`invariant`);
-          }
-          resolvedOffset = Math.min(resolvedElement.getChildrenSize(), resolvedOffset + 1);
-        }
-      } else {
-        const slotHost = $getSlotHost(resolvedElement);
-        const anchorNode = slotHost !== null ? slotHost : resolvedElement;
-        const index = anchorNode.getIndexWithinParent();
-        const elementDOM = editor.getElementByKey(resolvedElement.getKey());
-        let position = "after";
-        if (elementDOM !== null && $getNodeFromDOM(dom) === resolvedElement) {
-          const slot = $getDOMSlot(resolvedElement, elementDOM, editor);
-          if (slot.element !== elementDOM) {
-            position = slot.resolveLeafPosition(elementDOM, dom, offset);
-          } else if (offset === 0 && $isDecoratorNode(resolvedElement)) {
-            position = "before";
-          }
-        }
-        resolvedOffset = position === "before" ? index : index + 1;
-        resolvedElement = anchorNode.getParentOrThrow();
-      }
-      if ($isElementNode(resolvedElement)) {
-        return [$createPoint(resolvedElement.__key, resolvedOffset, "element"), dirty];
-      }
-    }
-  } else {
-    resolvedNode = $getNodeFromDOM(dom);
-  }
-  if (!$isTextNode(resolvedNode)) {
-    return null;
-  }
-  return [$createPoint(resolvedNode.__key, $getTextNodeOffset(resolvedNode, resolvedOffset, "clamp"), "text"), dirty];
-}
-function resolveSelectionPointOnBoundary(point, isBackward, isCollapsed) {
-  const offset = point.offset;
-  const node = point.getNode();
-  if (offset === 0) {
-    const prevSibling = node.getPreviousSibling();
-    const parent = node.getParent();
-    if (!isBackward) {
-      if ($isElementNode(prevSibling) && !isCollapsed && prevSibling.isInline()) {
-        point.set(prevSibling.__key, prevSibling.getChildrenSize(), "element");
-      } else if ($isTextNode(prevSibling) && !node.isUnmergeable()) {
-        point.set(prevSibling.__key, prevSibling.getTextContent().length, "text");
-      }
-    } else if ((isCollapsed || !isBackward) && prevSibling === null && $isElementNode(parent) && parent.isInline()) {
-      const parentSibling = parent.getPreviousSibling();
-      if ($isTextNode(parentSibling)) {
-        point.set(parentSibling.__key, parentSibling.getTextContent().length, "text");
-      }
-    }
-  } else if (offset === node.getTextContent().length) {
-    const nextSibling = node.getNextSibling();
-    const parent = node.getParent();
-    if (isBackward && $isElementNode(nextSibling) && nextSibling.isInline()) {
-      point.set(nextSibling.__key, 0, "element");
-    } else if ((isCollapsed || isBackward) && nextSibling === null && $isElementNode(parent) && parent.isInline() && !parent.canInsertTextAfter() && parent.getTextContentSize() > 1) {
-      const parentSibling = parent.getNextSibling();
-      if ($isTextNode(parentSibling)) {
-        point.set(parentSibling.__key, 0, "text");
-      }
-    }
-  }
-}
-function $normalizeSelectionPointsForBoundaries(anchor, focus, lastSelection) {
-  if (anchor.type === "text" && focus.type === "text") {
-    const isBackward = anchor.isBefore(focus);
-    const isCollapsed = anchor.is(focus);
-    resolveSelectionPointOnBoundary(anchor, isBackward, isCollapsed);
-    resolveSelectionPointOnBoundary(focus, !isBackward, isCollapsed);
-    if (isCollapsed) {
-      focus.set(anchor.key, anchor.offset, anchor.type);
-    }
-  }
-}
-function $getPointSlotFrame(point) {
-  const node = $getNodeByKey(point.key);
-  return node === null ? null : $getSlotFrame(node);
-}
-function $slotStraddleFocusAfterAnchor(anchorPoint, focusPoint, anchorFrame, focusFrame) {
-  if (anchorFrame !== null && focusFrame !== null) {
-    const anchorHost = $getSlotHost(anchorFrame);
-    const focusHost2 = $getSlotHost(focusFrame);
-    if (anchorHost !== null && anchorHost.is(focusHost2)) {
-      for (const slotKey of $getSlotMap(anchorHost).values()) {
-        if (slotKey === anchorFrame.getKey()) {
-          return true;
-        }
-        if (slotKey === focusFrame.getKey()) {
-          return false;
-        }
-      }
-      return true;
-    }
-    return anchorHost !== null && focusHost2 !== null ? anchorHost.isBefore(focusHost2) : true;
-  }
-  if (anchorFrame !== null) {
-    const anchorHost = $getSlotHost(anchorFrame);
-    const focusNode = $getNodeByKey(focusPoint.key);
-    if (anchorHost === null || focusNode === null) {
-      return true;
-    }
-    if (anchorHost.is(focusNode) || anchorHost.isParentOf(focusNode)) {
-      return true;
-    }
-    return anchorHost.isBefore(focusNode);
-  }
-  const focusHost = $getSlotHost(focusFrame);
-  const anchorNode = $getNodeByKey(anchorPoint.key);
-  if (focusHost === null || anchorNode === null) {
-    return false;
-  }
-  if (focusHost.is(anchorNode) || focusHost.isParentOf(anchorNode)) {
-    return false;
-  }
-  return anchorNode.isBefore(focusHost);
-}
-function $clampSelectionPointsToSlotFrame(anchorPoint, focusPoint, resolveFocusAfterAnchor) {
-  const anchorFrame = $getPointSlotFrame(anchorPoint);
-  const focusFrame = $getPointSlotFrame(focusPoint);
-  if (anchorFrame === focusFrame || anchorFrame !== null && focusFrame !== null && anchorFrame.is(focusFrame)) {
-    return false;
-  }
-  const focusAfterAnchor = resolveFocusAfterAnchor(anchorFrame, focusFrame);
-  if (anchorFrame !== null) {
-    if ($isElementNode(anchorFrame)) {
-      focusPoint.set(anchorFrame.getKey(), focusAfterAnchor ? anchorFrame.getChildrenSize() : 0, "element");
-    } else {
-      focusPoint.set(anchorFrame.getKey(), focusAfterAnchor ? anchorFrame.getTextContentSize() : 0, "text");
-    }
-    return true;
-  }
-  const host = $getSlotHost(focusFrame);
-  if (host === null) {
-    return false;
-  }
-  const hostParent = host.getParent();
-  if (hostParent === null) {
-    return false;
-  }
-  const hostIndex = host.getIndexWithinParent();
-  focusPoint.set(hostParent.getKey(), focusAfterAnchor ? hostIndex + 1 : hostIndex, "element");
-  return true;
-}
-function $clampRangeSelectionToSlotFrame(selection) {
-  const clamped = $clampSelectionPointsToSlotFrame(selection.anchor, selection.focus, (anchorFrame, focusFrame) => $slotStraddleFocusAfterAnchor(selection.anchor, selection.focus, anchorFrame, focusFrame));
-  if (clamped) {
-    selection.dirty = true;
-  }
-  return clamped;
-}
-function $internalResolveSelectionPoints(anchorDOM, anchorOffset, focusDOM, focusOffset, editor, lastSelection) {
-  if (anchorDOM === null || focusDOM === null || !isSelectionWithinEditor(editor, anchorDOM, focusDOM)) {
-    return null;
-  }
-  const resolvedAnchor = $internalResolveSelectionPoint(anchorDOM, anchorOffset, $isRangeSelection(lastSelection) ? lastSelection.anchor : null, editor);
-  if (resolvedAnchor === null) {
-    return null;
-  }
-  const resolvedFocus = $internalResolveSelectionPoint(focusDOM, focusOffset, $isRangeSelection(lastSelection) ? lastSelection.focus : null, editor);
-  if (resolvedFocus === null) {
-    return null;
-  }
-  const [resolvedAnchorPoint, anchorDirty] = resolvedAnchor;
-  const [resolvedFocusPoint, focusDirty] = resolvedFocus;
-  {
-    $validatePoint("anchor", resolvedAnchorPoint);
-    $validatePoint("focus", resolvedFocusPoint);
-  }
-  if (resolvedAnchorPoint.type === "element" && resolvedFocusPoint.type === "element") {
-    const anchorNode = $getNodeFromDOM(anchorDOM);
-    const focusNode = $getNodeFromDOM(focusDOM);
-    if ($isDecoratorNode(anchorNode) && $isDecoratorNode(focusNode)) {
-      return null;
-    }
-  }
-  const slotClamped = editor._slotsUsed && $clampSelectionPointsToSlotFrame(resolvedAnchorPoint, resolvedFocusPoint, () => (anchorDOM.compareDocumentPosition(focusDOM) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0);
-  $normalizeSelectionPointsForBoundaries(resolvedAnchorPoint, resolvedFocusPoint);
-  return [resolvedAnchorPoint, resolvedFocusPoint, anchorDirty || focusDirty || slotClamped];
-}
-function $isBlockElementNode(node) {
-  return $isElementNode(node) && !node.isInline();
-}
-function $internalMakeRangeSelection(anchorKey, anchorOffset, focusKey, focusOffset, anchorType, focusType) {
-  const editorState = getActiveEditorState();
-  const selection = new RangeSelection($createPoint(anchorKey, anchorOffset, anchorType), $createPoint(focusKey, focusOffset, focusType), 0, "");
-  selection.dirty = true;
-  editorState._selection = selection;
-  return selection;
-}
-function $createRangeSelection() {
-  const anchor = $createPoint("root", 0, "element");
-  const focus = $createPoint("root", 0, "element");
-  return new RangeSelection(anchor, focus, 0, "");
-}
-function $createNodeSelection() {
-  return new NodeSelection(/* @__PURE__ */ new Set());
-}
-function $internalCreateSelection(editor, event) {
-  const currentEditorState = editor.getEditorState();
-  const lastSelection = currentEditorState._selection;
-  const domSelection = getDOMSelection(getWindow(editor));
-  if ($isRangeSelection(lastSelection) || lastSelection == null) {
-    return $internalCreateRangeSelection(lastSelection, domSelection, editor, event);
-  }
-  return lastSelection.clone();
-}
-function $createRangeSelectionFromDom(domSelection, editor) {
-  return $internalCreateRangeSelection(null, domSelection, editor, null);
-}
-function $internalCreateRangeSelection(lastSelection, domSelection, editor, event) {
-  const windowObj = editor._window;
-  if (windowObj === null) {
-    return null;
-  }
-  const windowEvent = event || windowObj.event;
-  const eventType = windowEvent ? windowEvent.type : void 0;
-  const isSelectionChange = eventType === "selectionchange";
-  const useDOMSelection = !getIsProcessingMutations() && (isSelectionChange || eventType === "beforeinput" || eventType === "compositionstart" || eventType === "compositionend" || eventType === "click" && windowEvent && windowEvent.detail === 3 || eventType === "drop" || eventType === void 0);
-  let anchorDOM, focusDOM, anchorOffset, focusOffset;
-  if (!$isRangeSelection(lastSelection) || useDOMSelection) {
-    if (domSelection === null) {
-      return null;
-    }
-    const points = getDOMSelectionPoints(domSelection, editor._rootElement);
-    anchorDOM = points.anchorNode;
-    focusDOM = points.focusNode;
-    anchorOffset = points.anchorOffset;
-    focusOffset = points.focusOffset;
-    if ((isSelectionChange || eventType === void 0) && $isRangeSelection(lastSelection) && !isSelectionWithinEditor(editor, anchorDOM, focusDOM)) {
-      return lastSelection.clone();
-    }
-  } else {
-    return lastSelection.clone();
-  }
-  const resolvedSelectionPoints = $internalResolveSelectionPoints(anchorDOM, anchorOffset, focusDOM, focusOffset, editor, lastSelection);
-  if (resolvedSelectionPoints === null) {
-    return null;
-  }
-  const [resolvedAnchorPoint, resolvedFocusPoint, dirty] = resolvedSelectionPoints;
-  let format = 0;
-  let style = "";
-  if ($isRangeSelection(lastSelection)) {
-    const lastAnchor = lastSelection.anchor;
-    if (resolvedAnchorPoint.key === lastAnchor.key) {
-      format = lastSelection.format;
-      style = lastSelection.style;
-    } else {
-      const anchorNode = resolvedAnchorPoint.getNode();
-      if ($isTextNode(anchorNode)) {
-        format = anchorNode.getFormat();
-        style = anchorNode.getStyle();
-      } else if ($isElementNode(anchorNode)) {
-        format = anchorNode.getTextFormat();
-        style = anchorNode.getTextStyle();
-      }
-    }
-  }
-  const newSelection = new RangeSelection(resolvedAnchorPoint, resolvedFocusPoint, format, style);
-  if (dirty) {
-    newSelection.dirty = true;
-  }
-  return newSelection;
-}
-function $internalRefreshSelectionFormatAndStyle(selection, previousAnchorKey) {
-  const anchor = selection.anchor;
-  if (anchor.key === previousAnchorKey) {
-    return;
-  }
-  const anchorNode = anchor.getNode();
-  let format = 0;
-  let style = "";
-  if ($isTextNode(anchorNode)) {
-    format = anchorNode.getFormat();
-    style = anchorNode.getStyle();
-  } else if ($isElementNode(anchorNode)) {
-    format = anchorNode.getTextFormat();
-    style = anchorNode.getTextStyle();
-  }
-  if (selection.format !== format || selection.style !== style) {
-    selection.format = format;
-    selection.style = style;
-    selection.dirty = true;
-  }
-}
-function $validatePoint(name, point) {
-  const node = $getNodeByKey(point.key);
-  if (!(node !== void 0)) {
-    formatDevErrorMessage2(`$validatePoint: ${name} key ${point.key} not found in current editorState`);
-  }
-  if (point.type === "text") {
-    if (!$isTextNode(node)) {
-      formatDevErrorMessage2(`$validatePoint: ${name} key ${point.key} is not a TextNode`);
-    }
-    const size = node.getTextContentSize();
-    if (!(point.offset <= size)) {
-      formatDevErrorMessage2(`$validatePoint: ${name} point.offset > node.getTextContentSize() (${String(point.offset)} > ${String(size)})`);
-    }
-  } else {
-    if (!$isElementNode(node)) {
-      formatDevErrorMessage2(`$validatePoint: ${name} key ${point.key} is not an ElementNode`);
-    }
-    const size = node.getChildrenSize();
-    if (!(point.offset <= size)) {
-      formatDevErrorMessage2(`$validatePoint: ${name} point.offset > node.getChildrenSize() (${String(point.offset)} > ${String(size)})`);
-    }
-  }
-}
-function $getSelection() {
-  const editorState = getActiveEditorState();
-  return editorState._selection;
-}
-function $getPreviousSelection() {
-  const editor = getActiveEditor();
-  return editor._editorState._selection;
-}
-function $selectionTouchesElement(selection, parentNode) {
-  const parentKey = parentNode.__key;
-  return selection.anchor.key === parentKey || selection.focus.key === parentKey;
-}
-function $updateElementSelectionOnCreateDeleteNode(selection, parentNode, nodeOffset, times = 1) {
-  if (!$selectionTouchesElement(selection, parentNode)) {
-    return;
-  }
-  const anchor = selection.anchor;
-  const focus = selection.focus;
-  const parentKey = parentNode.__key;
-  if (selection.isCollapsed()) {
-    const selectionOffset = anchor.offset;
-    if (nodeOffset <= selectionOffset && times > 0 || nodeOffset < selectionOffset && times < 0) {
-      const newSelectionOffset = Math.max(0, selectionOffset + times);
-      anchor.set(parentKey, newSelectionOffset, "element");
-      focus.set(parentKey, newSelectionOffset, "element");
-      $updateSelectionResolveTextNodes(selection);
-    }
-  } else {
-    const isBackward = selection.isBackward();
-    const firstPoint = isBackward ? focus : anchor;
-    const firstPointNode = firstPoint.getNode();
-    const lastPoint = isBackward ? anchor : focus;
-    const lastPointNode = lastPoint.getNode();
-    if (parentNode.is(firstPointNode)) {
-      const firstPointOffset = firstPoint.offset;
-      if (nodeOffset <= firstPointOffset && times > 0 || nodeOffset < firstPointOffset && times < 0) {
-        firstPoint.set(parentKey, Math.max(0, firstPointOffset + times), "element");
-      }
-    }
-    if (parentNode.is(lastPointNode)) {
-      const lastPointOffset = lastPoint.offset;
-      if (nodeOffset <= lastPointOffset && times > 0 || nodeOffset < lastPointOffset && times < 0) {
-        lastPoint.set(parentKey, Math.max(0, lastPointOffset + times), "element");
-      }
-    }
-  }
-  $updateSelectionResolveTextNodes(selection);
-}
-function $updateSelectionResolveTextNodes(selection) {
-  const anchor = selection.anchor;
-  const anchorOffset = anchor.offset;
-  const focus = selection.focus;
-  const focusOffset = focus.offset;
-  const anchorNode = anchor.getNode();
-  const focusNode = focus.getNode();
-  if (selection.isCollapsed()) {
-    if (!$isElementNode(anchorNode)) {
-      return;
-    }
-    const childSize = anchorNode.getChildrenSize();
-    const anchorOffsetAtEnd = anchorOffset >= childSize;
-    const child = anchorOffsetAtEnd ? anchorNode.getChildAtIndex(childSize - 1) : anchorNode.getChildAtIndex(anchorOffset);
-    if ($isTextNode(child)) {
-      let newOffset = 0;
-      if (anchorOffsetAtEnd) {
-        newOffset = child.getTextContentSize();
-      }
-      anchor.set(child.__key, newOffset, "text");
-      focus.set(child.__key, newOffset, "text");
-    }
-    return;
-  }
-  if ($isElementNode(anchorNode)) {
-    const childSize = anchorNode.getChildrenSize();
-    const anchorOffsetAtEnd = anchorOffset >= childSize;
-    const child = anchorOffsetAtEnd ? anchorNode.getChildAtIndex(childSize - 1) : anchorNode.getChildAtIndex(anchorOffset);
-    if ($isTextNode(child)) {
-      let newOffset = 0;
-      if (anchorOffsetAtEnd) {
-        newOffset = child.getTextContentSize();
-      }
-      anchor.set(child.__key, newOffset, "text");
-    }
-  }
-  if ($isElementNode(focusNode)) {
-    const childSize = focusNode.getChildrenSize();
-    const focusOffsetAtEnd = focusOffset >= childSize;
-    const child = focusOffsetAtEnd ? focusNode.getChildAtIndex(childSize - 1) : focusNode.getChildAtIndex(focusOffset);
-    if ($isTextNode(child)) {
-      let newOffset = 0;
-      if (focusOffsetAtEnd) {
-        newOffset = child.getTextContentSize();
-      }
-      focus.set(child.__key, newOffset, "text");
-    }
-  }
-}
-function applySelectionTransforms(nextEditorState, editor) {
-  const prevEditorState = editor.getEditorState();
-  const prevSelection = prevEditorState._selection;
-  const nextSelection = nextEditorState._selection;
-  if ($isRangeSelection(nextSelection)) {
-    const anchor = nextSelection.anchor;
-    const focus = nextSelection.focus;
-    let anchorNode;
-    if (anchor.type === "text") {
-      anchorNode = anchor.getNode();
-      anchorNode.selectionTransform(prevSelection, nextSelection);
-    }
-    if (focus.type === "text") {
-      const focusNode = focus.getNode();
-      if (anchorNode !== focusNode) {
-        focusNode.selectionTransform(prevSelection, nextSelection);
-      }
-    }
-  }
-}
-function moveSelectionPointToSibling(point, node, parent, prevSibling, nextSibling) {
-  let siblingKey = null;
-  let offset = 0;
-  let type = null;
-  if (prevSibling !== null) {
-    siblingKey = prevSibling.__key;
-    if ($isTextNode(prevSibling)) {
-      offset = prevSibling.getTextContentSize();
-      type = "text";
-    } else if ($isElementNode(prevSibling)) {
-      offset = prevSibling.getChildrenSize();
-      type = "element";
-    }
-  } else {
-    if (nextSibling !== null) {
-      siblingKey = nextSibling.__key;
-      if ($isTextNode(nextSibling)) {
-        type = "text";
-      } else if ($isElementNode(nextSibling)) {
-        type = "element";
-      }
-    }
-  }
-  if (siblingKey !== null && type !== null) {
-    point.set(siblingKey, offset, type);
-  } else {
-    offset = node.getIndexWithinParent();
-    if (offset === -1) {
-      offset = parent.getChildrenSize();
-    }
-    point.set(parent.__key, offset, "element");
-  }
-}
-function adjustPointOffsetForMergedSibling(point, isBefore, key, target, textLength) {
-  if (point.type === "text") {
-    point.set(key, point.offset + (isBefore ? 0 : textLength), "text");
-  } else if (point.offset > target.getIndexWithinParent()) {
-    point.set(point.key, point.offset - 1, "element");
-  }
-}
-function setDOMSelectionBaseAndExtent(domSelection, nextAnchorDOM, nextAnchorOffset, nextFocusDOM, nextFocusOffset) {
-  try {
-    domSelection.setBaseAndExtent(nextAnchorDOM, nextAnchorOffset, nextFocusDOM, nextFocusOffset);
-  } catch (error) {
-    {
-      console.warn(error);
-    }
-  }
-}
-function $getElementAndOffsetForPoint(editor, node, offset) {
-  const element = getElementByKeyOrThrow(editor, node.getKey());
-  if ($isElementNode(node)) {
-    const slot = $getDOMSlot(node, element, editor);
-    return [slot.element, offset + slot.getFirstChildOffset()];
-  }
-  return [element, offset];
-}
-function $updateDOMSelection(prevSelection, nextSelection, editor, domSelection, tags, rootElement) {
-  const rootForActive = rootElement.getRootNode();
-  const activeElement = isDOMDocumentNode(rootForActive) || isDOMShadowRoot(rootForActive) ? getActiveElementDeep(rootForActive) : null;
-  if (tags.has(COLLABORATION_TAG) && activeElement !== rootElement || activeElement !== null && $isSelectionCapturedInDecoratorInput(activeElement, activeElement)) {
-    return;
-  }
-  const currentPoints = getDOMSelectionPoints(domSelection, rootElement);
-  let currentRangeCache;
-  const getCurrentRange = () => {
-    if (currentRangeCache === void 0) {
-      currentRangeCache = getDOMSelectionRange(domSelection, rootElement);
-    }
-    return currentRangeCache;
-  };
-  if (!$isRangeSelection(nextSelection)) {
-    if (prevSelection !== null && isSelectionWithinEditor(editor, currentPoints.anchorNode, currentPoints.focusNode)) {
-      domSelection.removeAllRanges();
-    }
-    return;
-  }
-  const anchor = nextSelection.anchor;
-  const focus = nextSelection.focus;
-  const anchorNode = anchor.getNode();
-  const focusNode = focus.getNode();
-  const [anchorDOM, nextAnchorOffset] = $getElementAndOffsetForPoint(editor, anchorNode, anchor.offset);
-  const [focusDOM, nextFocusOffset] = $getElementAndOffsetForPoint(editor, focusNode, focus.offset);
-  const nextFormat = nextSelection.format;
-  const nextStyle = nextSelection.style;
-  const isCollapsed = nextSelection.isCollapsed();
-  let nextAnchorNode = anchorDOM;
-  let nextFocusNode = focusDOM;
-  let anchorFormatOrStyleChanged = false;
-  if (anchor.type === "text") {
-    nextAnchorNode = $isTextNode(anchorNode) ? $getDOMTextNode(anchorNode, anchorDOM, editor) : null;
-    anchorFormatOrStyleChanged = anchorNode.getFormat() !== nextFormat || anchorNode.getStyle() !== nextStyle;
-  } else if ($isRangeSelection(prevSelection) && prevSelection.anchor.type === "text") {
-    anchorFormatOrStyleChanged = true;
-  }
-  if (focus.type === "text") {
-    nextFocusNode = $isTextNode(focusNode) ? $getDOMTextNode(focusNode, focusDOM, editor) : null;
-  }
-  if (nextAnchorNode === null || nextFocusNode === null) {
-    return;
-  }
-  if (isCollapsed && (prevSelection === null || anchorFormatOrStyleChanged || $isRangeSelection(prevSelection) && (prevSelection.format !== nextFormat || prevSelection.style !== nextStyle))) {
-    markCollapsedSelectionFormat(editor, nextFormat, nextStyle, nextAnchorOffset, anchor.key, performance.now());
-  }
-  if (!(domSelection.type === "Range" && isCollapsed) && // Badly interpreted range selection when collapsed - #1482
-  currentPoints.anchorOffset === nextAnchorOffset && currentPoints.focusOffset === nextFocusOffset && currentPoints.anchorNode === nextAnchorNode && currentPoints.focusNode === nextFocusNode) {
-    if (activeElement === null || !rootElement.contains(activeElement)) {
-      const focusEditor = activeElement !== null ? getNearestEditorFromDOMNode(activeElement) : null;
-      if ((focusEditor === null || focusEditor === editor) && !tags.has(SKIP_SELECTION_FOCUS_TAG)) {
-        rootElement.focus({
-          preventScroll: true
-        });
-      }
-    }
-    if (anchor.type !== "element") {
-      return;
-    }
-  }
-  setDOMSelectionBaseAndExtent(domSelection, nextAnchorNode, nextAnchorOffset, nextFocusNode, nextFocusOffset);
-  if (IS_FIREFOX && nextSelection.isCollapsed() && rootElement !== null && !tags.has(SKIP_SELECTION_FOCUS_TAG)) {
-    const focusedElement = getActiveElement(rootElement);
-    if (focusedElement === null || !rootElement.contains(focusedElement)) {
-      const deepFocusedElement = getActiveElementDeep(rootElement.ownerDocument);
-      const focusEditor = deepFocusedElement !== null ? getNearestEditorFromDOMNode(deepFocusedElement) : null;
-      if (focusEditor === null || focusEditor === editor) {
-        rootElement.focus({
-          preventScroll: true
-        });
-      }
-    }
-  }
-  if (!tags.has(SKIP_SCROLL_INTO_VIEW_TAG) && nextSelection.isCollapsed() && rootElement !== null && // Re-read the active element rather than a value cached before the focus
-  // restore / selection mutation above, which can become stale (e.g. when
-  // setting the DOM selection focuses the contentEditable as a side effect).
-  // Shallow is sufficient here for the same reason as the Firefox branch
-  // above: the equality check doesn't cross the shadow boundary.
-  rootElement === getActiveElement(rootElement)) {
-    const selectionTarget = $isRangeSelection(nextSelection) && nextSelection.anchor.type === "element" ? nextAnchorNode.childNodes[nextAnchorOffset] || null : getCurrentRange();
-    if (selectionTarget !== null) {
-      let selectionRect;
-      if (isDOMTextNode(selectionTarget)) {
-        const range = selectionTarget.ownerDocument.createRange();
-        range.selectNode(selectionTarget);
-        selectionRect = range.getBoundingClientRect();
-      } else {
-        selectionRect = selectionTarget.getBoundingClientRect();
-      }
-      scrollIntoViewIfNeeded(editor, selectionRect, rootElement);
-    }
-  }
-  markSelectionChangeFromDOMUpdate(editor, nextAnchorNode, nextAnchorOffset, nextFocusNode, nextFocusOffset);
-}
-function $insertNodes(nodes) {
-  let selection = $getSelection() || $getPreviousSelection();
-  if (selection === null) {
-    selection = $getRoot().selectEnd();
-  }
-  selection.insertNodes(nodes);
-}
-function tokenizeRawText(text, visitor) {
-  for (const part of text.split(/(\r?\n|\t)/)) {
-    if (part === "\n" || part === "\r\n") {
-      visitor.linebreak();
-    } else if (part === "	") {
-      visitor.tab();
-    } else if (part !== "") {
-      visitor.text(part);
-    }
-  }
-}
-function $generateNodesFromRawText(text) {
-  const nodes = [];
-  tokenizeRawText(text, {
-    linebreak: () => nodes.push($createLineBreakNode()),
-    tab: () => nodes.push($createTabNode()),
-    text: (part) => nodes.push($createTextNode(part))
-  });
-  return nodes;
-}
-function $getTextContent() {
-  const selection = $getSelection();
-  if (selection === null) {
-    return "";
-  }
-  return selection.getTextContent();
-}
-function $extractInlineFromBlocks(nodes) {
-  const inlineNodes = [];
-  for (const node of nodes) {
-    if ($isLineBreakNode(node)) {
-      continue;
-    }
-    if (($isElementNode(node) || $isDecoratorNode(node)) && !node.isInline()) {
-      if ($isElementNode(node)) {
-        inlineNodes.push(...$extractInlineFromBlocks(node.getChildren()));
-      }
-      continue;
-    }
-    inlineNodes.push(node);
-  }
-  return inlineNodes;
-}
-function $removeTextAndSplitBlock(selection, stopAtUnsplittableNode = false) {
-  let selection_ = selection;
-  if (!selection.isCollapsed()) {
-    selection_.removeText();
-  }
-  const newSelection = $getSelection();
-  if ($isRangeSelection(newSelection)) {
-    selection_ = newSelection;
-  }
-  if (!$isRangeSelection(selection_)) {
-    formatDevErrorMessage2(`Unexpected dirty selection to be null`);
-  }
-  const anchor = selection_.anchor;
-  let node = anchor.getNode();
-  let offset = anchor.offset;
-  while (!INTERNAL_$isBlock(node) && $getSlotHostKey(node) === null) {
-    const prevNode = node;
-    [node, offset] = $splitNodeAtPoint(node, offset, stopAtUnsplittableNode);
-    if (prevNode.is(node)) {
-      break;
-    }
-  }
-  return [node, offset];
-}
-function $splitNodeAtPoint(node, offset, stopAtUnsplittableNode = false) {
-  const parent = node.getParent();
-  if (!parent) {
-    const paragraph = $createParagraphNode();
-    $getRoot().append(paragraph);
-    paragraph.select();
-    return [$getRoot(), 0];
-  }
-  if ($isTextNode(node)) {
-    const split = node.splitText(offset);
-    if (split.length === 0) {
-      return [parent, node.getIndexWithinParent()];
-    }
-    const x2 = offset === 0 ? 0 : 1;
-    const index = split[0].getIndexWithinParent() + x2;
-    return [parent, index];
-  }
-  if (!$isElementNode(node) || offset === 0) {
-    return [parent, node.getIndexWithinParent()];
-  }
-  const firstToAppend = node.getChildAtIndex(offset);
-  if (firstToAppend) {
-    const insertPoint = new RangeSelection($createPoint(node.__key, offset, "element"), $createPoint(node.__key, offset, "element"), 0, "");
-    const newElement = node.insertNewAfter(insertPoint);
-    if (newElement) {
-      newElement.append(firstToAppend, ...firstToAppend.getNextSiblings());
-    } else if (stopAtUnsplittableNode) {
-      return [node, offset];
-    }
-  }
-  return [parent, node.getIndexWithinParent() + 1];
-}
-function $isInlineRunNode(node) {
-  return $isLineBreakNode(node) || $isInlineElementOrDecoratorNode(node) || $isTextNode(node) || node.isParentRequired();
-}
-function $wrapInlineNodes(nodes) {
-  const virtualRoot = $createParagraphNode();
-  let currentBlock = null;
-  for (let i2 = 0; i2 < nodes.length; i2++) {
-    const node = nodes[i2];
-    if ($isInlineRunNode(node)) {
-      if (currentBlock === null) {
-        currentBlock = node.createParentElementNode();
-        virtualRoot.append(currentBlock);
-        const nextNode = nodes[i2 + 1];
-        if ($isLineBreakNode(node) && (nextNode === void 0 || !$isInlineRunNode(nextNode))) {
-          continue;
-        }
-      }
-      currentBlock.append(node);
-    } else {
-      virtualRoot.append(node);
-      currentBlock = null;
-    }
-  }
-  return virtualRoot;
-}
-function $getNodesFromCaretRangeCompat(range) {
-  const nodes = [];
-  const [beforeSlice, afterSlice] = range.getTextSlices();
-  if (beforeSlice) {
-    nodes.push(beforeSlice.caret.origin);
-  }
-  const seenAncestors = /* @__PURE__ */ new Set();
-  const seenElements = /* @__PURE__ */ new Set();
-  for (const caret of range) {
-    if ($isChildCaret(caret)) {
-      const {
-        origin
-      } = caret;
-      if (nodes.length === 0) {
-        seenAncestors.add(origin);
-      } else {
-        seenElements.add(origin);
-        nodes.push(origin);
-      }
-    } else {
-      const {
-        origin
-      } = caret;
-      if (!$isElementNode(origin) || !seenElements.has(origin)) {
-        nodes.push(origin);
-      }
-    }
-  }
-  if (afterSlice) {
-    nodes.push(afterSlice.caret.origin);
-  }
-  if ($isSiblingCaret(range.focus) && $isElementNode(range.focus.origin) && range.focus.getNodeAtCaret() === null) {
-    for (let reverseCaret = $getChildCaret(range.focus.origin, "previous"); $isChildCaret(reverseCaret) && seenAncestors.has(reverseCaret.origin) && !reverseCaret.origin.isEmpty() && reverseCaret.origin.is(nodes[nodes.length - 1]); reverseCaret = $getAdjacentChildCaret(reverseCaret)) {
-      seenAncestors.delete(reverseCaret.origin);
-      nodes.pop();
-    }
-  }
-  while (nodes.length > 1) {
-    const lastIncludedNode = nodes[nodes.length - 1];
-    if ($isElementNode(lastIncludedNode)) {
-      if (seenElements.has(lastIncludedNode) || lastIncludedNode.isEmpty() || seenAncestors.has(lastIncludedNode)) ;
-      else {
-        nodes.pop();
-        continue;
-      }
-    }
-    break;
-  }
-  if (nodes.length === 0 && range.isCollapsed()) {
-    const normCaret = $normalizeCaret(range.anchor);
-    const flippedNormCaret = $normalizeCaret(range.anchor.getFlipped());
-    const $getCandidate = (caret) => $isTextPointCaret(caret) ? caret.origin : caret.getNodeAtCaret();
-    const node = $getCandidate(normCaret) || $getCandidate(flippedNormCaret) || (range.anchor.getNodeAtCaret() ? normCaret.origin : flippedNormCaret.origin);
-    nodes.push(node);
-  }
-  return nodes;
-}
-function $modifySelectionAroundDecoratorsAndBlocks(selection, alter, isBackward, granularity, mode = "decorators-and-blocks") {
-  if (alter === "move" && granularity === "character" && !selection.isCollapsed()) {
-    const [src, dst] = isBackward === selection.isBackward() ? [selection.focus, selection.anchor] : [selection.anchor, selection.focus];
-    dst.set(src.key, src.offset, src.type);
-    return true;
-  }
-  const initialFocus = $caretFromPoint(selection.focus, isBackward ? "previous" : "next");
-  const isLineBoundary = granularity === "lineboundary";
-  const collapse = alter === "move";
-  let focus = initialFocus;
-  let checkForBlock = mode === "decorators-and-blocks";
-  let isolated = false;
-  if (!$isExtendableTextPointCaret(focus)) {
-    for (const siblingCaret of focus) {
-      checkForBlock = false;
-      const {
-        origin
-      } = siblingCaret;
-      if ($isDecoratorNode(origin)) {
-        if (origin.isIsolated()) {
-          isolated = true;
-          break;
-        }
-        focus = siblingCaret;
-        if (isLineBoundary && origin.isInline()) {
-          continue;
-        }
-      }
-      break;
-    }
-    if (isolated) {
-      return true;
-    }
-    if (checkForBlock) {
-      for (const nextCaret of $extendCaretToRange(initialFocus).iterNodeCarets(alter === "extend" ? "shadowRoot" : "root")) {
-        if ($isChildCaret(nextCaret)) {
-          if (!nextCaret.origin.isInline()) {
-            focus = nextCaret;
-          }
-        } else if ($isElementNode(nextCaret.origin)) {
-          continue;
-        } else if ($isDecoratorNode(nextCaret.origin) && !nextCaret.origin.isInline()) {
-          focus = nextCaret;
-        }
-        break;
-      }
-    }
-  }
-  if (focus === initialFocus) {
-    return false;
-  }
-  if (collapse && !isLineBoundary && $isDecoratorNode(focus.origin) && focus.origin.isKeyboardSelectable()) {
-    const nodeSelection = $createNodeSelection();
-    nodeSelection.add(focus.origin.getKey());
-    $setSelection(nodeSelection);
-    return true;
-  }
-  focus = $normalizeCaret(focus);
-  if (collapse) {
-    $setPointFromCaret(selection.anchor, focus);
-  }
-  $setPointFromCaret(selection.focus, focus);
-  return checkForBlock || !isLineBoundary;
-}
-var activeEditorState = null;
-var activeEditor = null;
-var isReadOnlyMode = false;
-var isAttemptingToRecoverFromReconcilerError = false;
-var isCommittingPendingUpdates = false;
-var editorsWithPendingCascadeReset = /* @__PURE__ */ new Set();
-var infiniteTransformCount = 0;
-var observerOptions = {
-  characterData: true,
-  childList: true,
-  subtree: true
-};
-function isCurrentlyReadOnlyMode() {
-  return isReadOnlyMode || activeEditorState !== null && activeEditorState._readOnly;
-}
-function errorOnReadOnly() {
-  if (isReadOnlyMode) {
-    {
-      formatDevErrorMessage2(`Cannot use method in read-only mode.`);
-    }
-  }
-}
-function errorOnInfiniteTransforms() {
-  if (infiniteTransformCount > 99) {
-    {
-      formatDevErrorMessage2(`One or more transforms are endlessly triggering additional transforms. May have encountered infinite recursion caused by transforms that have their preconditions too lose and/or conflict with each other.`);
-    }
-  }
-}
-function getActiveEditorState() {
-  if (activeEditorState === null) {
-    {
-      formatDevErrorMessage2(`Unable to find an active editor state. State helpers or node methods can only be used synchronously during the callback of editor.update(), editor.read(), or editorState.read().${collectBuildInformation()}`);
-    }
-  }
-  return activeEditorState;
-}
-function $assumeActiveEditor(editor) {
-  if (getActiveEditorState() !== null && activeEditor === null) {
-    activeEditor = editor;
-  }
-  if (!(activeEditor === editor)) {
-    formatDevErrorMessage2(`The given editor argument does not match $getEditor() in this context. Use editor.getEditorState().read(..., {editor}) if this cross-editor call is intentional.`);
-  }
-}
-function getActiveEditor() {
-  if (activeEditor === null) {
-    {
-      formatDevErrorMessage2(`Unable to find an active editor. This method can only be used synchronously during the callback of editor.update(), editor.read(), or editor.getEditorState().read(..., {editor}).${collectBuildInformation()}`);
-    }
-  }
-  return activeEditor;
-}
-function $fullReconcile() {
-  getActiveEditor()._dirtyType = FULL_RECONCILE;
-}
-function collectBuildInformation() {
-  let compatibleEditors = 0;
-  const incompatibleEditors = /* @__PURE__ */ new Set();
-  const thisVersion = LexicalEditor.version;
-  if (typeof window !== "undefined") {
-    for (const node of findAllLexicalElementsDeep(document)) {
-      const editor = getEditorPropertyFromDOMNode(node);
-      if (isLexicalEditor(editor)) {
-        compatibleEditors++;
-      } else if (editor) {
-        let version = String(editor.constructor.version || "<0.17.1");
-        if (version === thisVersion) {
-          version += " (separately built, likely a bundler configuration issue)";
-        }
-        incompatibleEditors.add(version);
-      }
-    }
-  }
-  let output = ` Detected on the page: ${compatibleEditors} compatible editor(s) with version ${thisVersion}`;
-  if (incompatibleEditors.size) {
-    output += ` and incompatible editors with versions ${Array.from(incompatibleEditors).join(", ")}`;
-  }
-  return output;
-}
-function internalGetActiveEditor() {
-  return activeEditor;
-}
-function internalGetActiveEditorState() {
-  return activeEditorState;
-}
-function $applyTransforms(editor, node, transformsCache) {
-  const type = node.__type;
-  const registeredNode = getRegisteredNodeOrThrow(editor, type);
-  let transformsArr = transformsCache.get(type);
-  if (transformsArr === void 0) {
-    transformsArr = Array.from(registeredNode.transforms);
-    transformsCache.set(type, transformsArr);
-  }
-  const transformsArrLength = transformsArr.length;
-  for (let i2 = 0; i2 < transformsArrLength; i2++) {
-    transformsArr[i2](node);
-    if (!node.isAttached()) {
-      break;
-    }
-  }
-}
-function $isNodeValidForTransform(node, compositionKey) {
-  return node !== void 0 && // We don't want to transform nodes being composed
-  node.__key !== compositionKey && node.isAttached();
-}
-function $normalizeAllDirtyTextNodes(editorState, editor) {
-  const dirtyLeaves = editor._dirtyLeaves;
-  const nodeMap = editorState._nodeMap;
-  for (const nodeKey of dirtyLeaves) {
-    const node = nodeMap.get(nodeKey);
-    if ($isTextNode(node) && node.isAttached() && node.isSimpleText() && !node.isUnmergeable()) {
-      $normalizeTextNode(node);
-    }
-  }
-}
-function addTags(editor, tags) {
-  if (!tags) {
-    return;
-  }
-  const updateTags = editor._updateTags;
-  let tags_ = tags;
-  if (!Array.isArray(tags)) {
-    tags_ = [tags];
-  }
-  for (const tag of tags_) {
-    updateTags.add(tag);
-  }
-}
-function $applyAllTransforms(editorState, editor) {
-  const dirtyLeaves = editor._dirtyLeaves;
-  const dirtyElements = editor._dirtyElements;
-  const nodeMap = editorState._nodeMap;
-  const compositionKey = $getCompositionKey();
-  const transformsCache = /* @__PURE__ */ new Map();
-  let untransformedDirtyLeaves = dirtyLeaves;
-  let untransformedDirtyLeavesLength = untransformedDirtyLeaves.size;
-  let untransformedDirtyElements = dirtyElements;
-  let untransformedDirtyElementsLength = untransformedDirtyElements.size;
-  while (untransformedDirtyLeavesLength > 0 || untransformedDirtyElementsLength > 0) {
-    if (untransformedDirtyLeavesLength > 0) {
-      editor._dirtyLeaves = /* @__PURE__ */ new Set();
-      for (const nodeKey of untransformedDirtyLeaves) {
-        const node = nodeMap.get(nodeKey);
-        if ($isTextNode(node) && node.isAttached() && node.isSimpleText() && !node.isUnmergeable()) {
-          $normalizeTextNode(node);
-        }
-        if (node !== void 0 && $isNodeValidForTransform(node, compositionKey)) {
-          $applyTransforms(editor, node, transformsCache);
-        }
-        dirtyLeaves.add(nodeKey);
-      }
-      untransformedDirtyLeaves = editor._dirtyLeaves;
-      untransformedDirtyLeavesLength = untransformedDirtyLeaves.size;
-      if (untransformedDirtyLeavesLength > 0) {
-        infiniteTransformCount++;
-        continue;
-      }
-    }
-    editor._dirtyLeaves = /* @__PURE__ */ new Set();
-    editor._dirtyElements = /* @__PURE__ */ new Map();
-    const rootDirty = untransformedDirtyElements.delete("root");
-    if (rootDirty) {
-      untransformedDirtyElements.set("root", true);
-    }
-    for (const currentUntransformedDirtyElement of untransformedDirtyElements) {
-      const nodeKey = currentUntransformedDirtyElement[0];
-      const intentionallyMarkedAsDirty = currentUntransformedDirtyElement[1];
-      dirtyElements.set(nodeKey, intentionallyMarkedAsDirty);
-      if (!intentionallyMarkedAsDirty) {
-        continue;
-      }
-      const node = nodeMap.get(nodeKey);
-      if (node !== void 0 && $isNodeValidForTransform(node, compositionKey)) {
-        $applyTransforms(editor, node, transformsCache);
-      }
-    }
-    untransformedDirtyLeaves = editor._dirtyLeaves;
-    untransformedDirtyLeavesLength = untransformedDirtyLeaves.size;
-    untransformedDirtyElements = editor._dirtyElements;
-    untransformedDirtyElementsLength = untransformedDirtyElements.size;
-    infiniteTransformCount++;
-  }
-  editor._dirtyLeaves = dirtyLeaves;
-  editor._dirtyElements = dirtyElements;
-}
-function $parseSerializedNode(serializedNode) {
-  const internalSerializedNode = serializedNode;
-  return $parseSerializedNodeImpl(internalSerializedNode, getActiveEditor()._nodes);
-}
-function $parseSerializedNodeImpl(serializedNode, registeredNodes) {
-  const type = serializedNode.type;
-  const registeredNode = registeredNodes.get(type);
-  if (registeredNode === void 0) {
-    {
-      formatDevErrorMessage2(`parseEditorState: type "${type}" + not found`);
-    }
-  }
-  const nodeClass = registeredNode.klass;
-  if (serializedNode.type !== nodeClass.getType()) {
-    {
-      formatDevErrorMessage2(`LexicalNode: Node ${nodeClass.name} does not implement .importJSON().`);
-    }
-  }
-  const node = nodeClass.importJSON(serializedNode);
-  const children = serializedNode.children;
-  if ($isElementNode(node) && Array.isArray(children)) {
-    for (let i2 = 0; i2 < children.length; i2++) {
-      const serializedJSONChildNode = children[i2];
-      const childNode = $parseSerializedNodeImpl(serializedJSONChildNode, registeredNodes);
-      node.append(childNode);
-    }
-  }
-  const slots = serializedNode.$slots;
-  if (slots) {
-    if (!$isSlotHost(node)) {
-      formatDevErrorMessage2(`$parseSerializedNode: node ${nodeClass.name} has slots but is not a valid slot host; only ElementNodes and DecoratorNodes can host slots.`);
-    }
-    for (const name in slots) {
-      const slotNode = $parseSerializedNodeImpl(slots[name], registeredNodes);
-      $setSlot(node, name, slotNode);
-    }
-  }
-  return node;
-}
-function parseEditorState(serializedEditorState, editor, updateFn) {
-  const editorState = createEmptyEditorState();
-  const previousActiveEditorState = activeEditorState;
-  const previousReadOnlyMode = isReadOnlyMode;
-  const previousActiveEditor = activeEditor;
-  const previousDirtyElements = editor._dirtyElements;
-  const previousDirtyLeaves = editor._dirtyLeaves;
-  const previousCloneNotNeeded = editor._cloneNotNeeded;
-  const previousDirtyType = editor._dirtyType;
-  editor._dirtyElements = /* @__PURE__ */ new Map();
-  editor._dirtyLeaves = /* @__PURE__ */ new Set();
-  editor._cloneNotNeeded = /* @__PURE__ */ new Set();
-  editor._dirtyType = NO_DIRTY_NODES;
-  activeEditorState = editorState;
-  isReadOnlyMode = false;
-  activeEditor = editor;
-  setPendingNodeToClone(null);
-  try {
-    const registeredNodes = editor._nodes;
-    const serializedNode = serializedEditorState.root;
-    $parseSerializedNodeImpl(serializedNode, registeredNodes);
-    if (updateFn) {
-      updateFn();
-    }
-    editorState._readOnly = true;
-    editorState._parsed = true;
-    {
-      handleDEVOnlyPendingUpdateGuarantees(editorState);
-    }
-  } catch (error) {
-    if (error instanceof Error) {
-      editor._onError(error);
-    }
-  } finally {
-    editor._dirtyElements = previousDirtyElements;
-    editor._dirtyLeaves = previousDirtyLeaves;
-    editor._cloneNotNeeded = previousCloneNotNeeded;
-    editor._dirtyType = previousDirtyType;
-    activeEditorState = previousActiveEditorState;
-    isReadOnlyMode = previousReadOnlyMode;
-    activeEditor = previousActiveEditor;
-  }
-  return editorState;
-}
-function readEditorState(editor, editorState, callbackFn) {
-  const previousActiveEditorState = activeEditorState;
-  const previousReadOnlyMode = isReadOnlyMode;
-  const previousActiveEditor = activeEditor;
-  activeEditorState = editorState;
-  isReadOnlyMode = true;
-  activeEditor = editor;
-  try {
-    return callbackFn();
-  } finally {
-    activeEditorState = previousActiveEditorState;
-    isReadOnlyMode = previousReadOnlyMode;
-    activeEditor = previousActiveEditor;
-  }
-}
-function handleDEVOnlyPendingUpdateGuarantees(pendingEditorState) {
-  const nodeMap = pendingEditorState._nodeMap;
-  nodeMap.set = () => {
-    throw new Error("Cannot call set() on a frozen Lexical node map");
-  };
-  nodeMap.clear = () => {
-    throw new Error("Cannot call clear() on a frozen Lexical node map");
-  };
-  nodeMap.delete = () => {
-    throw new Error("Cannot call delete() on a frozen Lexical node map");
-  };
-}
-function $commitPendingUpdates(editor, recoveryEditorState) {
-  const previouslyCommitting = isCommittingPendingUpdates;
-  isCommittingPendingUpdates = true;
-  try {
-    $commitPendingUpdatesImpl(editor, recoveryEditorState);
-  } finally {
-    isCommittingPendingUpdates = previouslyCommitting;
-  }
-}
-function $commitPendingUpdatesImpl(editor, recoveryEditorState) {
-  const pendingEditorState = editor._pendingEditorState;
-  const rootElement = editor._rootElement;
-  const shouldSkipDOM = editor._headless || rootElement === null;
-  if (pendingEditorState === null) {
-    if (!editor._updating && editor._deferred.length > 0) {
-      triggerDeferredUpdateCallbacks(editor, editor._deferred);
-    }
-    return;
-  }
-  const currentEditorState = editor._editorState;
-  const currentSelection = currentEditorState._selection;
-  const pendingSelection = pendingEditorState._selection;
-  const needsUpdate = editor._dirtyType !== NO_DIRTY_NODES;
-  const previousActiveEditorState = activeEditorState;
-  const previousReadOnlyMode = isReadOnlyMode;
-  const previousActiveEditor = activeEditor;
-  const previouslyUpdating = editor._updating;
-  const observer = editor._observer;
-  let mutatedNodes2 = null;
-  editor._pendingEditorState = null;
-  editor._editorState = pendingEditorState;
-  if (!shouldSkipDOM && needsUpdate && observer !== null) {
-    activeEditor = editor;
-    activeEditorState = pendingEditorState;
-    isReadOnlyMode = false;
-    editor._updating = true;
-    try {
-      const dirtyType = editor._dirtyType;
-      const dirtyElements2 = editor._dirtyElements;
-      const dirtyLeaves2 = editor._dirtyLeaves;
-      observer.disconnect();
-      mutatedNodes2 = $reconcileRoot(currentEditorState, pendingEditorState, editor, dirtyType, dirtyElements2, dirtyLeaves2);
-    } catch (error) {
-      if (error instanceof Error) {
-        editor._onError(error);
-      }
-      if (!isAttemptingToRecoverFromReconcilerError) {
-        resetEditor(editor, null, rootElement, pendingEditorState);
-        initMutationObserver(editor);
-        editor._dirtyType = FULL_RECONCILE;
-        isAttemptingToRecoverFromReconcilerError = true;
-        $commitPendingUpdates(editor, currentEditorState);
-        isAttemptingToRecoverFromReconcilerError = false;
-      } else {
-        throw error;
-      }
-      return;
-    } finally {
-      observer.observe(rootElement, observerOptions);
-      editor._updating = previouslyUpdating;
-      activeEditorState = previousActiveEditorState;
-      isReadOnlyMode = previousReadOnlyMode;
-      activeEditor = previousActiveEditor;
-    }
-  }
-  if (!pendingEditorState._readOnly) {
-    pendingEditorState._readOnly = true;
-    {
-      handleDEVOnlyPendingUpdateGuarantees(pendingEditorState);
-      if ($isRangeSelection(pendingSelection)) {
-        Object.freeze(pendingSelection.anchor);
-        Object.freeze(pendingSelection.focus);
-      }
-      Object.freeze(pendingSelection);
-    }
-  }
-  const dirtyLeaves = editor._dirtyLeaves;
-  const dirtyElements = editor._dirtyElements;
-  const normalizedNodes = editor._normalizedNodes;
-  const tags = editor._updateTags;
-  if (needsUpdate) {
-    editor._dirtyType = NO_DIRTY_NODES;
-    editor._cloneNotNeeded.clear();
-    editor._dirtyLeaves = /* @__PURE__ */ new Set();
-    editor._dirtyElements = /* @__PURE__ */ new Map();
-    editor._normalizedNodes = /* @__PURE__ */ new Set();
-  }
-  editor._updateTags = /* @__PURE__ */ new Set();
-  $garbageCollectDetachedDecorators(editor, pendingEditorState);
-  const domSelection = shouldSkipDOM ? null : getDOMSelection(getWindow(editor));
-  if (editor._editable && // domSelection will be null in headless
-  domSelection !== null && (needsUpdate || pendingSelection === null || pendingSelection.dirty || !pendingSelection.is(currentSelection)) && rootElement !== null && !tags.has(SKIP_DOM_SELECTION_TAG)) {
-    activeEditor = editor;
-    activeEditorState = pendingEditorState;
-    try {
-      if (observer !== null) {
-        observer.disconnect();
-      }
-      if (needsUpdate || pendingSelection === null || pendingSelection.dirty) {
-        const blockCursorElement = editor._blockCursorElement;
-        if (blockCursorElement !== null) {
-          removeDOMBlockCursorElement(blockCursorElement, editor, rootElement);
-        }
-        $updateDOMSelection(currentSelection, pendingSelection, editor, domSelection, tags, rootElement);
-      }
-      $updateDOMBlockCursorElement(editor, rootElement, pendingSelection);
-    } finally {
-      if (observer !== null) {
-        observer.observe(rootElement, observerOptions);
-      }
-      activeEditor = previousActiveEditor;
-      activeEditorState = previousActiveEditorState;
-    }
-  }
-  if (mutatedNodes2 !== null) {
-    triggerMutationListeners(editor, mutatedNodes2, tags, dirtyLeaves, currentEditorState);
-  }
-  if (!$isRangeSelection(pendingSelection) && pendingSelection !== null && (currentSelection === null || !currentSelection.is(pendingSelection))) {
-    editor.dispatchCommand(SELECTION_CHANGE_COMMAND);
-  }
-  const pendingDecorators = editor._pendingDecorators;
-  if (pendingDecorators !== null) {
-    editor._decorators = pendingDecorators;
-    editor._pendingDecorators = null;
-    triggerListeners("decorator", editor, true, pendingDecorators);
-  }
-  triggerTextContentListeners(editor, recoveryEditorState || currentEditorState, pendingEditorState);
-  triggerListeners("update", editor, true, {
-    dirtyElements,
-    dirtyLeaves,
-    editorState: pendingEditorState,
-    mutatedNodes: mutatedNodes2,
-    normalizedNodes,
-    prevEditorState: recoveryEditorState || currentEditorState,
-    tags
-  });
-  if (!previouslyUpdating) {
-    const deferred = editor._deferred;
-    triggerDeferredUpdateCallbacks(editor, deferred);
-  }
-  $triggerEnqueuedUpdates(editor);
-}
-function triggerTextContentListeners(editor, currentEditorState, pendingEditorState) {
-  const currentTextContent = getEditorStateTextContent(currentEditorState);
-  const latestTextContent = getEditorStateTextContent(pendingEditorState);
-  if (currentTextContent !== latestTextContent) {
-    triggerListeners("textcontent", editor, true, latestTextContent);
-  }
-}
-function triggerMutationListeners(editor, mutatedNodes2, updateTags, dirtyLeaves, prevEditorState) {
-  const listeners = Array.from(editor._listeners.mutation);
-  const listenersLength = listeners.length;
-  for (let i2 = 0; i2 < listenersLength; i2++) {
-    const [listener, klassSet] = listeners[i2];
-    for (const klass of klassSet) {
-      const mutatedNodesByType = mutatedNodes2.get(klass);
-      if (mutatedNodesByType !== void 0) {
-        listener(mutatedNodesByType, {
-          dirtyLeaves,
-          prevEditorState,
-          updateTags
-        });
-      }
-    }
-  }
-}
-function triggerListeners(type, editor, isCurrentlyEnqueuingUpdates, ...payload) {
-  const previouslyUpdating = editor._updating;
-  editor._updating = isCurrentlyEnqueuingUpdates;
-  try {
-    const listenerMap = editor._listeners[type];
-    const listeners = Array.from(listenerMap);
-    for (const [listener, unregister] of listeners) {
-      if (unregister) {
-        unregister();
-      }
-      const result = listener(...payload);
-      const nextUnregister = typeof result === "function" ? result : void 0;
-      if (listenerMap.has(listener)) {
-        listenerMap.set(listener, nextUnregister);
-      } else if (nextUnregister) {
-        nextUnregister();
-      }
-    }
-  } finally {
-    editor._updating = previouslyUpdating;
-  }
-}
-function triggerCommandListeners(editor, type, payload, fromEditor) {
-  const editors = getEditorsToPropagate(editor);
-  let updatingParentEditor;
-  if (!isCommittingPendingUpdates) {
-    for (let e2 = 0; e2 < editors.length; e2++) {
-      if (!editors[e2]._updating) {
-        editors[e2]._cascadeCount = 0;
-      }
-    }
-  }
-  for (let i2 = 4; i2 >= 0; i2--) {
-    for (let e2 = 0; e2 < editors.length; e2++) {
-      const currentEditor = editors[e2];
-      if (e2 > 0 && currentEditor._updating) {
-        updatingParentEditor = currentEditor;
-        break;
-      }
-      const commandListeners = currentEditor._commands;
-      const listenerInPriorityOrder = commandListeners.get(type);
-      if (listenerInPriorityOrder !== void 0) {
-        const listenersSet = listenerInPriorityOrder[i2];
-        if (listenersSet.size > 0) {
-          let returnVal = false;
-          updateEditorSync(currentEditor, () => {
-            for (const listener of listenersSet) {
-              if (listener(payload, fromEditor)) {
-                returnVal = true;
-                return;
-              }
-            }
-          });
-          if (returnVal) {
-            return returnVal;
-          }
-        }
-      }
-    }
-  }
-  if (updatingParentEditor) {
-    updatingParentEditor.update(() => {
-      triggerCommandListeners(updatingParentEditor, type, payload, fromEditor);
-    });
-  }
-  return false;
-}
-function scheduleCascadeReset(editor) {
-  if (editorsWithPendingCascadeReset.has(editor)) {
-    return;
-  }
-  editorsWithPendingCascadeReset.add(editor);
-  setTimeout(() => {
-    editorsWithPendingCascadeReset.delete(editor);
-    editor._cascadeCount = 0;
-  }, 0);
-}
-function $triggerEnqueuedUpdates(editor) {
-  const queuedUpdates = editor._updates;
-  if (queuedUpdates.length === 0) {
-    editor._cascadeCount = 0;
-    return;
-  }
-  scheduleCascadeReset(editor);
-  if (editor._cascadeCount++ > 99) {
-    editor._updates = [];
-    editor._cascadeCount = 0;
-    editor._onWarn(new Error(`One or more update listeners are endlessly enqueueing more updates. May have encountered infinite recursion caused by update listeners that trigger additional updates without a stop condition. Editor namespace: ${editor._config.namespace}`));
-    return;
-  }
-  const queuedUpdate = queuedUpdates.shift();
-  if (queuedUpdate) {
-    const [updateFn, options] = queuedUpdate;
-    $beginUpdate(editor, updateFn, options);
-  }
-}
-function triggerDeferredUpdateCallbacks(editor, deferred) {
-  editor._deferred = [];
-  if (deferred.length !== 0) {
-    const previouslyUpdating = editor._updating;
-    editor._updating = true;
-    try {
-      for (let i2 = 0; i2 < deferred.length; i2++) {
-        deferred[i2]();
-      }
-    } finally {
-      editor._updating = previouslyUpdating;
-    }
-  }
-}
-function $processNestedUpdates(editor, initialSkipTransforms) {
-  const queuedUpdates = editor._updates;
-  let skipTransforms = initialSkipTransforms || false;
-  while (queuedUpdates.length !== 0) {
-    const queuedUpdate = queuedUpdates.shift();
-    if (queuedUpdate) {
-      const [nextUpdateFn, options] = queuedUpdate;
-      const pendingEditorState = editor._pendingEditorState;
-      let onUpdate;
-      if (options !== void 0) {
-        onUpdate = options.onUpdate;
-        if (options.skipTransforms) {
-          skipTransforms = true;
-        }
-        if (options.discrete) {
-          if (!(pendingEditorState !== null)) {
-            formatDevErrorMessage2(`Unexpected empty pending editor state on discrete nested update`);
-          }
-          pendingEditorState._flushSync = true;
-        }
-        if (onUpdate) {
-          editor._deferred.push(onUpdate);
-        }
-        addTags(editor, options.tag);
-      }
-      if (pendingEditorState == null) {
-        $beginUpdate(editor, nextUpdateFn, options);
-      } else {
-        nextUpdateFn();
-      }
-    }
-  }
-  return skipTransforms;
-}
-function $flushSyncAfterUpdate() {
-  const editorState = getActiveEditorState();
-  errorOnReadOnly();
-  editorState._flushSync = true;
-}
-function $beginUpdate(editor, updateFn, options) {
-  const updateTags = editor._updateTags;
-  let onUpdate;
-  let skipTransforms = false;
-  let discrete = false;
-  if (options !== void 0) {
-    onUpdate = options.onUpdate;
-    addTags(editor, options.tag);
-    skipTransforms = options.skipTransforms || false;
-    discrete = options.discrete || false;
-  }
-  if (onUpdate) {
-    editor._deferred.push(onUpdate);
-  }
-  const currentEditorState = editor._editorState;
-  let pendingEditorState = editor._pendingEditorState;
-  let editorStateWasCloned = false;
-  if (pendingEditorState === null || pendingEditorState._readOnly) {
-    pendingEditorState = editor._pendingEditorState = cloneEditorState(pendingEditorState || currentEditorState);
-    editorStateWasCloned = true;
-  }
-  pendingEditorState._flushSync = discrete;
-  const previousActiveEditorState = activeEditorState;
-  const previousReadOnlyMode = isReadOnlyMode;
-  const previousActiveEditor = activeEditor;
-  const previouslyUpdating = editor._updating;
-  activeEditorState = pendingEditorState;
-  isReadOnlyMode = false;
-  editor._updating = true;
-  activeEditor = editor;
-  const headless = editor._headless || editor.getRootElement() === null;
-  setPendingNodeToClone(null);
-  try {
-    if (editorStateWasCloned) {
-      if (headless) {
-        if (currentEditorState._selection !== null) {
-          pendingEditorState._selection = currentEditorState._selection.clone();
-        }
-      } else {
-        pendingEditorState._selection = $internalCreateSelection(editor, options && options.event || null);
-      }
-    }
-    const startingCompositionKey = editor._compositionKey;
-    updateFn();
-    skipTransforms = $processNestedUpdates(editor, skipTransforms);
-    applySelectionTransforms(pendingEditorState, editor);
-    if (editor._dirtyType !== NO_DIRTY_NODES) {
-      if (skipTransforms) {
-        $normalizeAllDirtyTextNodes(pendingEditorState, editor);
-      } else {
-        $applyAllTransforms(pendingEditorState, editor);
-      }
-      $processNestedUpdates(editor);
-      $garbageCollectDetachedNodes(currentEditorState, pendingEditorState, editor._dirtyLeaves, editor._dirtyElements);
-    }
-    const endingCompositionKey = editor._compositionKey;
-    if (startingCompositionKey !== endingCompositionKey) {
-      pendingEditorState._flushSync = true;
-    }
-    const pendingSelection = pendingEditorState._selection;
-    if ($isRangeSelection(pendingSelection)) {
-      if (editor._slotsUsed) {
-        $clampRangeSelectionToSlotFrame(pendingSelection);
-      }
-      const pendingNodeMap = pendingEditorState._nodeMap;
-      const anchorKey = pendingSelection.anchor.key;
-      const focusKey = pendingSelection.focus.key;
-      if (pendingNodeMap.get(anchorKey) === void 0 || pendingNodeMap.get(focusKey) === void 0) {
-        {
-          formatDevErrorMessage2(`updateEditor: selection has been lost because the previously selected nodes have been removed and selection wasn't moved to another node. Ensure selection changes after removing/replacing a selected node.`);
-        }
-      }
-    } else if ($isNodeSelection(pendingSelection)) {
-      if (pendingSelection._nodes.size === 0) {
-        pendingEditorState._selection = null;
-      }
-    }
-  } catch (error) {
-    if (error instanceof Error) {
-      editor._onError(error);
-    }
-    editor._pendingEditorState = currentEditorState;
-    editor._dirtyType = FULL_RECONCILE;
-    editor._cloneNotNeeded.clear();
-    editor._dirtyLeaves = /* @__PURE__ */ new Set();
-    editor._dirtyElements.clear();
-    $commitPendingUpdates(editor);
-    return;
-  } finally {
-    activeEditorState = previousActiveEditorState;
-    isReadOnlyMode = previousReadOnlyMode;
-    activeEditor = previousActiveEditor;
-    editor._updating = previouslyUpdating;
-    infiniteTransformCount = 0;
-  }
-  const shouldUpdate = editor._dirtyType !== NO_DIRTY_NODES || editor._deferred.length > 0 || editorStateHasDirtySelection(pendingEditorState, editor);
-  if (shouldUpdate) {
-    if (pendingEditorState._flushSync) {
-      pendingEditorState._flushSync = false;
-      $commitPendingUpdates(editor);
-    } else if (editorStateWasCloned) {
-      scheduleMicroTask(() => {
-        $commitPendingUpdates(editor);
-      });
-    }
-  } else {
-    pendingEditorState._flushSync = false;
-    if (editorStateWasCloned) {
-      updateTags.clear();
-      editor._deferred = [];
-      editor._pendingEditorState = null;
-    }
-  }
-}
-function updateEditorSync(editor, updateFn, options) {
-  if (activeEditor === editor && options === void 0) {
-    if (isCurrentlyReadOnlyMode()) {
-      {
-        console.warn(`updateEditorSync: an editor update (e.g. a command listener that mutates the editor) ran while a read-only context was on the stack. This most commonly happens when a command is dispatched from inside editor.read(). The update has been deferred to a fresh writable update so it still applies, but dispatching mutations from a read-only context is an anti-pattern \u2014 dispatch after editor.read() returns, or via queueMicrotask.`);
-      }
-      $beginUpdate(editor, updateFn, options);
-    } else {
-      updateFn();
-    }
-  } else {
-    $beginUpdate(editor, updateFn, options);
-  }
-}
-function updateEditor(editor, updateFn, options) {
-  if (editor._updating) {
-    editor._updates.push([updateFn, options]);
-  } else {
-    $beginUpdate(editor, updateFn, options);
-  }
-}
-// @__NO_SIDE_EFFECTS__
-function formatGetterTable() {
-  return {
-    ...ELEMENT_FORMAT_TO_TYPE,
-    0: ""
-  };
-}
-// @__NO_SIDE_EFFECTS__
-function formatSetterTable() {
-  return {
-    ...ELEMENT_TYPE_TO_FORMAT,
-    "": 0
-  };
-}
-var FORMAT_GETTER_TABLE = /* @__PURE__ */ formatGetterTable();
-var FORMAT_SETTER_TABLE = /* @__PURE__ */ formatSetterTable();
-var elementNodeSchema = /* @__PURE__ */ (/* @__PURE__ */ nodeSchema())({
-  // `direction` and `indent` *are* these fields in both directions —
-  // get/setDirection and get/setIndent do nothing else — so they are declared
-  // as the fields they are. Each still stands in for the conventional
-  // accessor, so a subclass that overrides one reclaims its property (see
-  // SchemaFieldBase.method).
-  direction: /* @__PURE__ */ withField(/* @__PURE__ */ enumValue([null, "ltr", "rtl"]), {
-    field: "__dir"
-  }),
-  // The serialized `format` is the ElementFormatType string, not the numeric
-  // format getFormat() returns — which is the whole of what `getFormatType`
-  // and `setFormat` do, so the schema does it instead and reads and writes
-  // `__format` directly. Both accessors are still named: the conventional
-  // `getFormat` a field would otherwise stand in for returns the flag, not the
-  // string, so the read has to say which accessor it means.
-  format: /* @__PURE__ */ withField(/* @__PURE__ */ enumValue(["", "left", "start", "center", "right", "end", "justify"]), {
-    field: "__format",
-    getter: "getFormatType",
-    getterTable: FORMAT_GETTER_TABLE,
-    setter: "setFormat",
-    setterTable: FORMAT_SETTER_TABLE
-  }),
-  // A whole, non-negative number. That is the domain an indent has always
-  // had — every writer of one is an indent/outdent step — but nothing used to
-  // check it: `ElementNode.setIndent` is a bare field write, so a fractional
-  // or negative value in a document was stored verbatim rather than rejected.
-  // Stating the domain is what makes such a value parse to 0 instead.
-  // Deliberately not capped —
-  // `numberValue` falls back to its default rather than clamping, so a maximum
-  // here would silently flatten a legitimately deep document to indent 0. The
-  // unbounded walk that motivated a cap is ListItemNode.setIndent's, and it is
-  // bounded there.
-  indent: /* @__PURE__ */ withField(/* @__PURE__ */ numberValue(0, {
-    integer: true,
-    min: 0
-  }), {
-    field: "__indent"
-  }),
-  // Persisted only for an element with no TextNode child (see #7968), which
-  // `shouldSerializeTextStyles` decides. Declaring that as the field it is
-  // plus the predicate that gates it — rather than reading through
-  // `getSerializedTextFormat`/`getSerializedTextStyle` — keeps both on the
-  // direct-field path, and lets generated code call the shared predicate once
-  // instead of once per property.
-  //
-  // Naming the wrapper keeps a subclass in charge of its own property: an
-  // override of it, or of the `getTextFormat`/`getTextStyle` it computes from
-  // — the accessors `exportJSON` read before this schema existed, and the ones
-  // a subclass would reach for — abandons the field and calls the wrapper.
-  //
-  // The write is the field too. `setTextFormat`/`setTextStyle` are bare field
-  // writes, so naming them is naming the field; each still stands in for its
-  // conventional setter, so a subclass that overrides one reclaims the
-  // property on the way in as it does on the way out.
-  textFormat: /* @__PURE__ */ withAccessors(/* @__PURE__ */ numberValue(), {
-    getter: {
-      field: "__textFormat",
-      method: "getSerializedTextFormat",
-      when: "shouldSerializeTextStyles"
-    },
-    setter: {
-      field: "__textFormat"
-    }
-  }),
-  textStyle: /* @__PURE__ */ withAccessors(/* @__PURE__ */ stringValue(), {
-    getter: {
-      field: "__textStyle",
-      method: "getSerializedTextStyle",
-      when: "shouldSerializeTextStyles"
-    },
-    setter: {
-      field: "__textStyle"
-    }
-  })
-});
-function $normalizeShadowRootChildren(node) {
-  if ($isRootOrShadowRoot(node)) {
-    let block = null;
-    for (const child of node.getChildren()) {
-      block = child.isInline() ? (block || child.replace(child.createParentElementNode())).append(child) : null;
-    }
-  }
-}
-var ElementNode = class extends LexicalNode {
-  /** @internal */
-  /** @internal */
-  __first;
-  /** @internal */
-  __last;
-  /** @internal */
-  __size;
-  /** @internal */
-  __format;
-  /** @internal */
-  __style;
-  /** @internal */
-  __indent;
-  /** @internal */
-  __dir;
-  /** @internal */
-  __textFormat;
-  /** @internal */
-  __textStyle;
-  /** @internal */
-  __slotHost;
-  /** @internal */
-  __slots;
-  // Left to inference rather than annotated `: BaseStaticNodeConfig`. The
-  // annotation discarded the record, and with it every element's schema — what
-  // `LexicalSchemaInput` walks to compose the properties a node accepts. The
-  // cost is that a subclass overriding `$config()` has to name its `extends`,
-  // which is the convention every config in the tree already follows.
-  $config() {
-    return this.config(/* @__PURE__ */ Symbol.for("ElementNode"), {
-      /*
-       * Built-in normalize for shadow-root ElementNodes: wraps any direct child
-       * that is neither an ElementNode nor a DecoratorNode in a paragraph, so
-       * the slot-frame invariant set by `getTopLevelElement` continues to hold
-       * for external inputs (URL doc payloads, imported JSON, paste round-trips)
-       * that may carry shapes the in-editor mutation paths can no longer
-       * produce. In-editor mutation paths still fail-fast on the invariant.
-       *
-       * Runs as a static transform so the existing dirty-node transform cycle
-       * drives it — typing paths cover their own dirty bookkeeping, hydrate
-       * paths (`setEditorState`) dirty-mark slot hosts so the cycle picks them
-       * up.
-       */
-      $transform: $normalizeShadowRootChildren,
-      extends: LexicalNode,
-      generated: GENERATED_ELEMENT,
-      json: elementNodeSchema
-    });
-  }
-  constructor(key) {
-    super(key);
-    this.__first = null;
-    this.__last = null;
-    this.__size = 0;
-    this.__format = 0;
-    this.__style = "";
-    this.__indent = 0;
-    this.__dir = null;
-    this.__textFormat = 0;
-    this.__textStyle = "";
-    this.__slotHost = null;
-    this.__slots = null;
-  }
-  // Written rather than synthesized from the schema: an element's children
-  // and its slot bookkeeping are structure, not serialized properties, so no
-  // schema describes where they live. The key test is the other half of that —
-  // a clone under a *new* key is a copy of the node, not of its place in the
-  // tree, and must not adopt the original's children.
-  //
-  // Declaring one of these takes the class out of the synthesized
-  // `afterCloneFrom` entirely, so the schema's own fields are this method's
-  // responsibility too — but not its boilerplate: `afterCloneElementNode` is
-  // generated from the same declaration, so adding a property to the schema
-  // needs no line here.
-  afterCloneFrom(prevNode) {
-    super.afterCloneFrom(prevNode);
-    if (this.__key === prevNode.__key) {
-      this.__first = prevNode.__first;
-      this.__last = prevNode.__last;
-      this.__size = prevNode.__size;
-      this.__slotHost = prevNode.__slotHost;
-      if (!(this.__slotHost === null || this.__parent === null)) {
-        formatDevErrorMessage2(`ElementNode: node ${this.__key} is both slotted into host ${String(this.__slotHost)} and a child of parent ${String(this.__parent)}; __slotHost and __parent are mutually exclusive`);
-      }
-      this.__slots = prevNode.__slots;
-    }
-    this.__style = prevNode.__style;
-    afterCloneElementNode(this, prevNode);
-  }
-  getFormat() {
-    const self = this.getLatest();
-    return self.__format;
-  }
-  getFormatType() {
-    const format = this.getFormat();
-    return ELEMENT_FORMAT_TO_TYPE[format] || "";
-  }
-  getStyle() {
-    const self = this.getLatest();
-    return self.__style;
-  }
-  getIndent() {
-    const self = this.getLatest();
-    return self.__indent;
-  }
-  /**
-   * Returns the children of this node, in document order.
-   */
-  /**
-   * @deprecated The type parameter is an unchecked and unsafe cast,
-   * equivalent to `element.getChildren() as T[]`, and will be
-   * removed in a future release. Call this method without a type argument
-   * and narrow the results with a type guard instead.
-   */
-  getChildren() {
-    const children = [];
-    let child = this.getFirstChild();
-    while (child !== null) {
-      children.push(child);
-      child = child.getNextSibling();
-    }
-    return children;
-  }
-  getChildrenKeys() {
-    const children = [];
-    let child = this.getFirstChild();
-    while (child !== null) {
-      children.push(child.__key);
-      child = child.getNextSibling();
-    }
-    return children;
-  }
-  getChildrenSize() {
-    const self = this.getLatest();
-    return self.__size;
-  }
-  isEmpty() {
-    return this.getChildrenSize() === 0 && $getSlotNames(this).length === 0;
-  }
-  isDirty() {
-    const editor = getActiveEditor();
-    const dirtyElements = editor._dirtyElements;
-    return dirtyElements !== null && dirtyElements.has(this.__key);
-  }
-  isLastChild() {
-    const self = this.getLatest();
-    const parentLastChild = this.getParentOrThrow().getLastChild();
-    return parentLastChild !== null && parentLastChild.is(self);
-  }
-  getAllTextNodes() {
-    const textNodes = [];
-    for (const name of $getSlotNames(this)) {
-      const slot = $getSlot(this, name);
-      if ($isElementNode(slot)) {
-        for (const textNode of slot.getAllTextNodes()) {
-          textNodes.push(textNode);
-        }
-      }
-    }
-    let child = this.getFirstChild();
-    while (child !== null) {
-      if ($isTextNode(child)) {
-        textNodes.push(child);
-      }
-      if ($isElementNode(child)) {
-        for (const textNode of child.getAllTextNodes()) {
-          textNodes.push(textNode);
-        }
-      }
-      child = child.getNextSibling();
-    }
-    return textNodes;
-  }
-  /**
-   * Returns the deepest first descendant of this node,
-   * or null if it has no children.
-   *
-   * Descendant navigation is children-only by design: it feeds selectStart /
-   * selectEnd and selection, which must not see slots (slots are isolated).
-   */
-  /**
-   * @deprecated The type parameter is an unchecked and unsafe cast,
-   * equivalent to `element.getFirstDescendant() as T | null`, and will be
-   * removed in a future release. Call this method without a type argument
-   * and narrow the result with a type guard instead.
-   */
-  getFirstDescendant() {
-    let node = this.getFirstChild();
-    while ($isElementNode(node)) {
-      const child = node.getFirstChild();
-      if (child === null) {
-        break;
-      }
-      node = child;
-    }
-    return node;
-  }
-  /**
-   * Returns the deepest last descendant of this node,
-   * or null if it has no children.
-   */
-  /**
-   * @deprecated The type parameter is an unchecked and unsafe cast,
-   * equivalent to `element.getLastDescendant() as T | null`, and will be
-   * removed in a future release. Call this method without a type argument
-   * and narrow the result with a type guard instead.
-   */
-  getLastDescendant() {
-    let node = this.getLastChild();
-    while ($isElementNode(node)) {
-      const child = node.getLastChild();
-      if (child === null) {
-        break;
-      }
-      node = child;
-    }
-    return node;
-  }
-  /**
-   * Returns the deepest descendant corresponding to the child at the given
-   * index, or null if this node has no children.
-   */
-  /**
-   * @deprecated The type parameter is an unchecked and unsafe cast,
-   * equivalent to `element.getDescendantByIndex(index) as T | null`, and
-   * will be removed in a future release. Call this method without a type
-   * argument and narrow the result with a type guard instead.
-   */
-  getDescendantByIndex(index) {
-    const children = this.getChildren();
-    const childrenLength = children.length;
-    if (index >= childrenLength) {
-      const resolvedNode2 = children[childrenLength - 1];
-      return $isElementNode(resolvedNode2) && resolvedNode2.getLastDescendant() || resolvedNode2 || null;
-    }
-    const resolvedNode = children[index];
-    return $isElementNode(resolvedNode) && resolvedNode.getFirstDescendant() || resolvedNode || null;
-  }
-  /**
-   * Returns the first child of this node, or null if it has no children.
-   */
-  /**
-   * @deprecated The type parameter is an unchecked and unsafe cast,
-   * equivalent to `element.getFirstChild() as T | null`, and will be
-   * removed in a future release. Call this method without a type argument
-   * and narrow the result with a type guard instead.
-   */
-  getFirstChild() {
-    const self = this.getLatest();
-    const firstKey = self.__first;
-    return firstKey === null ? null : $getNodeByKey(firstKey);
-  }
-  /**
-   * Returns the first child of this node, or throws if it has no children.
-   */
-  /**
-   * @deprecated The type parameter is an unchecked and unsafe cast,
-   * equivalent to `element.getFirstChildOrThrow() as T`, and will be
-   * removed in a future release. Call this method without a type argument
-   * and narrow the result with a type guard instead.
-   */
-  getFirstChildOrThrow() {
-    const firstChild = this.getFirstChild();
-    if (firstChild === null) {
-      {
-        formatDevErrorMessage2(`Expected node ${this.__key} to have a first child.`);
-      }
-    }
-    return firstChild;
-  }
-  /**
-   * Returns the last child of this node, or null if it has no children.
-   */
-  /**
-   * @deprecated The type parameter is an unchecked and unsafe cast,
-   * equivalent to `element.getLastChild() as T | null`, and will be
-   * removed in a future release. Call this method without a type argument
-   * and narrow the result with a type guard instead.
-   */
-  getLastChild() {
-    const self = this.getLatest();
-    const lastKey = self.__last;
-    return lastKey === null ? null : $getNodeByKey(lastKey);
-  }
-  /**
-   * Returns the last child of this node, or throws if it has no children.
-   */
-  /**
-   * @deprecated The type parameter is an unchecked and unsafe cast,
-   * equivalent to `element.getLastChildOrThrow() as T`, and will be
-   * removed in a future release. Call this method without a type argument
-   * and narrow the result with a type guard instead.
-   */
-  getLastChildOrThrow() {
-    const lastChild = this.getLastChild();
-    if (lastChild === null) {
-      {
-        formatDevErrorMessage2(`Expected node ${this.__key} to have a last child.`);
-      }
-    }
-    return lastChild;
-  }
-  /**
-   * Returns the child of this node at the given index, or null if
-   * the index is out of range.
-   */
-  /**
-   * @deprecated The type parameter is an unchecked and unsafe cast,
-   * equivalent to `element.getChildAtIndex(index) as T | null`, and will
-   * be removed in a future release. Call this method without a type
-   * argument and narrow the result with a type guard instead.
-   */
-  getChildAtIndex(index) {
-    const size = this.getChildrenSize();
-    let node;
-    let i2;
-    if (index < size / 2) {
-      node = this.getFirstChild();
-      i2 = 0;
-      while (node !== null && i2 <= index) {
-        if (i2 === index) {
-          return node;
-        }
-        node = node.getNextSibling();
-        i2++;
-      }
-      return null;
-    }
-    node = this.getLastChild();
-    i2 = size - 1;
-    while (node !== null && i2 >= index) {
-      if (i2 === index) {
-        return node;
-      }
-      node = node.getPreviousSibling();
-      i2--;
-    }
-    return null;
-  }
-  getTextContent() {
-    let textContent = $getSlotsTextContent(this);
-    const children = this.getChildren();
-    const childrenLength = children.length;
-    for (let i2 = 0; i2 < childrenLength; i2++) {
-      const child = children[i2];
-      textContent += child.getTextContent();
-      if (
-        // this is an inline $textContentRequiresDoubleLinebreakAtEnd(child)
-        $isElementNode(child) && i2 !== childrenLength - 1 && !child.isInline()
-      ) {
-        textContent += DOUBLE_LINE_BREAK;
-      }
-    }
-    return textContent;
-  }
-  getTextContentSize() {
-    let textContentSize = $getSlotsTextContentSize(this);
-    const children = this.getChildren();
-    const childrenLength = children.length;
-    for (let i2 = 0; i2 < childrenLength; i2++) {
-      const child = children[i2];
-      textContentSize += child.getTextContentSize();
-      if (
-        // This is an inline $textContentRequiresDoubleLinebreakAtEnd(child)
-        $isElementNode(child) && i2 !== childrenLength - 1 && !child.isInline()
-      ) {
-        textContentSize += DOUBLE_LINE_BREAK.length;
-      }
-    }
-    return textContentSize;
-  }
-  getDirection() {
-    const self = this.getLatest();
-    return self.__dir;
-  }
-  getTextFormat() {
-    const self = this.getLatest();
-    return self.__textFormat;
-  }
-  hasFormat(type) {
-    if (type !== "") {
-      const formatFlag = ELEMENT_TYPE_TO_FORMAT[type];
-      return (this.getFormat() & formatFlag) !== 0;
-    }
-    return false;
-  }
-  hasTextFormat(type) {
-    const formatFlag = TEXT_TYPE_TO_FORMAT[type];
-    return (this.getTextFormat() & formatFlag) !== 0;
-  }
-  /**
-   * Returns the format flags applied to the node as a 32-bit integer.
-   *
-   * @returns a number representing the TextFormatTypes applied to the node.
-   */
-  getFormatFlags(type, alignWithFormat) {
-    const self = this.getLatest();
-    const format = self.__textFormat;
-    return toggleTextFormatType(format, type, alignWithFormat);
-  }
-  getTextStyle() {
-    const self = this.getLatest();
-    return self.__textStyle;
-  }
-  // Mutators
-  select(_anchorOffset, _focusOffset) {
-    errorOnReadOnly();
-    const selection = $getSelection();
-    let anchorOffset = _anchorOffset;
-    let focusOffset = _focusOffset;
-    const childrenCount = this.getChildrenSize();
-    if (!this.canBeEmpty()) {
-      if (_anchorOffset === 0 && _focusOffset === 0) {
-        const firstChild = this.getFirstChild();
-        if ($isTextNode(firstChild) || $isElementNode(firstChild)) {
-          return firstChild.select(0, 0);
-        }
-      } else if ((_anchorOffset === void 0 || _anchorOffset === childrenCount) && (_focusOffset === void 0 || _focusOffset === childrenCount)) {
-        const lastChild = this.getLastChild();
-        if ($isTextNode(lastChild) || $isElementNode(lastChild)) {
-          return lastChild.select();
-        }
-      }
-    }
-    if (anchorOffset === void 0) {
-      anchorOffset = childrenCount;
-    }
-    if (focusOffset === void 0) {
-      focusOffset = childrenCount;
-    }
-    const key = this.__key;
-    if (!$isRangeSelection(selection)) {
-      return $internalMakeRangeSelection(key, anchorOffset, key, focusOffset, "element", "element");
-    } else {
-      selection.anchor.set(key, anchorOffset, "element");
-      selection.focus.set(key, focusOffset, "element");
-      selection.dirty = true;
-    }
-    return selection;
-  }
-  selectStart() {
-    const firstNode = this.getFirstDescendant();
-    return firstNode ? firstNode.selectStart() : this.select();
-  }
-  selectEnd() {
-    const lastNode = this.getLastDescendant();
-    return lastNode ? lastNode.selectEnd() : this.select();
-  }
-  clear() {
-    const writableSelf = this.getWritable();
-    const children = this.getChildren();
-    children.forEach((child) => child.remove());
-    return writableSelf;
-  }
-  append(...nodesToAppend) {
-    return this.splice(this.getChildrenSize(), 0, nodesToAppend);
-  }
-  setDirection(direction) {
-    const self = this.getWritable();
-    self.__dir = direction;
-    return self;
-  }
-  setFormat(type) {
-    const self = this.getWritable();
-    self.__format = type !== "" ? ELEMENT_TYPE_TO_FORMAT[type] || 0 : 0;
-    return self;
-  }
-  setStyle(style) {
-    const self = this.getWritable();
-    self.__style = style || "";
-    return self;
-  }
-  setTextFormat(type) {
-    const self = this.getWritable();
-    self.__textFormat = type;
-    return self;
-  }
-  setTextStyle(style) {
-    const self = this.getWritable();
-    self.__textStyle = style;
-    return self;
-  }
-  setIndent(indentLevel) {
-    const self = this.getWritable();
-    self.__indent = indentLevel;
-    return self;
-  }
-  splice(start, deleteCount, nodesToInsert) {
-    if (!!$isEphemeral(this)) {
-      formatDevErrorMessage2(`ElementNode.splice: Ephemeral nodes can not mutate their children (key ${this.__key} type ${this.__type})`);
-    }
-    const oldSize = this.getChildrenSize();
-    const writableSelf = this.getWritable();
-    if (!(start + deleteCount <= oldSize)) {
-      formatDevErrorMessage2(`ElementNode.splice: start + deleteCount > oldSize (${String(start)} + ${String(deleteCount)} > ${String(oldSize)})`);
-    }
-    for (const nodeToInsert of nodesToInsert) {
-      $errorOnSlotCycleChild(writableSelf, nodeToInsert);
-    }
-    const writableSelfKey = writableSelf.__key;
-    const nodesToInsertKeys = [];
-    const nodesToRemoveKeys = [];
-    let nodeAfterRange = this.getChildAtIndex(start + deleteCount);
-    let nodeBeforeRange = null;
-    let newSize = oldSize - deleteCount + nodesToInsert.length;
-    if (start !== 0) {
-      if (start === oldSize) {
-        nodeBeforeRange = this.getLastChild();
-      } else {
-        const node = this.getChildAtIndex(start);
-        if (node !== null) {
-          nodeBeforeRange = node.getPreviousSibling();
-        }
-      }
-    }
-    if (deleteCount > 0) {
-      let nodeToDelete = nodeBeforeRange === null ? this.getFirstChild() : nodeBeforeRange.getNextSibling();
-      for (let i2 = 0; i2 < deleteCount; i2++) {
-        if (nodeToDelete === null) {
-          {
-            formatDevErrorMessage2(`splice: sibling not found`);
-          }
-        }
-        const nextSibling = nodeToDelete.getNextSibling();
-        const nodeKeyToDelete = nodeToDelete.__key;
-        const writableNodeToDelete = nodeToDelete.getWritable();
-        $removeFromParent(writableNodeToDelete);
-        nodesToRemoveKeys.push(nodeKeyToDelete);
-        nodeToDelete = nextSibling;
-      }
-    }
-    let prevNode = nodeBeforeRange;
-    for (const nodeToInsert of nodesToInsert) {
-      if (prevNode !== null && nodeToInsert.is(prevNode)) {
-        nodeBeforeRange = prevNode = prevNode.getPreviousSibling();
-      }
-      if (nodeAfterRange !== null && nodeToInsert.is(nodeAfterRange)) {
-        nodeAfterRange = nodeAfterRange.getNextSibling();
-      }
-      const writableNodeToInsert = nodeToInsert.getWritable();
-      if (writableNodeToInsert.__parent === writableSelfKey) {
-        newSize--;
-      }
-      $removeFromParent(writableNodeToInsert);
-      const nodeKeyToInsert = nodeToInsert.__key;
-      if (prevNode === null) {
-        writableSelf.__first = nodeKeyToInsert;
-        writableNodeToInsert.__prev = null;
-      } else {
-        const writablePrevNode = prevNode.getWritable();
-        writablePrevNode.__next = nodeKeyToInsert;
-        writableNodeToInsert.__prev = writablePrevNode.__key;
-      }
-      if (nodeToInsert.__key === writableSelfKey) {
-        {
-          formatDevErrorMessage2(`append: attempting to append self`);
-        }
-      }
-      writableNodeToInsert.__parent = writableSelfKey;
-      nodesToInsertKeys.push(nodeKeyToInsert);
-      prevNode = nodeToInsert;
-    }
-    if (nodeAfterRange === null) {
-      if (prevNode !== null) {
-        const writablePrevNode = prevNode.getWritable();
-        writablePrevNode.__next = null;
-        writableSelf.__last = prevNode.__key;
-      }
-    } else {
-      const writableNodeAfterRange = nodeAfterRange.getWritable();
-      if (prevNode !== null) {
-        const writablePrevNode = prevNode.getWritable();
-        writableNodeAfterRange.__prev = prevNode.__key;
-        writablePrevNode.__next = nodeAfterRange.__key;
-      } else {
-        writableNodeAfterRange.__prev = null;
-      }
-    }
-    writableSelf.__size = newSize;
-    if (nodesToRemoveKeys.length) {
-      const selection = $getSelection();
-      if ($isRangeSelection(selection)) {
-        const nodesToRemoveKeySet = new Set(nodesToRemoveKeys);
-        const nodesToInsertKeySet = new Set(nodesToInsertKeys);
-        const {
-          anchor,
-          focus
-        } = selection;
-        if (isPointRemoved(anchor, nodesToRemoveKeySet, nodesToInsertKeySet)) {
-          moveSelectionPointToSibling(anchor, anchor.getNode(), this, nodeBeforeRange, nodeAfterRange);
-        }
-        if (isPointRemoved(focus, nodesToRemoveKeySet, nodesToInsertKeySet)) {
-          moveSelectionPointToSibling(focus, focus.getNode(), this, nodeBeforeRange, nodeAfterRange);
-        }
-        if (newSize === 0 && !this.canBeEmpty() && !$isRootOrShadowRoot(this)) {
-          this.remove();
-        }
-      }
-    }
-    return writableSelf;
-  }
-  /**
-   * @experimental
-   *
-   * An ElementNode subclass can override this to control where its children
-   * are inserted into the DOM, e.g. to add a wrapping node or accessory nodes
-   * before or after the children. The root of the node returned by createDOM
-   * must still be exactly one HTMLElement.
-   */
-  getDOMSlot(element) {
-    return new ElementDOMSlot(element);
-  }
-  exportDOM(editor) {
-    const {
-      element
-    } = super.exportDOM(editor);
-    if (isHTMLElement(element)) {
-      const indent = this.getIndent();
-      if (indent > 0) {
-        element.style.paddingInlineStart = `${indent * 40}px`;
-        element.setAttribute("data-lexical-indent", String(indent));
-      }
-      const direction = this.getDirection();
-      if (direction) {
-        element.dir = direction;
-      }
-    }
-    return {
-      element
-    };
-  }
-  // JSON serialization
-  /**
-   * Whether `textFormat`/`textStyle` are persisted at all: only when there are
-   * no TextNode children from which they would be set on reconcile (#7968).
-   *
-   * @internal
-   */
-  shouldSerializeTextStyles() {
-    if ($isRootOrShadowRoot(this)) {
-      return false;
-    }
-    for (let child = this.getFirstChild(); child !== null; child = child.getNextSibling()) {
-      if ($isTextNode(child)) {
-        return false;
-      }
-    }
-    return true;
-  }
-  /** @internal Serialized `textFormat`, or undefined to omit it. */
-  getSerializedTextFormat() {
-    const textFormat = this.getTextFormat();
-    return textFormat !== 0 && this.shouldSerializeTextStyles() ? textFormat : void 0;
-  }
-  /** @internal Serialized `textStyle`, or undefined to omit it. */
-  getSerializedTextStyle() {
-    const textStyle = this.getTextStyle();
-    return textStyle !== "" && this.shouldSerializeTextStyles() ? textStyle : void 0;
-  }
-  // These are intended to be extends for specific element heuristics.
-  insertNewAfter(selection, restoreSelection) {
-    return null;
-  }
-  canIndent() {
-    return true;
-  }
-  /*
-   * This method controls the behavior of the node during backwards
-   * deletion (i.e., backspace) when selection is at the beginning of
-   * the node (offset 0). You may use this to have the node replace
-   * itself, change its state, or do nothing. When you do make such
-   * a change, you should return true.
-   *
-   * When true is returned, the collapse phase will stop.
-   * When false is returned, and isInline() is true, and getPreviousSibling() is null,
-   * then this function will be called on its parent.
-   */
-  collapseAtStart(selection) {
-    return false;
-  }
-  excludeFromCopy(destination) {
-    return false;
-  }
-  /** @deprecated @internal */
-  canReplaceWith(replacement) {
-    return true;
-  }
-  /** @deprecated @internal */
-  canInsertAfter(node) {
-    return true;
-  }
-  canBeEmpty() {
-    return true;
-  }
-  canInsertTextBefore() {
-    return true;
-  }
-  canInsertTextAfter() {
-    return true;
-  }
-  /**
-   * If the method is overridden and returns true, ensure that `canBeEmpty()`
-   * returns false for the inline node to work correctly
-   */
-  isInline() {
-    return false;
-  }
-  // A shadow root is a Node that behaves like RootNode. The shadow root (and RootNode) mark the
-  // end of the hierarchy, most implementations should treat it as there's nothing (upwards)
-  // beyond this point. For example, node.getTopLevelElement(), when performed inside a TableCellNode
-  // will return the immediate first child underneath TableCellNode instead of RootNode.
-  isShadowRoot() {
-    return false;
-  }
-  /** @deprecated @internal */
-  canMergeWith(node) {
-    return false;
-  }
-  extractWithChild(child, selection, destination) {
-    return false;
-  }
-  /**
-   * Determines whether this node, when empty, can merge with a first block
-   * of nodes being inserted.
-   *
-   * This method is specifically called in {@link RangeSelection.insertNodes}
-   * to determine merging behavior during nodes insertion.
-   *
-   * @example
-   * // In a ListItemNode or QuoteNode implementation:
-   * canMergeWhenEmpty(): true {
-   *  return true;
-   * }
-   */
-  canMergeWhenEmpty() {
-    return false;
-  }
-  /** @internal */
-  reconcileObservedMutation(dom, editor) {
-    const slot = $getDOMSlot(this, dom, editor);
-    let currentDOM = slot.getFirstChild();
-    for (let currentNode = this.getFirstChild(); currentNode; currentNode = currentNode.getNextSibling()) {
-      const correctDOM = editor.getElementByKey(currentNode.getKey());
-      if (correctDOM === null) {
-        continue;
-      }
-      if (currentDOM == null) {
-        slot.insertChild(correctDOM);
-        currentDOM = correctDOM;
-      } else if (currentDOM !== correctDOM) {
-        slot.replaceChild(correctDOM, currentDOM);
-      }
-      currentDOM = currentDOM.nextSibling;
-    }
-  }
-};
-function $isElementNode(node) {
-  return node instanceof ElementNode;
-}
-function isPointRemoved(point, nodesToRemoveKeySet, nodesToInsertKeySet) {
-  let node = point.getNode();
-  while (node) {
-    const nodeKey = node.__key;
-    if (nodesToRemoveKeySet.has(nodeKey) && !nodesToInsertKeySet.has(nodeKey)) {
-      return true;
-    }
-    node = node.getParent();
-  }
-  return false;
-}
-var DecoratorNode = class extends LexicalNode {
-  /** @internal */
-  /** @internal */
-  __slotHost;
-  /** @internal */
-  __slots;
-  constructor(key) {
-    super(key);
-    this.__slotHost = null;
-    this.__slots = null;
-  }
-  // Written rather than synthesized from the schema, for ElementNode's
-  // reason: `__slotHost` is structure rather than a serialized property, and
-  // it belongs to the node's place in the tree, so a clone under a new key
-  // must not adopt it.
-  afterCloneFrom(prevNode) {
-    super.afterCloneFrom(prevNode);
-    if (this.__key === prevNode.__key) {
-      this.__slotHost = prevNode.__slotHost;
-      if (!(this.__slotHost === null || this.__parent === null)) {
-        formatDevErrorMessage2(`DecoratorNode: node ${this.__key} is both slotted into host ${String(this.__slotHost)} and a child of parent ${String(this.__parent)}; __slotHost and __parent are mutually exclusive`);
-      }
-      this.__slots = prevNode.__slots;
-    }
-  }
-  /**
-   * The returned value is added to the LexicalEditor._decorators
-   */
-  decorate(editor, config) {
-    return null;
-  }
-  /**
-   * Whether this decorator is isolated from caret interaction: an isolated
-   * decorator can not be traversed, extended over, selected as a node, or
-   * deleted by an adjacent caret operation. A caret that reaches one stops
-   * there, so an inline isolated decorator is only reachable by pointer.
-   *
-   * Defaults to false, which lets the caret step over the decorator (and
-   * select it, when {@link DecoratorNode.isKeyboardSelectable} is also true).
-   */
-  isIsolated() {
-    return false;
-  }
-  isInline() {
-    return true;
-  }
-  isKeyboardSelectable() {
-    return true;
-  }
-};
-function $isDecoratorNode(node) {
-  return node instanceof DecoratorNode;
-}
-var RootNode = class extends ElementNode {
-  /** @internal */
-  __cachedText;
-  $config() {
-    return this.config("root", {
-      extends: ElementNode
-    });
-  }
-  constructor() {
-    super("root");
-    this.__cachedText = null;
-  }
-  getTopLevelElementOrThrow() {
-    {
-      formatDevErrorMessage2(`getTopLevelElementOrThrow: root nodes are not top level elements`);
-    }
-  }
-  getTextContent() {
-    const cachedText = this.__cachedText;
-    return cachedText !== null && (isCurrentlyReadOnlyMode() || getActiveEditor()._dirtyType === NO_DIRTY_NODES) ? cachedText : super.getTextContent();
-  }
-  remove() {
-    {
-      formatDevErrorMessage2(`remove: cannot be called on root nodes`);
-    }
-  }
-  replace(node) {
-    {
-      formatDevErrorMessage2(`replace: cannot be called on root nodes`);
-    }
-  }
-  insertBefore(nodeToInsert) {
-    {
-      formatDevErrorMessage2(`insertBefore: cannot be called on root nodes`);
-    }
-  }
-  insertAfter(nodeToInsert) {
-    {
-      formatDevErrorMessage2(`insertAfter: cannot be called on root nodes`);
-    }
-  }
-  // View
-  updateDOM(prevNode, dom) {
-    return false;
-  }
-  // Mutate
-  splice(start, deleteCount, nodesToInsert) {
-    for (const node of nodesToInsert) {
-      if (!($isElementNode(node) || $isDecoratorNode(node))) {
-        formatDevErrorMessage2(`rootNode.splice: Only element or decorator nodes can be inserted to the root node`);
-      }
-    }
-    return super.splice(start, deleteCount, nodesToInsert);
-  }
-  static importJSON(serializedNode) {
-    return $getRoot().updateFromJSON(serializedNode);
-  }
-  collapseAtStart() {
-    return true;
-  }
-};
-function $createRootNode() {
-  return new RootNode();
-}
-function $isRootNode(node) {
-  return node instanceof RootNode;
-}
-function editorStateHasDirtySelection(editorState, editor) {
-  const currentSelection = editor.getEditorState()._selection;
-  const pendingSelection = editorState._selection;
-  if (pendingSelection !== null) {
-    if (pendingSelection.dirty || !pendingSelection.is(currentSelection)) {
-      return true;
-    }
-  } else if (currentSelection !== null) {
-    return true;
-  }
-  return false;
-}
-function cloneEditorState(current) {
-  return new EditorState(cloneMap(current._nodeMap), null, current._slotsUsed);
-}
-function createEmptyEditorState() {
-  return new EditorState(/* @__PURE__ */ new Map([["root", $createRootNode()]]), null, false);
-}
-function $exportNodeToJSON(node) {
-  const nodeClass = node.constructor;
-  const serializedNode = $exportNodeJSON(node);
-  if ($isElementNode(node)) {
-    const serializedChildren = serializedNode.children;
-    const children = node.getChildren();
-    for (let i2 = 0; i2 < children.length; i2++) {
-      serializedChildren.push($exportNodeToJSON(children[i2]));
-    }
-  }
-  const slotNames = $getSlotNames(node);
-  if (slotNames.length > 0) {
-    const serializedSlots = {};
-    for (const name of slotNames) {
-      const slotNode = $getSlot(node, name);
-      if (!(slotNode !== null)) {
-        formatDevErrorMessage2(`LexicalNode: Node ${nodeClass.name} has slot "${name}" but it resolved to no node during export.`);
-      }
-      serializedSlots[name] = $exportNodeToJSON(slotNode);
-    }
-    serializedNode.$slots = serializedSlots;
-  }
-  return serializedNode;
-}
-function $isEditorState(x2) {
-  return x2 instanceof EditorState;
-}
-var EditorState = class _EditorState {
-  _nodeMap;
-  _selection;
-  _flushSync;
-  _readOnly;
-  /**
-   * True if this EditorState was parsed without running transforms
-   */
-  _parsed;
-  /**
-   * True if this EditorState or the LexicalEditor that created it has
-   * ever used slots
-   */
-  _slotsUsed;
-  constructor(nodeMap, selection = null, slotsUsed = false) {
-    this._nodeMap = nodeMap;
-    this._selection = selection || null;
-    this._flushSync = false;
-    this._readOnly = false;
-    this._parsed = false;
-    this._slotsUsed = slotsUsed;
-  }
-  isEmpty() {
-    return this._nodeMap.size <= 1 && this._selection === null;
-  }
-  read(callbackFn, options) {
-    return readEditorState(options && options.editor || null, this, callbackFn);
-  }
-  clone(selection) {
-    const editorState = new _EditorState(this._nodeMap, selection === void 0 ? this._selection : selection, this._slotsUsed);
-    editorState._readOnly = true;
-    editorState._parsed = this._parsed;
-    return editorState;
-  }
-  /**
-   * This document's JSON, in the legacy form that writes every property.
-   *
-   * The form is this call's to state, never inherited: called with no argument
-   * — including by `JSON.stringify`, for which this is the `toJSON` hook — it
-   * writes the legacy form whatever {@link $withCompactExport} encloses it.
-   * That is what makes this signature true, and it is the behavior that
-   * predates the compact form.
-   *
-   * A nested editor still follows the document containing it, because
-   * {@link LexicalEditor.toJSON} passes the enclosing form on explicitly
-   * rather than leaving it to be picked up here.
-   */
-  /**
-   * @param compact Write the compact form, which omits from every node the
-   *   properties parsing restores on its own. Passing the form here rather
-   *   than through an enclosing {@link $withCompactExport} is what lets the
-   *   return type say which shape it is.
-   */
-  toJSON(compact) {
-    return $withCompactExport(typeof compact === "boolean" && compact, () => readEditorState(null, this, () => ({
-      root: $exportNodeToJSON($getRoot())
-    })));
-  }
-};
-var ArtificialNode__DO_NOT_USE = class extends ElementNode {
-  $config() {
-    return this.config("artificial", {
-      extends: ElementNode
-    });
-  }
-  createDOM(config) {
-    const dom = $getDocument().createElement("div");
-    return dom;
-  }
-};
-var LineBreakNode = class extends LexicalNode {
-  /** @internal */
-  $config() {
-    return this.config("linebreak", {
-      extends: LexicalNode,
-      generated: GENERATED_LINEBREAK,
-      importDOM: {
-        br: (node) => {
-          if (isOnlyChildInBlockNode(node) || isLastChildInBlockNode(node)) {
-            return null;
-          }
-          return {
-            conversion: $convertLineBreakElement,
-            priority: 0
-          };
-        }
-      }
-    });
-  }
-  getTextContent() {
-    return "\n";
-  }
-  createDOM() {
-    return $getDocument().createElement("br");
-  }
-  updateDOM() {
-    return false;
-  }
-  isInline() {
-    return true;
-  }
-};
-function $convertLineBreakElement(node) {
-  return {
-    node: $createLineBreakNode()
-  };
-}
-function $createLineBreakNode() {
-  return $applyNodeReplacement(new LineBreakNode());
-}
-function $isLineBreakNode(node) {
-  return node instanceof LineBreakNode;
-}
-function isOnlyChildInBlockNode(node) {
-  const parentElement = node.parentElement;
-  if (parentElement !== null && isBlockDomNode(parentElement)) {
-    const firstChild = parentElement.firstChild;
-    if (firstChild === node || firstChild.nextSibling === node && isWhitespaceDomTextNode(firstChild)) {
-      const lastChild = parentElement.lastChild;
-      if (lastChild === node || lastChild.previousSibling === node && isWhitespaceDomTextNode(lastChild)) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-function isLastChildInBlockNode(node) {
-  const parentElement = node.parentElement;
-  if (parentElement !== null && isBlockDomNode(parentElement)) {
-    const firstChild = parentElement.firstChild;
-    if (firstChild === node || firstChild.nextSibling === node && isWhitespaceDomTextNode(firstChild)) {
-      return false;
-    }
-    const lastChild = parentElement.lastChild;
-    if (lastChild === node || lastChild.previousSibling === node && isWhitespaceDomTextNode(lastChild)) {
-      return true;
-    }
-  }
-  return false;
-}
-function isWhitespaceDomTextNode(node) {
-  return isDOMTextNode(node) && /^( |\t|\r?\n)+$/.test(node.textContent || "");
-}
 function $caretFromPoint(point, direction) {
   const {
     type,
@@ -36773,20 +32806,8 @@ function $removeTextFromCaretRange(initialRange, sliceMode = "removeEmptySlices"
       }
     }
   }
-  let anchorCandidate;
-  let focusCandidate;
-  for (const candidate of anchorCandidates) {
-    if ($isCaretAttached(candidate)) {
-      anchorCandidate = $normalizeCaret(candidate);
-      break;
-    }
-  }
-  for (const candidate of focusCandidates) {
-    if ($isCaretAttached(candidate)) {
-      focusCandidate = $normalizeCaret(candidate);
-      break;
-    }
-  }
+  const anchorCandidate = $getAttachedCaret(anchorCandidates);
+  const focusCandidate = $getAttachedCaret(focusCandidates);
   const mergeTargets = $getBlockMergeTargets(anchorCandidate, focusCandidate, seenStart);
   if (mergeTargets) {
     const [anchorBlock, focusBlock] = mergeTargets;
@@ -36819,17 +32840,21 @@ function $removeTextFromCaretRange(initialRange, sliceMode = "removeEmptySlices"
       }
     }
   }
-  if ($restoreEmptyContainerParagraph(rangeContainer, rangeContainerChild) === null) {
+  if ($restoreEmptyContainerParagraph(rangeContainer, rangeContainerChild) === null && rangeContainer !== null && !rangeContainer.isAttached()) {
     $restoreEmptyContainerParagraph($getRoot(), null);
   }
-  const bestCandidate = [anchorCandidate, focusCandidate, ...anchorCandidates, ...focusCandidates].find($isCaretAttached);
+  const bestCandidate = $getAttachedCaret([anchorCandidate, focusCandidate, ...anchorCandidates, ...focusCandidates]);
   if (bestCandidate) {
-    const anchor = $getCaretInDirection($normalizeCaret(bestCandidate), initialRange.direction);
+    const anchor = $getCaretInDirection(bestCandidate, initialRange.direction);
     return $getCollapsedCaretRange(anchor);
   }
   {
     formatDevErrorMessage2(`$removeTextFromCaretRange: selection was lost, could not find a new anchor given candidates with keys: ${JSON.stringify(anchorCandidates.map((n2) => n2.origin.__key))}`);
   }
+}
+function $getAttachedCaret(candidates) {
+  const candidate = candidates.find($isCaretAttached);
+  return candidate && $normalizeCaret(candidate);
 }
 function $getBlockFromCaret(caret) {
   if ($isChildCaret(caret)) {
@@ -36846,40 +32871,27 @@ function $getBlockFromCaret(caret) {
   return null;
 }
 function $getBlockMergeTargets(anchor, focus, seenStart) {
-  if (!anchor || !focus) {
+  const anchorParent = anchor && anchor.getParentAtCaret();
+  const focusParent = focus && focus.getParentAtCaret();
+  const common = anchorParent && focusParent && $getCommonAncestor(anchorParent, focusParent);
+  if (!common || common.type !== "branch") {
     return null;
   }
-  const anchorParent = anchor.getParentAtCaret();
-  const focusParent = focus.getParentAtCaret();
-  if (!anchorParent || !focusParent) {
-    return null;
-  }
-  const anchorElements = anchorParent.getParents().reverse();
-  anchorElements.push(anchorParent);
-  const focusElements = focusParent.getParents().reverse();
-  focusElements.push(focusParent);
-  const maxLen = Math.min(anchorElements.length, focusElements.length);
-  let commonAncestorCount;
-  for (commonAncestorCount = 0; commonAncestorCount < maxLen && anchorElements[commonAncestorCount] === focusElements[commonAncestorCount]; commonAncestorCount++) {
-  }
-  const $getBlock = (arr, predicate) => {
+  const $getBlock = (parent, selectedOnly) => {
     let block;
-    for (let i2 = commonAncestorCount; i2 < arr.length; i2++) {
-      const ancestor = arr[i2];
-      if ($isRootOrShadowRoot(ancestor)) {
+    for (let node = parent; node && !node.is(common.commonAncestor); node = node.getParent()) {
+      if ($isRootOrShadowRoot(node)) {
         return;
-      } else if (!block && predicate(ancestor)) {
-        block = ancestor;
+      }
+      if ((!selectedOnly || seenStart.has(node.__key)) && INTERNAL_$isBlock(node)) {
+        block = node;
       }
     }
     return block;
   };
-  const anchorBlock = $getBlock(anchorElements, INTERNAL_$isBlock);
-  const focusBlock = anchorBlock && $getBlock(focusElements, (node) => seenStart.has(node.getKey()) && INTERNAL_$isBlock(node));
-  if (focusBlock && $getSlotNames(focusBlock).length > 0) {
-    return null;
-  }
-  return anchorBlock && focusBlock ? [anchorBlock, focusBlock] : null;
+  const anchorBlock = $getBlock(anchorParent, false);
+  const focusBlock = anchorBlock && $getBlock(focusParent, true);
+  return anchorBlock && focusBlock && $getSlotNames(focusBlock).length === 0 ? [anchorBlock, focusBlock] : null;
 }
 function $getDeepestChildOrSelf(initialCaret) {
   let caret = initialCaret;
@@ -36917,15 +32929,11 @@ function $getCaretRangeInDirection(range, direction) {
   );
 }
 function $getChildCaretAtIndex(parent, index, direction) {
-  let caret = $getChildCaret(parent, "next");
-  for (let i2 = 0; i2 < index; i2++) {
-    const nextCaret = caret.getAdjacentCaret();
-    if (nextCaret === null) {
-      break;
-    }
-    caret = nextCaret;
-  }
-  return $getCaretInDirection(caret, direction);
+  const size = parent.getChildrenSize();
+  const offset = index > 0 ? Math.min(Math.ceil(index), size) : 0;
+  const originIndex = offset - (direction === "next" ? 1 : 0);
+  const origin = originIndex < 0 || originIndex >= size ? null : parent.getChildAtIndex(originIndex);
+  return origin === null ? $getChildCaret(parent, direction) : $getSiblingCaret(origin, direction);
 }
 function $getAdjacentSiblingOrParentSiblingCaret(startCaret, rootMode = "root") {
   let depthDiff = 0;
@@ -36941,13 +32949,6 @@ function $getAdjacentSiblingOrParentSiblingCaret(startCaret, rootMode = "root") 
     nextCaret = $getAdjacentChildCaret(caret);
   }
   return nextCaret && [nextCaret, depthDiff];
-}
-function $getAdjacentNodes(initialCaret) {
-  const siblings = [];
-  for (let caret = initialCaret.getAdjacentCaret(); caret; caret = caret.getAdjacentCaret()) {
-    siblings.push(caret.origin);
-  }
-  return siblings;
 }
 function $splitTextPointCaret(textPointCaret) {
   const {
@@ -36965,6 +32966,39 @@ function $splitTextPointCaret(textPointCaret) {
     formatDevErrorMessage2(`$splitTextPointCaret: splitText must return at least one TextNode`);
   }
   return $getCaretInDirection($getSiblingCaret(textNode, "next"), direction);
+}
+function $getTextPointCaretSliceForNode(slices, node) {
+  for (const slice of slices) {
+    if (slice !== null && slice.caret.origin.is(node)) {
+      return slice;
+    }
+  }
+}
+function $splitTextPointCaretSlice(slice, selection = null) {
+  const {
+    origin
+  } = slice.caret;
+  const [start, end] = slice.getSliceIndices();
+  if (start === end) {
+    return null;
+  }
+  if (start === 0 && end === origin.getTextContentSize()) {
+    return origin;
+  }
+  const parent = origin.getParent();
+  const index = selection && parent && $selectionTouchesElement(selection, parent) ? origin.getIndexWithinParent() : -1;
+  const points = selection ? [selection.anchor, selection.focus].map((point) => [point, point.key === origin.__key && point.type === "text" ? point.offset - start : parent !== null && point.key === parent.__key && point.offset === index ? 0 : null]) : [];
+  const splitNodes = origin.splitText(start, end);
+  const node = splitNodes[start === 0 ? 0 : 1];
+  if (parent && selection && selection !== $getSelection()) {
+    $updateElementSelectionOnCreateDeleteNode(selection, parent, index, splitNodes.length - 1);
+  }
+  for (const [point, offset] of points) {
+    if (offset !== null) {
+      point.set(node.__key, offset, "text");
+    }
+  }
+  return node;
 }
 function $alwaysSplit(_node, _edge) {
   return true;
@@ -37043,6 +33077,7 @@ var ParagraphNode = class extends ElementNode {
   /** @internal */
   $config() {
     return this.config("paragraph", {
+      children: "inline",
       extends: ElementNode,
       generated: GENERATED_PARAGRAPH,
       importDOM: {
@@ -37164,943 +33199,98 @@ function $createParagraphNode() {
 function $isParagraphNode(node) {
   return node instanceof ParagraphNode;
 }
-function createInputState() {
-  return {
-    collapsedSelectionFormat: {
-      format: 0,
-      key: "root",
-      offset: 0,
-      style: "",
-      timeStamp: 0
+var tabNodeSchema = /* @__PURE__ */ (/* @__PURE__ */ nodeSchema())({
+  // Read straight off the inherited fields — mode through the `getterTable`,
+  // since it is stored as a bitmask. All three are export-only: the values are
+  // fixed for a tab, so they are derived on import rather than applied.
+  detail: /* @__PURE__ */ withAccessors(/* @__PURE__ */ numberValue(IS_UNMERGEABLE), {
+    getter: {
+      field: "__detail"
     },
-    compositionEndData: "",
-    compositionPhase: "idle",
-    hadOrphanedCompositionEvents: false,
-    handledSelectionCommandTimeoutId: null,
-    isInsertLineBreak: false,
-    isInsertTextAfterHandledSelectionCommand: false,
-    isSelectionChangeFromDOMUpdate: false,
-    isSelectionChangeFromMouseDown: false,
-    lastBeforeInputInsertTextTimeStamp: 0,
-    lastKeyCode: null,
-    lastKeyDownTimeStamp: 0,
-    postDeleteSelectionToRestore: null,
-    selectionChangeFromDOMUpdatePoints: null,
-    unprocessedBeforeInputData: null
-  };
-}
-function defaultOnWarn(error) {
-  {
-    throw error;
-  }
-}
-var DEFAULT_SKIP_INITIALIZATION = false;
-var COMMAND_PRIORITY_EDITOR = 0;
-var COMMAND_PRIORITY_LOW = 1;
-var COMMAND_PRIORITY_NORMAL = 2;
-var COMMAND_PRIORITY_HIGH = 3;
-var COMMAND_PRIORITY_CRITICAL = 4;
-var COMMAND_PRIORITY_BEFORE_EDITOR = -8;
-var COMMAND_PRIORITY_BEFORE_LOW = -7;
-var COMMAND_PRIORITY_BEFORE_NORMAL = -6;
-var COMMAND_PRIORITY_BEFORE_HIGH = -5;
-var COMMAND_PRIORITY_BEFORE_CRITICAL = -4;
-function normalizePriority(priority) {
-  return priority & 7;
-}
-function resetEditor(editor, prevRootElement, nextRootElement, pendingEditorState, options) {
-  const keyNodeMap = editor._keyToDOMMap;
-  keyNodeMap.clear();
-  editor._editorState = createEmptyEditorState();
-  editor._pendingEditorState = pendingEditorState;
-  editor._compositionKey = null;
-  editor._dirtyType = NO_DIRTY_NODES;
-  editor._cloneNotNeeded.clear();
-  editor._dirtyLeaves = /* @__PURE__ */ new Set();
-  editor._dirtyElements.clear();
-  editor._normalizedNodes = /* @__PURE__ */ new Set();
-  if (!options || !options.preserveUpdateQueue) {
-    editor._updateTags = /* @__PURE__ */ new Set();
-    editor._updates = [];
-    editor._cascadeCount = 0;
-  }
-  editor._blockCursorElement = null;
-  if (editor._inputState.handledSelectionCommandTimeoutId !== null) {
-    clearTimeout(editor._inputState.handledSelectionCommandTimeoutId);
-  }
-  editor._inputState = createInputState();
-  const observer = editor._observer;
-  if (observer !== null) {
-    observer.disconnect();
-    editor._observer = null;
-  }
-  if (prevRootElement !== null) {
-    prevRootElement.textContent = "";
-    clearNodeKeyOnDOMNode(prevRootElement, editor);
-  }
-  if (nextRootElement !== null) {
-    nextRootElement.textContent = "";
-    keyNodeMap.set("root", nextRootElement);
-    setNodeKeyOnDOMNode(nextRootElement, editor, "root");
-  }
-}
-function initializeConversionCache(nodes, additionalConversions) {
-  const conversionCache = /* @__PURE__ */ new Map();
-  const handledConversions = /* @__PURE__ */ new Set();
-  const addConversionsToCache = (map) => {
-    Object.keys(map).forEach((key) => {
-      let currentCache = conversionCache.get(key);
-      if (currentCache === void 0) {
-        currentCache = [];
-        conversionCache.set(key, currentCache);
+    setter: null
+  }),
+  mode: /* @__PURE__ */ withAccessors(/* @__PURE__ */ enumValue(["normal"]), {
+    getter: {
+      field: "__mode",
+      // Only the mode a tab can hold, rather than TextNode's whole table: that
+      // one also maps the token and segmented bits, which this schema does not
+      // serialize, and a `getterTable`'s values are held to the schema's domain.
+      getterTable: {
+        0: "normal"
       }
-      currentCache.push(map[key]);
-    });
-  };
-  nodes.forEach((node) => {
-    const importDOM = node.klass.importDOM;
-    if (importDOM == null || handledConversions.has(importDOM)) {
-      return;
-    }
-    handledConversions.add(importDOM);
-    const map = importDOM.call(node.klass);
-    if (map !== null) {
-      addConversionsToCache(map);
-    }
-  });
-  if (additionalConversions) {
-    addConversionsToCache(additionalConversions);
-  }
-  return conversionCache;
-}
-function getTransformSetFromKlass(klass) {
-  const transforms = /* @__PURE__ */ new Set();
-  const staticTransforms = /* @__PURE__ */ new Set();
-  for (const {
-    klass: currentKlass,
-    ownNodeConfig
-  } of iterStaticNodeConfigChain(klass)) {
-    const staticTransform = currentKlass.transform;
-    if (!staticTransforms.has(staticTransform)) {
-      staticTransforms.add(staticTransform);
-      const transform = currentKlass.transform();
-      if (transform) {
-        transforms.add(transform);
-      }
-    }
-    if (ownNodeConfig) {
-      const $transform = ownNodeConfig.$transform;
-      if ($transform) {
-        transforms.add($transform);
-      }
-    }
-  }
-  return transforms;
-}
-var DEFAULT_EDITOR_DOM_CONFIG = {
-  $createDOM: (node, editor) => node.createDOM(editor._config, editor),
-  $decorateDOM: (_node, _prevNode, _dom, _editor) => {
-  },
-  $exportDOM: (node, editor) => {
-    const registeredNode = getRegisteredNode(editor, node.getType());
-    return registeredNode && registeredNode.exportDOM !== void 0 ? registeredNode.exportDOM(editor, node) : node.exportDOM(editor);
-  },
-  $extractWithChild: (node, childNode, selection, destination, _editor) => $isElementNode(node) && node.extractWithChild(childNode, selection, destination),
-  $getDOMSlot: (node, dom, _editor) => node.getDOMSlot(dom),
-  $getSlotTargetElement: (_node, _slotName, _hostDom, _editor) => null,
-  $shouldExclude: (node, _selection, _editor) => $isElementNode(node) && node.excludeFromCopy("html"),
-  $shouldInclude: (node, selection, _editor) => selection ? node.isSelected(selection) : true,
-  $updateDOM: (nextNode, prevNode, dom, editor) => nextNode.updateDOM(prevNode, dom, editor._config)
-};
-function createEditor(editorConfig) {
-  const config = editorConfig || {};
-  const activeEditor2 = internalGetActiveEditor();
-  const theme = config.theme || {};
-  const parentEditor = editorConfig === void 0 ? activeEditor2 : config.parentEditor || null;
-  const disableEvents = config.disableEvents || false;
-  const editorState = createEmptyEditorState();
-  const namespace = config.namespace || (parentEditor !== null ? parentEditor._config.namespace : createUID());
-  const initialEditorState = config.editorState;
-  const nodes = [RootNode, TextNode, LineBreakNode, TabNode, ParagraphNode, ArtificialNode__DO_NOT_USE, ...config.nodes || []];
-  const {
-    onError,
-    onWarn,
-    html
-  } = config;
-  const isEditable = config.editable !== void 0 ? config.editable : true;
-  let registeredNodes;
-  if (editorConfig === void 0 && activeEditor2 !== null) {
-    registeredNodes = activeEditor2._nodes;
-  } else {
-    registeredNodes = /* @__PURE__ */ new Map();
-    for (let i2 = 0; i2 < nodes.length; i2++) {
-      let klass = nodes[i2];
-      let replace = null;
-      let replaceWithKlass = null;
-      if (klass && typeof klass === "object") {
-        const options = klass;
-        klass = options.replace;
-        replace = options.with;
-        replaceWithKlass = options.withKlass || null;
-      }
-      if (typeof klass !== "function" || !klass.prototype || !(klass === LexicalNode || klass.prototype instanceof LexicalNode)) {
-        let version = "<unknown>";
-        try {
-          version = JSON.parse(LEXICAL_VERSION);
-        } catch (_unused) {
-        }
-        {
-          formatDevErrorMessage2(`createEditor: nodes[${String(i2 - nodes.length + (config.nodes ? config.nodes.length : 0))}] ${typeof klass === "function" ? `${klass.name}${typeof klass.getType === "function" ? ` (type ${String(klass.getType())})` : ""}` : String(klass)} is not a constructor that subclasses LexicalNode from the lexical package used by this editor (${String(version)})`);
-        }
-      }
-      void getStaticNodeConfig(klass);
-      {
-        const name = klass.name;
-        const nodeType = hasOwnStaticMethod(klass, "getType") && klass.getType();
-        if (replaceWithKlass) {
-          if (!(replaceWithKlass.prototype instanceof klass)) {
-            formatDevErrorMessage2(`${replaceWithKlass.name} doesn't extend the ${name}`);
-          }
-        } else if (replace) {
-          console.warn(`Override for ${name} specifies 'replace' without 'withKlass'. 'withKlass' will be required in a future version.`);
-        }
-        if (name !== "RootNode" && nodeType !== "root" && nodeType !== "artificial" && // This is mostly for the unit test suite which
-        // uses LexicalNode in an otherwise incorrect way
-        // by mocking its static getType
-        klass !== LexicalNode) {
-          ["getType", "clone"].forEach((method) => {
-            if (!hasOwnStaticMethod(klass, method)) {
-              console.warn(`${name} must implement static "${method}" method`);
-            }
-          });
-          if (!hasOwnStaticMethod(klass, "importJSON")) {
-            console.warn(`${name} should implement "importJSON" method to ensure JSON and default HTML serialization works as expected`);
-          }
-        }
-      }
-      const type = klass.getType();
-      const transforms = getTransformSetFromKlass(klass);
-      registeredNodes.set(type, {
-        exportDOM: html && html.export ? html.export.get(klass) : void 0,
-        klass,
-        replace,
-        replaceWithKlass,
-        sharedNodeState: createSharedNodeState(nodes[i2]),
-        transforms
-      });
-    }
-  }
-  const editor = new LexicalEditor(editorState, parentEditor, registeredNodes, {
-    disableEvents,
-    dom: {
-      ...DEFAULT_EDITOR_DOM_CONFIG,
-      ...editorConfig && editorConfig.dom
     },
-    namespace,
-    theme
-  }, onError ? onError : console.error, onWarn ? onWarn : defaultOnWarn, initializeConversionCache(registeredNodes, html ? html.import : void 0), isEditable, editorConfig);
-  if (initialEditorState !== void 0) {
-    editor._pendingEditorState = initialEditorState;
-    editor._dirtyType = FULL_RECONCILE;
-  }
-  registerDefaultCommandHandlers(editor);
-  return editor;
-}
-function triggerListener(listenerMap, listener, args) {
-  const unregister = listenerMap.get(listener);
-  if (unregister) {
-    unregister();
-  }
-  listenerMap.set(listener, listener(...args) || void 0);
-}
-function unregisterListener(listenerMap, listener) {
-  const unregister = listenerMap.get(listener);
-  listenerMap.delete(listener);
-  if (unregister) {
-    unregister();
-  }
-}
-function registerListener(listenerMap, listener, unregister) {
-  listenerMap.set(listener, unregister);
-  return unregisterListener.bind(null, listenerMap, listener);
-}
-var LexicalEditor = class {
-  /** @internal */
-  /** The version with build identifiers for this editor (since 0.17.1) */
-  static version = LEXICAL_VERSION;
-  /** @internal */
-  _headless;
-  /** @internal */
-  _parentEditor;
-  /** @internal */
-  _rootElement;
-  /** @internal */
-  _editorState;
-  /** @internal */
-  _pendingEditorState;
-  /** @internal */
-  _compositionKey;
-  /** @internal */
-  _deferred;
-  /** @internal */
-  _keyToDOMMap;
-  /** @internal */
-  _updates;
-  /** @internal */
-  _updating;
-  /** @internal */
-  _cascadeCount;
-  /** @internal */
-  _listeners;
-  /** @internal */
-  _commands;
-  /** @internal */
-  _nodes;
-  /** @internal */
-  _decorators;
-  /** @internal */
-  _pendingDecorators;
-  /** @internal */
-  _config;
-  /** @internal */
-  _dirtyType;
-  /** @internal */
-  _cloneNotNeeded;
-  /** @internal */
-  _dirtyLeaves;
-  /** @internal */
-  _dirtyElements;
-  /** @internal */
-  _normalizedNodes;
-  /** @internal */
-  _updateTags;
-  /** @internal */
-  _observer;
-  /** @internal */
-  _key;
-  /** @internal */
-  _onError;
-  /** @internal */
-  _onWarn;
-  /** @internal */
-  _htmlConversions;
-  /** @internal */
-  _window;
-  /** @internal */
-  _editable;
-  /** @internal */
-  _blockCursorElement;
-  /**
-   * @internal @experimental
-   *
-   * Latches to `true` the first time {@link $setSlot} runs in this
-   * editor. Gates the commit-time slot-containment clamp so editors that never
-   * use slots skip the per-update frame walk entirely. The latch persists for
-   * the lifetime of the editor instance — `resetEditor` and `setEditorState`
-   * do not clear it, so an editor that once used slots keeps paying the clamp
-   * cost even after switching to a slot-free state.
-   */
-  _slotsUsed;
-  /** @internal */
-  _keyDownShortcuts;
-  /** @internal */
-  _inputState;
-  /** @internal */
-  _createEditorArgs;
-  /** @internal */
-  constructor(editorState, parentEditor, nodes, config, onError, onWarn, htmlConversions, editable, createEditorArgs) {
-    this._createEditorArgs = createEditorArgs;
-    this._parentEditor = parentEditor;
-    this._rootElement = null;
-    this._editorState = editorState;
-    this._pendingEditorState = null;
-    this._compositionKey = null;
-    this._deferred = [];
-    this._keyToDOMMap = new GenMap();
-    this._updates = [];
-    this._updating = false;
-    this._cascadeCount = 0;
-    this._listeners = {
-      decorator: /* @__PURE__ */ new Map(),
-      editable: /* @__PURE__ */ new Map(),
-      mutation: /* @__PURE__ */ new Map(),
-      root: /* @__PURE__ */ new Map(),
-      textcontent: /* @__PURE__ */ new Map(),
-      update: /* @__PURE__ */ new Map()
-    };
-    this._commands = /* @__PURE__ */ new Map();
-    this._config = config;
-    this._nodes = nodes;
-    this._decorators = {};
-    this._pendingDecorators = null;
-    this._dirtyType = NO_DIRTY_NODES;
-    this._cloneNotNeeded = /* @__PURE__ */ new Set();
-    this._dirtyLeaves = /* @__PURE__ */ new Set();
-    this._dirtyElements = /* @__PURE__ */ new Map();
-    this._normalizedNodes = /* @__PURE__ */ new Set();
-    this._updateTags = /* @__PURE__ */ new Set();
-    this._observer = null;
-    this._key = createUID();
-    this._onError = onError;
-    this._onWarn = onWarn;
-    this._htmlConversions = htmlConversions;
-    this._editable = editable;
-    this._headless = parentEditor !== null && parentEditor._headless;
-    this._window = null;
-    this._blockCursorElement = null;
-    this._slotsUsed = false;
-    this._keyDownShortcuts = null;
-    this._inputState = createInputState();
-  }
-  /**
-   *
-   * @returns true if the editor is currently in "composition" mode due to receiving input
-   * through an IME, or 3P extension, for example. Returns false otherwise.
-   */
-  isComposing() {
-    return this._compositionKey != null;
-  }
-  /**
-   * Registers a listener for Editor update event. Will trigger the provided callback
-   * each time the editor goes through an update (via {@link LexicalEditor.update}) until the
-   * teardown function is called.
-   *
-   * @returns a teardown function that can be used to cleanup the listener.
-   */
-  registerUpdateListener(listener) {
-    return registerListener(this._listeners.update, listener);
-  }
-  /**
-   * Registers a listener for when the editor changes between editable and non-editable states.
-   * Will trigger the provided callback each time the editor transitions between these states until the
-   * teardown function is called.
-   *
-   * If the listener returns a function, that function will be called before the next transition or
-   * teardown.
-   *
-   * @returns a teardown function that can be used to cleanup the listener.
-   */
-  registerEditableListener(listener) {
-    return registerListener(this._listeners.editable, listener);
-  }
-  /**
-   * Registers a listener for when the editor's decorator object changes. The decorator object contains
-   * all DecoratorNode keys -> their decorated value. This is primarily used with external UI frameworks.
-   *
-   * Will trigger the provided callback each time the editor transitions between these states until the
-   * teardown function is called.
-   *
-   * @returns a teardown function that can be used to cleanup the listener.
-   */
-  registerDecoratorListener(listener) {
-    return registerListener(this._listeners.decorator, listener);
-  }
-  /**
-   * Registers a listener for when Lexical commits an update to the DOM and the text content of
-   * the editor changes from the previous state of the editor. If the text content is the
-   * same between updates, no notifications to the listeners will happen.
-   *
-   * Will trigger the provided callback each time the editor transitions between these states until the
-   * teardown function is called.
-   *
-   * @returns a teardown function that can be used to cleanup the listener.
-   */
-  registerTextContentListener(listener) {
-    return registerListener(this._listeners.textcontent, listener);
-  }
-  /**
-   * Registers a listener for when the editor's root DOM element (the content editable
-   * Lexical attaches to) changes. This is primarily used to attach event listeners to the root
-   *  element. The root listener function is executed directly upon registration and then on
-   * any subsequent update.
-   *
-   * Will trigger the provided callback each time the editor transitions between these states until the
-   * teardown function is called.
-   *
-   * If the listener returns a function, that function will be called before the next transition or
-   * teardown.
-   *
-   * @returns a teardown function that can be used to cleanup the listener.
-   */
-  registerRootListener(listener) {
-    const listenerMap = this._listeners.root;
-    return mergeRegister(registerListener(listenerMap, listener, listener(this._rootElement, null) || void 0), () => triggerListener(listenerMap, listener, [null, this._rootElement]));
-  }
-  /**
-   * Registers a listener that will trigger anytime the provided command
-   * is dispatched with {@link LexicalEditor.dispatch}, subject to priority.
-   * Listeners that run at a higher priority can "intercept" commands and
-   * prevent them from propagating to other handlers by returning true.
-   *
-   * Listeners are always invoked in an {@link LexicalEditor.update} and can
-   * call dollar functions.
-   *
-   * Listeners registered at the same priority level will run
-   * deterministically in the order of registration.
-   *
-   * @param command - the command that will trigger the callback.
-   * @param listener - the function that will execute when the command is dispatched.
-   * @param priority - the relative priority of the listener. 0 | 1 | 2 | 3 | 4
-   *   (or {@link COMMAND_PRIORITY_EDITOR} |
-   *     {@link COMMAND_PRIORITY_LOW} |
-   *     {@link COMMAND_PRIORITY_NORMAL} |
-   *     {@link COMMAND_PRIORITY_HIGH} |
-   *     {@link COMMAND_PRIORITY_CRITICAL})
-   * @returns a teardown function that can be used to cleanup the listener.
-   */
-  registerCommand(command, listener, priority) {
-    if (priority === void 0) {
-      {
-        formatDevErrorMessage2(`Listener for type "command" requires a "priority".`);
-      }
-    }
-    const commandsMap = this._commands;
-    if (!commandsMap.has(command)) {
-      commandsMap.set(command, [new DequeSet(), new DequeSet(), new DequeSet(), new DequeSet(), new DequeSet()]);
-    }
-    const listenersInPriorityOrder = commandsMap.get(command);
-    if (listenersInPriorityOrder === void 0) {
-      {
-        formatDevErrorMessage2(`registerCommand: Command ${String(command)} not found in command map`);
-      }
-    }
-    const normalizedPriority = normalizePriority(priority);
-    const listeners = listenersInPriorityOrder[normalizedPriority];
-    if (normalizedPriority !== priority) {
-      listeners.addFront(listener);
-    } else {
-      listeners.addBack(listener);
-    }
-    return () => {
-      listeners.delete(listener);
-      if (listenersInPriorityOrder.every((listenersSet) => listenersSet.size === 0)) {
-        commandsMap.delete(command);
-      }
-    };
-  }
-  /**
-   * Registers a listener that will run when a Lexical node of the provided class is
-   * mutated. The listener will receive a list of nodes along with the type of mutation
-   * that was performed on each: created, destroyed, or updated.
-   *
-   * One common use case for this is to attach DOM event listeners to the underlying DOM nodes as Lexical nodes are created.
-   * {@link LexicalEditor.getElementByKey} can be used for this.
-   *
-   * If any existing nodes are in the DOM, and skipInitialization is not true, the listener
-   * will be called immediately with an updateTag of 'registerMutationListener' where all
-   * nodes have the 'created' NodeMutation. This can be controlled with the skipInitialization option
-   * (whose default was previously true for backwards compatibility with &lt;=0.16.1 but has been changed to false as of 0.21.0).
-   *
-   * @param klass - The class of the node that you want to listen to mutations on.
-   * @param listener - The logic you want to run when the node is mutated.
-   * @param options - see {@link MutationListenerOptions}
-   * @returns a teardown function that can be used to cleanup the listener.
-   */
-  registerMutationListener(klass, listener, options) {
-    const klassToMutate = this.resolveRegisteredNodeAfterReplacements(this.getRegisteredNode(klass)).klass;
-    const mutations = this._listeners.mutation;
-    let klassSet = mutations.get(listener);
-    if (klassSet === void 0) {
-      klassSet = /* @__PURE__ */ new Set();
-      mutations.set(listener, klassSet);
-    }
-    klassSet.add(klassToMutate);
-    const skipInitialization = options && options.skipInitialization;
-    if (!(skipInitialization === void 0 ? DEFAULT_SKIP_INITIALIZATION : skipInitialization)) {
-      this.initializeMutationListener(listener, klassToMutate);
-    }
-    return () => {
-      klassSet.delete(klassToMutate);
-      if (klassSet.size === 0) {
-        mutations.delete(listener);
-      }
-    };
-  }
-  /** @internal */
-  getRegisteredNode(klass) {
-    const registeredNode = this._nodes.get(klass.getType());
-    if (registeredNode === void 0) {
-      {
-        formatDevErrorMessage2(`Node ${klass.name} has not been registered. Ensure node has been passed to createEditor.`);
-      }
-    }
-    return registeredNode;
-  }
-  /** @internal */
-  resolveRegisteredNodeAfterReplacements(registeredNode) {
-    while (registeredNode.replaceWithKlass) {
-      registeredNode = this.getRegisteredNode(registeredNode.replaceWithKlass);
-    }
-    return registeredNode;
-  }
-  /** @internal */
-  initializeMutationListener(listener, klass) {
-    const prevEditorState = this._editorState;
-    const nodeMap = getCachedTypeToNodeMap(prevEditorState).get(klass.getType());
-    if (!nodeMap) {
-      return;
-    }
-    const nodeMutationMap = /* @__PURE__ */ new Map();
-    for (const k of nodeMap.keys()) {
-      nodeMutationMap.set(k, "created");
-    }
-    if (nodeMutationMap.size > 0) {
-      listener(nodeMutationMap, {
-        dirtyLeaves: /* @__PURE__ */ new Set(),
-        prevEditorState,
-        updateTags: /* @__PURE__ */ new Set(["registerMutationListener"])
-      });
-    }
-  }
-  /** @internal */
-  registerNodeTransformToKlass(klass, listener) {
-    const registeredNode = this.getRegisteredNode(klass);
-    registeredNode.transforms.add(listener);
-    return registeredNode;
-  }
-  /**
-   * Registers a listener that will run when a Lexical node of the provided class is
-   * marked dirty during an update. The listener will continue to run as long as the node
-   * is marked dirty. There are no guarantees around the order of transform execution!
-   *
-   * Watch out for infinite loops. See [Node Transforms](https://lexical.dev/docs/concepts/transforms)
-   * @param klass - The class of the node that you want to run transforms on.
-   * @param listener - The logic you want to run when the node is updated.
-   * @returns a teardown function that can be used to cleanup the listener.
-   */
-  registerNodeTransform(klass, listener) {
-    const registeredNode = this.registerNodeTransformToKlass(klass, listener);
-    const registeredNodes = [registeredNode];
-    const replaceWithKlass = registeredNode.replaceWithKlass;
-    if (replaceWithKlass != null) {
-      const registeredReplaceWithNode = this.registerNodeTransformToKlass(replaceWithKlass, listener);
-      registeredNodes.push(registeredReplaceWithNode);
-    }
-    markNodesWithTypesAsDirty(this, registeredNodes.map((node) => node.klass.getType()));
-    return () => {
-      registeredNodes.forEach((node) => node.transforms.delete(listener));
-    };
-  }
-  /**
-   * Used to assert that a certain node is registered, usually by plugins to ensure nodes that they
-   * depend on have been registered.
-   * @returns True if the editor has registered the provided node type, false otherwise.
-   */
-  hasNode(node) {
-    return this._nodes.has(node.getType());
-  }
-  /**
-   * Used to assert that certain nodes are registered, usually by plugins to ensure nodes that they
-   * depend on have been registered.
-   * @returns True if the editor has registered all of the provided node types, false otherwise.
-   */
-  hasNodes(nodes) {
-    return nodes.every(this.hasNode.bind(this));
-  }
-  /**
-   * Dispatches a command of the specified type with the specified payload.
-   * This triggers all command listeners (set by {@link LexicalEditor.registerCommand})
-   * for this type, passing them the provided payload. The command listeners
-   * will be triggered in an implicit {@link LexicalEditor.update}, unless
-   * this was invoked from inside an update in which case that update context
-   * will be re-used (as if this was a dollar function itself).
-   * @param type - the type of command listeners to trigger.
-   * @param payload - the data to pass as an argument to the command listeners.
-   */
-  dispatchCommand(type, ...args) {
-    return dispatchCommand(this, type, ...args);
-  }
-  /**
-   * Gets a map of all decorators in the editor.
-   * @returns A mapping of call decorator keys to their decorated content
-   */
-  getDecorators() {
-    return this._decorators;
-  }
-  /**
-   *
-   * @returns the current root element of the editor. If you want to register
-   * an event listener, do it via {@link LexicalEditor.registerRootListener}, since
-   * this reference may not be stable.
-   */
-  getRootElement() {
-    return this._rootElement;
-  }
-  /**
-   * Gets the key of the editor
-   * @returns The editor key
-   */
-  getKey() {
-    return this._key;
-  }
-  /**
-   * Imperatively set the root contenteditable element that Lexical listens
-   * for events on.
-   */
-  setRootElement(nextRootElement) {
-    const prevRootElement = this._rootElement;
-    if (nextRootElement !== prevRootElement) {
-      const classNames = getCachedClassNameArray(this._config.theme, "root");
-      const pendingEditorState = this._pendingEditorState || this._editorState;
-      this._rootElement = nextRootElement;
-      resetEditor(this, prevRootElement, nextRootElement, pendingEditorState, {
-        preserveUpdateQueue: true
-      });
-      if (prevRootElement !== null) {
-        if (!this._config.disableEvents) {
-          removeRootElementEvents(prevRootElement);
-        }
-        if (classNames != null) {
-          prevRootElement.classList.remove(...classNames);
-        }
-      }
-      if (nextRootElement !== null) {
-        const windowObj = getDefaultView(nextRootElement);
-        const style = nextRootElement.style;
-        style.userSelect = "text";
-        style.whiteSpace = "pre-wrap";
-        style.wordBreak = "break-word";
-        nextRootElement.setAttribute("data-lexical-editor", "true");
-        this._window = windowObj;
-        this._dirtyType = FULL_RECONCILE;
-        initMutationObserver(this);
-        this._updateTags.add(HISTORY_MERGE_TAG);
-        $commitPendingUpdates(this);
-        if (!this._config.disableEvents) {
-          addRootElementEvents(nextRootElement, this);
-        }
-        if (classNames != null) {
-          nextRootElement.classList.add(...classNames);
-        }
-        {
-          const nextRootElementParent = getParentElement(nextRootElement);
-          if (nextRootElementParent != null && ["flex", "inline-flex"].includes(getComputedStyle(nextRootElementParent).display)) {
-            console.warn(`When using "display: flex" or "display: inline-flex" on an element containing content editable, Chrome may have unwanted focusing behavior when clicking outside of it. Consider wrapping the content editable within a non-flex element.`);
-          }
-        }
-      } else {
-        this._window = null;
-        this._updateTags.add(HISTORY_MERGE_TAG);
-        $commitPendingUpdates(this);
-      }
-      triggerListeners("root", this, false, nextRootElement, prevRootElement);
-    }
-  }
-  /**
-   * Gets the underlying HTMLElement associated with the LexicalNode for the given key.
-   * @returns the HTMLElement rendered by the LexicalNode associated with the key.
-   * @param key - the key of the LexicalNode.
-   */
-  getElementByKey(key) {
-    return this._keyToDOMMap.get(key) || null;
-  }
-  /**
-   * Gets the active editor state.
-   * @returns The editor state
-   */
-  getEditorState() {
-    return this._editorState;
-  }
-  /**
-   * Imperatively set the EditorState. Triggers reconciliation like an update.
-   * @param editorState - the state to set the editor
-   * @param options - options for the update.
-   */
-  setEditorState(editorState, options) {
-    if (editorState.isEmpty()) {
-      {
-        formatDevErrorMessage2(`setEditorState: the editor state is empty. Ensure the editor state's root node never becomes empty.`);
-      }
-    }
-    let writableEditorState = editorState;
-    if (writableEditorState._readOnly) {
-      writableEditorState = cloneEditorState(editorState);
-      writableEditorState._selection = editorState._selection ? editorState._selection.clone() : null;
-    }
-    flushRootMutations(this);
-    const pendingEditorState = this._pendingEditorState;
-    const tag = options !== void 0 ? options.tag : null;
-    if (pendingEditorState !== null && !pendingEditorState.isEmpty()) {
-      if (tag != null) {
-        this._updateTags.add(tag);
-      }
-      $commitPendingUpdates(this);
-    }
-    this._pendingEditorState = writableEditorState;
-    this._dirtyType = FULL_RECONCILE;
-    this._dirtyElements.set("root", false);
-    this._compositionKey = null;
-    this._slotsUsed = this._slotsUsed || editorState._slotsUsed;
-    updateEditorSync(this, () => {
-      if (tag) {
-        this._updateTags.add(tag);
-      }
-      if (editorState._parsed) {
-        for (const [key, node] of writableEditorState._nodeMap.entries()) {
-          if ($isElementNode(node)) {
-            this._dirtyElements.set(key, true);
-          } else {
-            this._dirtyLeaves.add(key);
-          }
-        }
-      }
-    }, {
-      discrete: this._updating ? void 0 : true
+    setter: null
+  }),
+  text: /* @__PURE__ */ withAccessors(/* @__PURE__ */ stringValue("	"), {
+    getter: {
+      field: "__text",
+      method: "getTextContent"
+    },
+    setter: null
+  })
+});
+var TabNode = class extends TextNode {
+  $config() {
+    return this.config("tab", {
+      extends: TextNode,
+      generated: GENERATED_TAB,
+      json: tabNodeSchema
     });
   }
-  /**
-   * Parses a SerializedEditorState (usually produced by {@link EditorState.toJSON}) and returns
-   * and EditorState object that can be, for example, passed to {@link LexicalEditor.setEditorState}. Typically,
-   * deserialization from JSON stored in a database uses this method.
-   *
-   * Either form is accepted: parsing restores what a compact document omitted,
-   * which is the whole reason it may omit it, so
-   * {@link CompactSerializedEditorState} — what `toJSON(true)` returns — goes
-   * back in without a cast. So does a document assembled from serialized nodes
-   * ({@link ParsableSerializedEditorState}), such as `@lexical/clipboard`'s.
-   * @param maybeStringifiedEditorState
-   * @param updateFn
-   * @returns
-   */
-  parseEditorState(maybeStringifiedEditorState, updateFn) {
-    const serializedEditorState = typeof maybeStringifiedEditorState === "string" ? JSON.parse(maybeStringifiedEditorState) : maybeStringifiedEditorState;
-    return parseEditorState(serializedEditorState, this, updateFn);
+  // `key` carries an explicit `undefined` default (rather than the usual `?`)
+  // so the constructor reports zero required arguments, which lets `$config`
+  // synthesize the static `clone` by invoking the no-argument constructor.
+  constructor(key = void 0) {
+    super("	", key);
+    this.__detail = IS_UNMERGEABLE;
   }
-  /**
-   * Executes a read of the editor's state, with the
-   * editor context available (useful for exporting and read-only DOM
-   * operations). Much like update, but prevents any mutation of the
-   * editor's state.
-   *
-   * When called with a single argument the `mode` defaults to
-   * `'force-commit'`, which flushes any pending updates immediately before the
-   * read so it always observes a fully committed and reconciled state. See
-   * {@link EditorReadMode} for the behavior of the other modes (`'pending'`
-   * and `'latest'`).
-   * @param callbackFn - A function that has access to read-only editor state.
-   */
-  /**
-   * Executes a read of the editor's state in the given `mode`, with the editor
-   * context available. See {@link EditorReadMode} for the available modes.
-   * @param mode - Which editor state to read and whether to flush first.
-   * @param callbackFn - A function that has access to read-only editor state.
-   */
-  read(...args) {
-    const [mode, callbackFn] = args.length === 1 ? ["force-commit", args[0]] : args;
-    if (mode === "force-commit") {
-      $commitPendingUpdates(this);
+  createDOM(config) {
+    const dom = super.createDOM(config);
+    const classNames = getCachedClassNameArray(config.theme, "tab");
+    if (classNames !== void 0) {
+      const domClassList = dom.classList;
+      domClassList.add(...classNames);
     }
-    const editorState = mode === "pending" ? this._pendingEditorState || this._editorState : this.getEditorState();
-    return editorState.read(callbackFn, {
-      editor: this
-    });
+    return dom;
   }
   /**
-   * Executes an update to the editor state. The updateFn callback is the ONLY place
-   * where Lexical editor state can be safely mutated.
-   * @param updateFn - A function that has access to writable editor state.
-   * @param options - A bag of options to control the behavior of the update.
+   * Always normalizes the stored content to `'\t'` regardless of input — see
+   * comment below for the rationale.
    */
-  update(updateFn, options) {
-    updateEditor(this, updateFn, options);
+  setTextContent(_text) {
+    return super.setTextContent("	");
   }
-  /**
-   * Focuses the editor by marking the existing selection as dirty, or by
-   * creating a new selection at `defaultSelection` if one does not already
-   * exist. If you want to force a specific selection, you should call
-   * `root.selectStart()` or `root.selectEnd()` in an update.
-   *
-   * @param callbackFn - A function to run after the editor is focused.
-   * @param options - A bag of options
-   */
-  focus(callbackFn, options = {}) {
-    const rootElement = this._rootElement;
-    if (rootElement !== null) {
-      rootElement.setAttribute("autocapitalize", "off");
-      updateEditorSync(this, () => {
-        const selection = $getSelection();
-        const root = $getRoot();
-        if (selection !== null) {
-          if (!selection.dirty) {
-            $setSelection(selection.clone());
-          }
-        } else if (root.getChildrenSize() !== 0) {
-          if (options.defaultSelection === "rootStart") {
-            root.selectStart();
-          } else {
-            root.selectEnd();
-          }
-        }
-        $addUpdateTag(FOCUS_TAG);
-        $onUpdate(() => {
-          rootElement.removeAttribute("autocapitalize");
-          if (callbackFn) {
-            callbackFn();
-          }
-        });
-      });
-      if (this._pendingEditorState === null) {
-        rootElement.removeAttribute("autocapitalize");
-      }
+  spliceText(offset, delCount, newText, moveSelection) {
+    if (!(newText === "" && delCount === 0 || newText === "	" && delCount === 1)) {
+      formatDevErrorMessage2(`TabNode does not support spliceText`);
     }
+    return this;
   }
-  /**
-   * Removes focus from the editor.
-   */
-  blur() {
-    const rootElement = this._rootElement;
-    if (rootElement !== null) {
-      rootElement.blur();
+  setDetail(detail) {
+    if (!(detail === IS_UNMERGEABLE)) {
+      formatDevErrorMessage2(`TabNode does not support setDetail`);
     }
-    const domSelection = getDOMSelection(this._window);
-    if (domSelection !== null) {
-      domSelection.removeAllRanges();
+    return this;
+  }
+  setMode(type) {
+    if (!(type === "normal")) {
+      formatDevErrorMessage2(`TabNode does not support setMode`);
     }
+    return this;
   }
-  /**
-   * Returns true if the editor is editable, false otherwise.
-   * @returns True if the editor is editable, false otherwise.
-   */
-  isEditable() {
-    return this._editable;
+  canInsertTextBefore() {
+    return false;
   }
-  /**
-   * Sets the editable property of the editor. When false, the
-   * editor will not listen for user events on the underling contenteditable.
-   * @param editable - the value to set the editable mode to.
-   */
-  setEditable(editable) {
-    if (this._editable !== editable) {
-      this._editable = editable;
-      triggerListeners("editable", this, true, editable);
-      if (this._slotsUsed) {
-        this.update(() => $fullReconcile());
-      }
-    }
-  }
-  /**
-   * Returns a JSON-serializable javascript object NOT a JSON string.
-   * You still must call JSON.stringify (or something else) to turn the
-   * state into a string you can transfer over the wire and store in a database.
-   *
-   * See {@link LexicalNode.exportJSON}
-   *
-   * This editor's serialized state, in whichever form the export around it is
-   * writing — which is how a nested editor (an image caption) stays in the
-   * same form as the document containing it.
-   *
-   * The form is passed on explicitly rather than picked up by the call below:
-   * `EditorState.toJSON()` with no argument always writes the legacy form, so
-   * that its return type is true of what it returns.
-   *
-   * @returns A JSON-serializable javascript object
-   */
-  toJSON() {
-    return {
-      editorState: this._editorState.toJSON($isCompactExport())
-    };
+  canInsertTextAfter() {
+    return false;
   }
 };
+function $createTabNode() {
+  return $applyNodeReplacement(new TabNode());
+}
+function $isTabNode(node) {
+  return node instanceof TabNode;
+}
 var pendingNodeToClone = null;
 function setPendingNodeToClone(pendingNode) {
   pendingNodeToClone = pendingNode;
@@ -38147,6 +33337,10 @@ function $isSelectionCapturedInDecoratorInput(anchorDOM, preResolvedActiveElemen
   const nearestNode = $getNearestNodeFromDOMNode(activeElement);
   const nodeName = activeElement.nodeName;
   return $isLexicalNode(nearestNode) && (nodeName === "INPUT" || nodeName === "TEXTAREA" || activeElement.contentEditable === "true" && getEditorPropertyFromDOMNode(activeElement) == null);
+}
+function $isEventFromEmbeddedInput(event) {
+  const target = event === null ? null : getComposedEventTarget(event);
+  return isDOMNode(target) && $isSelectionCapturedInDecoratorInput(target);
 }
 var isSelectionCapturedInDecoratorInput = $isSelectionCapturedInDecoratorInput;
 function isSelectionWithinEditor(editor, anchorDOM, focusDOM) {
@@ -38257,7 +33451,7 @@ function $setNodeKey(node, existingKey) {
   } else {
     editor._dirtyLeaves.add(key);
   }
-  editor._cloneNotNeeded.add(key);
+  editor._cloneNotNeeded.set(key, node);
   if (editor._dirtyType === NO_DIRTY_NODES) {
     editor._dirtyType = HAS_DIRTY_NODES;
   }
@@ -38305,36 +33499,7 @@ function $markSlotsUsed() {
   getActiveEditorState()._slotsUsed = true;
 }
 function $removeFromParent(node) {
-  if (!($getSlotHostKey(node) === null)) {
-    formatDevErrorMessage2(`$removeFromParent: node ${node.__key} is slotted into host ${String($getSlotHostKey(node))}; a slotted node and a child are mutually exclusive. Remove it from its slot first.`);
-  }
-  const oldParent = node.getParent();
-  if (oldParent !== null) {
-    const writableNode = node.getWritable();
-    const writableParent = oldParent.getWritable();
-    const prevSibling = node.getPreviousSibling();
-    const nextSibling = node.getNextSibling();
-    const nextSiblingKey = nextSibling !== null ? nextSibling.__key : null;
-    const prevSiblingKey = prevSibling !== null ? prevSibling.__key : null;
-    const writablePrevSibling = prevSibling !== null ? prevSibling.getWritable() : null;
-    const writableNextSibling = nextSibling !== null ? nextSibling.getWritable() : null;
-    if (prevSibling === null) {
-      writableParent.__first = nextSiblingKey;
-    }
-    if (nextSibling === null) {
-      writableParent.__last = prevSiblingKey;
-    }
-    if (writablePrevSibling !== null) {
-      writablePrevSibling.__next = nextSiblingKey;
-    }
-    if (writableNextSibling !== null) {
-      writableNextSibling.__prev = prevSiblingKey;
-    }
-    writableNode.__prev = null;
-    writableNode.__next = null;
-    writableNode.__parent = null;
-    writableParent.__size--;
-  }
+  $detachNode(node.getParent() === null ? node : node.getWritable());
 }
 var removeFromParent = $removeFromParent;
 function internalMarkNodeAsDirty(node) {
@@ -38342,8 +33507,7 @@ function internalMarkNodeAsDirty(node) {
   if (!!$isEphemeral(node)) {
     formatDevErrorMessage2(`internalMarkNodeAsDirty: Ephemeral nodes must not be marked as dirty (key ${node.__key} type ${node.__type})`);
   }
-  const latest = node.getLatest();
-  const parent = latest.__parent !== null ? latest.__parent : $isSlotChild(latest) ? latest.__slotHost : null;
+  const parent = node.__parent !== null ? node.__parent : $isSlotChild(node) ? node.__slotHost : null;
   const editorState = getActiveEditorState();
   const editor = getActiveEditor();
   const nodeMap = editorState._nodeMap;
@@ -38351,7 +33515,7 @@ function internalMarkNodeAsDirty(node) {
   if (parent !== null) {
     internalMarkParentElementsAsDirty(parent, nodeMap, dirtyElements);
   }
-  const key = latest.__key;
+  const key = node.__key;
   if (editor._dirtyType === NO_DIRTY_NODES) {
     editor._dirtyType = HAS_DIRTY_NODES;
   }
@@ -38397,6 +33561,10 @@ function $getCompositionKey() {
   }
   const editor = getActiveEditor();
   return editor._compositionKey;
+}
+function $isEmptyCompositionTarget(node) {
+  return !IS_IOS && (IS_SAFARI || IS_APPLE_WEBKIT) && node.__text === "" && // DOM selection reconciliation runs after the state becomes read-only.
+  node.__key === getActiveEditor()._compositionKey;
 }
 function $getNodeByKey(key, _editorState) {
   const editorState = _editorState || getActiveEditorState();
@@ -38475,7 +33643,8 @@ function $getRoot() {
   return internalGetRoot(getActiveEditorState());
 }
 function $restoreEmptyContainerParagraph(container, removedChild) {
-  if (!$isRootOrShadowRoot(container) || !container.isAttached() || !container.isEmpty() || !($isRootNode(container) || removedChild !== null && INTERNAL_$isBlock(removedChild))) {
+  if (!$isRootOrShadowRoot(container) || !container.isAttached() || // Root slots (such as footnotes) do not replace the editable body.
+  ($isRootNode(container) ? container.getChildrenSize() !== 0 : !container.isEmpty()) || !($isRootNode(container) || removedChild !== null && INTERNAL_$isBlock(removedChild))) {
     return null;
   }
   const paragraph = $createParagraphNode();
@@ -38504,10 +33673,10 @@ function $setSelection(selection) {
   }
   editorState._selection = selection;
 }
-function $flushMutations() {
+function $flushMutations(rerenderText) {
   errorOnReadOnly();
   const editor = getActiveEditor();
-  flushRootMutations(editor);
+  flushRootMutations(editor, rerenderText);
 }
 function $getNodeFromDOM(dom) {
   const editor = getActiveEditor();
@@ -38538,7 +33707,11 @@ function getEditorsToPropagate(editor) {
   }
   return editorsToPropagate;
 }
+var serverUIDCounter = 0;
 function createUID() {
+  if (!CAN_USE_DOM) {
+    return `s${(++serverUIDCounter).toString(36)}`;
+  }
   return Math.random().toString(36).replace(/[^a-z]+/g, "").substring(0, 5);
 }
 function getAnchorTextFromDOM(anchorNode) {
@@ -38575,15 +33748,16 @@ function $updateTextNodeFromDOMContent(textNode, textContent, anchorOffset, focu
   let node = textNode;
   if (node.isAttached() && (compositionEnd || !node.isDirty())) {
     const isComposing = node.isComposing();
+    const isSafariComposition = !IS_IOS && (IS_SAFARI || IS_APPLE_WEBKIT);
     if (node.isToken() && isComposing) {
       return;
     }
     let normalizedTextContent = textContent;
     if (isComposing || compositionEnd) {
-      if (textContent.endsWith(COMPOSITION_SUFFIX)) {
+      if (textContent.endsWith(COMPOSITION_SUFFIX) && (!isSafariComposition || textContent !== node.getTextContent())) {
         normalizedTextContent = textContent.slice(0, -COMPOSITION_SUFFIX.length);
       }
-      if (compositionEnd) {
+      if (compositionEnd && !isSafariComposition) {
         const char = COMPOSITION_START_CHAR;
         let index;
         while ((index = normalizedTextContent.indexOf(char)) !== -1) {
@@ -38601,6 +33775,10 @@ function $updateTextNodeFromDOMContent(textNode, textContent, anchorOffset, focu
     if (compositionEnd || normalizedTextContent !== prevTextContent) {
       const selection = $getSelection();
       if (normalizedTextContent === "") {
+        if (isComposing && !compositionEnd && isSafariComposition) {
+          $setTextContentWithSelection(node, "", selection);
+          return;
+        }
         $setCompositionKey(null);
         if (!IS_SAFARI && !IS_IOS && !IS_APPLE_WEBKIT) {
           const editor = getActiveEditor();
@@ -38719,9 +33897,6 @@ function isExactShortcutMatch(event, expectedKey, mask) {
 }
 function isModifier(event) {
   return event.ctrlKey || event.shiftKey || event.altKey || event.metaKey;
-}
-function isBackspace(event) {
-  return event.key === "Backspace";
 }
 function $getRootChildAncestor(node) {
   let current = node;
@@ -38913,7 +34088,80 @@ function getParentElement(node) {
 function getDOMOwnerDocument(target) {
   return isDOMDocumentNode(target) ? target : isHTMLElement(target) ? target.ownerDocument : null;
 }
-function scrollIntoViewIfNeeded(editor, selectionRect, rootElement) {
+function parseScrollPadding(value, clientWidth) {
+  const length = parseFloat(value);
+  if (!isFinite(length)) {
+    return 0;
+  }
+  return value.endsWith("%") ? length * clientWidth / 100 : length;
+}
+function scrollIntoViewHorizontally(view, element, left, right) {
+  const clientWidth = element.clientWidth;
+  const maxScroll = element.scrollWidth - clientWidth;
+  if (maxScroll <= 0) {
+    return 0;
+  }
+  const style = view.getComputedStyle(element);
+  if (style.overflowX !== "auto" && style.overflowX !== "scroll") {
+    return 0;
+  }
+  const rect = element.getBoundingClientRect();
+  const offsetWidth = element.offsetWidth;
+  const scale = offsetWidth > 0 && Math.abs(rect.width - offsetWidth) > 1 ? rect.width / offsetWidth : 1;
+  const isRTL = style.direction === "rtl";
+  const scrollportLeft = rect.left + element.clientLeft * scale;
+  const viewLeft = scrollportLeft + parseScrollPadding(style.scrollPaddingLeft, clientWidth) * scale;
+  const viewRight = scrollportLeft + (clientWidth - parseScrollPadding(style.scrollPaddingRight, clientWidth)) * scale;
+  let caretLeft = left;
+  let caretRight = Math.max(right, left + 1);
+  if (caretRight - caretLeft > viewRight - viewLeft) {
+    if (isRTL) {
+      caretLeft = caretRight - 1;
+    } else {
+      caretRight = caretLeft + 1;
+    }
+  }
+  let diff = 0;
+  if (caretLeft < viewLeft) {
+    diff = caretLeft - viewLeft;
+  } else if (caretRight > viewRight) {
+    diff = caretRight - viewRight;
+  }
+  if (diff === 0) {
+    return 0;
+  }
+  const scrollLeft = element.scrollLeft;
+  const unrounded = scrollLeft + diff / scale;
+  const targetScrollLeft = diff > 0 ? Math.ceil(unrounded) : Math.floor(unrounded);
+  let nextScrollLeft = isRTL ? Math.min(0, Math.max(-maxScroll, targetScrollLeft)) : Math.max(0, Math.min(maxScroll, targetScrollLeft));
+  const startOffset = scrollLeft * scale;
+  if (Math.abs(nextScrollLeft) < Math.abs(scrollLeft) && caretLeft + startOffset >= viewLeft && caretRight + startOffset <= viewRight) {
+    nextScrollLeft = 0;
+  }
+  if (nextScrollLeft === scrollLeft) {
+    return 0;
+  }
+  element.scrollLeft = nextScrollLeft;
+  return (element.scrollLeft - scrollLeft) * scale;
+}
+function getCaretRect(range) {
+  const rect = range.getBoundingClientRect();
+  const {
+    startContainer,
+    startOffset
+  } = range;
+  if (!range.collapsed || rect.width !== 0 || rect.height !== 0 || !isDOMTextNode(startContainer) || startContainer.length === 0) {
+    return rect;
+  }
+  const characterRange = range.cloneRange();
+  if (startOffset > 0) {
+    characterRange.setStart(startContainer, startOffset - 1);
+  } else {
+    characterRange.setEnd(startContainer, 1);
+  }
+  return characterRange.getBoundingClientRect();
+}
+function scrollIntoViewIfNeeded(editor, selectionRect, rootElement, selectionNode = null) {
   const doc = getDOMOwnerDocument(rootElement);
   const defaultView = getDefaultView(doc);
   if (doc === null || defaultView === null) {
@@ -38922,6 +34170,19 @@ function scrollIntoViewIfNeeded(editor, selectionRect, rootElement) {
   const rootRect = rootElement.getBoundingClientRect();
   if (selectionRect.bottom < rootRect.top) {
     return;
+  }
+  if (selectionNode !== null && selectionRect.height > 0) {
+    let {
+      left: currentLeft,
+      right: currentRight
+    } = selectionRect;
+    let scroller = isHTMLElement(selectionNode) ? selectionNode : getParentElement(selectionNode);
+    while (scroller !== null && rootElement.contains(scroller)) {
+      const xOffset = scrollIntoViewHorizontally(defaultView, scroller, currentLeft, currentRight);
+      currentLeft -= xOffset;
+      currentRight -= xOffset;
+      scroller = scroller === rootElement ? null : getParentElement(scroller);
+    }
   }
   let {
     top: currentTop,
@@ -40161,11 +35422,31 @@ function buildNodeClassRecord(klass) {
     };
     injectSynthesizedStatics(klass, isAbstract, ownNodeType, ownNodeConfig);
     injectSynthesizedAfterCloneFrom(klass);
+    injectDeclaredIsInline(klass, ownNodeConfig);
   } catch (error) {
     NODE_CLASS_CACHE.delete(klass);
     throw error;
   }
   return record;
+}
+function synthesizedIsInlineTrue() {
+  return true;
+}
+function synthesizedIsInlineFalse() {
+  return false;
+}
+function isSynthesizedIsInline(isInline) {
+  return isInline === synthesizedIsInlineTrue || isInline === synthesizedIsInlineFalse;
+}
+function injectDeclaredIsInline(klass, ownNodeConfig) {
+  if (!ownNodeConfig || ownNodeConfig.inline === void 0 || !hasOwnKey(klass.prototype, PROTOTYPE_CONFIG_METHOD) || Object.prototype.hasOwnProperty.call(klass.prototype, "isInline")) {
+    return;
+  }
+  Object.defineProperty(klass.prototype, "isInline", {
+    configurable: true,
+    value: ownNodeConfig.inline ? synthesizedIsInlineTrue : synthesizedIsInlineFalse,
+    writable: true
+  });
 }
 function injectSynthesizedStatics(klass, isAbstract, ownNodeType, ownNodeConfig) {
   if (!isAbstract && ownNodeType) {
@@ -40210,6 +35491,10 @@ function injectSynthesizedStatics(klass, isAbstract, ownNodeType, ownNodeConfig)
       if (importDOM) {
         klass.importDOM = () => importDOM;
       }
+    }
+    const proto = klass.prototype;
+    if (hasOwnKey(proto, "getTextContent") && !hasOwnKey(proto, "getTextContentSize")) {
+      klass.prototype.getTextContentSize = LexicalNode.prototype.getTextContentSize;
     }
   }
 }
@@ -40371,6 +35656,6198 @@ function getSuperclassOf(klass) {
   const parentProto = klass.prototype && Object.getPrototypeOf(klass.prototype);
   return parentProto ? parentProto.constructor : null;
 }
+function editorStateHasDirtySelection(editorState, editor) {
+  const currentSelection = editor.getEditorState()._selection;
+  const pendingSelection = editorState._selection;
+  if (pendingSelection !== null) {
+    if (pendingSelection.dirty || !pendingSelection.is(currentSelection)) {
+      return true;
+    }
+  } else if (currentSelection !== null) {
+    return true;
+  }
+  return false;
+}
+function cloneEditorState(current) {
+  return new EditorState(cloneMap(current._nodeMap), null, current._slotsUsed);
+}
+function createEmptyEditorState() {
+  return new EditorState(/* @__PURE__ */ new Map([["root", $createRootNode()]]), null, false);
+}
+function $exportNodeToJSON(node) {
+  const nodeClass = node.constructor;
+  const serializedNode = $exportNodeJSON(node);
+  if ($isElementNode(node)) {
+    const serializedChildren = serializedNode.children;
+    const children = node.getChildren();
+    for (let i2 = 0; i2 < children.length; i2++) {
+      serializedChildren.push($exportNodeToJSON(children[i2]));
+    }
+  }
+  const slotNames = $getSlotNames(node);
+  if (slotNames.length > 0) {
+    const serializedSlots = {};
+    for (const name of slotNames) {
+      const slotNode = $getSlot(node, name);
+      if (!(slotNode !== null)) {
+        formatDevErrorMessage2(`LexicalNode: Node ${nodeClass.name} has slot "${name}" but it resolved to no node during export.`);
+      }
+      serializedSlots[name] = $exportNodeToJSON(slotNode);
+    }
+    serializedNode.$slots = serializedSlots;
+  }
+  return serializedNode;
+}
+function $isEditorState(x2) {
+  return x2 instanceof EditorState;
+}
+var EditorState = class _EditorState {
+  _nodeMap;
+  /**
+   * Nodes detached during the update, keyed by the previous node map. Yjs
+   * uses these hints to distinguish moved nodes from shifted siblings. A
+   * restored state must not replay hints from a different transition, and
+   * weak keys avoid retaining previous editor states through this metadata.
+   * @internal
+   */
+  _movedNodes;
+  _selection;
+  _flushSync;
+  _readOnly;
+  /**
+   * True if this EditorState was parsed without running transforms
+   */
+  _parsed;
+  /**
+   * True if this EditorState or the LexicalEditor that created it has
+   * ever used slots
+   */
+  _slotsUsed;
+  constructor(nodeMap, selection = null, slotsUsed = false) {
+    this._nodeMap = nodeMap;
+    this._movedNodes = null;
+    this._selection = selection || null;
+    this._flushSync = false;
+    this._readOnly = false;
+    this._parsed = false;
+    this._slotsUsed = slotsUsed;
+  }
+  isEmpty() {
+    return this._nodeMap.size <= 1 && this._selection === null;
+  }
+  read(callbackFn, options) {
+    return readEditorState(options && options.editor || null, this, callbackFn);
+  }
+  clone(selection) {
+    const editorState = new _EditorState(this._nodeMap, selection === void 0 ? this._selection : selection, this._slotsUsed);
+    editorState._readOnly = true;
+    editorState._parsed = this._parsed;
+    return editorState;
+  }
+  /**
+   * This document's JSON, in the legacy form that writes every property.
+   *
+   * The form is this call's to state, never inherited: called with no argument
+   * — including by `JSON.stringify`, for which this is the `toJSON` hook — it
+   * writes the legacy form whatever {@link $withCompactExport} encloses it.
+   * That is what makes this signature true, and it is the behavior that
+   * predates the compact form.
+   *
+   * A nested editor still follows the document containing it, because
+   * {@link LexicalEditor.toJSON} passes the enclosing form on explicitly
+   * rather than leaving it to be picked up here.
+   */
+  /**
+   * @param compact Write the compact form, which omits from every node the
+   *   properties parsing restores on its own. Passing the form here rather
+   *   than through an enclosing {@link $withCompactExport} is what lets the
+   *   return type say which shape it is.
+   */
+  toJSON(compact) {
+    return $withCompactExport(typeof compact === "boolean" && compact, () => readEditorState(null, this, () => ({
+      root: $exportNodeToJSON($getRoot())
+    })));
+  }
+};
+var HISTORIC_TAG = "historic";
+var HISTORY_PUSH_TAG = "history-push";
+var HISTORY_MERGE_TAG = "history-merge";
+var PASTE_TAG = "paste";
+var CUT_TAG = "cut";
+var COLLABORATION_TAG = "collaboration";
+var SKIP_COLLAB_TAG = "skip-collab";
+var SKIP_SCROLL_INTO_VIEW_TAG = "skip-scroll-into-view";
+var SKIP_DOM_SELECTION_TAG = "skip-dom-selection";
+var SKIP_SELECTION_FOCUS_TAG = "skip-selection-focus";
+var FOCUS_TAG = "focus";
+var COMPOSITION_START_TAG = "composition-start";
+var COMPOSITION_END_TAG = "composition-end";
+var ArtificialNode__DO_NOT_USE = class extends ElementNode {
+  $config() {
+    return this.config("artificial", {
+      extends: ElementNode
+    });
+  }
+  createDOM(config) {
+    const dom = $getDocument().createElement("div");
+    return dom;
+  }
+};
+var LineBreakNode = class extends LexicalNode {
+  /** @internal */
+  $config() {
+    return this.config("linebreak", {
+      extends: LexicalNode,
+      generated: GENERATED_LINEBREAK,
+      importDOM: {
+        br: (node) => {
+          if (isOnlyChildInBlockNode(node) || isLastChildInBlockNode(node)) {
+            return null;
+          }
+          return {
+            conversion: $convertLineBreakElement,
+            priority: 0
+          };
+        }
+      }
+    });
+  }
+  getTextContent() {
+    return "\n";
+  }
+  createDOM() {
+    return $getDocument().createElement("br");
+  }
+  updateDOM() {
+    return false;
+  }
+  isInline() {
+    return true;
+  }
+};
+function $convertLineBreakElement(node) {
+  return {
+    node: $createLineBreakNode()
+  };
+}
+function $createLineBreakNode() {
+  return $applyNodeReplacement(new LineBreakNode());
+}
+function $isLineBreakNode(node) {
+  return node instanceof LineBreakNode;
+}
+function isOnlyChildInBlockNode(node) {
+  const parentElement = node.parentElement;
+  if (parentElement !== null && isBlockDomNode(parentElement)) {
+    const firstChild = parentElement.firstChild;
+    if (firstChild === node || firstChild.nextSibling === node && isWhitespaceDomTextNode(firstChild)) {
+      const lastChild = parentElement.lastChild;
+      if (lastChild === node || lastChild.previousSibling === node && isWhitespaceDomTextNode(lastChild)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+function isLastChildInBlockNode(node) {
+  const parentElement = node.parentElement;
+  if (parentElement !== null && isBlockDomNode(parentElement)) {
+    const firstChild = parentElement.firstChild;
+    if (firstChild === node || firstChild.nextSibling === node && isWhitespaceDomTextNode(firstChild)) {
+      return false;
+    }
+    const lastChild = parentElement.lastChild;
+    if (lastChild === node || lastChild.previousSibling === node && isWhitespaceDomTextNode(lastChild)) {
+      return true;
+    }
+  }
+  return false;
+}
+function isWhitespaceDomTextNode(node) {
+  return isDOMTextNode(node) && /^( |\t|\r?\n)+$/.test(node.textContent || "");
+}
+function createInputState() {
+  return {
+    collapsedSelectionFormat: {
+      format: 0,
+      key: "root",
+      offset: 0,
+      style: "",
+      timeStamp: 0
+    },
+    composedSegmentedKey: null,
+    compositionPhase: "idle",
+    hadOrphanedCompositionEvents: false,
+    handledSelectionCommandTimeoutId: null,
+    isInsertLineBreak: false,
+    isInsertTextAfterHandledSelectionCommand: false,
+    isSelectionChangeFromDOMUpdate: false,
+    isSelectionChangeFromMouseDown: false,
+    isShiftKeyDown: false,
+    lastBeforeInputInsertTextTimeStamp: 0,
+    lastKeyCode: null,
+    lastKeyDownTimeStamp: 0,
+    lastPointerType: "",
+    mouseDrag: null,
+    postDeleteSelectionToRestore: null,
+    savedInputMode: void 0,
+    selectionChangeFromDOMUpdatePoints: null,
+    unprocessedBeforeInputData: null
+  };
+}
+function defaultOnWarn(error) {
+  {
+    throw error;
+  }
+}
+var DEFAULT_SKIP_INITIALIZATION = false;
+var COMMAND_PRIORITY_EDITOR = 0;
+var COMMAND_PRIORITY_LOW = 1;
+var COMMAND_PRIORITY_NORMAL = 2;
+var COMMAND_PRIORITY_HIGH = 3;
+var COMMAND_PRIORITY_CRITICAL = 4;
+var COMMAND_PRIORITY_BEFORE_EDITOR = -8;
+var COMMAND_PRIORITY_BEFORE_LOW = -7;
+var COMMAND_PRIORITY_BEFORE_NORMAL = -6;
+var COMMAND_PRIORITY_BEFORE_HIGH = -5;
+var COMMAND_PRIORITY_BEFORE_CRITICAL = -4;
+function normalizePriority(priority) {
+  return priority & 7;
+}
+function resetEditor(editor, prevRootElement, nextRootElement, pendingEditorState, options) {
+  const keyNodeMap = editor._keyToDOMMap;
+  keyNodeMap.clear();
+  editor._editorState = createEmptyEditorState();
+  editor._pendingEditorState = pendingEditorState;
+  editor._compositionKey = null;
+  editor._dirtyType = NO_DIRTY_NODES;
+  editor._cloneNotNeeded.clear();
+  editor._dirtyLeaves = /* @__PURE__ */ new Set();
+  editor._dirtyElements.clear();
+  editor._normalizedNodes = /* @__PURE__ */ new Set();
+  if (!options || !options.preserveUpdateQueue) {
+    editor._updateTags = /* @__PURE__ */ new Set();
+    editor._updates = [];
+    editor._cascadeCount = 0;
+  }
+  editor._blockCursorElement = null;
+  if (editor._inputState.handledSelectionCommandTimeoutId !== null) {
+    clearTimeout(editor._inputState.handledSelectionCommandTimeoutId);
+  }
+  if (prevRootElement !== null) {
+    restoreInputModeIOS(editor, prevRootElement);
+  }
+  editor._inputState = createInputState();
+  const observer = editor._observer;
+  if (observer !== null) {
+    observer.disconnect();
+    editor._observer = null;
+  }
+  if (prevRootElement !== null) {
+    prevRootElement.textContent = "";
+    clearNodeKeyOnDOMNode(prevRootElement, editor);
+  }
+  if (nextRootElement !== null) {
+    nextRootElement.textContent = "";
+    keyNodeMap.set("root", nextRootElement);
+    setNodeKeyOnDOMNode(nextRootElement, editor, "root");
+  }
+}
+function initializeConversionCache(nodes, additionalConversions) {
+  const conversionCache = /* @__PURE__ */ new Map();
+  const handledConversions = /* @__PURE__ */ new Set();
+  const addConversionsToCache = (map) => {
+    Object.keys(map).forEach((key) => {
+      let currentCache = conversionCache.get(key);
+      if (currentCache === void 0) {
+        currentCache = [];
+        conversionCache.set(key, currentCache);
+      }
+      currentCache.push(map[key]);
+    });
+  };
+  nodes.forEach((node) => {
+    const importDOM = node.klass.importDOM;
+    if (importDOM == null || handledConversions.has(importDOM)) {
+      return;
+    }
+    handledConversions.add(importDOM);
+    const map = importDOM.call(node.klass);
+    if (map !== null) {
+      addConversionsToCache(map);
+    }
+  });
+  if (additionalConversions) {
+    addConversionsToCache(additionalConversions);
+  }
+  return conversionCache;
+}
+function getTransformSetFromKlass(klass) {
+  const transforms = /* @__PURE__ */ new Set();
+  const staticTransforms = /* @__PURE__ */ new Set();
+  for (const {
+    klass: currentKlass,
+    ownNodeConfig
+  } of iterStaticNodeConfigChain(klass)) {
+    const staticTransform = currentKlass.transform;
+    if (!staticTransforms.has(staticTransform)) {
+      staticTransforms.add(staticTransform);
+      const transform = currentKlass.transform();
+      if (transform) {
+        transforms.add(transform);
+      }
+    }
+    if (ownNodeConfig) {
+      const $transform = ownNodeConfig.$transform;
+      if ($transform) {
+        transforms.add($transform);
+      }
+    }
+  }
+  return transforms;
+}
+var DEFAULT_EDITOR_DOM_CONFIG = {
+  $createDOM: (node, editor) => node.createDOM(editor._config, editor),
+  $decorateDOM: (_node, _prevNode, _dom, _editor) => {
+  },
+  $exportDOM: (node, editor) => {
+    const registeredNode = getRegisteredNode(editor, node.getType());
+    return registeredNode && registeredNode.exportDOM !== void 0 ? registeredNode.exportDOM(editor, node) : node.exportDOM(editor);
+  },
+  $extractWithChild: (node, childNode, selection, destination, _editor) => $isElementNode(node) && node.extractWithChild(childNode, selection, destination),
+  $getDOMSlot: (node, dom, _editor) => node.getDOMSlot(dom),
+  $getSlotTargetElement: (_node, _slotName, _hostDom, _editor) => null,
+  $shouldExclude: (node, _selection, _editor) => $isElementNode(node) && node.excludeFromCopy("html"),
+  $shouldInclude: (node, selection, _editor) => selection ? node.isSelected(selection) : true,
+  $updateDOM: (nextNode, prevNode, dom, editor) => nextNode.updateDOM(prevNode, dom, editor._config)
+};
+function createEditor(editorConfig) {
+  const config = editorConfig || {};
+  const activeEditor2 = internalGetActiveEditor();
+  const theme = config.theme || {};
+  const parentEditor = editorConfig === void 0 ? activeEditor2 : config.parentEditor || null;
+  const disableEvents = config.disableEvents || false;
+  const editorState = createEmptyEditorState();
+  const namespace = config.namespace || (parentEditor !== null ? parentEditor._config.namespace : createUID());
+  const initialEditorState = config.editorState;
+  const nodes = [RootNode, TextNode, LineBreakNode, TabNode, ParagraphNode, ArtificialNode__DO_NOT_USE, ...config.nodes || []];
+  const {
+    onError,
+    onWarn,
+    html
+  } = config;
+  const isEditable = config.editable !== void 0 ? config.editable : true;
+  let registeredNodes;
+  if (editorConfig === void 0 && activeEditor2 !== null) {
+    registeredNodes = activeEditor2._nodes;
+  } else {
+    registeredNodes = /* @__PURE__ */ new Map();
+    for (let i2 = 0; i2 < nodes.length; i2++) {
+      let klass = nodes[i2];
+      let replace = null;
+      let replaceWithKlass = null;
+      if (klass && typeof klass === "object") {
+        const options = klass;
+        klass = options.replace;
+        replace = options.with;
+        replaceWithKlass = options.withKlass || null;
+      }
+      if (typeof klass !== "function" || !klass.prototype || !(klass === LexicalNode || klass.prototype instanceof LexicalNode)) {
+        let version = "<unknown>";
+        try {
+          version = JSON.parse(LEXICAL_VERSION);
+        } catch {
+        }
+        {
+          formatDevErrorMessage2(`createEditor: nodes[${String(i2 - nodes.length + (config.nodes ? config.nodes.length : 0))}] ${typeof klass === "function" ? `${klass.name}${typeof klass.getType === "function" ? ` (type ${String(klass.getType())})` : ""}` : String(klass)} is not a constructor that subclasses LexicalNode from the lexical package used by this editor (${String(version)})`);
+        }
+      }
+      void getStaticNodeConfig(klass);
+      {
+        const name = klass.name;
+        const nodeType = hasOwnStaticMethod(klass, "getType") && klass.getType();
+        if (replaceWithKlass) {
+          if (!(replaceWithKlass.prototype instanceof klass)) {
+            formatDevErrorMessage2(`${replaceWithKlass.name} doesn't extend the ${name}`);
+          }
+        } else if (replace) {
+          console.warn(`Override for ${name} specifies 'replace' without 'withKlass'. 'withKlass' will be required in a future version.`);
+        }
+        if (name !== "RootNode" && nodeType !== "root" && nodeType !== "artificial" && // This is mostly for the unit test suite which
+        // uses LexicalNode in an otherwise incorrect way
+        // by mocking its static getType
+        klass !== LexicalNode) {
+          ["getType", "clone"].forEach((method) => {
+            if (!hasOwnStaticMethod(klass, method)) {
+              console.warn(`${name} must implement static "${method}" method`);
+            }
+          });
+          if (!hasOwnStaticMethod(klass, "importJSON")) {
+            console.warn(`${name} should implement "importJSON" method to ensure JSON and default HTML serialization works as expected`);
+          }
+        }
+      }
+      {
+        validateNodeStructure(klass);
+      }
+      const type = klass.getType();
+      const transforms = getTransformSetFromKlass(klass);
+      registeredNodes.set(type, {
+        exportDOM: html && html.export ? html.export.get(klass) : void 0,
+        klass,
+        replace,
+        replaceWithKlass,
+        sharedNodeState: createSharedNodeState(nodes[i2]),
+        transforms
+      });
+    }
+  }
+  const editor = new LexicalEditor(editorState, parentEditor, registeredNodes, {
+    disableEvents,
+    dom: {
+      ...DEFAULT_EDITOR_DOM_CONFIG,
+      ...editorConfig && editorConfig.dom
+    },
+    namespace,
+    theme
+  }, onError ? onError : console.error, onWarn ? onWarn : defaultOnWarn, initializeConversionCache(registeredNodes, html ? html.import : void 0), isEditable, editorConfig);
+  if (initialEditorState !== void 0) {
+    editor._pendingEditorState = initialEditorState;
+    editor._dirtyType = FULL_RECONCILE;
+  }
+  registerDefaultCommandHandlers(editor);
+  return editor;
+}
+function triggerListener(listenerMap, listener, args) {
+  const unregister = listenerMap.get(listener);
+  if (unregister) {
+    unregister();
+  }
+  listenerMap.set(listener, listener(...args) || void 0);
+}
+function unregisterListener(listenerMap, listener) {
+  const unregister = listenerMap.get(listener);
+  listenerMap.delete(listener);
+  if (unregister) {
+    unregister();
+  }
+}
+function registerListener(listenerMap, listener, unregister) {
+  listenerMap.set(listener, unregister);
+  return unregisterListener.bind(null, listenerMap, listener);
+}
+var LexicalEditor = class {
+  /** @internal */
+  /** The version with build identifiers for this editor (since 0.17.1) */
+  static version = /* @__PURE__ */ (() => LEXICAL_VERSION)();
+  /** @internal */
+  _headless;
+  /**
+   * @internal Enabled by the v1 Yjs binding to distinguish moved nodes from
+   * shifted siblings. Once enabled, persists for the lifetime of this editor.
+   */
+  _recordNodeMoves;
+  /** @internal */
+  _parentEditor;
+  /** @internal */
+  _rootElement;
+  /** @internal */
+  _editorState;
+  /** @internal */
+  _pendingEditorState;
+  /** @internal */
+  _compositionKey;
+  /** @internal */
+  _deferred;
+  /** @internal */
+  _keyToDOMMap;
+  /** @internal */
+  _updates;
+  /** @internal */
+  _updating;
+  /** @internal */
+  _cascadeCount;
+  /** @internal */
+  _listeners;
+  /** @internal */
+  _commands;
+  /** @internal */
+  _nodes;
+  /** @internal */
+  _decorators;
+  /** @internal */
+  _pendingDecorators;
+  /** @internal */
+  _config;
+  /** @internal */
+  _dirtyType;
+  /** @internal */
+  _cloneNotNeeded;
+  /** @internal */
+  _dirtyLeaves;
+  /** @internal */
+  _dirtyElements;
+  /** @internal */
+  _normalizedNodes;
+  /** @internal */
+  _updateTags;
+  /** @internal */
+  _observer;
+  /** @internal */
+  _key;
+  /** @internal */
+  _onError;
+  /** @internal */
+  _onWarn;
+  /** @internal */
+  _htmlConversions;
+  /** @internal */
+  _window;
+  /** @internal */
+  _editable;
+  /** @internal */
+  _blockCursorElement;
+  /**
+   * @internal @experimental
+   *
+   * Latches to `true` the first time {@link $setSlot} runs in this
+   * editor. Gates the commit-time slot-containment clamp so editors that never
+   * use slots skip the per-update frame walk entirely. The latch persists for
+   * the lifetime of the editor instance — `resetEditor` and `setEditorState`
+   * do not clear it, so an editor that once used slots keeps paying the clamp
+   * cost even after switching to a slot-free state.
+   */
+  _slotsUsed;
+  /** @internal */
+  _keyDownShortcuts;
+  /** @internal */
+  _inputState;
+  /** @internal */
+  _lastNotifiedSelection;
+  /** @internal */
+  _createEditorArgs;
+  /** @internal */
+  constructor(editorState, parentEditor, nodes, config, onError, onWarn, htmlConversions, editable, createEditorArgs) {
+    this._createEditorArgs = createEditorArgs;
+    this._parentEditor = parentEditor;
+    this._rootElement = null;
+    this._editorState = editorState;
+    this._pendingEditorState = null;
+    this._compositionKey = null;
+    this._deferred = [];
+    this._keyToDOMMap = new GenMap();
+    this._updates = [];
+    this._updating = false;
+    this._cascadeCount = 0;
+    this._listeners = {
+      decorator: /* @__PURE__ */ new Map(),
+      editable: /* @__PURE__ */ new Map(),
+      mutation: /* @__PURE__ */ new Map(),
+      root: /* @__PURE__ */ new Map(),
+      textcontent: /* @__PURE__ */ new Map(),
+      update: /* @__PURE__ */ new Map()
+    };
+    this._commands = /* @__PURE__ */ new Map();
+    this._config = config;
+    this._nodes = nodes;
+    this._decorators = {};
+    this._pendingDecorators = null;
+    this._dirtyType = NO_DIRTY_NODES;
+    this._cloneNotNeeded = /* @__PURE__ */ new Map();
+    this._dirtyLeaves = /* @__PURE__ */ new Set();
+    this._dirtyElements = /* @__PURE__ */ new Map();
+    this._normalizedNodes = /* @__PURE__ */ new Set();
+    this._updateTags = /* @__PURE__ */ new Set();
+    this._observer = null;
+    this._key = createUID();
+    this._onError = onError;
+    this._onWarn = onWarn;
+    this._htmlConversions = htmlConversions;
+    this._editable = editable;
+    this._headless = parentEditor !== null && parentEditor._headless;
+    this._recordNodeMoves = false;
+    this._window = null;
+    this._blockCursorElement = null;
+    this._slotsUsed = false;
+    this._keyDownShortcuts = null;
+    this._inputState = createInputState();
+    this._lastNotifiedSelection = null;
+  }
+  /**
+   *
+   * @returns true if the editor is currently in "composition" mode due to receiving input
+   * through an IME, or 3P extension, for example. Returns false otherwise.
+   */
+  isComposing() {
+    return this._compositionKey != null;
+  }
+  /**
+   * Registers a listener for Editor update event. Will trigger the provided callback
+   * each time the editor goes through an update (via {@link LexicalEditor.update}) until the
+   * teardown function is called.
+   *
+   * @returns a teardown function that can be used to cleanup the listener.
+   */
+  registerUpdateListener(listener) {
+    return registerListener(this._listeners.update, listener);
+  }
+  /**
+   * Registers a listener for when the editor changes between editable and non-editable states.
+   * Will trigger the provided callback each time the editor transitions between these states until the
+   * teardown function is called.
+   *
+   * If the listener returns a function, that function will be called before the next transition or
+   * teardown.
+   *
+   * @returns a teardown function that can be used to cleanup the listener.
+   */
+  registerEditableListener(listener) {
+    return registerListener(this._listeners.editable, listener);
+  }
+  /**
+   * Registers a listener for when the editor's decorator object changes. The decorator object contains
+   * all DecoratorNode keys -> their decorated value. This is primarily used with external UI frameworks.
+   *
+   * Will trigger the provided callback each time the editor transitions between these states until the
+   * teardown function is called.
+   *
+   * @returns a teardown function that can be used to cleanup the listener.
+   */
+  registerDecoratorListener(listener) {
+    return registerListener(this._listeners.decorator, listener);
+  }
+  /**
+   * Registers a listener for when Lexical commits an update to the DOM and the text content of
+   * the editor changes from the previous state of the editor. If the text content is the
+   * same between updates, no notifications to the listeners will happen.
+   *
+   * Will trigger the provided callback each time the editor transitions between these states until the
+   * teardown function is called.
+   *
+   * @returns a teardown function that can be used to cleanup the listener.
+   */
+  registerTextContentListener(listener) {
+    return registerListener(this._listeners.textcontent, listener);
+  }
+  /**
+   * Registers a listener for when the editor's root DOM element (the content editable
+   * Lexical attaches to) changes. This is primarily used to attach event listeners to the root
+   *  element. The root listener function is executed directly upon registration and then on
+   * any subsequent update.
+   *
+   * Will trigger the provided callback each time the editor transitions between these states until the
+   * teardown function is called.
+   *
+   * If the listener returns a function, that function will be called before the next transition or
+   * teardown.
+   *
+   * @returns a teardown function that can be used to cleanup the listener.
+   */
+  registerRootListener(listener) {
+    const listenerMap = this._listeners.root;
+    return mergeRegister(registerListener(listenerMap, listener, listener(this._rootElement, null) || void 0), () => triggerListener(listenerMap, listener, [null, this._rootElement]));
+  }
+  /**
+   * Registers a listener that will trigger anytime the provided command
+   * is dispatched with {@link LexicalEditor.dispatch}, subject to priority.
+   * Listeners that run at a higher priority can "intercept" commands and
+   * prevent them from propagating to other handlers by returning true.
+   *
+   * Listeners are always invoked in an {@link LexicalEditor.update} and can
+   * call dollar functions.
+   *
+   * Listeners registered at the same priority level will run
+   * deterministically in the order of registration.
+   *
+   * @param command - the command that will trigger the callback.
+   * @param listener - the function that will execute when the command is dispatched.
+   * @param priority - the relative priority of the listener. 0 | 1 | 2 | 3 | 4
+   *   (or {@link COMMAND_PRIORITY_EDITOR} |
+   *     {@link COMMAND_PRIORITY_LOW} |
+   *     {@link COMMAND_PRIORITY_NORMAL} |
+   *     {@link COMMAND_PRIORITY_HIGH} |
+   *     {@link COMMAND_PRIORITY_CRITICAL})
+   * @returns a teardown function that can be used to cleanup the listener.
+   */
+  registerCommand(command, listener, priority) {
+    if (priority === void 0) {
+      {
+        formatDevErrorMessage2(`Listener for type "command" requires a "priority".`);
+      }
+    }
+    const commandsMap = this._commands;
+    if (!commandsMap.has(command)) {
+      commandsMap.set(command, [new DequeSet(), new DequeSet(), new DequeSet(), new DequeSet(), new DequeSet()]);
+    }
+    const listenersInPriorityOrder = commandsMap.get(command);
+    if (listenersInPriorityOrder === void 0) {
+      {
+        formatDevErrorMessage2(`registerCommand: Command ${String(command)} not found in command map`);
+      }
+    }
+    const normalizedPriority = normalizePriority(priority);
+    const listeners = listenersInPriorityOrder[normalizedPriority];
+    if (normalizedPriority !== priority) {
+      listeners.addFront(listener);
+    } else {
+      listeners.addBack(listener);
+    }
+    return () => {
+      listeners.delete(listener);
+      if (listenersInPriorityOrder.every((listenersSet) => listenersSet.size === 0)) {
+        commandsMap.delete(command);
+      }
+    };
+  }
+  /**
+   * Registers a listener that will run when a Lexical node of the provided class is
+   * mutated. The listener will receive a list of nodes along with the type of mutation
+   * that was performed on each: created, destroyed, or updated.
+   *
+   * One common use case for this is to attach DOM event listeners to the underlying DOM nodes as Lexical nodes are created.
+   * {@link LexicalEditor.getElementByKey} can be used for this.
+   *
+   * If any existing nodes are in the DOM, and skipInitialization is not true, the listener
+   * will be called immediately with an updateTag of 'registerMutationListener' where all
+   * nodes have the 'created' NodeMutation. This can be controlled with the skipInitialization option
+   * (whose default was previously true for backwards compatibility with &lt;=0.16.1 but has been changed to false as of 0.21.0).
+   *
+   * @param klass - The class of the node that you want to listen to mutations on.
+   * @param listener - The logic you want to run when the node is mutated.
+   * @param options - see {@link MutationListenerOptions}
+   * @returns a teardown function that can be used to cleanup the listener.
+   */
+  registerMutationListener(klass, listener, options) {
+    const klassToMutate = this.resolveRegisteredNodeAfterReplacements(this.getRegisteredNode(klass)).klass;
+    const mutations = this._listeners.mutation;
+    let klassSet = mutations.get(listener);
+    if (klassSet === void 0) {
+      klassSet = /* @__PURE__ */ new Set();
+      mutations.set(listener, klassSet);
+    }
+    klassSet.add(klassToMutate);
+    const skipInitialization = options && options.skipInitialization;
+    if (!(skipInitialization === void 0 ? DEFAULT_SKIP_INITIALIZATION : skipInitialization)) {
+      this.initializeMutationListener(listener, klassToMutate);
+    }
+    return () => {
+      klassSet.delete(klassToMutate);
+      if (klassSet.size === 0) {
+        mutations.delete(listener);
+      }
+    };
+  }
+  /** @internal */
+  getRegisteredNode(klass) {
+    const registeredNode = this._nodes.get(klass.getType());
+    if (registeredNode === void 0) {
+      {
+        formatDevErrorMessage2(`Node ${klass.name} has not been registered. Ensure node has been passed to createEditor.`);
+      }
+    }
+    return registeredNode;
+  }
+  /** @internal */
+  resolveRegisteredNodeAfterReplacements(registeredNode) {
+    while (registeredNode.replaceWithKlass) {
+      registeredNode = this.getRegisteredNode(registeredNode.replaceWithKlass);
+    }
+    return registeredNode;
+  }
+  /** @internal */
+  initializeMutationListener(listener, klass) {
+    const prevEditorState = this._editorState;
+    const nodeMap = getCachedTypeToNodeMap(prevEditorState).get(klass.getType());
+    if (!nodeMap) {
+      return;
+    }
+    const nodeMutationMap = /* @__PURE__ */ new Map();
+    for (const k of nodeMap.keys()) {
+      nodeMutationMap.set(k, "created");
+    }
+    if (nodeMutationMap.size > 0) {
+      listener(nodeMutationMap, {
+        dirtyLeaves: /* @__PURE__ */ new Set(),
+        prevEditorState,
+        updateTags: /* @__PURE__ */ new Set(["registerMutationListener"])
+      });
+    }
+  }
+  /** @internal */
+  registerNodeTransformToKlass(klass, listener) {
+    const registeredNode = this.getRegisteredNode(klass);
+    registeredNode.transforms.add(listener);
+    return registeredNode;
+  }
+  /**
+   * Registers a listener that will run when a Lexical node of the provided class is
+   * marked dirty during an update. The listener will continue to run as long as the node
+   * is marked dirty. There are no guarantees around the order of transform execution!
+   *
+   * Watch out for infinite loops. See [Node Transforms](https://lexical.dev/docs/concepts/transforms)
+   * @param klass - The class of the node that you want to run transforms on.
+   * @param listener - The logic you want to run when the node is updated.
+   * @returns a teardown function that can be used to cleanup the listener.
+   */
+  registerNodeTransform(klass, listener) {
+    const registeredNode = this.registerNodeTransformToKlass(klass, listener);
+    const registeredNodes = [registeredNode];
+    const replaceWithKlass = registeredNode.replaceWithKlass;
+    if (replaceWithKlass != null) {
+      const registeredReplaceWithNode = this.registerNodeTransformToKlass(replaceWithKlass, listener);
+      registeredNodes.push(registeredReplaceWithNode);
+    }
+    markNodesWithTypesAsDirty(this, registeredNodes.map((node) => node.klass.getType()));
+    return () => {
+      registeredNodes.forEach((node) => node.transforms.delete(listener));
+    };
+  }
+  /**
+   * Used to assert that a certain node is registered, usually by plugins to ensure nodes that they
+   * depend on have been registered.
+   * @returns True if the editor has registered the provided node type, false otherwise.
+   */
+  hasNode(node) {
+    return this._nodes.has(node.getType());
+  }
+  /**
+   * Used to assert that certain nodes are registered, usually by plugins to ensure nodes that they
+   * depend on have been registered.
+   * @returns True if the editor has registered all of the provided node types, false otherwise.
+   */
+  hasNodes(nodes) {
+    return nodes.every(this.hasNode.bind(this));
+  }
+  /**
+   * Dispatches a command of the specified type with the specified payload.
+   * This triggers all command listeners (set by {@link LexicalEditor.registerCommand})
+   * for this type, passing them the provided payload. The command listeners
+   * will be triggered in an implicit {@link LexicalEditor.update}, unless
+   * this was invoked from inside an update in which case that update context
+   * will be re-used (as if this was a dollar function itself).
+   *
+   * Do not call this from inside a read-only context such as
+   * {@link LexicalEditor.read} or {@link EditorState.read}. Command listeners
+   * usually change the editor, so Lexical runs them in a separate writable
+   * update and development builds log a warning when they detect this.
+   * Dispatch after the read returns instead.
+   * @param type - the type of command listeners to trigger.
+   * @param payload - the data to pass as an argument to the command listeners.
+   */
+  dispatchCommand(type, ...args) {
+    return dispatchCommand(this, type, ...args);
+  }
+  /**
+   * Gets a map of all decorators in the editor.
+   * @returns A mapping of call decorator keys to their decorated content
+   */
+  getDecorators() {
+    return this._decorators;
+  }
+  /**
+   *
+   * @returns the current root element of the editor. If you want to register
+   * an event listener, do it via {@link LexicalEditor.registerRootListener}, since
+   * this reference may not be stable.
+   */
+  getRootElement() {
+    return this._rootElement;
+  }
+  /**
+   * Gets the key of the editor
+   * @returns The editor key
+   */
+  getKey() {
+    return this._key;
+  }
+  /**
+   * Imperatively set the root contenteditable element that Lexical listens
+   * for events on.
+   */
+  setRootElement(nextRootElement) {
+    const prevRootElement = this._rootElement;
+    if (nextRootElement !== prevRootElement) {
+      const classNames = getCachedClassNameArray(this._config.theme, "root");
+      const pendingEditorState = this._pendingEditorState || this._editorState;
+      this._rootElement = nextRootElement;
+      resetEditor(this, prevRootElement, nextRootElement, pendingEditorState, {
+        preserveUpdateQueue: true
+      });
+      if (prevRootElement !== null) {
+        if (!this._config.disableEvents) {
+          removeRootElementEvents(prevRootElement);
+        }
+        if (classNames != null) {
+          prevRootElement.classList.remove(...classNames);
+        }
+      }
+      if (nextRootElement !== null) {
+        const windowObj = getDefaultView(nextRootElement);
+        const style = nextRootElement.style;
+        style.userSelect = "text";
+        style.whiteSpace = "pre-wrap";
+        style.wordBreak = "break-word";
+        nextRootElement.setAttribute("data-lexical-editor", "true");
+        this._window = windowObj;
+        this._dirtyType = FULL_RECONCILE;
+        initMutationObserver(this);
+        this._updateTags.add(HISTORY_MERGE_TAG);
+        $commitPendingUpdates(this);
+        if (!this._config.disableEvents) {
+          addRootElementEvents(nextRootElement, this);
+        }
+        if (classNames != null) {
+          nextRootElement.classList.add(...classNames);
+        }
+        {
+          const nextRootElementParent = getParentElement(nextRootElement);
+          if (nextRootElementParent != null && ["flex", "inline-flex"].includes(getComputedStyle(nextRootElementParent).display)) {
+            console.warn(`When using "display: flex" or "display: inline-flex" on an element containing content editable, Chrome may have unwanted focusing behavior when clicking outside of it. Consider wrapping the content editable within a non-flex element.`);
+          }
+        }
+      } else {
+        this._window = null;
+        this._updateTags.add(HISTORY_MERGE_TAG);
+        $commitPendingUpdates(this);
+      }
+      triggerListeners("root", this, false, nextRootElement, prevRootElement);
+    }
+  }
+  /**
+   * Gets the underlying HTMLElement associated with the LexicalNode for the given key.
+   * @returns the HTMLElement rendered by the LexicalNode associated with the key.
+   * @param key - the key of the LexicalNode.
+   */
+  getElementByKey(key) {
+    return this._keyToDOMMap.get(key) || null;
+  }
+  /**
+   * Gets the active editor state.
+   * @returns The editor state
+   */
+  getEditorState() {
+    return this._editorState;
+  }
+  /**
+   * Imperatively set the EditorState. Triggers reconciliation like an update.
+   * @param editorState - the state to set the editor
+   * @param options - options for the update.
+   */
+  setEditorState(editorState, options) {
+    const isEmptyEditorState = editorState.isEmpty();
+    let writableEditorState = editorState;
+    if (writableEditorState._readOnly) {
+      writableEditorState = cloneEditorState(editorState);
+      writableEditorState._selection = editorState._selection ? editorState._selection.clone() : null;
+    }
+    flushRootMutations(this);
+    const pendingEditorState = this._pendingEditorState;
+    const tag = options !== void 0 ? options.tag : null;
+    if (pendingEditorState !== null && !pendingEditorState.isEmpty()) {
+      if (tag != null) {
+        this._updateTags.add(tag);
+      }
+      $commitPendingUpdates(this);
+    }
+    this._pendingEditorState = writableEditorState;
+    this._dirtyType = FULL_RECONCILE;
+    this._dirtyElements.set("root", false);
+    this._compositionKey = null;
+    this._slotsUsed = this._slotsUsed || editorState._slotsUsed;
+    updateEditorSync(this, () => {
+      if (tag) {
+        this._updateTags.add(tag);
+      }
+      if (isEmptyEditorState) {
+        {
+          formatDevErrorMessage2(`setEditorState: the editor state is empty. Ensure the editor state's root node never becomes empty.`);
+        }
+        $getRoot().append($createParagraphNode());
+      }
+      if (editorState._parsed) {
+        for (const [key, node] of writableEditorState._nodeMap.entries()) {
+          if ($isElementNode(node)) {
+            this._dirtyElements.set(key, true);
+          } else {
+            this._dirtyLeaves.add(key);
+          }
+        }
+      }
+    }, {
+      discrete: this._updating ? void 0 : true
+    });
+  }
+  /**
+   * Parses a SerializedEditorState (usually produced by {@link EditorState.toJSON}) and returns
+   * and EditorState object that can be, for example, passed to {@link LexicalEditor.setEditorState}. Typically,
+   * deserialization from JSON stored in a database uses this method.
+   *
+   * Either form is accepted: parsing restores what a compact document omitted,
+   * which is the whole reason it may omit it, so
+   * {@link CompactSerializedEditorState} — what `toJSON(true)` returns — goes
+   * back in without a cast. So does a document assembled from serialized nodes
+   * ({@link ParsableSerializedEditorState}), such as `@lexical/clipboard`'s.
+   * @param maybeStringifiedEditorState
+   * @param updateFn
+   * @returns
+   */
+  parseEditorState(maybeStringifiedEditorState, updateFn) {
+    const serializedEditorState = typeof maybeStringifiedEditorState === "string" ? JSON.parse(maybeStringifiedEditorState) : maybeStringifiedEditorState;
+    return parseEditorState(serializedEditorState, this, updateFn);
+  }
+  /**
+   * Executes a read of the editor's state, with the
+   * editor context available (useful for exporting and read-only DOM
+   * operations). Much like update, but prevents any mutation of the
+   * editor's state.
+   *
+   * When called with a single argument the `mode` defaults to
+   * `'force-commit'`, which flushes any pending updates immediately before the
+   * read so it always observes a fully committed and reconciled state. See
+   * {@link EditorReadMode} for the behavior of the other modes (`'pending'`
+   * and `'latest'`).
+   * @param callbackFn - A function that has access to read-only editor state.
+   */
+  /**
+   * Executes a read of the editor's state in the given `mode`, with the editor
+   * context available. See {@link EditorReadMode} for the available modes.
+   * @param mode - Which editor state to read and whether to flush first.
+   * @param callbackFn - A function that has access to read-only editor state.
+   */
+  read(...args) {
+    const [mode, callbackFn] = args.length === 1 ? ["force-commit", args[0]] : args;
+    if (mode === "force-commit") {
+      if (!isDispatchingCommitListeners(this)) {
+        $commitPendingUpdates(this);
+      } else if (this._pendingEditorState !== null) {
+        console.warn(`editor.read() was called while the editor was notifying listeners of a commit, and a listener had started another update. That update was not committed early, so that listeners observe commits in order, and the read observed the state being committed. Inside listeners, read with editor.getEditorState().read(fn, {editor}) or editor.read('latest', fn) instead.`);
+      }
+    }
+    const editorState = mode === "pending" ? this._pendingEditorState || this._editorState : this.getEditorState();
+    return editorState.read(callbackFn, {
+      editor: this
+    });
+  }
+  /**
+   * Executes an update to the editor state. The updateFn callback is the ONLY place
+   * where Lexical editor state can be safely mutated.
+   * @param updateFn - A function that has access to writable editor state.
+   * @param options - A bag of options to control the behavior of the update.
+   */
+  update(updateFn, options) {
+    updateEditor(this, updateFn, options);
+  }
+  /**
+   * Focuses the editor by marking the existing selection as dirty, or by
+   * creating a new selection at `defaultSelection` if one does not already
+   * exist. If you want to force a specific selection, you should call
+   * `root.selectStart()` or `root.selectEnd()` in an update.
+   *
+   * @param callbackFn - A function to run after the editor is focused.
+   * @param options - A bag of options
+   */
+  focus(callbackFn, options = {}) {
+    const rootElement = this._rootElement;
+    if (rootElement !== null) {
+      rootElement.setAttribute("autocapitalize", "off");
+      updateEditorSync(this, () => {
+        const selection = $getSelection();
+        const root = $getRoot();
+        if (selection !== null) {
+          if (!selection.dirty) {
+            $setSelection(selection.clone());
+          }
+        } else if (root.getChildrenSize() !== 0) {
+          if (options.defaultSelection === "rootStart") {
+            root.selectStart();
+          } else {
+            root.selectEnd();
+          }
+        }
+        $addUpdateTag(FOCUS_TAG);
+        $onUpdate(() => {
+          rootElement.removeAttribute("autocapitalize");
+          if (callbackFn) {
+            callbackFn();
+          }
+        });
+      });
+      if (this._pendingEditorState === null) {
+        rootElement.removeAttribute("autocapitalize");
+      }
+    }
+  }
+  /**
+   * Removes focus from the editor.
+   */
+  blur() {
+    const rootElement = this._rootElement;
+    if (rootElement !== null) {
+      rootElement.blur();
+    }
+    const domSelection = getDOMSelection(this._window);
+    if (domSelection !== null) {
+      domSelection.removeAllRanges();
+    }
+  }
+  /**
+   * Returns true if the editor is editable, false otherwise.
+   * @returns True if the editor is editable, false otherwise.
+   */
+  isEditable() {
+    return this._editable;
+  }
+  /**
+   * Sets the editable property of the editor. When false, the
+   * editor will not listen for user events on the underling contenteditable.
+   * @param editable - the value to set the editable mode to.
+   */
+  setEditable(editable) {
+    if (this._editable !== editable) {
+      this._editable = editable;
+      triggerListeners("editable", this, true, editable);
+      if (this._slotsUsed) {
+        this.update(() => $fullReconcile());
+      }
+    }
+  }
+  /**
+   * Returns a JSON-serializable javascript object NOT a JSON string.
+   * You still must call JSON.stringify (or something else) to turn the
+   * state into a string you can transfer over the wire and store in a database.
+   *
+   * See {@link LexicalNode.exportJSON}
+   *
+   * This editor's serialized state, in whichever form the export around it is
+   * writing — which is how a nested editor (an image caption) stays in the
+   * same form as the document containing it.
+   *
+   * The form is passed on explicitly rather than picked up by the call below:
+   * `EditorState.toJSON()` with no argument always writes the legacy form, so
+   * that its return type is true of what it returns.
+   *
+   * @returns A JSON-serializable javascript object
+   */
+  toJSON() {
+    return {
+      editorState: this._editorState.toJSON($isCompactExport())
+    };
+  }
+};
+function $garbageCollectDetachedDecorators(editor, pendingEditorState) {
+  const currentDecorators = editor._decorators;
+  const pendingDecorators = editor._pendingDecorators;
+  let decorators = pendingDecorators || currentDecorators;
+  const nodeMap = pendingEditorState._nodeMap;
+  let key;
+  for (key in decorators) {
+    if (!nodeMap.has(key)) {
+      if (decorators === currentDecorators) {
+        decorators = cloneDecorators(editor);
+      }
+      delete decorators[key];
+    }
+  }
+}
+function $garbageCollectDetachedDeepChildNodes(node, parentKey, prevNodeMap, nodeMap, nodeMapDelete, dirtyNodes) {
+  if ($isElementNode(node)) {
+    let childKey = node.__first;
+    while (childKey !== null) {
+      const child = nodeMap.get(childKey);
+      if (child === void 0) {
+        break;
+      }
+      const isElement = $isElementNode(child);
+      if (child.__parent === parentKey && !(isElement && dirtyNodes.has(childKey))) {
+        if (isElement || $isSlotHost(child) && child.__slots !== null) {
+          $garbageCollectDetachedDeepChildNodes(child, childKey, prevNodeMap, nodeMap, nodeMapDelete, dirtyNodes);
+        }
+        if (!prevNodeMap.has(childKey)) {
+          dirtyNodes.delete(childKey);
+        }
+        nodeMapDelete.push(childKey);
+      }
+      childKey = child.__next;
+    }
+  }
+  for (const slotKey of $isSlotHost(node) && node.__slots !== null ? node.__slots.values() : []) {
+    const slotNode = nodeMap.get(slotKey);
+    if (slotNode !== void 0 && $isSlotChild(slotNode) && slotNode.__slotHost === parentKey) {
+      if ($isElementNode(slotNode) || $isSlotHost(slotNode) && slotNode.__slots !== null) {
+        $garbageCollectDetachedDeepChildNodes(slotNode, slotKey, prevNodeMap, nodeMap, nodeMapDelete, dirtyNodes);
+      }
+      if (!prevNodeMap.has(slotKey)) {
+        dirtyNodes.delete(slotKey);
+      }
+      nodeMapDelete.push(slotKey);
+    }
+  }
+}
+function $garbageCollectDetachedNodes(prevEditorState, editorState, dirtyLeaves, dirtyElements) {
+  const prevNodeMap = prevEditorState._nodeMap;
+  const nodeMap = editorState._nodeMap;
+  const nodeMapDelete = [];
+  for (const [nodeKey] of dirtyElements) {
+    const node = nodeMap.get(nodeKey);
+    if (node !== void 0) {
+      if (!node.isAttached()) {
+        if ($isElementNode(node)) {
+          $garbageCollectDetachedDeepChildNodes(node, nodeKey, prevNodeMap, nodeMap, nodeMapDelete, dirtyElements);
+        }
+        if (!prevNodeMap.has(nodeKey)) {
+          dirtyElements.delete(nodeKey);
+        }
+        nodeMapDelete.push(nodeKey);
+      }
+    }
+  }
+  for (const nodeKey of dirtyLeaves) {
+    const node = nodeMap.get(nodeKey);
+    if (node !== void 0 && !node.isAttached()) {
+      if ($isSlotHost(node) && node.__slots !== null) {
+        $garbageCollectDetachedDeepChildNodes(node, nodeKey, prevNodeMap, nodeMap, nodeMapDelete, dirtyLeaves);
+      }
+      if (!prevNodeMap.has(nodeKey)) {
+        dirtyLeaves.delete(nodeKey);
+      }
+      nodeMapDelete.push(nodeKey);
+    }
+  }
+  const editor = getActiveEditor();
+  const cloneNotNeeded = editor._cloneNotNeeded;
+  for (const nodeKey of nodeMapDelete) {
+    nodeMap.delete(nodeKey);
+    cloneNotNeeded.delete(nodeKey);
+  }
+  const compositionKey = editor._compositionKey;
+  if (compositionKey !== null && !nodeMap.has(compositionKey)) {
+    editor._compositionKey = null;
+  }
+}
+var activeEditorState = null;
+var activeEditor = null;
+var isReadOnlyMode = false;
+var isAttemptingToRecoverFromReconcilerError = false;
+var isCommittingPendingUpdates = false;
+var editorsWithPendingCascadeReset = /* @__PURE__ */ new Set();
+var editorsWithPendingSelectionChange = /* @__PURE__ */ new Set();
+var editorsDispatchingCommitListeners = /* @__PURE__ */ new Set();
+var infiniteTransformCount = 0;
+var observerOptions = {
+  characterData: true,
+  childList: true,
+  subtree: true
+};
+function isDispatchingCommitListeners(editor) {
+  return editorsDispatchingCommitListeners.has(editor);
+}
+function isCurrentlyReadOnlyMode() {
+  return isReadOnlyMode || activeEditorState !== null && activeEditorState._readOnly;
+}
+function errorOnReadOnly() {
+  if (isReadOnlyMode) {
+    {
+      formatDevErrorMessage2(`Cannot use method in read-only mode.`);
+    }
+  }
+}
+function errorOnInfiniteTransforms() {
+  if (infiniteTransformCount > 99) {
+    {
+      formatDevErrorMessage2(`One or more transforms are endlessly triggering additional transforms. May have encountered infinite recursion caused by transforms that have their preconditions too lose and/or conflict with each other.`);
+    }
+  }
+}
+function getActiveEditorState() {
+  if (activeEditorState === null) {
+    {
+      formatDevErrorMessage2(`Unable to find an active editor state. State helpers or node methods can only be used synchronously during the callback of editor.update(), editor.read(), or editorState.read().${collectBuildInformation()}`);
+    }
+  }
+  return activeEditorState;
+}
+function $assumeActiveEditor(editor) {
+  if (getActiveEditorState() !== null && activeEditor === null) {
+    activeEditor = editor;
+  }
+  if (!(activeEditor === editor)) {
+    formatDevErrorMessage2(`The given editor argument does not match $getEditor() in this context. Use editor.getEditorState().read(..., {editor}) if this cross-editor call is intentional.`);
+  }
+}
+function getActiveEditor() {
+  if (activeEditor === null) {
+    {
+      formatDevErrorMessage2(`Unable to find an active editor. This method can only be used synchronously during the callback of editor.update(), editor.read(), or editor.getEditorState().read(..., {editor}).${collectBuildInformation()}`);
+    }
+  }
+  return activeEditor;
+}
+function $fullReconcile() {
+  getActiveEditor()._dirtyType = FULL_RECONCILE;
+}
+function collectBuildInformation() {
+  let compatibleEditors = 0;
+  const incompatibleEditors = /* @__PURE__ */ new Set();
+  const thisVersion = LexicalEditor.version;
+  if (typeof window !== "undefined") {
+    for (const node of findAllLexicalElementsDeep(document)) {
+      const editor = getEditorPropertyFromDOMNode(node);
+      if (isLexicalEditor(editor)) {
+        compatibleEditors++;
+      } else if (editor) {
+        let version = String(editor.constructor.version || "<0.17.1");
+        if (version === thisVersion) {
+          version += " (separately built, likely a bundler configuration issue)";
+        }
+        incompatibleEditors.add(version);
+      }
+    }
+  }
+  let output = ` Detected on the page: ${compatibleEditors} compatible editor(s) with version ${thisVersion}`;
+  if (incompatibleEditors.size) {
+    output += ` and incompatible editors with versions ${Array.from(incompatibleEditors).join(", ")}`;
+  }
+  return output;
+}
+function internalGetActiveEditor() {
+  return activeEditor;
+}
+function internalGetActiveEditorState() {
+  return activeEditorState;
+}
+function $applyTransforms(editor, node, transformsCache) {
+  const type = node.__type;
+  const registeredNode = getRegisteredNodeOrThrow(editor, type);
+  let transformsArr = transformsCache.get(type);
+  if (transformsArr === void 0) {
+    transformsArr = Array.from(registeredNode.transforms);
+    transformsCache.set(type, transformsArr);
+  }
+  const transformsArrLength = transformsArr.length;
+  for (let i2 = 0; i2 < transformsArrLength; i2++) {
+    transformsArr[i2](node);
+    if (!node.isAttached()) {
+      break;
+    }
+  }
+}
+function $isNodeValidForTransform(node, compositionKey) {
+  return node !== void 0 && // We don't want to transform nodes being composed
+  node.__key !== compositionKey && node.isAttached();
+}
+function $normalizeAllDirtyTextNodes(editorState, editor) {
+  const dirtyLeaves = editor._dirtyLeaves;
+  const nodeMap = editorState._nodeMap;
+  for (const nodeKey of dirtyLeaves) {
+    const node = nodeMap.get(nodeKey);
+    if ($isTextNode(node) && node.isAttached() && node.isSimpleText() && !node.isUnmergeable()) {
+      $normalizeTextNode(node);
+    }
+  }
+}
+function addTags(editor, tags) {
+  if (!tags) {
+    return;
+  }
+  const updateTags = editor._updateTags;
+  let tags_ = tags;
+  if (!Array.isArray(tags)) {
+    tags_ = [tags];
+  }
+  for (const tag of tags_) {
+    updateTags.add(tag);
+  }
+}
+function $applyAllTransforms(editorState, editor) {
+  const dirtyLeaves = editor._dirtyLeaves;
+  const dirtyElements = editor._dirtyElements;
+  const nodeMap = editorState._nodeMap;
+  const compositionKey = $getCompositionKey();
+  const transformsCache = /* @__PURE__ */ new Map();
+  let untransformedDirtyLeaves = dirtyLeaves;
+  let untransformedDirtyLeavesLength = untransformedDirtyLeaves.size;
+  let untransformedDirtyElements = dirtyElements;
+  let untransformedDirtyElementsLength = untransformedDirtyElements.size;
+  while (untransformedDirtyLeavesLength > 0 || untransformedDirtyElementsLength > 0) {
+    if (untransformedDirtyLeavesLength > 0) {
+      editor._dirtyLeaves = /* @__PURE__ */ new Set();
+      for (const nodeKey of untransformedDirtyLeaves) {
+        const node = nodeMap.get(nodeKey);
+        if ($isTextNode(node) && node.isAttached() && node.isSimpleText() && !node.isUnmergeable()) {
+          $normalizeTextNode(node);
+        }
+        if (node !== void 0 && $isNodeValidForTransform(node, compositionKey)) {
+          $applyTransforms(editor, node, transformsCache);
+        }
+        dirtyLeaves.add(nodeKey);
+      }
+      untransformedDirtyLeaves = editor._dirtyLeaves;
+      untransformedDirtyLeavesLength = untransformedDirtyLeaves.size;
+      if (untransformedDirtyLeavesLength > 0) {
+        infiniteTransformCount++;
+        continue;
+      }
+    }
+    editor._dirtyLeaves = /* @__PURE__ */ new Set();
+    editor._dirtyElements = /* @__PURE__ */ new Map();
+    const rootDirty = untransformedDirtyElements.delete("root");
+    if (rootDirty) {
+      untransformedDirtyElements.set("root", true);
+    }
+    for (const currentUntransformedDirtyElement of untransformedDirtyElements) {
+      const nodeKey = currentUntransformedDirtyElement[0];
+      const intentionallyMarkedAsDirty = currentUntransformedDirtyElement[1];
+      dirtyElements.set(nodeKey, intentionallyMarkedAsDirty);
+      if (!intentionallyMarkedAsDirty) {
+        continue;
+      }
+      const node = nodeMap.get(nodeKey);
+      if (node !== void 0 && $isNodeValidForTransform(node, compositionKey)) {
+        $applyTransforms(editor, node, transformsCache);
+      }
+    }
+    untransformedDirtyLeaves = editor._dirtyLeaves;
+    untransformedDirtyLeavesLength = untransformedDirtyLeaves.size;
+    untransformedDirtyElements = editor._dirtyElements;
+    untransformedDirtyElementsLength = untransformedDirtyElements.size;
+    infiniteTransformCount++;
+  }
+  editor._dirtyLeaves = dirtyLeaves;
+  editor._dirtyElements = dirtyElements;
+}
+function $parseSerializedNode(serializedNode) {
+  const internalSerializedNode = serializedNode;
+  return $parseSerializedNodeImpl(internalSerializedNode, getActiveEditor()._nodes);
+}
+function $parseSerializedNodeImpl(serializedNode, registeredNodes) {
+  const type = serializedNode.type;
+  const registeredNode = registeredNodes.get(type);
+  if (registeredNode === void 0) {
+    {
+      formatDevErrorMessage2(`parseEditorState: type "${type}" + not found`);
+    }
+  }
+  const nodeClass = registeredNode.klass;
+  if (serializedNode.type !== nodeClass.getType()) {
+    {
+      formatDevErrorMessage2(`LexicalNode: Node ${nodeClass.name} does not implement .importJSON().`);
+    }
+  }
+  const node = nodeClass.importJSON(serializedNode);
+  const children = serializedNode.children;
+  if ($isElementNode(node) && Array.isArray(children)) {
+    for (let i2 = 0; i2 < children.length; i2++) {
+      const serializedJSONChildNode = children[i2];
+      const childNode = $parseSerializedNodeImpl(serializedJSONChildNode, registeredNodes);
+      node.append(childNode);
+    }
+  }
+  const slots = serializedNode.$slots;
+  if (slots) {
+    if (!$isSlotHost(node)) {
+      formatDevErrorMessage2(`$parseSerializedNode: node ${nodeClass.name} has slots but is not a valid slot host; only ElementNodes and DecoratorNodes can host slots.`);
+    }
+    for (const name in slots) {
+      const slotNode = $parseSerializedNodeImpl(slots[name], registeredNodes);
+      $setSlot(node, name, slotNode);
+    }
+  }
+  return node;
+}
+function parseEditorState(serializedEditorState, editor, updateFn) {
+  const editorState = createEmptyEditorState();
+  const previousActiveEditorState = activeEditorState;
+  const previousReadOnlyMode = isReadOnlyMode;
+  const previousActiveEditor = activeEditor;
+  const previousDirtyElements = editor._dirtyElements;
+  const previousDirtyLeaves = editor._dirtyLeaves;
+  const previousCloneNotNeeded = editor._cloneNotNeeded;
+  const previousDirtyType = editor._dirtyType;
+  editor._dirtyElements = /* @__PURE__ */ new Map();
+  editor._dirtyLeaves = /* @__PURE__ */ new Set();
+  editor._cloneNotNeeded = /* @__PURE__ */ new Map();
+  editor._dirtyType = NO_DIRTY_NODES;
+  activeEditorState = editorState;
+  isReadOnlyMode = false;
+  activeEditor = editor;
+  setPendingNodeToClone(null);
+  try {
+    const registeredNodes = editor._nodes;
+    const serializedNode = serializedEditorState.root;
+    $parseSerializedNodeImpl(serializedNode, registeredNodes);
+    if (updateFn) {
+      updateFn();
+    }
+    editorState._readOnly = true;
+    editorState._parsed = true;
+    {
+      handleDEVOnlyPendingUpdateGuarantees(editorState);
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      editor._onError(error);
+    }
+  } finally {
+    editor._dirtyElements = previousDirtyElements;
+    editor._dirtyLeaves = previousDirtyLeaves;
+    editor._cloneNotNeeded = previousCloneNotNeeded;
+    editor._dirtyType = previousDirtyType;
+    activeEditorState = previousActiveEditorState;
+    isReadOnlyMode = previousReadOnlyMode;
+    activeEditor = previousActiveEditor;
+  }
+  return editorState;
+}
+function readEditorState(editor, editorState, callbackFn) {
+  const previousActiveEditorState = activeEditorState;
+  const previousReadOnlyMode = isReadOnlyMode;
+  const previousActiveEditor = activeEditor;
+  activeEditorState = editorState;
+  isReadOnlyMode = true;
+  activeEditor = editor;
+  try {
+    return callbackFn();
+  } finally {
+    activeEditorState = previousActiveEditorState;
+    isReadOnlyMode = previousReadOnlyMode;
+    activeEditor = previousActiveEditor;
+  }
+}
+function handleDEVOnlyPendingUpdateGuarantees(pendingEditorState) {
+  const nodeMap = pendingEditorState._nodeMap;
+  nodeMap.set = () => {
+    throw new Error("Cannot call set() on a frozen Lexical node map");
+  };
+  nodeMap.clear = () => {
+    throw new Error("Cannot call clear() on a frozen Lexical node map");
+  };
+  nodeMap.delete = () => {
+    throw new Error("Cannot call delete() on a frozen Lexical node map");
+  };
+}
+function $commitPendingUpdates(editor, recoveryEditorState) {
+  if (editor._pendingEditorState !== null && activeEditor !== editor) {
+    flushRootMutations(editor, false, true);
+  }
+  const previouslyCommitting = isCommittingPendingUpdates;
+  isCommittingPendingUpdates = true;
+  try {
+    const notificationResult = $notifyPendingSelectionChange(editor);
+    $commitPendingUpdatesImpl(editor, recoveryEditorState);
+    if (notificationResult) {
+      editor._onWarn(createDevError(`Selection change listeners are endlessly changing the selection.`));
+    }
+  } finally {
+    isCommittingPendingUpdates = previouslyCommitting;
+  }
+}
+function $commitPendingUpdatesImpl(editor, recoveryEditorState) {
+  const pendingEditorState = editor._pendingEditorState;
+  const rootElement = editor._rootElement;
+  const shouldSkipDOM = editor._headless || rootElement === null;
+  if (pendingEditorState === null) {
+    if (!editor._updating && editor._deferred.length > 0) {
+      triggerDeferredUpdateCallbacks(editor, editor._deferred);
+    }
+    return;
+  }
+  const currentEditorState = editor._editorState;
+  const currentSelection = currentEditorState._selection;
+  const pendingSelection = pendingEditorState._selection;
+  const needsUpdate = editor._dirtyType !== NO_DIRTY_NODES;
+  const previousActiveEditorState = activeEditorState;
+  const previousReadOnlyMode = isReadOnlyMode;
+  const previousActiveEditor = activeEditor;
+  const previouslyUpdating = editor._updating;
+  const observer = editor._observer;
+  let mutatedNodes2 = null;
+  editor._pendingEditorState = null;
+  editor._editorState = pendingEditorState;
+  if (!shouldSkipDOM && needsUpdate && observer !== null) {
+    activeEditor = editor;
+    activeEditorState = pendingEditorState;
+    isReadOnlyMode = false;
+    editor._updating = true;
+    try {
+      const dirtyType = editor._dirtyType;
+      const dirtyElements2 = editor._dirtyElements;
+      const dirtyLeaves2 = editor._dirtyLeaves;
+      observer.disconnect();
+      mutatedNodes2 = $reconcileRoot(currentEditorState, pendingEditorState, editor, dirtyType, dirtyElements2, dirtyLeaves2);
+    } catch (error) {
+      if (error instanceof Error) {
+        editor._onError(error);
+      }
+      if (!isAttemptingToRecoverFromReconcilerError) {
+        resetEditor(editor, null, rootElement, pendingEditorState);
+        initMutationObserver(editor);
+        editor._dirtyType = FULL_RECONCILE;
+        isAttemptingToRecoverFromReconcilerError = true;
+        $commitPendingUpdates(editor, currentEditorState);
+        isAttemptingToRecoverFromReconcilerError = false;
+      } else {
+        throw error;
+      }
+      return;
+    } finally {
+      observer.observe(rootElement, observerOptions);
+      editor._updating = previouslyUpdating;
+      activeEditorState = previousActiveEditorState;
+      isReadOnlyMode = previousReadOnlyMode;
+      activeEditor = previousActiveEditor;
+    }
+  }
+  if (!pendingEditorState._readOnly) {
+    pendingEditorState._readOnly = true;
+    {
+      handleDEVOnlyPendingUpdateGuarantees(pendingEditorState);
+      if ($isRangeSelection(pendingSelection)) {
+        Object.freeze(pendingSelection.anchor);
+        Object.freeze(pendingSelection.focus);
+      }
+      Object.freeze(pendingSelection);
+    }
+  }
+  const dirtyLeaves = editor._dirtyLeaves;
+  const dirtyElements = editor._dirtyElements;
+  const normalizedNodes = editor._normalizedNodes;
+  const tags = editor._updateTags;
+  if (needsUpdate) {
+    editor._dirtyType = NO_DIRTY_NODES;
+    editor._cloneNotNeeded.clear();
+    editor._dirtyLeaves = /* @__PURE__ */ new Set();
+    editor._dirtyElements = /* @__PURE__ */ new Map();
+    editor._normalizedNodes = /* @__PURE__ */ new Set();
+  }
+  editor._updateTags = /* @__PURE__ */ new Set();
+  const deferred = editor._deferred;
+  if (!previouslyUpdating) {
+    editor._deferred = [];
+  }
+  $garbageCollectDetachedDecorators(editor, pendingEditorState);
+  const domSelection = shouldSkipDOM ? null : getDOMSelection(getWindow(editor));
+  if (editor._editable && // domSelection will be null in headless
+  domSelection !== null && (needsUpdate || pendingSelection === null || pendingSelection.dirty || !pendingSelection.is(currentSelection)) && rootElement !== null && !tags.has(SKIP_DOM_SELECTION_TAG)) {
+    activeEditor = editor;
+    activeEditorState = pendingEditorState;
+    try {
+      if (observer !== null) {
+        observer.disconnect();
+      }
+      if (needsUpdate || pendingSelection === null || pendingSelection.dirty) {
+        const blockCursorElement = editor._blockCursorElement;
+        if (blockCursorElement !== null) {
+          removeDOMBlockCursorElement(blockCursorElement, editor, rootElement);
+        }
+        $updateDOMSelection(currentSelection, pendingSelection, editor, domSelection, tags, rootElement);
+      }
+      $updateDOMBlockCursorElement(editor, rootElement, pendingSelection);
+    } finally {
+      if (observer !== null) {
+        observer.observe(rootElement, observerOptions);
+      }
+      activeEditor = previousActiveEditor;
+      activeEditorState = previousActiveEditorState;
+    }
+  }
+  const previouslyDispatching = editorsDispatchingCommitListeners.has(editor);
+  editorsDispatchingCommitListeners.add(editor);
+  try {
+    if (mutatedNodes2 !== null) {
+      triggerMutationListeners(editor, mutatedNodes2, tags, dirtyLeaves, currentEditorState);
+    }
+    const pendingDecorators = editor._pendingDecorators;
+    if (pendingDecorators !== null) {
+      editor._decorators = pendingDecorators;
+      editor._pendingDecorators = null;
+      triggerListeners("decorator", editor, true, pendingDecorators);
+    }
+    triggerTextContentListeners(editor, recoveryEditorState || currentEditorState, pendingEditorState);
+    triggerListeners("update", editor, true, {
+      dirtyElements,
+      dirtyLeaves,
+      editorState: pendingEditorState,
+      mutatedNodes: mutatedNodes2,
+      normalizedNodes,
+      prevEditorState: recoveryEditorState || currentEditorState,
+      tags
+    });
+  } finally {
+    if (!previouslyDispatching) {
+      editorsDispatchingCommitListeners.delete(editor);
+    }
+  }
+  if (!previouslyUpdating) {
+    triggerDeferredUpdateCallbacks(editor, deferred);
+  }
+  $triggerEnqueuedUpdates(editor);
+}
+function triggerTextContentListeners(editor, currentEditorState, pendingEditorState) {
+  const currentTextContent = getEditorStateTextContent(currentEditorState);
+  const latestTextContent = getEditorStateTextContent(pendingEditorState);
+  if (currentTextContent !== latestTextContent) {
+    triggerListeners("textcontent", editor, true, latestTextContent);
+  }
+}
+function triggerMutationListeners(editor, mutatedNodes2, updateTags, dirtyLeaves, prevEditorState) {
+  const listeners = Array.from(editor._listeners.mutation);
+  const listenersLength = listeners.length;
+  for (let i2 = 0; i2 < listenersLength; i2++) {
+    const [listener, klassSet] = listeners[i2];
+    for (const klass of klassSet) {
+      const mutatedNodesByType = mutatedNodes2.get(klass);
+      if (mutatedNodesByType !== void 0) {
+        listener(mutatedNodesByType, {
+          dirtyLeaves,
+          prevEditorState,
+          updateTags
+        });
+      }
+    }
+  }
+}
+function triggerListeners(type, editor, isCurrentlyEnqueuingUpdates, ...payload) {
+  const previouslyUpdating = editor._updating;
+  editor._updating = isCurrentlyEnqueuingUpdates;
+  try {
+    const listenerMap = editor._listeners[type];
+    const listeners = Array.from(listenerMap);
+    for (const [listener, unregister] of listeners) {
+      if (unregister) {
+        unregister();
+      }
+      const result = listener(...payload);
+      const nextUnregister = typeof result === "function" ? result : void 0;
+      if (listenerMap.has(listener)) {
+        listenerMap.set(listener, nextUnregister);
+      } else if (nextUnregister) {
+        nextUnregister();
+      }
+    }
+  } finally {
+    editor._updating = previouslyUpdating;
+  }
+}
+function hasSelectionChanged(editor, selection) {
+  const previous = editor._lastNotifiedSelection;
+  return selection === null ? previous !== null : !selection.is(previous);
+}
+function $dispatchSelectionChangeCommand(editor, selection, force = false) {
+  if (!force && !hasSelectionChanged(editor, selection)) {
+    return;
+  }
+  editor.dispatchCommand(SELECTION_CHANGE_COMMAND);
+}
+function $notifyPendingSelectionChange(editor) {
+  if (editorsWithPendingSelectionChange.has(editor)) {
+    return false;
+  }
+  editorsWithPendingSelectionChange.add(editor);
+  try {
+    for (let count = 0; editor._pendingEditorState !== null; count++) {
+      const pending = editor._pendingEditorState;
+      const selection = pending._selection;
+      const root = editor._rootElement;
+      if (!hasSelectionChanged(editor, selection)) {
+        return false;
+      }
+      const skipNotification = (selection === null || $isRangeSelection(selection)) && (editor._headless || root === null || !root.isConnected);
+      if (skipNotification || count === 100) {
+        editor._lastNotifiedSelection = selection === null ? null : selection.clone();
+        return !skipNotification;
+      }
+      $beginUpdate(editor, () => editor.dispatchCommand(SELECTION_CHANGE_COMMAND), void 0, true);
+    }
+    return false;
+  } finally {
+    editorsWithPendingSelectionChange.delete(editor);
+  }
+}
+function triggerCommandListeners(editor, type, payload, fromEditor) {
+  const editors = getEditorsToPropagate(editor);
+  let updatingParentEditor;
+  if (!isCommittingPendingUpdates) {
+    for (let e2 = 0; e2 < editors.length; e2++) {
+      if (!editors[e2]._updating) {
+        editors[e2]._cascadeCount = 0;
+      }
+    }
+  }
+  if (type === SELECTION_CHANGE_COMMAND) {
+    if (activeEditor !== editor || isReadOnlyMode) {
+      let handled = false;
+      updateEditorSync(editor, () => {
+        handled = triggerCommandListeners(editor, type, payload, fromEditor);
+      });
+      return handled;
+    }
+    const selection = getActiveEditorState()._selection;
+    editor._lastNotifiedSelection = selection === null ? null : selection.clone();
+  }
+  for (let i2 = 4; i2 >= 0; i2--) {
+    for (let e2 = 0; e2 < editors.length; e2++) {
+      const currentEditor = editors[e2];
+      if (e2 > 0 && currentEditor._updating) {
+        updatingParentEditor = currentEditor;
+        break;
+      }
+      const commandListeners = currentEditor._commands;
+      const listenerInPriorityOrder = commandListeners.get(type);
+      if (listenerInPriorityOrder !== void 0) {
+        const listenersSet = listenerInPriorityOrder[i2];
+        if (listenersSet.size > 0) {
+          let returnVal = false;
+          updateEditorSync(currentEditor, () => {
+            for (const listener of listenersSet) {
+              if (listener(payload, fromEditor)) {
+                returnVal = true;
+                return;
+              }
+            }
+          });
+          if (returnVal) {
+            return returnVal;
+          }
+        }
+      }
+    }
+  }
+  if (updatingParentEditor) {
+    updatingParentEditor.update(() => {
+      triggerCommandListeners(updatingParentEditor, type, payload, fromEditor);
+    });
+  }
+  return false;
+}
+function scheduleCascadeReset(editor) {
+  if (editorsWithPendingCascadeReset.has(editor)) {
+    return;
+  }
+  editorsWithPendingCascadeReset.add(editor);
+  setTimeout(() => {
+    editorsWithPendingCascadeReset.delete(editor);
+    editor._cascadeCount = 0;
+  }, 0);
+}
+function $triggerEnqueuedUpdates(editor) {
+  const queuedUpdates = editor._updates;
+  if (queuedUpdates.length === 0) {
+    editor._cascadeCount = 0;
+    return;
+  }
+  scheduleCascadeReset(editor);
+  if (editor._cascadeCount++ > 99) {
+    editor._updates = [];
+    editor._cascadeCount = 0;
+    editor._onWarn(createDevError(`One or more update listeners are endlessly enqueueing more updates. May have encountered infinite recursion caused by update listeners that trigger additional updates without a stop condition. Editor namespace: ${editor._config.namespace}`));
+    return;
+  }
+  const queuedUpdate = queuedUpdates.shift();
+  if (queuedUpdate) {
+    const [updateFn, options] = queuedUpdate;
+    $beginUpdate(editor, updateFn, options);
+  }
+}
+function triggerDeferredUpdateCallbacks(editor, deferred) {
+  if (editor._deferred === deferred) {
+    editor._deferred = [];
+  }
+  if (deferred.length !== 0) {
+    const previouslyUpdating = editor._updating;
+    editor._updating = true;
+    try {
+      for (let i2 = 0; i2 < deferred.length; i2++) {
+        deferred[i2]();
+      }
+    } finally {
+      editor._updating = previouslyUpdating;
+    }
+  }
+}
+function $processNestedUpdates(editor, initialSkipTransforms) {
+  const queuedUpdates = editor._updates;
+  let skipTransforms = initialSkipTransforms || false;
+  while (queuedUpdates.length !== 0) {
+    const queuedUpdate = queuedUpdates.shift();
+    if (queuedUpdate) {
+      const [nextUpdateFn, options] = queuedUpdate;
+      const pendingEditorState = editor._pendingEditorState;
+      let onUpdate;
+      if (options !== void 0) {
+        onUpdate = options.onUpdate;
+        if (options.skipTransforms) {
+          skipTransforms = true;
+        }
+        if (options.discrete) {
+          if (!(pendingEditorState !== null)) {
+            formatDevErrorMessage2(`Unexpected empty pending editor state on discrete nested update`);
+          }
+          pendingEditorState._flushSync = true;
+        }
+        if (onUpdate) {
+          editor._deferred.push(onUpdate);
+        }
+        addTags(editor, options.tag);
+      }
+      if (pendingEditorState == null) {
+        $beginUpdate(editor, nextUpdateFn, options);
+      } else {
+        nextUpdateFn();
+      }
+    }
+  }
+  return skipTransforms;
+}
+function $flushSyncAfterUpdate() {
+  const editorState = getActiveEditorState();
+  errorOnReadOnly();
+  editorState._flushSync = true;
+}
+function $beginUpdate(editor, updateFn, options, skipCommit = false) {
+  const updateTags = editor._updateTags;
+  let onUpdate;
+  let skipTransforms = false;
+  let discrete = false;
+  if (options !== void 0) {
+    onUpdate = options.onUpdate;
+    addTags(editor, options.tag);
+    skipTransforms = options.skipTransforms || false;
+    discrete = options.discrete || false;
+  }
+  if (onUpdate) {
+    editor._deferred.push(onUpdate);
+  }
+  const currentEditorState = editor._editorState;
+  let pendingEditorState = editor._pendingEditorState;
+  let editorStateWasCloned = false;
+  if (pendingEditorState === null || pendingEditorState._readOnly) {
+    pendingEditorState = editor._pendingEditorState = cloneEditorState(pendingEditorState || currentEditorState);
+    editorStateWasCloned = true;
+  }
+  pendingEditorState._flushSync = discrete;
+  const previousActiveEditorState = activeEditorState;
+  const previousReadOnlyMode = isReadOnlyMode;
+  const previousActiveEditor = activeEditor;
+  const previouslyUpdating = editor._updating;
+  const previouslyNotifiedSelection = editor._lastNotifiedSelection;
+  activeEditorState = pendingEditorState;
+  isReadOnlyMode = false;
+  editor._updating = true;
+  activeEditor = editor;
+  const headless = editor._headless || editor.getRootElement() === null;
+  setPendingNodeToClone(null);
+  try {
+    if (editorStateWasCloned) {
+      if (headless) {
+        if (currentEditorState._selection !== null) {
+          pendingEditorState._selection = currentEditorState._selection.clone();
+        }
+      } else {
+        pendingEditorState._selection = $internalCreateSelection(editor, options && options.event || null);
+      }
+    }
+    const startingCompositionKey = editor._compositionKey;
+    updateFn();
+    skipTransforms = $processNestedUpdates(editor, skipTransforms);
+    applySelectionTransforms(pendingEditorState, editor);
+    if (editor._dirtyType !== NO_DIRTY_NODES) {
+      if (skipTransforms) {
+        $normalizeAllDirtyTextNodes(pendingEditorState, editor);
+      } else {
+        $applyAllTransforms(pendingEditorState, editor);
+      }
+      $processNestedUpdates(editor);
+      $garbageCollectDetachedNodes(currentEditorState, pendingEditorState, editor._dirtyLeaves, editor._dirtyElements);
+    }
+    const endingCompositionKey = editor._compositionKey;
+    if (startingCompositionKey !== endingCompositionKey) {
+      pendingEditorState._flushSync = true;
+    }
+    const pendingSelection = pendingEditorState._selection;
+    if ($isRangeSelection(pendingSelection)) {
+      if (editor._slotsUsed) {
+        $clampRangeSelectionToSlotFrame(pendingSelection);
+      }
+      const pendingNodeMap = pendingEditorState._nodeMap;
+      const anchorKey = pendingSelection.anchor.key;
+      const focusKey = pendingSelection.focus.key;
+      if (pendingNodeMap.get(anchorKey) === void 0 || pendingNodeMap.get(focusKey) === void 0) {
+        {
+          formatDevErrorMessage2(`updateEditor: selection has been lost because the previously selected nodes have been removed and selection wasn't moved to another node. Ensure selection changes after removing/replacing a selected node.`);
+        }
+      }
+    } else if ($isNodeSelection(pendingSelection)) {
+      if (pendingSelection._nodes.size === 0) {
+        pendingEditorState._selection = null;
+      }
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      editor._onError(error);
+    }
+    editor._pendingEditorState = currentEditorState;
+    const selection = currentEditorState._selection;
+    editor._lastNotifiedSelection = selection === null ? null : selection.clone();
+    editor._dirtyType = FULL_RECONCILE;
+    editor._cloneNotNeeded.clear();
+    editor._dirtyLeaves = /* @__PURE__ */ new Set();
+    editor._dirtyElements.clear();
+    $commitPendingUpdates(editor);
+    return;
+  } finally {
+    activeEditorState = previousActiveEditorState;
+    isReadOnlyMode = previousReadOnlyMode;
+    activeEditor = previousActiveEditor;
+    editor._updating = previouslyUpdating;
+    infiniteTransformCount = 0;
+  }
+  if (skipCommit) {
+    return;
+  }
+  const shouldUpdate = editor._dirtyType !== NO_DIRTY_NODES || editor._deferred.length > 0 || editorStateHasDirtySelection(pendingEditorState, editor);
+  if (shouldUpdate) {
+    if (pendingEditorState._flushSync) {
+      pendingEditorState._flushSync = false;
+      $commitPendingUpdates(editor);
+    } else if (editorStateWasCloned) {
+      scheduleMicroTask(() => {
+        $commitPendingUpdates(editor);
+      });
+    }
+  } else {
+    pendingEditorState._flushSync = false;
+    if (editorStateWasCloned) {
+      updateTags.clear();
+      editor._deferred = [];
+      editor._pendingEditorState = null;
+      editor._lastNotifiedSelection = previouslyNotifiedSelection;
+    }
+  }
+}
+function updateEditorSync(editor, updateFn, options) {
+  if (activeEditor === editor && options === void 0) {
+    if (isCurrentlyReadOnlyMode()) {
+      if (!isCommittingPendingUpdates || isReadOnlyMode) {
+        console.warn(`updateEditorSync: an editor update (e.g. a command listener that mutates the editor) ran while a read-only context was on the stack. This most commonly happens when a command is dispatched from inside editor.read(). The update has been deferred to a fresh writable update so it still applies, but dispatching mutations from a read-only context is an anti-pattern \u2014 dispatch after editor.read() returns, or via queueMicrotask.`);
+      }
+      $beginUpdate(editor, updateFn, options);
+    } else {
+      updateFn();
+    }
+  } else {
+    $beginUpdate(editor, updateFn, options);
+  }
+}
+function updateEditor(editor, updateFn, options) {
+  if (editor._updating) {
+    editor._updates.push([updateFn, options]);
+  } else {
+    $beginUpdate(editor, updateFn, options);
+  }
+}
+function mergeRegister(...func) {
+  return () => {
+    for (let i2 = func.length - 1; i2 >= 0; i2--) {
+      func[i2]();
+    }
+    func.length = 0;
+  };
+}
+function registerEventListener(target, type, listener, options) {
+  target.addEventListener(type, listener, options);
+  return target.removeEventListener.bind(target, type, listener, options);
+}
+function registerEventListeners(target, listeners, options) {
+  const entries = Object.entries(listeners);
+  return mergeRegister(...entries.map(([type, listener]) => registerEventListener(target, type, listener, options)));
+}
+var ANDROID_COMPOSITION_LATENCY = 30;
+var rootElementToDocument = /* @__PURE__ */ new WeakMap();
+var documentRegistrations = /* @__PURE__ */ new WeakMap();
+var documentSelectionChange = /* @__PURE__ */ createRefCountedRegistry((doc) => {
+  doc.addEventListener("selectionchange", onDocumentSelectionChange);
+  return () => doc.removeEventListener("selectionchange", onDocumentSelectionChange);
+});
+function $shouldPreventDefaultAndInsertText(selection, domTargetRange, text, timeStamp, isBeforeInput, cachedDOMSelectionPoints) {
+  const anchor = selection.anchor;
+  const focus = selection.focus;
+  const anchorNode = anchor.getNode();
+  const editor = getActiveEditor();
+  let domSelectionPoints;
+  if (cachedDOMSelectionPoints !== void 0) {
+    domSelectionPoints = cachedDOMSelectionPoints;
+  } else {
+    const domSelection = getDOMSelection(getWindow(editor));
+    domSelectionPoints = domSelection !== null ? getDOMSelectionPoints(domSelection, editor._rootElement) : null;
+  }
+  const domAnchorNode = domSelectionPoints !== null ? domSelectionPoints.anchorNode : null;
+  const anchorKey = anchor.key;
+  const backingAnchorElement = editor.getElementByKey(anchorKey);
+  const textLength = text.length;
+  return anchorKey !== focus.key || // If we're working with a non-text node.
+  !$isTextNode(anchorNode) || // If we are replacing a range with a single character or grapheme, and not composing.
+  (!isBeforeInput && (!CAN_USE_BEFORE_INPUT || // We check to see if there has been
+  // a recent beforeinput event for "textInput". If there has been one in the last
+  // 50ms then we proceed as normal. However, if there is not, then this is likely
+  // a dangling `input` event caused by execCommand('insertText').
+  editor._inputState.lastBeforeInputInsertTextTimeStamp < timeStamp + 50) || anchorNode.isDirty() && textLength < 2 || // TODO consider if there are other scenarios when multiple code units
+  //      should be addressed here
+  doesContainSurrogatePair(text)) && anchor.offset !== focus.offset && !anchorNode.isComposing() || // Any non standard text node.
+  $isTokenOrSegmented(anchorNode) || // If the text length is more than a single character and we're either
+  // dealing with this in "beforeinput" or where the node has already recently
+  // been changed (thus is dirty).
+  anchorNode.isDirty() && textLength > 1 || // If the DOM selection element is not the same as the backing node during beforeinput.
+  (isBeforeInput || !CAN_USE_BEFORE_INPUT) && backingAnchorElement !== null && !anchorNode.isComposing() && domAnchorNode !== $getDOMTextNode(anchorNode, backingAnchorElement, editor) || // If TargetRange is not the same as the DOM selection; browser trying to edit random parts
+  // of the editor.
+  domSelectionPoints !== null && domTargetRange !== null && (!domTargetRange.collapsed || domTargetRange.startContainer !== domSelectionPoints.anchorNode || domTargetRange.startOffset !== domSelectionPoints.anchorOffset) || // Check if we're changing from bold to italics, or some other format.
+  !anchorNode.isComposing() && (anchorNode.getFormat() !== selection.format || anchorNode.getStyle() !== selection.style) || // One last set of heuristics to check against.
+  $shouldInsertTextAfterOrBeforeTextNode(selection, anchorNode);
+}
+function shouldSkipSelectionChange(domNode, offset) {
+  return isDOMTextNode(domNode) && domNode.nodeValue !== null && offset !== 0 && offset !== domNode.nodeValue.length;
+}
+function onSelectionChange(domSelection, editor, isActive) {
+  const {
+    anchorNode: anchorDOM,
+    anchorOffset,
+    focusNode: focusDOM,
+    focusOffset
+  } = getDOMSelectionPoints(domSelection, editor._rootElement);
+  const inputState = editor._inputState;
+  if (inputState.isSelectionChangeFromDOMUpdate) {
+    inputState.isSelectionChangeFromDOMUpdate = false;
+    const appliedPoints = inputState.selectionChangeFromDOMUpdatePoints;
+    inputState.selectionChangeFromDOMUpdatePoints = null;
+    if (shouldSkipSelectionChange(anchorDOM, anchorOffset) && shouldSkipSelectionChange(focusDOM, focusOffset) && !inputState.postDeleteSelectionToRestore && (appliedPoints === null || appliedPoints.anchorNode === anchorDOM && appliedPoints.anchorOffset === anchorOffset && appliedPoints.focusNode === focusDOM && appliedPoints.focusOffset === focusOffset)) {
+      return;
+    }
+  }
+  updateEditorSync(editor, () => {
+    if (!isActive) {
+      $setSelection(null);
+      return;
+    }
+    if (!isSelectionWithinEditor(editor, anchorDOM, focusDOM)) {
+      return;
+    }
+    const drag = inputState.mouseDrag;
+    if (drag && !(drag.type === "mousedown" && drag.defaultPrevented)) {
+      $adjustMouseDrag(editor, drag, focusDOM);
+    }
+    const isAdjusted = adjustedMouseEvents.has(drag);
+    let selection = $getSelection();
+    if (inputState.postDeleteSelectionToRestore && $isRangeSelection(selection) && selection.isCollapsed()) {
+      const curAnchor = selection.anchor;
+      const prevAnchor = inputState.postDeleteSelectionToRestore.anchor;
+      if (
+        // Rightward shift in same node
+        curAnchor.key === prevAnchor.key && curAnchor.offset === prevAnchor.offset + 1 || // Or rightward shift into sibling node
+        curAnchor.offset === 1 && prevAnchor.getNode().is(curAnchor.getNode().getPreviousSibling())
+      ) {
+        selection = inputState.postDeleteSelectionToRestore.clone();
+        $setSelection(selection);
+      }
+    }
+    inputState.postDeleteSelectionToRestore = null;
+    if ($isRangeSelection(selection)) {
+      const anchor = selection.anchor;
+      if (selection.isCollapsed()) {
+        if (domSelection.type === "Range" && anchorDOM === focusDOM) {
+          selection.dirty = true;
+        }
+        $updateCollapsedSelectionFormatStyle(editor, selection);
+      } else {
+        const anchorKey = anchor.key;
+        const focus = selection.focus;
+        const focusKey = focus.key;
+        const nodes = selection.getNodes();
+        const nodesLength = nodes.length;
+        const isBackward = selection.isBackward();
+        const [anchorAt, focusAt] = isAdjusted ? [anchor.offset, focus.offset] : [anchorOffset, focusOffset];
+        const startOffset = isBackward ? focusAt : anchorAt;
+        const endOffset = isBackward ? anchorAt : focusAt;
+        const startKey = isBackward ? focusKey : anchorKey;
+        const endKey = isBackward ? anchorKey : focusKey;
+        let combinedFormat = IS_ALL_FORMATTING;
+        let hasTextNodes = false;
+        for (let i2 = 0; i2 < nodesLength; i2++) {
+          const node = nodes[i2];
+          const textContentSize = node.getTextContentSize();
+          if ($isTextNode(node) && textContentSize !== 0 && // Exclude empty text nodes at boundaries resulting from user's selection
+          !(i2 === 0 && node.__key === startKey && startOffset === textContentSize || i2 === nodesLength - 1 && node.__key === endKey && endOffset === 0)) {
+            hasTextNodes = true;
+            combinedFormat &= node.getFormat();
+            if (combinedFormat === 0) {
+              break;
+            }
+          }
+        }
+        selection.format = hasTextNodes ? combinedFormat : 0;
+      }
+    }
+    $dispatchSelectionChangeCommand(editor, selection, selection !== null && (selection.dirty && !isAdjusted || !$isRangeSelection(selection)));
+  });
+}
+function $updateSelectionFormatStyle(selection, format, style) {
+  if (selection.format !== format || selection.style !== style) {
+    selection.format = format;
+    selection.style = style;
+    selection.dirty = true;
+  }
+}
+function $updateSelectionFormatStyleFromTextNode(selection, node) {
+  const format = node.getFormat();
+  const style = node.getStyle();
+  $updateSelectionFormatStyle(selection, format, style);
+}
+function $updateCollapsedSelectionFormatStyle(editor, selection) {
+  const anchor = selection.anchor;
+  const anchorNode = anchor.getNode();
+  const windowEvent = getWindow(editor).event;
+  const currentTimeStamp = windowEvent ? windowEvent.timeStamp : performance.now();
+  const {
+    format: lastFormat,
+    style: lastStyle,
+    offset: lastOffset,
+    key: lastKey,
+    timeStamp
+  } = editor._inputState.collapsedSelectionFormat;
+  if (currentTimeStamp < timeStamp + 200 && anchor.offset === lastOffset && anchor.key === lastKey) {
+    $updateSelectionFormatStyle(selection, lastFormat, lastStyle);
+  } else if (anchor.type === "text") {
+    if (!$isTextNode(anchorNode)) {
+      formatDevErrorMessage2(`Point.getNode() must return TextNode when type is text`);
+    }
+    $updateSelectionFormatStyleFromTextNode(selection, anchorNode);
+  } else if (
+    // An element point, unless nothing is composing and the root has no text
+    editor.isComposing() || $getRoot().getTextContent() !== ""
+  ) {
+    if (!$isElementNode(anchorNode)) {
+      formatDevErrorMessage2(`Point.getNode() must return ElementNode when type is element`);
+    }
+    if (
+      // This previously applied to all ParagraphNode
+      anchorNode.isEmpty()
+    ) {
+      $internalRefreshSelectionFormatAndStyle(selection, "");
+    } else {
+      $updateSelectionFormatStyle(selection, selection.format, "");
+    }
+  }
+}
+function onClick(event, editor) {
+  updateEditorSync(editor, () => {
+    const selection = $getSelection();
+    const domSelection = getDOMSelection(getWindow(editor));
+    const lastSelection = $getPreviousSelection();
+    if (domSelection) {
+      if ($isRangeSelection(selection)) {
+        const anchor = selection.anchor;
+        const anchorNode = anchor.getNode();
+        if (anchor.type === "element" && anchor.offset === 0 && selection.isCollapsed() && !$isRootNode(anchorNode) && $getRoot().getChildrenSize() === 1 && anchorNode.getTopLevelElementOrThrow().isEmpty() && lastSelection !== null && selection.is(lastSelection)) {
+          domSelection.removeAllRanges();
+          selection.dirty = true;
+        }
+      } else if (event.pointerType === "touch" || event.pointerType === "pen" || // iOS reports the click that follows a tap with pointerType 'mouse',
+      // and fires it before the selectionchange for the caret the tap just
+      // placed. Without this, the NodeSelection survives into CLICK_COMMAND,
+      // where rich text clears it and the reconciler removes that caret, so
+      // the keyboard opens with no caret to reveal and the page jumps. The
+      // tap's pointerdown is still 'touch' (or 'pen'); an iPadOS trackpad
+      // click is handled by selectionchange like any other mouse click.
+      IS_IOS && editor._inputState.lastPointerType !== "mouse") {
+        const domSelectionPoints = getDOMSelectionPoints(domSelection, editor._rootElement);
+        const domAnchorNode = domSelectionPoints.anchorNode;
+        if (isHTMLElement(domAnchorNode) || isDOMTextNode(domAnchorNode)) {
+          const newSelection = $internalCreateRangeSelection(lastSelection, domSelection, editor, event);
+          $setSelection(newSelection);
+        }
+      }
+    }
+    if (IS_FIREFOX && domSelection !== null && domSelection.rangeCount === 0) {
+      const rootElement = editor._rootElement;
+      if (rootElement !== null && event.target === rootElement) {
+        const clientY = event.clientY;
+        let offset = rootElement.childNodes.length;
+        for (let i2 = 0; i2 < rootElement.childNodes.length; i2++) {
+          const child = rootElement.childNodes[i2];
+          if (isHTMLElement(child)) {
+            const rect = child.getBoundingClientRect();
+            if (clientY <= (rect.top + rect.bottom) / 2) {
+              offset = i2;
+              break;
+            }
+          }
+        }
+        domSelection.setBaseAndExtent(rootElement, offset, rootElement, offset);
+        const newSelection = $internalCreateRangeSelection(lastSelection, domSelection, editor, event);
+        if (newSelection !== null) {
+          $setSelection(newSelection);
+        } else {
+          domSelection.removeAllRanges();
+        }
+      }
+    }
+    dispatchCommand(editor, CLICK_COMMAND, event);
+  });
+}
+var TAP_SLOP_PX = 10;
+var FOCUSABLE_SELECTOR = 'input:not(:disabled),textarea:not(:disabled),select:not(:disabled),button:not(:disabled),a[href],area[href],label,summary,iframe,object,embed,audio[controls],video[controls],[tabindex],[contenteditable]:not([contenteditable="false"])';
+function onMouseDownIOS(event, editor) {
+  const rootElement = editor.getRootElement();
+  if (rootElement === null) {
+    return;
+  }
+  if (!isDecoratorTapIOS(event, editor, rootElement)) {
+    restoreInputModeIOS(editor, rootElement);
+    return;
+  }
+  event.preventDefault();
+  if (getActiveElementDeep(rootElement.ownerDocument) !== rootElement) {
+    if (editor._inputState.savedInputMode === void 0) {
+      editor._inputState.savedInputMode = rootElement.getAttribute("inputmode");
+    }
+    rootElement.setAttribute("inputmode", "none");
+    rootElement.focus({
+      preventScroll: true
+    });
+  }
+}
+function isDecoratorTapIOS(event, editor, rootElement) {
+  if (editor._inputState.lastPointerType === "mouse") {
+    return false;
+  }
+  const target = getComposedEventTarget(event);
+  if (!isDOMNode(target)) {
+    return false;
+  }
+  let inDecorator = false;
+  for (let node = target; node !== null; node = getParentElement(node)) {
+    if (node === rootElement) {
+      return inDecorator;
+    }
+    if (node.nodeType === DOM_ELEMENT_TYPE) {
+      const element = node;
+      if (element.matches(FOCUSABLE_SELECTOR)) {
+        return false;
+      }
+      if (element.getAttribute("data-lexical-decorator") === "true") {
+        inDecorator = true;
+      }
+    }
+  }
+  return false;
+}
+function onTouchEndIOS(event, editor, rootElement) {
+  if (editor._inputState.savedInputMode === void 0) {
+    return;
+  }
+  if (!isDecoratorTapIOS(event, editor, rootElement)) {
+    if (getActiveElementDeep(rootElement.ownerDocument) === rootElement) {
+      rootElement.blur();
+    }
+    restoreInputModeIOS(editor, rootElement);
+  }
+}
+function restoreInputModeIOS(editor, rootElement) {
+  const savedInputMode = editor._inputState.savedInputMode;
+  if (savedInputMode !== void 0) {
+    editor._inputState.savedInputMode = void 0;
+    if (savedInputMode === null) {
+      rootElement.removeAttribute("inputmode");
+    } else {
+      rootElement.setAttribute("inputmode", savedInputMode);
+    }
+  }
+}
+function registerTapListenerIOS(rootElement, onTap) {
+  let start = null;
+  const options = {
+    capture: true,
+    passive: true
+  };
+  return mergeRegister(registerEventListener(rootElement, "touchstart", (event) => {
+    const touch = event.touches.length === 1 ? event.touches[0] : null;
+    start = touch ? {
+      x: touch.clientX,
+      y: touch.clientY
+    } : null;
+  }, options), registerEventListener(rootElement, "touchend", (event) => {
+    const touch = event.changedTouches[0];
+    if (start !== null && touch && event.touches.length === 0 && Math.abs(touch.clientX - start.x) <= TAP_SLOP_PX && Math.abs(touch.clientY - start.y) <= TAP_SLOP_PX) {
+      onTap(event);
+    }
+    start = null;
+  }, options));
+}
+function onPointerDown(event, editor) {
+  const target = getComposedEventTarget(event);
+  const pointerType = event.pointerType;
+  if (isDOMNode(target) && pointerType !== "touch" && pointerType !== "pen" && event.button === 0) {
+    updateEditorSync(editor, () => {
+      if (!isDOMCapturingSelection(target, editor)) {
+        editor._inputState.isSelectionChangeFromMouseDown = true;
+      }
+    });
+  }
+}
+var adjustedMouseEvents = /* @__PURE__ */ new WeakSet();
+function $adjustMouseDrag(editor, event, focusDOM = null) {
+  const selection = $getSelection();
+  const before = selection && selection.clone();
+  $moveMouseDragFocus(editor, event, focusDOM);
+  const after = $getSelection();
+  const drag = editor._inputState.mouseDrag;
+  if (drag && after && !after.is(before)) {
+    adjustedMouseEvents.add(drag);
+  }
+  if (event.type === "mousedown" && $isRangeSelection(after)) {
+    $internalRefreshSelectionFormatAndStyle(after, $isRangeSelection(before) ? before.anchor.key : "");
+  }
+}
+function $moveMouseDragFocus(editor, event, focusDOM) {
+  const previous = $getPreviousSelection();
+  const isPress = event.type === "mousedown";
+  const isCaret = isPress && !event.shiftKey;
+  const decorator = focusDOM && $getNearestNodeFromDOMNode(focusDOM);
+  if ($isDecoratorNode(decorator)) {
+    if (!isPress) {
+      if ($isRangeSelection(previous)) {
+        $setSelection(previous.clone());
+      }
+    } else if (isCaret && decorator.isInline()) {
+      decorator.selectPrevious();
+    }
+  }
+  const current = $getSelection();
+  const selection = current || (isCaret ? $createRangeSelection() : $isRangeSelection(previous) ? previous.clone() : null);
+  const root = editor.getRootElement();
+  const doc = root && root.getRootNode();
+  if (!$isRangeSelection(selection) || // A press on a selection can drag it. (macOS drags only after 150 ms, and
+  // a quicker drag from there selects text without this adjustment.)
+  isCaret && !selection.isCollapsed() || !(isDOMDocumentNode(doc) || isDOMShadowRoot(doc))) {
+    return;
+  }
+  const {
+    anchor,
+    focus
+  } = selection;
+  if (!isPress && $isRangeSelection(previous)) {
+    const {
+      key,
+      offset,
+      type
+    } = previous.anchor;
+    anchor.set(key, offset, type, true);
+  }
+  const {
+    clientX: x2,
+    clientY: y2
+  } = event;
+  const target = doc.elementFromPoint && doc.elementFromPoint(x2, y2);
+  const hit = target && $getNearestNodeFromDOMNode(target);
+  const $leaf = (node, dir) => $isElementNode(node) ? dir === "next" ? node.getLastDescendant() : node.getFirstDescendant() : node;
+  const candidates = [null];
+  const block = $isElementNode(hit) && !hit.isInline() && ($isRootNode(hit) ? $findMatchingParent(focus.getNode(), $isBlockElementNode) : hit);
+  for (const caret of block ? $getChildCaret(block, "next") : []) {
+    candidates.push($getSiblingCaret(caret.origin, "previous"), caret);
+  }
+  const win = getWindow(editor);
+  const range = win.document.createRange();
+  let offLine = null;
+  for (const caret of candidates) {
+    const node = caret ? $leaf(caret.origin, caret.direction) : hit;
+    if (!$isDecoratorNode(node) || !node.isInline() || node === offLine) {
+      continue;
+    }
+    const dom = editor.getElementByKey(node.getKey());
+    if (!dom) {
+      continue;
+    }
+    range.selectNodeContents(dom);
+    const contents = range.getBoundingClientRect();
+    const rect = dom.getBoundingClientRect();
+    const {
+      bottom,
+      left,
+      right,
+      top
+    } = contents.height > rect.height ? contents : rect;
+    if (caret && (y2 < top || y2 > bottom)) {
+      offLine = node;
+      continue;
+    }
+    const isRtl = win.getComputedStyle(getParentElement(dom) || dom).direction === "rtl";
+    const isAfter = x2 * 2 > left + right !== isRtl;
+    const dir = isAfter ? "next" : "previous";
+    const sib = caret && caret.getNodeAtCaret();
+    const sibDOM = sib && editor.getElementByKey(sib.getKey());
+    const sibRects = sibDOM ? sibDOM.getClientRects() : [];
+    const sibRect = sibRects[isAfter ? 0 : sibRects.length - 1];
+    if (!caret || // A float is at the edge of no line.
+    caret.direction === dir && win.getComputedStyle(dom).cssFloat === "none" && (!sib || $isLineBreakNode(sib) || sibRect && (isAfter === isRtl ? sibRect.right * 2 > left + right : sibRect.left * 2 < left + right))) {
+      if (!node.is($leaf($getAdjacentNode(focus, isAfter), dir))) {
+        const beside = $getSiblingCaret(node, dir);
+        $setPointFromCaret(focus, beside);
+        if (isCaret) {
+          $setPointFromCaret(anchor, beside);
+        }
+      }
+      if (!current) {
+        $setSelection(selection);
+      }
+      return;
+    }
+  }
+  if ($isDecoratorNode(decorator) && !isPress) {
+    const ownerDoc = win.document;
+    const caret = ownerDoc.caretPositionFromPoint && ownerDoc.caretPositionFromPoint(x2, y2, {
+      shadowRoots: isDOMShadowRoot(doc) ? [doc] : []
+    });
+    const resolved = caret && $internalResolveSelectionPoint(caret.offsetNode, caret.offset, null, editor);
+    if (resolved) {
+      const [{
+        key,
+        offset,
+        type
+      }] = resolved;
+      focus.set(key, offset, type);
+    }
+  }
+}
+function getTargetRange(event) {
+  if (!event.getTargetRanges) {
+    return null;
+  }
+  const targetRanges = event.getTargetRanges();
+  if (targetRanges.length === 0) {
+    return null;
+  }
+  return targetRanges[0];
+}
+function $maybeMoveSelectionPastTrailingAcceptanceBoundary(insertedText) {
+  const {
+    lastKeyCode
+  } = getActiveEditor()._inputState;
+  if (insertedText == null || insertedText.length <= 1 || lastKeyCode == null) {
+    return;
+  }
+  const characterToSearchFor = lastKeyCode.length === 1 ? lastKeyCode : lastKeyCode === "Enter" ? "\n" : lastKeyCode === "Tab" ? "	" : null;
+  if (!characterToSearchFor) {
+    return;
+  }
+  const selection = $getSelection();
+  if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
+    return;
+  }
+  const anchorNode = selection.anchor.getNode();
+  if (!$isTextNode(anchorNode)) {
+    return;
+  }
+  const {
+    offset
+  } = selection.anchor;
+  if (anchorNode.getTextContentSize() === offset) {
+    const nextSibling = anchorNode.getNextSibling();
+    if (characterToSearchFor === "\n") {
+      if (IS_IOS) {
+        return;
+      }
+      if ($isLineBreakNode(nextSibling)) {
+        nextSibling.selectEnd();
+      } else if (!nextSibling) {
+        const block = $findMatchingParent(anchorNode, $isBlockElementNode);
+        const nextBlock = block && block.getNextSibling();
+        if ($isElementNode(nextBlock)) {
+          nextBlock.selectStart();
+        }
+      }
+    } else if (characterToSearchFor === "	") {
+      if ($isTabNode(nextSibling)) {
+        nextSibling.selectEnd();
+      }
+    } else if ($isTextNode(nextSibling) && nextSibling.getTextContent()[0] === characterToSearchFor) {
+      nextSibling.select(1, 1);
+    }
+  } else if (anchorNode.getTextContent()[offset] === characterToSearchFor) {
+    anchorNode.select(offset + 1, offset + 1);
+  }
+}
+function $canRemoveText(anchorNode, focusNode) {
+  return anchorNode !== focusNode || $isElementNode(anchorNode) || $isElementNode(focusNode) || !$isTokenOrTab(anchorNode) || !$isTokenOrTab(focusNode);
+}
+function isPossiblyAndroidKeyPress(inputState, timeStamp) {
+  return inputState.lastKeyCode === "MediaLast" && timeStamp < inputState.lastKeyDownTimeStamp + ANDROID_COMPOSITION_LATENCY;
+}
+function clearHandledSelectionCommandInsertText(inputState) {
+  inputState.isInsertTextAfterHandledSelectionCommand = false;
+  if (inputState.handledSelectionCommandTimeoutId !== null) {
+    clearTimeout(inputState.handledSelectionCommandTimeoutId);
+    inputState.handledSelectionCommandTimeoutId = null;
+  }
+}
+function markHandledSelectionCommandInsertText(inputState) {
+  if (!IS_APPLE || IS_IOS || !IS_CHROME) {
+    return;
+  }
+  clearHandledSelectionCommandInsertText(inputState);
+  inputState.isInsertTextAfterHandledSelectionCommand = true;
+  inputState.handledSelectionCommandTimeoutId = setTimeout(() => clearHandledSelectionCommandInsertText(inputState), 0);
+}
+function registerDefaultCommandHandlers(editor) {
+  editor.registerCommand(BEFORE_INPUT_COMMAND, $handleBeforeInput, COMMAND_PRIORITY_EDITOR);
+  editor.registerCommand(INPUT_COMMAND, $handleInput, COMMAND_PRIORITY_EDITOR);
+  editor.registerCommand(COMPOSITION_START_COMMAND, $handleCompositionStart, COMMAND_PRIORITY_EDITOR);
+  editor.registerCommand(COMPOSITION_END_COMMAND, $handleCompositionEnd, COMMAND_PRIORITY_EDITOR);
+  editor.registerCommand(KEY_DOWN_COMMAND, $handleKeyDown, COMMAND_PRIORITY_EDITOR);
+}
+function $isInputEventTargetingCapturedSelection(event, editor) {
+  const composedTarget = getComposedEventTarget(event);
+  if (isHTMLElement(composedTarget) && isDOMCapturingSelection(composedTarget, editor)) {
+    return true;
+  }
+  const rootElement = editor.getRootElement();
+  if (rootElement === null) {
+    return false;
+  }
+  const activeElement = getActiveElementDeep(rootElement.ownerDocument);
+  return activeElement !== null && rootElement.contains(activeElement) && (isDOMCapturingSelection(activeElement, editor) || $isSelectionCapturedInDecoratorInput(rootElement, activeElement));
+}
+function onBeforeInput(event, editor) {
+  const inputType = event.inputType;
+  if (inputType === "deleteCompositionText" || // If we're pasting in FF, we shouldn't get this event
+  // as the `paste` event should have triggered, unless the
+  // user has dom.event.clipboardevents.enabled disabled in
+  // about:config. In that case, we need to process the
+  // pasted content in the DOM mutation phase.
+  IS_FIREFOX && isFirefoxClipboardEvents(editor)) {
+    return;
+  } else if (inputType === "insertCompositionText") {
+    return;
+  }
+  updateEditorSync(editor, () => {
+    if (!$isInputEventTargetingCapturedSelection(event, editor)) {
+      dispatchCommand(editor, BEFORE_INPUT_COMMAND, event);
+    }
+  }, {
+    event
+  });
+}
+function $handleBeforeInput(event) {
+  const inputType = event.inputType;
+  const targetRange = getTargetRange(event);
+  const editor = getActiveEditor();
+  const inputState = editor._inputState;
+  const selection = $getSelection();
+  if (inputType === "insertText" && event.data && inputState.isInsertTextAfterHandledSelectionCommand) {
+    clearHandledSelectionCommandInsertText(inputState);
+    event.preventDefault();
+    if ($isRangeSelection(selection) && !selection.isCollapsed()) {
+      const point = selection.isBackward() ? selection.anchor : selection.focus;
+      selection.anchor.set(point.key, point.offset, point.type);
+      selection.focus.set(point.key, point.offset, point.type);
+    }
+    return true;
+  }
+  if (inputType === "deleteContentBackward") {
+    if (selection === null) {
+      const prevSelection = $getPreviousSelection();
+      if (!$isRangeSelection(prevSelection)) {
+        return true;
+      }
+      $setSelection(prevSelection.clone());
+    }
+    if ($isRangeSelection(selection)) {
+      const isSelectionAnchorSameAsFocus = selection.anchor.key === selection.focus.key;
+      if (isPossiblyAndroidKeyPress(inputState, event.timeStamp) && editor.isComposing() && isSelectionAnchorSameAsFocus) {
+        $setCompositionKey(null);
+        inputState.lastKeyDownTimeStamp = 0;
+        setTimeout(() => {
+          updateEditorSync(editor, () => {
+            $setCompositionKey(null);
+          });
+        }, ANDROID_COMPOSITION_LATENCY);
+        if ($isRangeSelection(selection)) {
+          const anchorNode2 = selection.anchor.getNode();
+          anchorNode2.markDirty();
+          if (!$isTextNode(anchorNode2)) {
+            formatDevErrorMessage2(`Anchor node must be a TextNode`);
+          }
+          $updateSelectionFormatStyleFromTextNode(selection, anchorNode2);
+        }
+      } else {
+        $setCompositionKey(null);
+        if (IS_IOS && targetRange !== null && !targetRange.collapsed) {
+          selection.applyDOMRange(targetRange);
+          if (!selection.isCollapsed()) {
+            event.preventDefault();
+            selection.removeText();
+            return true;
+          }
+        }
+        event.preventDefault();
+        const selectedNode = selection.anchor.getNode();
+        const selectedNodeText = selectedNode.getTextContent();
+        const selectedNodeCanInsertTextAfter = selectedNode.canInsertTextAfter();
+        const hasSelectedAllTextInNode = selection.anchor.offset === 0 && selection.focus.offset === selectedNodeText.length;
+        let shouldLetBrowserHandleDelete = IS_ANDROID_CHROME && isSelectionAnchorSameAsFocus && !hasSelectedAllTextInNode && selectedNodeCanInsertTextAfter;
+        if (shouldLetBrowserHandleDelete && selection.isCollapsed()) {
+          shouldLetBrowserHandleDelete = !$isDecoratorNode($getAdjacentNode(selection.anchor, true));
+        }
+        if (!shouldLetBrowserHandleDelete) {
+          dispatchCommand(editor, DELETE_CHARACTER_COMMAND, true);
+          const selectionAfterDelete = $getSelection();
+          if (IS_ANDROID_CHROME && $isRangeSelection(selectionAfterDelete) && selectionAfterDelete.isCollapsed()) {
+            inputState.postDeleteSelectionToRestore = selectionAfterDelete;
+            setTimeout(() => inputState.postDeleteSelectionToRestore = null);
+          }
+        }
+      }
+      return true;
+    }
+  }
+  if (!$isRangeSelection(selection)) {
+    if (inputType === "historyUndo" || inputType === "historyRedo") {
+      event.preventDefault();
+      dispatchCommand(editor, inputType === "historyUndo" ? UNDO_COMMAND : REDO_COMMAND);
+    }
+    return true;
+  }
+  const data = event.data;
+  if (inputState.unprocessedBeforeInputData !== null) {
+    $updateSelectedTextFromDOM(false, editor, inputState.unprocessedBeforeInputData);
+  }
+  let deleteForwardCharacter = false;
+  if ((!selection.dirty || inputState.unprocessedBeforeInputData !== null) && selection.isCollapsed() && !$isRootNode(selection.anchor.getNode()) && targetRange !== null) {
+    const {
+      key,
+      offset,
+      type
+    } = selection.anchor;
+    const frame = editor._slotsUsed && $getPointSlotFrame(selection.anchor);
+    selection.applyDOMRange(targetRange);
+    const isForward = inputType.endsWith("Forward");
+    if (frame !== false && (isForward || inputType.endsWith("Backward"))) {
+      const caret = $createPoint(key, offset, type);
+      const {
+        anchor: anchor2,
+        focus: focus2
+      } = selection;
+      const leftFrame = !$isSameFrame($getPointSlotFrame(anchor2), frame) || !$isSameFrame($getPointSlotFrame(focus2), frame);
+      const wrongSide = !leftFrame && frame !== null && (isForward ? anchor2.isBefore(caret) || focus2.isBefore(caret) : caret.isBefore(anchor2) || caret.isBefore(focus2));
+      if (leftFrame || wrongSide) {
+        anchor2.set(key, offset, type);
+        focus2.set(key, offset, type);
+        deleteForwardCharacter = wrongSide && inputType === "deleteContentForward";
+      }
+    }
+  }
+  inputState.unprocessedBeforeInputData = null;
+  const anchor = selection.anchor;
+  const focus = selection.focus;
+  const anchorNode = anchor.getNode();
+  const focusNode = focus.getNode();
+  if (inputType === "insertText" || inputType === "insertTranspose") {
+    if (data === "\n") {
+      event.preventDefault();
+      dispatchCommand(editor, INSERT_LINE_BREAK_COMMAND, false);
+    } else if (data === DOUBLE_LINE_BREAK) {
+      event.preventDefault();
+      dispatchCommand(editor, INSERT_PARAGRAPH_COMMAND);
+    } else if (data == null && event.dataTransfer) {
+      const text = event.dataTransfer.getData("text/plain");
+      event.preventDefault();
+      selection.insertRawText(text);
+    } else if (data != null && $shouldPreventDefaultAndInsertText(selection, targetRange, data, event.timeStamp, true)) {
+      event.preventDefault();
+      dispatchCommand(editor, CONTROLLED_TEXT_INSERTION_COMMAND, data);
+      $maybeMoveSelectionPastTrailingAcceptanceBoundary(data);
+    } else {
+      inputState.unprocessedBeforeInputData = data;
+    }
+    inputState.lastBeforeInputInsertTextTimeStamp = event.timeStamp;
+    return true;
+  }
+  event.preventDefault();
+  switch (inputType) {
+    case "insertFromYank":
+    case "insertFromDrop":
+    case "insertReplacementText": {
+      dispatchCommand(editor, CONTROLLED_TEXT_INSERTION_COMMAND, event);
+      const textFromDataTransfer = event.dataTransfer ? event.dataTransfer.getData("text/plain") : null;
+      $maybeMoveSelectionPastTrailingAcceptanceBoundary(textFromDataTransfer ?? event.data);
+      break;
+    }
+    case "insertFromComposition": {
+      inputState.compositionPhase = "idle";
+      const skipRedundantInsert = inputState.hadOrphanedCompositionEvents;
+      inputState.hadOrphanedCompositionEvents = false;
+      const prevCompositionKey = editor._compositionKey;
+      $setCompositionKey(null);
+      if (!skipRedundantInsert) {
+        dispatchCommand(editor, CONTROLLED_TEXT_INSERTION_COMMAND, event);
+      }
+      $cleanupComposedSubclass(prevCompositionKey);
+      break;
+    }
+    case "insertLineBreak": {
+      $setCompositionKey(null);
+      inputState.isInsertLineBreak = false;
+      dispatchCommand(editor, INSERT_LINE_BREAK_COMMAND, false);
+      break;
+    }
+    case "insertParagraph": {
+      $setCompositionKey(null);
+      if (inputState.isInsertLineBreak) {
+        inputState.isInsertLineBreak = false;
+        dispatchCommand(editor, INSERT_LINE_BREAK_COMMAND, false);
+      } else {
+        dispatchCommand(editor, INSERT_PARAGRAPH_COMMAND);
+      }
+      break;
+    }
+    case "insertFromPaste":
+    case "insertFromPasteAsQuotation": {
+      dispatchCommand(editor, PASTE_COMMAND, event);
+      break;
+    }
+    case "deleteByComposition": {
+      if ($canRemoveText(anchorNode, focusNode)) {
+        dispatchCommand(editor, REMOVE_TEXT_COMMAND, event);
+      }
+      break;
+    }
+    case "deleteByDrag": {
+      $addUpdateTag(SKIP_SELECTION_FOCUS_TAG);
+      dispatchCommand(editor, REMOVE_TEXT_COMMAND, event);
+      break;
+    }
+    case "deleteByCut": {
+      dispatchCommand(editor, REMOVE_TEXT_COMMAND, event);
+      break;
+    }
+    case "deleteContent": {
+      dispatchCommand(editor, DELETE_CHARACTER_COMMAND, false);
+      break;
+    }
+    case "deleteWordBackward": {
+      dispatchCommand(editor, DELETE_WORD_COMMAND, true);
+      break;
+    }
+    case "deleteWordForward": {
+      dispatchCommand(editor, DELETE_WORD_COMMAND, false);
+      break;
+    }
+    case "deleteHardLineBackward":
+    case "deleteSoftLineBackward": {
+      dispatchCommand(editor, DELETE_LINE_COMMAND, true);
+      break;
+    }
+    case "deleteContentForward":
+    case "deleteHardLineForward":
+    case "deleteSoftLineForward": {
+      dispatchCommand(editor, deleteForwardCharacter ? DELETE_CHARACTER_COMMAND : DELETE_LINE_COMMAND, false);
+      break;
+    }
+    case "formatStrikeThrough": {
+      dispatchCommand(editor, FORMAT_TEXT_COMMAND, "strikethrough");
+      break;
+    }
+    case "formatBold": {
+      dispatchCommand(editor, FORMAT_TEXT_COMMAND, "bold");
+      break;
+    }
+    case "formatItalic": {
+      dispatchCommand(editor, FORMAT_TEXT_COMMAND, "italic");
+      break;
+    }
+    case "formatUnderline": {
+      dispatchCommand(editor, FORMAT_TEXT_COMMAND, "underline");
+      break;
+    }
+    case "historyUndo": {
+      dispatchCommand(editor, UNDO_COMMAND);
+      break;
+    }
+    case "historyRedo": {
+      dispatchCommand(editor, REDO_COMMAND);
+      break;
+    }
+  }
+  return true;
+}
+function onInput(event, editor) {
+  event.stopPropagation();
+  const inputState = editor._inputState;
+  clearHandledSelectionCommandInsertText(inputState);
+  updateEditorSync(editor, () => {
+    if (!$isInputEventTargetingCapturedSelection(event, editor)) {
+      editor.dispatchCommand(INPUT_COMMAND, event);
+    }
+  }, {
+    event
+  });
+  inputState.unprocessedBeforeInputData = null;
+}
+function $handleInput(event) {
+  const editor = getActiveEditor();
+  const inputState = editor._inputState;
+  const selection = $getSelection();
+  const data = event.data;
+  const targetRange = getTargetRange(event);
+  let handled = false;
+  let rerenderText = false;
+  if (data != null && $isRangeSelection(selection)) {
+    const domSelection = getDOMSelection(getWindow(editor));
+    const domSelectionPoints = domSelection !== null ? getDOMSelectionPoints(domSelection, editor._rootElement) : null;
+    const isOrphanedCompositionEnd = event.inputType === "insertCompositionText" && inputState.compositionPhase !== "ending-firefox" && !editor.isComposing();
+    if (isOrphanedCompositionEnd) {
+      inputState.hadOrphanedCompositionEvents = true;
+    }
+    const inputAnchorNode = selection.anchor.getNode();
+    const isCompositionOnToken = event.inputType === "insertCompositionText" && inputState.compositionPhase !== "ending-firefox" && editor.isComposing() && $isTextNode(inputAnchorNode) && $isTokenOrSegmented(inputAnchorNode);
+    if (!isOrphanedCompositionEnd && !isCompositionOnToken && $shouldPreventDefaultAndInsertText(selection, targetRange, data, event.timeStamp, false, domSelectionPoints)) {
+      handled = true;
+      if (inputState.compositionPhase === "ending-firefox") {
+        const tokenRedirected = $onCompositionEndImpl(editor, data);
+        inputState.compositionPhase = "idle";
+        if (tokenRedirected) {
+          $addUpdateTag(COMPOSITION_END_TAG);
+          $flushMutations();
+          return true;
+        }
+      }
+      const anchor = selection.anchor;
+      const anchorNode = anchor.getNode();
+      if (domSelection === null || domSelectionPoints === null) {
+        return true;
+      }
+      const isBackward = selection.isBackward();
+      const startOffset = isBackward ? selection.anchor.offset : selection.focus.offset;
+      const endOffset = isBackward ? selection.focus.offset : selection.anchor.offset;
+      if (!CAN_USE_BEFORE_INPUT || selection.isCollapsed() || !$isTextNode(anchorNode) || domSelectionPoints.anchorNode === null || anchorNode.getTextContent().slice(0, startOffset) + data + anchorNode.getTextContent().slice(startOffset + endOffset) !== getAnchorTextFromDOM(domSelectionPoints.anchorNode)) {
+        dispatchCommand(editor, CONTROLLED_TEXT_INSERTION_COMMAND, data);
+        rerenderText = event.inputType === "insertText";
+      }
+      const textLength = data.length;
+      if (IS_FIREFOX && textLength > 1 && event.inputType === "insertCompositionText" && !editor.isComposing()) {
+        selection.anchor.offset -= textLength;
+        selection._cachedNodes = null;
+        selection._cachedIsBackward = null;
+      }
+      if (IS_ANDROID_CHROME && editor.isComposing()) {
+        inputState.lastKeyDownTimeStamp = 0;
+        $setCompositionKey(null);
+      }
+    }
+  }
+  if (!handled) {
+    const characterData = data !== null ? data : void 0;
+    $updateSelectedTextFromDOM(false, editor, characterData);
+    if (inputState.compositionPhase === "ending-firefox") {
+      $onCompositionEndImpl(editor, data || void 0);
+      $addUpdateTag(COMPOSITION_END_TAG);
+      inputState.compositionPhase = "idle";
+    }
+  }
+  $flushMutations(rerenderText);
+  return true;
+}
+function onCompositionStart(event, editor) {
+  dispatchCommand(editor, COMPOSITION_START_COMMAND, event);
+}
+function $handleCompositionStart(event) {
+  const editor = getActiveEditor();
+  const inputState = editor._inputState;
+  const selection = $getSelection();
+  if ($isRangeSelection(selection) && !editor.isComposing()) {
+    inputState.compositionPhase = "composing";
+    inputState.hadOrphanedCompositionEvents = false;
+    const anchor = selection.anchor;
+    const node = selection.anchor.getNode();
+    $setCompositionKey(anchor.key);
+    $addUpdateTag(COMPOSITION_START_TAG);
+    if (
+      // If it has been 30ms since the last keydown, then we should
+      // apply the empty space heuristic. We can't do this for Safari,
+      // as the keydown fires after composition start.
+      event.timeStamp < inputState.lastKeyDownTimeStamp + ANDROID_COMPOSITION_LATENCY || // FF has issues around composing multibyte characters, so we also
+      // need to invoke the empty space heuristic below.
+      anchor.type === "element" || !selection.isCollapsed() || !IS_ANDROID_CHROME && (node.getFormat() !== selection.format || $isTextNode(node) && node.getStyle() !== selection.style) || $isTextNode(node) && ($isTokenOrSegmented(node) || anchor.offset === 0 && !node.canInsertTextBefore() || anchor.offset === node.getTextContentSize() && !node.canInsertTextAfter())
+    ) {
+      if (!IS_IOS && (IS_SAFARI || IS_APPLE_WEBKIT)) {
+        $prepareCompositionTarget(selection);
+      } else {
+        dispatchCommand(editor, CONTROLLED_TEXT_INSERTION_COMMAND, COMPOSITION_START_CHAR);
+      }
+      const updatedSelection = $getSelection();
+      if ($isRangeSelection(updatedSelection)) {
+        $setCompositionKey(updatedSelection.anchor.key);
+      }
+    }
+  }
+  return true;
+}
+function $handleCompositionEnd(event) {
+  const editor = getActiveEditor();
+  editor._inputState.compositionPhase = "idle";
+  $onCompositionEndImpl(editor, event.data);
+  $addUpdateTag(COMPOSITION_END_TAG);
+  return true;
+}
+function $cleanupComposedSubclass(compositionKey) {
+  const inputState = getActiveEditor()._inputState;
+  const composedSegmentedKey = inputState.composedSegmentedKey;
+  inputState.composedSegmentedKey = null;
+  if (compositionKey === null || compositionKey !== composedSegmentedKey) {
+    return;
+  }
+  const composedNode = $getNodeByKey(compositionKey);
+  if (!$isTextNode(composedNode) || composedNode.getType() === "text" || $isTokenOrSegmented(composedNode) || !composedNode.isAttached()) {
+    return;
+  }
+  const sel3 = $getSelection();
+  const offset = $isRangeSelection(sel3) && sel3.anchor.key === compositionKey ? sel3.anchor.offset : null;
+  const replacement = $createTextNode(composedNode.getTextContent());
+  replacement.setFormat(composedNode.getFormat());
+  replacement.setStyle(composedNode.getStyle());
+  composedNode.replace(replacement);
+  if (offset !== null) {
+    const safeOffset = Math.min(offset, replacement.getTextContentSize());
+    replacement.select(safeOffset, safeOffset);
+  }
+}
+function $onCompositionEndImpl(editor, data) {
+  const compositionKey = editor._compositionKey;
+  $setCompositionKey(null);
+  if (compositionKey !== null && data != null) {
+    if (data === "") {
+      const node2 = $getNodeByKey(compositionKey);
+      const domElement = editor.getElementByKey(compositionKey);
+      const textNode = domElement !== null && $isTextNode(node2) ? $getDOMTextNode(node2, domElement, editor) : null;
+      if (textNode !== null && textNode.nodeValue !== null && $isTextNode(node2)) {
+        const domSelection = getDOMSelection(getWindow(editor));
+        const domSelectionPoints = domSelection && getDOMSelectionPoints(domSelection, editor._rootElement);
+        let anchorOffset = null;
+        let focusOffset = null;
+        if (domSelectionPoints !== null && domSelectionPoints.anchorNode === textNode) {
+          anchorOffset = domSelectionPoints.anchorOffset;
+          focusOffset = domSelectionPoints.focusOffset;
+        }
+        $updateTextNodeFromDOMContent(node2, textNode.nodeValue, anchorOffset, focusOffset, true);
+      }
+      $cleanupComposedSubclass(compositionKey);
+      return false;
+    } else if (data[data.length - 1] === "\n") {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection) || $isNodeSelection(selection)) {
+        if ($isRangeSelection(selection)) {
+          const focus = selection.focus;
+          selection.anchor.set(focus.key, focus.offset, focus.type);
+        }
+        dispatchCommand(editor, KEY_ENTER_COMMAND, null);
+        $cleanupComposedSubclass(compositionKey);
+        return false;
+      }
+    }
+    const node = $getNodeByKey(compositionKey);
+    if (node !== null && $isTextNode(node) && $isTokenOrSegmented(node)) {
+      node.markDirty();
+      const selection = $getSelection();
+      const textLen = node.getTextContentSize();
+      const offset = $isRangeSelection(selection) && selection.anchor.key === compositionKey ? selection.anchor.offset : textLen;
+      node.select(offset, offset).insertText(data);
+      return true;
+    }
+  }
+  $updateSelectedTextFromDOM(true, editor, data);
+  $cleanupComposedSubclass(compositionKey);
+  return false;
+}
+function onCompositionEnd(event, editor) {
+  const inputState = editor._inputState;
+  if (IS_FIREFOX) {
+    inputState.compositionPhase = "ending-firefox";
+  } else if (event.data === "" || IS_IOS || !(IS_SAFARI || IS_APPLE_WEBKIT)) {
+    dispatchCommand(editor, COMPOSITION_END_COMMAND, event);
+  }
+}
+function onKeyDown(event, editor) {
+  const inputState = editor._inputState;
+  if (IS_IOS) {
+    inputState.isShiftKeyDown = event.key === "Shift" || inputState.isShiftKeyDown && event.shiftKey && event.key !== "CapsLock";
+  }
+  inputState.lastKeyDownTimeStamp = event.timeStamp;
+  inputState.lastKeyCode = event.key;
+  if (event.key !== "Backspace") {
+    clearHandledSelectionCommandInsertText(inputState);
+  }
+  if (editor.isComposing() || !IS_IOS && (IS_SAFARI || IS_APPLE_WEBKIT) && event.keyCode === 229) {
+    return;
+  }
+  dispatchCommand(editor, KEY_DOWN_COMMAND, event);
+}
+function onKeyUp(event, editor) {
+  if (!event.shiftKey || event.key === "CapsLock") {
+    editor._inputState.isShiftKeyDown = false;
+  }
+}
+var ANY_MODIFIERS = {
+  altKey: "any",
+  ctrlKey: "any",
+  metaKey: "any",
+  shiftKey: "any"
+};
+var CTRL_KEY = {
+  ctrlKey: true
+};
+var META_KEY = {
+  metaKey: true
+};
+var SHIFT_KEY_ANY = {
+  shiftKey: "any"
+};
+var ALT_SHIFT_KEY_ANY = {
+  altKey: "any",
+  shiftKey: "any"
+};
+function buildKeyDownShortcuts() {
+  const dispatch = (key, modifiers, command) => ({
+    key,
+    modifiers,
+    onMatch: (event, editor) => {
+      dispatchCommand(editor, command, event);
+    }
+  });
+  const prevent = (key, modifiers, command, payload) => ({
+    key,
+    modifiers,
+    onMatch: (event, editor) => {
+      event.preventDefault();
+      dispatchCommand(editor, command, payload);
+    }
+  });
+  const enter = (modifiers, isInsertLineBreak) => ({
+    key: "Enter",
+    modifiers,
+    onMatch: (event, editor) => {
+      const inputState = editor._inputState;
+      inputState.isInsertLineBreak = isInsertLineBreak && (!IS_IOS || inputState.isShiftKeyDown);
+      dispatchCommand(editor, KEY_ENTER_COMMAND, event);
+      if (event.defaultPrevented) {
+        inputState.isInsertLineBreak = false;
+      }
+    }
+  });
+  const copyOrCut = (key, command) => ({
+    key,
+    modifiers: CONTROL_OR_META,
+    onMatch: (event, editor) => {
+      const prevSelection = editor._editorState._selection;
+      if (prevSelection !== null && !$isRangeSelection(prevSelection) && !$isEventFromEmbeddedInput(event)) {
+        event.preventDefault();
+        dispatchCommand(editor, command, event);
+      }
+    }
+  });
+  return [
+    // moveForward / moveToEnd / moveBackward / moveToStart / moveUp / moveDown
+    dispatch("ArrowRight", SHIFT_KEY_ANY, KEY_ARROW_RIGHT_COMMAND),
+    dispatch("ArrowLeft", SHIFT_KEY_ANY, KEY_ARROW_LEFT_COMMAND),
+    dispatch("ArrowUp", ALT_SHIFT_KEY_ANY, KEY_ARROW_UP_COMMAND),
+    dispatch("ArrowDown", ALT_SHIFT_KEY_ANY, KEY_ARROW_DOWN_COMMAND),
+    // lineBreak / paragraph
+    enter({
+      ...ANY_MODIFIERS,
+      shiftKey: true
+    }, true),
+    enter({
+      ...ANY_MODIFIERS,
+      shiftKey: false
+    }, false),
+    dispatch(" ", ANY_MODIFIERS, KEY_SPACE_COMMAND),
+    // deleteBackward
+    {
+      key: "Backspace",
+      modifiers: SHIFT_KEY_ANY,
+      onMatch: (event, editor) => {
+        if (dispatchCommand(editor, KEY_BACKSPACE_COMMAND, event)) {
+          markHandledSelectionCommandInsertText(editor._inputState);
+        }
+      }
+    },
+    dispatch("Escape", ANY_MODIFIERS, KEY_ESCAPE_COMMAND),
+    // deleteForward
+    dispatch("Delete", {}, KEY_DELETE_COMMAND),
+    // deleteWordBackward / deleteWordForward
+    prevent("Backspace", CONTROL_OR_ALT, DELETE_WORD_COMMAND, true),
+    prevent("Delete", CONTROL_OR_ALT, DELETE_WORD_COMMAND, false),
+    prevent("b", CONTROL_OR_META, FORMAT_TEXT_COMMAND, "bold"),
+    prevent("u", CONTROL_OR_META, FORMAT_TEXT_COMMAND, "underline"),
+    prevent("i", CONTROL_OR_META, FORMAT_TEXT_COMMAND, "italic"),
+    dispatch("Tab", SHIFT_KEY_ANY, KEY_TAB_COMMAND),
+    // undo / redo
+    prevent("z", CONTROL_OR_META, UNDO_COMMAND, void 0),
+    prevent("z", {
+      ...CONTROL_OR_META,
+      shiftKey: true
+    }, REDO_COMMAND, void 0),
+    ...IS_APPLE ? [
+      // openLineBreak
+      {
+        key: "o",
+        modifiers: CTRL_KEY,
+        onMatch: (event, editor) => {
+          event.preventDefault();
+          dispatchCommand(editor, INSERT_LINE_BREAK_COMMAND, true);
+        }
+      },
+      // moveToStart / moveToEnd mac
+      dispatch("ArrowLeft", {
+        metaKey: true,
+        ...SHIFT_KEY_ANY
+      }, MOVE_TO_START),
+      dispatch("ArrowRight", {
+        metaKey: true,
+        ...SHIFT_KEY_ANY
+      }, MOVE_TO_END),
+      // deleteBackward / deleteForward
+      prevent("h", CTRL_KEY, DELETE_CHARACTER_COMMAND, true),
+      prevent("d", CTRL_KEY, DELETE_CHARACTER_COMMAND, false),
+      // deleteLineBackward / deleteLineForward
+      prevent("Backspace", META_KEY, DELETE_LINE_COMMAND, true),
+      prevent("Delete", META_KEY, DELETE_LINE_COMMAND, false),
+      prevent("k", CTRL_KEY, DELETE_LINE_COMMAND, false)
+    ] : [dispatch("Home", SHIFT_KEY_ANY, MOVE_TO_START), dispatch("End", SHIFT_KEY_ANY, MOVE_TO_END), prevent("y", CTRL_KEY, REDO_COMMAND, void 0)],
+    // selectAll
+    {
+      key: "a",
+      modifiers: CONTROL_OR_META,
+      onMatch: (event, editor) => {
+        event.preventDefault();
+        if (dispatchCommand(editor, SELECT_ALL_COMMAND, event)) {
+          markHandledSelectionCommandInsertText(editor._inputState);
+        }
+      }
+    },
+    copyOrCut("c", COPY_COMMAND),
+    copyOrCut("x", CUT_COMMAND)
+  ];
+}
+function $handleKeyDown(event) {
+  const editor = getActiveEditor();
+  if (event.key == null) {
+    return true;
+  }
+  let keyDownShortcuts = editor._keyDownShortcuts;
+  if (keyDownShortcuts === null) {
+    keyDownShortcuts = compileKeyboardShortcuts(buildKeyDownShortcuts());
+    editor._keyDownShortcuts = keyDownShortcuts;
+  }
+  const shortcut = keyDownShortcuts.match(event);
+  if (shortcut) {
+    shortcut.onMatch(event, editor);
+  }
+  if (isModifier(event)) {
+    editor.dispatchCommand(KEY_MODIFIER_COMMAND, event);
+  }
+  return true;
+}
+function getRootElementRemoveHandles(rootElement) {
+  let eventHandles = rootElement.__lexicalEventHandles;
+  if (eventHandles === void 0) {
+    eventHandles = [];
+    rootElement.__lexicalEventHandles = eventHandles;
+  }
+  return eventHandles;
+}
+function $selectMouseDown(editor, domSelection, event, registration) {
+  if (registration !== void 0) {
+    for (const ed of registration.editors) {
+      ed._inputState.isSelectionChangeFromMouseDown = false;
+    }
+  }
+  const domAnchorNode = getDOMSelectionPoints(domSelection, editor._rootElement).anchorNode;
+  if (isHTMLElement(domAnchorNode) || isDOMTextNode(domAnchorNode)) {
+    const newSelection = $internalCreateRangeSelection($getPreviousSelection(), domSelection, editor, event);
+    $setSelection(newSelection);
+  }
+}
+var activeNestedEditorsMap = /* @__PURE__ */ new Map();
+function onDocumentSelectionChange(event) {
+  const target = event.target;
+  if (isHTMLElement(target) && (target.nodeName === "INPUT" || target.nodeName === "TEXTAREA")) {
+    return;
+  }
+  const domSelection = getDOMSelectionFromTarget(target);
+  if (domSelection === null) {
+    return;
+  }
+  const ownerDocument = getDOMOwnerDocument(target);
+  let nextActiveEditor = null;
+  const registration = ownerDocument !== null ? documentRegistrations.get(ownerDocument) : void 0;
+  if (ownerDocument !== null) {
+    if (registration !== void 0) {
+      const editorsForDoc = registration.editors;
+      let hasShadow = registration.hasShadowEditor;
+      if (hasShadow === void 0) {
+        hasShadow = false;
+        for (const ed of editorsForDoc) {
+          if (ed._rootElement !== null && isDOMShadowRoot(ed._rootElement.getRootNode())) {
+            hasShadow = true;
+            break;
+          }
+        }
+        registration.hasShadowEditor = hasShadow;
+      }
+      if (!hasShadow) {
+        const anchorNode = domSelection.anchorNode;
+        if (anchorNode !== null && !(isHTMLElement(anchorNode) && anchorNode.shadowRoot !== null)) {
+          nextActiveEditor = getNearestEditorFromDOMNode(anchorNode);
+        }
+      } else {
+        let deferredLightEditor = null;
+        for (const candidate of editorsForDoc) {
+          const candidateRoot = candidate._rootElement;
+          if (candidateRoot === null) {
+            continue;
+          }
+          const anchorNode = getDOMSelectionPoints(domSelection, candidateRoot).anchorNode;
+          if (anchorNode === null) {
+            continue;
+          }
+          if (getNearestEditorFromDOMNode(anchorNode) !== candidate) {
+            continue;
+          }
+          if (isDOMShadowRoot(candidateRoot.getRootNode())) {
+            nextActiveEditor = candidate;
+            break;
+          }
+          if (deferredLightEditor === null) {
+            deferredLightEditor = candidate;
+          }
+        }
+        if (nextActiveEditor === null && deferredLightEditor !== null) {
+          nextActiveEditor = deferredLightEditor;
+        }
+      }
+    }
+    if (nextActiveEditor === null) {
+      const activeElement = getActiveElementDeep(ownerDocument);
+      nextActiveEditor = activeElement !== null ? getNearestEditorFromDOMNode(activeElement) : null;
+    }
+  }
+  if (nextActiveEditor === null) {
+    return;
+  }
+  if (nextActiveEditor._inputState.isSelectionChangeFromMouseDown) {
+    updateEditorSync(nextActiveEditor, () => $selectMouseDown(nextActiveEditor, domSelection, event, registration));
+  }
+  const editors = getEditorsToPropagate(nextActiveEditor);
+  const rootEditor = editors[editors.length - 1];
+  const rootEditorKey = rootEditor._key;
+  const activeNestedEditor = activeNestedEditorsMap.get(rootEditorKey);
+  const prevActiveEditor = activeNestedEditor || rootEditor;
+  if (prevActiveEditor !== nextActiveEditor) {
+    onSelectionChange(domSelection, prevActiveEditor, false);
+  }
+  onSelectionChange(domSelection, nextActiveEditor, true);
+  if (nextActiveEditor !== rootEditor) {
+    activeNestedEditorsMap.set(rootEditorKey, nextActiveEditor);
+  } else if (activeNestedEditor) {
+    activeNestedEditorsMap.delete(rootEditorKey);
+  }
+}
+function stopLexicalPropagation(event) {
+  event._lexicalHandled = true;
+}
+function hasStoppedLexicalPropagation(event) {
+  const stopped = event._lexicalHandled === true;
+  return stopped;
+}
+function addRootElementEvents(rootElement, editor) {
+  const doc = rootElement.ownerDocument;
+  rootElementToDocument.set(rootElement, doc);
+  let registration = documentRegistrations.get(doc);
+  if (registration === void 0) {
+    registration = {
+      editors: /* @__PURE__ */ new Set(),
+      hasShadowEditor: void 0
+    };
+    documentRegistrations.set(doc, registration);
+  }
+  registration.editors.add(editor);
+  registration.hasShadowEditor = void 0;
+  rootElement.__lexicalEditor = editor;
+  const removeHandles = getRootElementRemoveHandles(rootElement);
+  removeHandles.push(documentSelectionChange.register(doc));
+  const events = {
+    blur: BLUR_COMMAND,
+    click: onClick,
+    compositionend: onCompositionEnd,
+    compositionstart: onCompositionStart,
+    copy: COPY_COMMAND,
+    cut: CUT_COMMAND,
+    dragend: DRAGEND_COMMAND,
+    dragover: DRAGOVER_COMMAND,
+    dragstart: DRAGSTART_COMMAND,
+    drop: DROP_COMMAND,
+    focus: FOCUS_COMMAND,
+    input: onInput,
+    keydown: onKeyDown,
+    paste: PASTE_COMMAND,
+    pointerdown: onPointerDown,
+    ...CAN_USE_BEFORE_INPUT && {
+      beforeinput: onBeforeInput
+    },
+    ...IS_IOS && {
+      keyup: onKeyUp,
+      mousedown: onMouseDownIOS
+    }
+  };
+  for (const [eventName, onEvent] of Object.entries(events)) {
+    const eventHandler = (event) => {
+      if (hasStoppedLexicalPropagation(event)) {
+        return;
+      }
+      stopLexicalPropagation(event);
+      if (eventName === "blur") {
+        restoreInputModeIOS(editor, rootElement);
+        editor._inputState.isShiftKeyDown = false;
+        editor._inputState.isInsertLineBreak = false;
+      }
+      if (editor.isEditable() || eventName === "click" || eventName === "copy") {
+        if (typeof onEvent === "function") {
+          onEvent(event, editor);
+        } else {
+          dispatchCommand(editor, onEvent, event);
+        }
+      }
+    };
+    removeHandles.push(registerEventListener(rootElement, eventName, eventHandler));
+  }
+  let press;
+  const endMouseDrag = () => {
+    editor._inputState.mouseDrag = null;
+  };
+  const onMouseDragMove = (event) => {
+    const inputState = editor._inputState;
+    const drag = inputState.mouseDrag;
+    if (press && press.defaultPrevented && !event.buttons) {
+      inputState.isSelectionChangeFromMouseDown = false;
+    }
+    if (!drag || event.pointerType !== "mouse") {
+      return;
+    }
+    const isRelease = event.type === "pointerup";
+    if (event.type === "pointercancel" || !isRelease && event.buttons !== 1) {
+      return endMouseDrag();
+    }
+    inputState.mouseDrag = isRelease ? null : event;
+    updateEditorSync(editor, () => {
+      const domSelection = getDOMSelection(getWindow(editor));
+      if (drag.type !== "mousedown") {
+        const selection2 = isRelease && domSelection && $isRangeSelection($getSelection()) && $internalCreateRangeSelection($getPreviousSelection(), domSelection, editor, new Event("selectionchange"));
+        if (selection2) {
+          $setSelection(selection2);
+        }
+        return $adjustMouseDrag(editor, event, isRelease && domSelection ? getDOMSelectionPoints(domSelection, rootElement).focusNode : null);
+      }
+      const selection = $createRangeSelectionFromDom(domSelection, editor);
+      if (drag.defaultPrevented || // A press on a selection drags it rather than selecting.
+      !drag.shiftKey && selection && !selection.isCollapsed()) {
+        endMouseDrag();
+      } else if (domSelection && inputState.isSelectionChangeFromMouseDown) {
+        $selectMouseDown(editor, domSelection, new Event("selectionchange"), registration);
+        $adjustMouseDrag(editor, drag, getDOMSelectionPoints(domSelection, rootElement).focusNode);
+        const pressed = $getSelection();
+        if ($isRangeSelection(pressed) && pressed.isCollapsed() && !pressed.is($getPreviousSelection())) {
+          $updateCollapsedSelectionFormatStyle(editor, pressed);
+        }
+      }
+    });
+  };
+  removeHandles.push(
+    registerEventListeners(doc, {
+      pointercancel: onMouseDragMove,
+      pointermove: onMouseDragMove,
+      pointerup: onMouseDragMove
+    }, true),
+    // The window misses the release of a press that it loses focus during.
+    registerEventListener(getWindow(editor), "blur", endMouseDrag),
+    // A read-only editor leaves a drag to the browser, as it does not write
+    // the DOM selection.
+    editor.registerEditableListener(endMouseDrag),
+    registerEventListeners(rootElement, {
+      contextmenu: endMouseDrag,
+      dragstart: endMouseDrag,
+      // As after a release that the window did not get, but not for the
+      // modifier keys, which Windows repeats while they are held. Chrome's
+      // keydown for an accepted autofill suggestion is not a KeyboardEvent.
+      keydown: (event) => event.getModifierState && event.getModifierState(event.key) || endMouseDrag(),
+      mousedown: (event) => {
+        const inputState = editor._inputState;
+        inputState.mouseDrag = event.button === 0 && event.detail === 1 && !event.defaultPrevented && inputState.lastPointerType === "mouse" && editor.isEditable() && !editor.isComposing() && !isDOMCapturingSelection(getComposedEventTarget(event), editor) ? event : null;
+      }
+    }),
+    // Captured, so a decorator that stops its pointerdown from propagating
+    // (resize handles often do) can't leave a stale pointer type behind for
+    // the mousedown that follows.
+    registerEventListener(rootElement, "pointerdown", (event) => {
+      press = event;
+      editor._inputState.lastPointerType = event.pointerType;
+    }, true)
+  );
+  if (IS_IOS) {
+    removeHandles.push(registerTapListenerIOS(rootElement, (event) => onTouchEndIOS(event, editor, rootElement)));
+  }
+}
+var rootElementNotRegisteredWarning = /* @__PURE__ */ warnOnlyOnce("Root element not registered");
+function removeRootElementEvents(rootElement) {
+  const doc = rootElementToDocument.get(rootElement);
+  if (doc === void 0) {
+    rootElementNotRegisteredWarning();
+    return;
+  }
+  const registration = documentRegistrations.get(doc);
+  if (registration === void 0) {
+    rootElementNotRegisteredWarning();
+    return;
+  }
+  rootElementToDocument.delete(rootElement);
+  const editor = getEditorPropertyFromDOMNode(rootElement);
+  if (isLexicalEditor(editor)) {
+    cleanActiveNestedEditorsMap(editor);
+    registration.editors.delete(editor);
+    registration.hasShadowEditor = void 0;
+    rootElement.__lexicalEditor = null;
+  } else if (editor) {
+    {
+      formatDevErrorMessage2(`Attempted to remove event handlers from a node that does not belong to this build of Lexical`);
+    }
+  }
+  const removeHandles = getRootElementRemoveHandles(rootElement);
+  for (let i2 = 0; i2 < removeHandles.length; i2++) {
+    removeHandles[i2]();
+  }
+  rootElement.__lexicalEventHandles = [];
+}
+function cleanActiveNestedEditorsMap(editor) {
+  if (editor._parentEditor !== null) {
+    const editors = getEditorsToPropagate(editor);
+    const rootEditor = editors[editors.length - 1];
+    const rootEditorKey = rootEditor._key;
+    if (activeNestedEditorsMap.get(rootEditorKey) === editor) {
+      activeNestedEditorsMap.delete(rootEditorKey);
+    }
+  } else {
+    activeNestedEditorsMap.delete(editor._key);
+  }
+}
+function markSelectionChangeFromDOMUpdate(editor, anchorNode, anchorOffset, focusNode, focusOffset) {
+  const inputState = editor._inputState;
+  inputState.isSelectionChangeFromDOMUpdate = true;
+  inputState.selectionChangeFromDOMUpdatePoints = anchorNode !== void 0 && anchorOffset !== void 0 && focusNode !== void 0 && focusOffset !== void 0 ? {
+    anchorNode,
+    anchorOffset,
+    focusNode,
+    focusOffset
+  } : null;
+}
+function markCollapsedSelectionFormat(editor, format, style, offset, key, timeStamp) {
+  editor._inputState.collapsedSelectionFormat = {
+    format,
+    key,
+    offset,
+    style,
+    timeStamp
+  };
+}
+var Point = class {
+  key;
+  offset;
+  type;
+  _selection;
+  constructor(key, offset, type) {
+    {
+      Object.defineProperty(this, "_selection", {
+        enumerable: false,
+        writable: true
+      });
+    }
+    this._selection = null;
+    this.key = key;
+    this.offset = offset;
+    this.type = type;
+  }
+  is(point) {
+    return this.key === point.key && this.offset === point.offset && this.type === point.type;
+  }
+  isBefore(b2) {
+    if (this.key === b2.key) {
+      return this.offset < b2.offset;
+    }
+    const aCaret = $normalizeCaret($caretFromPoint(this, "next"));
+    const bCaret = $normalizeCaret($caretFromPoint(b2, "next"));
+    return $comparePointCaretNext(aCaret, bCaret) < 0;
+  }
+  getNode() {
+    const key = this.key;
+    const node = $getNodeByKey(key);
+    if (node === null) {
+      {
+        formatDevErrorMessage2(`Point.getNode: node not found`);
+      }
+    }
+    return node;
+  }
+  set(key, offset, type, onlyIfChanged) {
+    const selection = this._selection;
+    const oldKey = this.key;
+    if (onlyIfChanged && this.key === key && this.offset === offset && this.type === type) {
+      return;
+    }
+    this.key = key;
+    this.offset = offset;
+    this.type = type;
+    {
+      const node = $getNodeByKey(key);
+      if (!(type === "text" ? $isTextNode(node) : $isElementNode(node))) {
+        formatDevErrorMessage2(`PointType.set: node with key ${key} is ${node ? node.__type : "[not found]"} and can not be used for a ${type} point`);
+      }
+    }
+    if (!isCurrentlyReadOnlyMode()) {
+      if ($getCompositionKey() === oldKey) {
+        $setCompositionKey(key);
+      }
+      if (selection !== null) {
+        selection.setCachedNodes(null);
+        if ($isRangeSelection(selection)) {
+          selection._cachedIsBackward = null;
+        }
+        selection.dirty = true;
+      }
+    }
+  }
+};
+function $createPoint(key, offset, type) {
+  return new Point(key, offset, type);
+}
+function selectPointOnNode(point, node) {
+  let key = node.__key;
+  let offset = point.offset;
+  let type = "element";
+  if ($isTextNode(node)) {
+    type = "text";
+    const textContentLength = node.getTextContentSize();
+    if (offset > textContentLength) {
+      offset = textContentLength;
+    }
+  } else if (!$isElementNode(node)) {
+    const nextSibling = node.getNextSibling();
+    if ($isTextNode(nextSibling)) {
+      key = nextSibling.__key;
+      offset = 0;
+      type = "text";
+    } else {
+      const parentNode = node.getParent();
+      if (parentNode) {
+        key = parentNode.__key;
+        offset = node.getIndexWithinParent() + 1;
+      }
+    }
+  }
+  point.set(key, offset, type);
+}
+function $moveSelectionPointToEnd(point, node) {
+  if ($isElementNode(node)) {
+    const lastNode = node.getLastDescendant();
+    if ($isElementNode(lastNode) || $isTextNode(lastNode)) {
+      selectPointOnNode(point, lastNode);
+    } else {
+      selectPointOnNode(point, node);
+    }
+  } else {
+    selectPointOnNode(point, node);
+  }
+}
+function $transferStartingElementPointToTextPoint(start, end, format, style) {
+  const element = start.getNode();
+  const placementNode = element.getChildAtIndex(start.offset);
+  const textNode = $createTextNode();
+  textNode.setFormat(format);
+  textNode.setStyle(style);
+  if ($isParagraphNode(placementNode)) {
+    placementNode.splice(0, 0, [textNode]);
+  } else if (placementNode !== null) {
+    const target = $isRootOrShadowRoot(element) ? $createParagraphNode().append(textNode) : textNode;
+    placementNode.insertBefore(target);
+  } else if ($isRootOrShadowRoot(element)) {
+    const lastChild = element.getLastChild();
+    if ($isElementNode(lastChild) && !lastChild.isInline() && lastChild.isEmpty()) {
+      lastChild.append(textNode);
+    } else {
+      element.append($createParagraphNode().append(textNode));
+    }
+  } else {
+    element.append(textNode);
+  }
+  if (start.is(end)) {
+    end.set(textNode.__key, 0, "text");
+  }
+  start.set(textNode.__key, 0, "text");
+}
+function $prepareCompositionTarget(selection) {
+  $insertText(selection, "", true);
+}
+function $insertText(selection, text, preparingComposition) {
+  let format = selection.format;
+  let style = selection.style;
+  if (!selection.isCollapsed()) {
+    const firstPoint = selection.focus.isBefore(selection.anchor) ? selection.focus : selection.anchor;
+    const firstNode = firstPoint.getNode();
+    if ($isTextNode(firstNode)) {
+      format = firstNode.getFormat();
+      style = firstNode.getStyle();
+    }
+    selection.removeText();
+    selection.format = format;
+    selection.style = style;
+    if (text === "" && !preparingComposition) {
+      return;
+    }
+    if ($getCompositionKey() === null) {
+      if (selection.anchor.type === "element") {
+        $transferStartingElementPointToTextPoint(selection.anchor, selection.focus, format, style);
+      }
+      $insertTextAtPoint(selection, text, format, style);
+      return;
+    }
+  }
+  if (selection.anchor.type === "element") {
+    $transferStartingElementPointToTextPoint(selection.anchor, selection.focus, format, style);
+  }
+  const anchorNode = selection.anchor.getNode();
+  if (!$isTextNode(anchorNode)) {
+    formatDevErrorMessage2(`insertText: anchor is not a text node`);
+  }
+  const offset = selection.anchor.offset;
+  const anchorParent = anchorNode.getParentOrThrow();
+  const anchorSize = anchorNode.getTextContentSize();
+  const needsRedirect = $isTokenOrSegmented(anchorNode) || offset === 0 && (!anchorNode.canInsertTextBefore() || !anchorParent.canInsertTextBefore() && !anchorNode.__prev) || offset === anchorSize && (!anchorNode.canInsertTextAfter() || !anchorParent.canInsertTextAfter() && !anchorNode.__next);
+  if (needsRedirect) {
+    if (anchorNode.isSegmented() && offset !== 0 && offset !== anchorSize) {
+      if ($getCompositionKey() !== null) {
+        anchorNode.setMode("normal").setFormat(format).setStyle(style);
+        getActiveEditor()._inputState.composedSegmentedKey = anchorNode.getKey();
+      } else {
+        const replacement = $createTextNode(anchorNode.getTextContent());
+        replacement.setFormat(format);
+        replacement.setStyle(style);
+        const isCurrentSelection = $getSelection() === selection;
+        anchorNode.replace(replacement);
+        selection.setTextNodeRange(replacement, offset, replacement, offset);
+        if (isCurrentSelection && $getSelection() !== selection) {
+          $setSelection(selection);
+        }
+      }
+      if (text !== "" || preparingComposition) {
+        $insertText(selection, text, preparingComposition);
+      }
+      return;
+    }
+    if (text === "" && !preparingComposition) {
+      return;
+    }
+    if (offset === 0 || offset === anchorSize) {
+      const before = offset === 0;
+      const direction = before ? "previous" : "next";
+      const sibling = $getSiblingCaret(anchorNode, direction).getNodeAtCaret();
+      let target;
+      if ($isTextNode(sibling) && (before ? sibling.canInsertTextAfter() : sibling.canInsertTextBefore()) && !$isTokenOrSegmented(sibling)) {
+        target = sibling;
+      } else {
+        target = $createTextNode().setFormat(format).setStyle(style);
+        const canInsert = before ? anchorParent.canInsertTextBefore() : anchorParent.canInsertTextAfter();
+        $getSiblingCaret(canInsert ? anchorNode : anchorParent, direction).insert(target);
+      }
+      const targetOffset = before ? void 0 : 0;
+      target.select(targetOffset, targetOffset);
+      $insertText(selection, text, preparingComposition);
+      return;
+    }
+    const newNode = $createTextNode(text);
+    newNode.setFormat(format);
+    newNode.setStyle(style);
+    anchorNode.replace(newNode);
+    newNode.select();
+    return;
+  }
+  if (text === "" && !preparingComposition) {
+    return;
+  }
+  const atStartOfInline = anchorParent.isInline() && offset === 0 && !anchorNode.__prev;
+  const atEndOfInline = anchorParent.isInline() && offset === anchorSize && !anchorNode.__next;
+  const formatDiffers = anchorNode.getFormat() !== format || anchorNode.getStyle() !== style;
+  if (atStartOfInline || atEndOfInline || formatDiffers) {
+    if (anchorNode.getTextContent() === "" && !atStartOfInline && !atEndOfInline) {
+      anchorNode.setFormat(format);
+      anchorNode.setStyle(style);
+    } else {
+      $insertTextAtPoint(selection, text, format, style);
+      return;
+    }
+  }
+  anchorNode.spliceText(offset, 0, text, true);
+  if (anchorNode.isComposing() && selection.anchor.type === "text") {
+    selection.anchor.set(selection.anchor.key, selection.anchor.offset - text.length, selection.anchor.type);
+  }
+}
+function $insertTextAtPoint(selection, text, format, style) {
+  const anchorNode = selection.anchor.getNode();
+  if (!$isTextNode(anchorNode)) {
+    formatDevErrorMessage2(`insertText: anchor is not a text node`);
+  }
+  const offset = selection.anchor.offset;
+  const textNode = $createTextNode(text).setFormat(format).setStyle(style);
+  const parent = anchorNode.getParentOrThrow();
+  const before = offset === 0;
+  const atBoundary = before || offset === anchorNode.getTextContentSize();
+  if (atBoundary && parent.isInline() && !(before ? anchorNode.__prev : anchorNode.__next)) {
+    $getSiblingCaret(parent, before ? "previous" : "next").insert(textNode);
+  } else {
+    const origin = atBoundary ? anchorNode : anchorNode.splitText(offset)[0];
+    if (before) {
+      origin.insertBefore(textNode, false);
+    } else {
+      origin.insertAfter(textNode, false);
+    }
+  }
+  if (anchorNode.getTextContent() === "" && anchorNode.isAttached()) {
+    anchorNode.remove();
+  }
+  textNode.selectEnd();
+  if (textNode.isComposing() && selection.anchor.type === "text") {
+    selection.anchor.set(selection.anchor.key, selection.anchor.offset - text.length, selection.anchor.type);
+  }
+}
+var NodeSelection = class _NodeSelection {
+  _nodes;
+  _cachedNodes;
+  dirty;
+  constructor(objects) {
+    this._cachedNodes = null;
+    this._nodes = objects;
+    this.dirty = false;
+  }
+  getCachedNodes() {
+    return this._cachedNodes;
+  }
+  setCachedNodes(nodes) {
+    this._cachedNodes = nodes;
+  }
+  is(selection) {
+    if (!$isNodeSelection(selection)) {
+      return false;
+    }
+    const a2 = this._nodes;
+    const b2 = selection._nodes;
+    return a2.size === b2.size && Array.from(a2).every((key) => b2.has(key));
+  }
+  isCollapsed() {
+    return false;
+  }
+  isBackward() {
+    return false;
+  }
+  getStartEndPoints() {
+    return null;
+  }
+  add(key) {
+    this.dirty = true;
+    this._nodes.add(key);
+    this._cachedNodes = null;
+  }
+  delete(key) {
+    this.dirty = true;
+    this._nodes.delete(key);
+    this._cachedNodes = null;
+  }
+  clear() {
+    this.dirty = true;
+    this._nodes.clear();
+    this._cachedNodes = null;
+  }
+  has(key) {
+    return this._nodes.has(key);
+  }
+  clone() {
+    return new _NodeSelection(new Set(this._nodes));
+  }
+  extract() {
+    return this.getNodes();
+  }
+  insertRawText(text) {
+  }
+  insertText() {
+  }
+  insertNodes(nodes) {
+    const selectedNodes = this.getNodes().filter((node) => $getSlotHostKey(node) === null);
+    const selectedNodesLength = selectedNodes.length;
+    if (selectedNodesLength === 0) {
+      return;
+    }
+    const lastSelectedNode = selectedNodes[selectedNodesLength - 1];
+    let selectionAtEnd;
+    if ($isTextNode(lastSelectedNode)) {
+      selectionAtEnd = lastSelectedNode.select();
+    } else {
+      const index = lastSelectedNode.getIndexWithinParent() + 1;
+      selectionAtEnd = lastSelectedNode.getParentOrThrow().select(index, index);
+    }
+    selectionAtEnd.insertNodes(nodes);
+    for (let i2 = 0; i2 < selectedNodesLength; i2++) {
+      selectedNodes[i2].remove();
+    }
+  }
+  getNodes() {
+    const cachedNodes = this._cachedNodes;
+    if (cachedNodes !== null) {
+      return cachedNodes;
+    }
+    const objects = this._nodes;
+    const nodes = [];
+    for (const object of objects) {
+      const node = $getNodeByKey(object);
+      if (node !== null) {
+        nodes.push(node);
+      }
+    }
+    if (!isCurrentlyReadOnlyMode()) {
+      this._cachedNodes = nodes;
+    }
+    return nodes;
+  }
+  getTextContent() {
+    const nodes = this.getNodes();
+    let textContent = "";
+    for (let i2 = 0; i2 < nodes.length; i2++) {
+      textContent += nodes[i2].getTextContent();
+    }
+    return textContent;
+  }
+  /**
+   * Remove all nodes in the NodeSelection. If there were any nodes,
+   * replace the selection with a new RangeSelection at the previous
+   * location of the first node.
+   */
+  deleteNodes() {
+    const nodes = this.getNodes().filter((node) => $getSlotHostKey(node) === null);
+    if (($getSelection() || $getPreviousSelection()) === this && nodes[0]) {
+      const firstCaret = $getSiblingCaret(nodes[0], "next");
+      $setSelectionFromCaretRange($getCaretRange(firstCaret, firstCaret));
+    }
+    for (const node of nodes) {
+      node.remove();
+    }
+    $ensureRootHasParagraph();
+  }
+};
+function $ensureRootHasParagraph() {
+  const root = $getRoot();
+  if (root.getChildrenSize() === 0 && $getSelectionSlotFrame($getSelection()) === null) {
+    const paragraph = $createParagraphNode();
+    root.append(paragraph);
+    paragraph.select();
+  }
+}
+function $getNodeBeforePoint(point) {
+  const node = point.getNode();
+  if (point.offset > 0) {
+    return point.type === "element" && $isElementNode(node) ? node.getChildAtIndex(point.offset - 1) : null;
+  }
+  for (let child = node; child !== null && !INTERNAL_$isBlock(child) && !$isRootOrShadowRoot(child); child = child.getParent()) {
+    const previousSibling = child.getPreviousSibling();
+    if (previousSibling !== null) {
+      return previousSibling;
+    }
+  }
+  return null;
+}
+function $isPointAfterEmptyLine(point) {
+  const nodeBefore = $getNodeBeforePoint(point);
+  return $isLineBreakNode(nodeBefore) && $isLineBreakNode(nodeBefore.getPreviousSibling());
+}
+function $isRangeSelection(x2) {
+  return x2 instanceof RangeSelection;
+}
+var RangeSelection = class _RangeSelection {
+  format;
+  style;
+  anchor;
+  focus;
+  _cachedNodes;
+  /** @internal */
+  _cachedIsBackward;
+  dirty;
+  constructor(anchor, focus, format, style) {
+    this.anchor = anchor;
+    this.focus = focus;
+    anchor._selection = this;
+    focus._selection = this;
+    this._cachedNodes = null;
+    this._cachedIsBackward = null;
+    this.format = format;
+    this.style = style;
+    this.dirty = false;
+  }
+  getCachedNodes() {
+    return this._cachedNodes;
+  }
+  setCachedNodes(nodes) {
+    this._cachedNodes = nodes;
+  }
+  /**
+   * Used to check if the provided selections is equal to this one by value,
+   * including anchor, focus, format, and style properties.
+   * @param selection - the Selection to compare this one to.
+   * @returns true if the Selections are equal, false otherwise.
+   */
+  is(selection) {
+    if (!$isRangeSelection(selection)) {
+      return false;
+    }
+    return this.anchor.is(selection.anchor) && this.focus.is(selection.focus) && this.format === selection.format && this.style === selection.style;
+  }
+  /**
+   * Returns whether the Selection is "collapsed", meaning the anchor and focus are
+   * the same node and have the same offset.
+   *
+   * @returns true if the Selection is collapsed, false otherwise.
+   */
+  isCollapsed() {
+    return this.anchor.is(this.focus);
+  }
+  /**
+   * Gets all the nodes in the Selection. Uses caching to make it generally suitable
+   * for use in hot paths.
+   *
+   * See also the {@link CaretRange} APIs (starting with
+   * {@link $caretRangeFromSelection}), which are likely to provide a better
+   * foundation for any operation where partial selection is relevant
+   * (e.g. the anchor or focus are inside an ElementNode and TextNode)
+   *
+   * @returns an Array containing all the nodes in the Selection
+   */
+  getNodes() {
+    const cachedNodes = this._cachedNodes;
+    if (cachedNodes !== null) {
+      return cachedNodes;
+    }
+    const range = $getCaretRangeInDirection($caretRangeFromSelection(this), "next");
+    const nodes = $getNodesFromCaretRangeCompat(range);
+    {
+      if (this.isCollapsed() && nodes.length > 1) {
+        {
+          formatDevErrorMessage2(`RangeSelection.getNodes() returned ${String(nodes.length)} > 1 nodes in a collapsed selection`);
+        }
+      }
+    }
+    if (!isCurrentlyReadOnlyMode()) {
+      this._cachedNodes = nodes;
+    }
+    return nodes;
+  }
+  /**
+   * Sets this Selection to be of type "text" at the provided anchor and focus values.
+   *
+   * @param anchorNode - the anchor node to set on the Selection
+   * @param anchorOffset - the offset to set on the Selection
+   * @param focusNode - the focus node to set on the Selection
+   * @param focusOffset - the focus offset to set on the Selection
+   */
+  setTextNodeRange(anchorNode, anchorOffset, focusNode, focusOffset) {
+    this.anchor.set(anchorNode.__key, anchorOffset, "text");
+    this.focus.set(focusNode.__key, focusOffset, "text");
+    return this;
+  }
+  /**
+   * Gets the (plain) text content of all the nodes in the selection.
+   *
+   * @returns a string representing the text content of all the nodes in the Selection
+   */
+  getTextContent() {
+    if (this.isCollapsed()) {
+      return "";
+    }
+    const nodes = this.getNodes();
+    const slices = $caretRangeFromSelection(this).getTextSlices();
+    let textContent = "";
+    let prevWasElement = true;
+    for (let i2 = 0; i2 < nodes.length; i2++) {
+      const node = nodes[i2];
+      if ($isElementNode(node) && !node.isInline()) {
+        if (!prevWasElement) {
+          textContent += "\n";
+        }
+        let slotText = "";
+        for (const slotName of $getSlotNames(node)) {
+          const slot = $getSlot(node, slotName);
+          if (slot !== null) {
+            slotText += slot.getTextContent();
+          }
+        }
+        if (slotText !== "") {
+          textContent += slotText;
+          prevWasElement = false;
+        } else if (node.isEmpty()) {
+          prevWasElement = false;
+        } else {
+          prevWasElement = true;
+        }
+      } else {
+        prevWasElement = false;
+        if ($isTextNode(node)) {
+          const slice = $getTextPointCaretSliceForNode(slices, node);
+          textContent += slice ? slice.getTextContent() : node.getTextContent();
+        } else if ($isDecoratorNode(node) || $isLineBreakNode(node)) {
+          textContent += node.getTextContent();
+        }
+      }
+    }
+    return textContent;
+  }
+  /**
+   * Attempts to map a DOM selection range onto this Lexical Selection,
+   * setting the anchor, focus, and type accordingly
+   *
+   * @param range a DOM Selection range conforming to the StaticRange interface.
+   */
+  applyDOMRange(range) {
+    const editor = getActiveEditor();
+    const currentEditorState = editor.getEditorState();
+    const lastSelection = currentEditorState._selection;
+    const resolvedSelectionPoints = $internalResolveSelectionPoints(range.startContainer, range.startOffset, range.endContainer, range.endOffset, editor, lastSelection);
+    if (resolvedSelectionPoints === null) {
+      return;
+    }
+    const [anchorPoint, focusPoint, dirty] = resolvedSelectionPoints;
+    this.anchor.set(anchorPoint.key, anchorPoint.offset, anchorPoint.type, true);
+    this.focus.set(focusPoint.key, focusPoint.offset, focusPoint.type, true);
+    if (dirty) {
+      this.dirty = true;
+    }
+    $normalizeSelection(this);
+  }
+  /**
+   * Creates a new RangeSelection, copying over all the property values from this one.
+   *
+   * @returns a new RangeSelection with the same property values as this one.
+   */
+  clone() {
+    const anchor = this.anchor;
+    const focus = this.focus;
+    const selection = new _RangeSelection($createPoint(anchor.key, anchor.offset, anchor.type), $createPoint(focus.key, focus.offset, focus.type), this.format, this.style);
+    return selection;
+  }
+  /**
+   * Toggles the provided format on all the TextNodes in the Selection.
+   *
+   * @param format a string TextFormatType to toggle on the TextNodes in the selection
+   */
+  toggleFormat(format) {
+    this.format = toggleTextFormatType(this.format, format, null);
+    this.dirty = true;
+  }
+  /**
+   * Sets the value of the format property on the Selection
+   *
+   * @param format - the format to set at the value of the format property.
+   */
+  setFormat(format) {
+    this.format = format;
+    this.dirty = true;
+  }
+  /**
+   * Sets the value of the style property on the Selection
+   *
+   * @param style - the style to set at the value of the style property.
+   */
+  setStyle(style) {
+    this.style = style;
+    this.dirty = true;
+  }
+  /**
+   * Returns whether the provided TextFormatType is present on the Selection. This will be true if all text nodes in the Selection
+   * have the specified format.
+   *
+   * @param type the TextFormatType to check for.
+   * @returns true if the provided format is currently toggled on the Selection, false otherwise.
+   */
+  hasFormat(type) {
+    const formatFlag = TEXT_TYPE_TO_FORMAT[type];
+    return (this.format & formatFlag) !== 0;
+  }
+  /**
+   * Attempts to insert the provided text into the EditorState at the current Selection.
+   * converts tabs, newlines, and carriage returns into LexicalNodes.
+   *
+   * @param text the text to insert into the Selection
+   */
+  insertRawText(text) {
+    this.insertNodes($generateNodesFromRawText(text));
+  }
+  /**
+   * Insert the provided text into the EditorState at the current Selection.
+   *
+   * @param text the text to insert into the Selection
+   */
+  insertText(text) {
+    $insertText(this, text, false);
+  }
+  /**
+   * Removes the text in the Selection, adjusting the EditorState accordingly.
+   */
+  removeText() {
+    const isCurrentSelection = $getSelection() === this;
+    const previousAnchorKey = this.anchor.key;
+    const newRange = $removeTextFromCaretRange($caretRangeFromSelection(this));
+    $updateRangeSelectionFromCaretRange(this, newRange);
+    if (this.isCollapsed()) {
+      $internalRefreshSelectionFormatAndStyle(this, previousAnchorKey);
+    }
+    if (isCurrentSelection && $getSelection() !== this) {
+      $setSelection(this);
+    }
+  }
+  /**
+   * Applies the provided format to the TextNodes in the Selection, splitting or
+   * merging nodes as necessary.
+   *
+   * @param formatType the format type to apply to the nodes in the Selection.
+   * @param alignWithFormat a 32-bit integer representing formatting flags to align with.
+   */
+  formatText(formatType, alignWithFormat = null) {
+    $formatText(this, formatType, alignWithFormat);
+  }
+  /**
+   * Attempts to "intelligently" insert an arbitrary list of Lexical nodes into the EditorState at the
+   * current Selection according to a set of heuristics that determine how surrounding nodes
+   * should be changed, replaced, or moved to accommodate the incoming ones.
+   *
+   * @param nodes - the nodes to insert
+   */
+  insertNodes(nodes) {
+    if (nodes.length === 0) {
+      return;
+    }
+    if (!this.isCollapsed()) {
+      this.removeText();
+    }
+    const anchorNode = this.anchor.getNode();
+    if (this.anchor.type === "element" && $isElementNode(anchorNode) && anchorNode.isShadowRoot() && $getSlotHostKey(anchorNode) !== null) {
+      let firstChild = anchorNode.getFirstChild() ?? anchorNode.append($createParagraphNode()).getFirstChild();
+      if (firstChild !== null && !$isElementNode(firstChild)) {
+        const seed = $createParagraphNode();
+        firstChild.insertBefore(seed);
+        firstChild = seed;
+      }
+      if (firstChild !== null) {
+        firstChild.selectStart();
+        const redirected = $getSelection();
+        if (!$isRangeSelection(redirected)) {
+          formatDevErrorMessage2(`Expected RangeSelection after redirecting into slot subtree`);
+        }
+        return redirected.insertNodes(nodes);
+      }
+    }
+    if (this.anchor.type === "element" && $isRootOrShadowRoot(anchorNode)) {
+      const blocksParent2 = $wrapInlineNodes(nodes);
+      const nodeToSelect2 = blocksParent2.getLastDescendant();
+      anchorNode.splice(this.anchor.offset, 0, blocksParent2.getChildren());
+      if (nodeToSelect2 !== null) {
+        nodeToSelect2.selectEnd();
+      }
+      return;
+    }
+    const firstPoint = this.isBackward() ? this.focus : this.anchor;
+    let firstNode = firstPoint.getNode();
+    let firstBlock = $findMatchingParent(firstNode, INTERNAL_$isBlock);
+    const last = nodes[nodes.length - 1];
+    if ($isElementNode(firstBlock) && "__language" in firstBlock) {
+      if ("__language" in nodes[0]) {
+        this.insertText(nodes[0].getTextContent());
+      } else {
+        const [, index] = $removeTextAndSplitBlock(this);
+        firstBlock.splice(index, 0, nodes);
+        last.selectEnd();
+      }
+      return;
+    }
+    const notInline = (node) => ($isElementNode(node) || $isDecoratorNode(node)) && !node.isInline();
+    if (!nodes.some(notInline)) {
+      if (!$isElementNode(firstBlock)) {
+        formatDevErrorMessage2(`Expected node ${firstNode.constructor.name} of type ${firstNode.getType()} to have a block ElementNode ancestor`);
+      }
+      const [container, index] = $removeTextAndSplitBlock(this, true);
+      const insertionParent = $isElementNode(container) ? container : firstBlock;
+      insertionParent.splice(index, 0, nodes);
+      last.selectEnd();
+      return;
+    }
+    if (firstBlock === null) {
+      const blocksParent2 = $wrapInlineNodes(nodes);
+      const nodeToSelect2 = blocksParent2.getLastDescendant();
+      let caret = $caretFromPoint(this.anchor, "next");
+      for (const block of blocksParent2.getChildren()) {
+        caret = $insertNodeToNearestRootAtCaret(block, caret);
+      }
+      if (nodeToSelect2 !== null) {
+        nodeToSelect2.selectEnd();
+      }
+      return;
+    }
+    if ($isElementNode(firstBlock) && ($getSlotHostKey(firstBlock) !== null || !firstBlock.isParentRequired() && !$isRootOrShadowRoot(firstBlock.getParentOrThrow()))) {
+      const [, index] = $removeTextAndSplitBlock(this);
+      const inlineNodes = $extractInlineFromBlocks(nodes);
+      firstBlock.splice(index, 0, inlineNodes);
+      const lastInserted = inlineNodes[inlineNodes.length - 1];
+      if (lastInserted !== void 0) {
+        lastInserted.selectEnd();
+      } else {
+        firstBlock.select(index, index);
+      }
+      return;
+    }
+    const blocksParent = $wrapInlineNodes(nodes);
+    const nodeToSelect = blocksParent.getLastDescendant();
+    const blocks = blocksParent.getChildren();
+    const isAfterEmptyLine = $isPointAfterEmptyLine(firstPoint);
+    const isMergeable = (node) => !isAfterEmptyLine && $isElementNode(node) && INTERNAL_$isBlock(node) && !node.isEmpty() && $isElementNode(firstBlock) && (!firstBlock.isEmpty() || firstBlock.canMergeWhenEmpty());
+    const shouldInsert = !$isElementNode(firstBlock) || !firstBlock.isEmpty();
+    const insertedParagraph = shouldInsert ? this.insertParagraph() : null;
+    if (insertedParagraph && !firstBlock.isAttached()) {
+      firstNode = this.anchor.getNode();
+      firstBlock = $findMatchingParent(firstNode, INTERNAL_$isBlock);
+    }
+    const lastToInsert = blocks[blocks.length - 1];
+    let firstToInsert = blocks[0];
+    if (isMergeable(firstToInsert)) {
+      if (!$isElementNode(firstBlock)) {
+        formatDevErrorMessage2(`Expected node ${firstNode.constructor.name} of type ${firstNode.getType()} to have a block ElementNode ancestor`);
+      }
+      firstBlock.append(...firstToInsert.getChildren());
+      firstToInsert = blocks[1];
+    }
+    if (firstToInsert) {
+      if (!(firstBlock !== null)) {
+        formatDevErrorMessage2(`Expected node ${firstNode.constructor.name} of type ${firstNode.getType()} to have a block ancestor`);
+      }
+      insertRangeAfter(firstBlock, firstToInsert);
+    }
+    const lastInsertedBlock = $findMatchingParent(nodeToSelect, INTERNAL_$isBlock);
+    const insertSelection = nodeToSelect.selectEnd();
+    if (insertedParagraph) {
+      if ($isElementNode(lastInsertedBlock) && (insertedParagraph.canMergeWhenEmpty() || INTERNAL_$isBlock(lastToInsert))) {
+        lastInsertedBlock.append(...insertedParagraph.getChildren());
+        insertedParagraph.remove();
+      } else if (insertedParagraph.isEmpty()) {
+        insertedParagraph.remove();
+      }
+    }
+    if ($isElementNode(firstBlock) && firstBlock.isEmpty()) {
+      firstBlock.remove();
+    }
+    const lastChild = $isElementNode(firstBlock) ? firstBlock.getLastChild() : null;
+    if ($isLineBreakNode(lastChild) && lastInsertedBlock !== firstBlock) {
+      lastChild.remove();
+    }
+    const normalizedCaret = $normalizeCaret($caretFromPoint(insertSelection.anchor, "next"));
+    $setPointFromCaret(insertSelection.anchor, normalizedCaret);
+    $setPointFromCaret(insertSelection.focus, normalizedCaret);
+  }
+  /**
+   * Inserts a new ParagraphNode into the EditorState at the current Selection
+   *
+   * @returns the newly inserted node.
+   */
+  insertParagraph() {
+    if (!this.isCollapsed()) {
+      this.removeText();
+    }
+    const anchorNode = this.anchor.getNode();
+    if (this.anchor.type === "element" && $isRootOrShadowRoot(anchorNode)) {
+      const paragraph = $createParagraphNode();
+      anchorNode.splice(this.anchor.offset, 0, [paragraph]);
+      paragraph.select();
+      return paragraph;
+    }
+    const [, index] = $removeTextAndSplitBlock(this);
+    const block = $findMatchingParent(this.anchor.getNode(), INTERNAL_$isBlock);
+    if (block !== null && $getSlotHostKey(block) !== null) {
+      return null;
+    }
+    if (!$isElementNode(block)) {
+      formatDevErrorMessage2(`Expected ancestor to be a block ElementNode`);
+    }
+    const firstToAppend = block.getChildAtIndex(index);
+    const nodesToInsert = firstToAppend ? [firstToAppend, ...firstToAppend.getNextSiblings()] : [];
+    const newBlock = block.insertNewAfter(this, false);
+    if (newBlock) {
+      newBlock.append(...nodesToInsert);
+      newBlock.selectStart();
+      return newBlock;
+    }
+    return null;
+  }
+  /**
+   * Inserts a logical linebreak, which may be a new LineBreakNode or a new ParagraphNode, into the EditorState at the
+   * current Selection.
+   */
+  insertLineBreak(selectStart) {
+    const lineBreak = $createLineBreakNode();
+    this.insertNodes([lineBreak]);
+    if (selectStart) {
+      const parent = lineBreak.getParentOrThrow();
+      const index = lineBreak.getIndexWithinParent();
+      parent.select(index, index);
+    }
+  }
+  /**
+   * Extracts the nodes in the Selection, splitting nodes where necessary
+   * to get offset-level precision.
+   *
+   * @returns The nodes in the Selection
+   */
+  extract() {
+    const nodes = this.getNodes();
+    if (this.isCollapsed()) {
+      return [...nodes];
+    }
+    const backward = this.isBackward();
+    const slices = $caretRangeFromSelection(this).getTextSlices();
+    const extracted = [];
+    for (const node of nodes) {
+      const slice = $getTextPointCaretSliceForNode(slices, node);
+      const replacement = slice ? $splitTextPointCaretSlice(slice, this) : node;
+      if (replacement !== null) {
+        extracted.push(replacement);
+      }
+    }
+    if (nodes.length === 1 && extracted.length === 1 && $isTextNode(extracted[0])) {
+      const node = extracted[0];
+      const [start, end] = backward ? [this.focus, this.anchor] : [this.anchor, this.focus];
+      start.set(node.getKey(), 0, "text");
+      end.set(node.getKey(), node.getTextContentSize(), "text");
+    }
+    return extracted;
+  }
+  /**
+   * Modifies the Selection according to the parameters and a set of heuristics that account for
+   * various node types. Can be used to safely move or extend selection by one logical "unit" without
+   * dealing explicitly with all the possible node types.
+   *
+   * @param alter the type of modification to perform
+   * @param isBackward whether or not selection is backwards
+   * @param granularity the granularity at which to apply the modification
+   */
+  modify(alter, isBackward, granularity) {
+    if ($modifySelectionAroundDecoratorsAndBlocks(this, alter, isBackward, granularity)) {
+      return;
+    }
+    const collapse = alter === "move";
+    const editor = getActiveEditor();
+    const domSelection = getDOMSelection(getWindow(editor));
+    if (!domSelection) {
+      return;
+    }
+    const blockCursorElement = editor._blockCursorElement;
+    const rootElement = editor._rootElement;
+    const focusNode = this.focus.getNode();
+    if (rootElement !== null && blockCursorElement !== null && $isElementNode(focusNode) && !focusNode.isInline() && !focusNode.canBeEmpty()) {
+      removeDOMBlockCursorElement(blockCursorElement, editor, rootElement);
+    }
+    const focusKeyedDOM = getElementByKeyOrThrow(editor, this.focus.key);
+    let nextFocusDOM = focusKeyedDOM;
+    if (this.focus.type === "text") {
+      nextFocusDOM = $isTextNode(focusNode) ? $getDOMTextNode(focusNode, focusKeyedDOM, editor) : null;
+    }
+    if (this.dirty) {
+      const anchorKeyedDOM = getElementByKeyOrThrow(editor, this.anchor.key);
+      let nextAnchorDOM = anchorKeyedDOM;
+      if (this.anchor.type === "text") {
+        const node = this.anchor.getNode();
+        nextAnchorDOM = $isTextNode(node) ? $getDOMTextNode(node, anchorKeyedDOM, editor) : null;
+      }
+      if (nextAnchorDOM && nextFocusDOM) {
+        setDOMSelectionBaseAndExtent(domSelection, nextAnchorDOM, this.anchor.offset, nextFocusDOM, this.focus.offset);
+      }
+    }
+    if (granularity === "character" && $isTextNode(focusNode) && focusNode.isUnmergeable()) {
+      const atBoundary = isBackward ? this.focus.offset === 0 : this.focus.offset === focusNode.getTextContentSize();
+      if (atBoundary) {
+        const sibling = $getSiblingCaret(focusNode, isBackward ? "previous" : "next").getNodeAtCaret();
+        if ($isTextNode(sibling)) {
+          if (collapse) {
+            const sibKeyedDOM = editor.getElementByKey(sibling.getKey());
+            const sibDOM = sibKeyedDOM ? $getDOMTextNode(sibling, sibKeyedDOM, editor) : null;
+            if (sibDOM) {
+              const sibOffset = isBackward ? sibDOM.length : 0;
+              setDOMSelectionBaseAndExtent(domSelection, sibDOM, sibOffset, sibDOM, sibOffset);
+            }
+          } else {
+            const sibLen = sibling.getTextContentSize();
+            if (isBackward) {
+              this.focus.set(sibling.__key, sibLen - 1, "text");
+            } else {
+              this.focus.set(sibling.__key, 1, "text");
+            }
+            this.dirty = true;
+            return;
+          }
+        }
+      }
+    }
+    moveNativeSelection(domSelection, alter, isBackward ? "backward" : "forward", granularity, rootElement);
+    if (domSelection.rangeCount > 0) {
+      const composedRange = getComposedStaticRange(domSelection, editor._rootElement);
+      const range = composedRange || domSelection.getRangeAt(0);
+      const anchorNode = this.anchor.getNode();
+      const root = $isRootNode(anchorNode) ? anchorNode : $getNearestRootOrShadowRoot(anchorNode);
+      this.applyDOMRange(range);
+      this.dirty = true;
+      if (!collapse) {
+        $shrinkSelectionToRoot(this, isBackward, root);
+        const anchorIsAtRangeStart = composedRange ? domSelection.direction !== "backward" : domSelection.anchorNode === range.startContainer && domSelection.anchorOffset === range.startOffset;
+        if (!anchorIsAtRangeStart) {
+          $swapPoints(this);
+        }
+      }
+    }
+    if (granularity === "lineboundary") {
+      $modifySelectionAroundDecoratorsAndBlocks(this, alter, isBackward, granularity, "decorators");
+    }
+  }
+  /**
+   * Helper for handling forward character and word deletion that prevents element nodes
+   * like a table, columns layout being destroyed
+   *
+   * @param anchor the anchor
+   * @param anchorNode the anchor node in the selection
+   * @param isBackward whether or not selection is backwards
+   */
+  forwardDeletion(anchor, anchorNode, isBackward) {
+    if (!isBackward && // Delete forward handle case
+    (anchor.type === "element" && $isElementNode(anchorNode) && anchor.offset === anchorNode.getChildrenSize() || anchor.type === "text" && anchor.offset === anchorNode.getTextContentSize())) {
+      const parent = anchorNode.getParent();
+      const nextSibling = anchorNode.getNextSibling() || (parent === null ? null : parent.getNextSibling());
+      if ($isElementNode(nextSibling) && nextSibling.isShadowRoot()) {
+        return true;
+      }
+    }
+    return false;
+  }
+  /**
+   * Performs one logical character deletion operation on the EditorState based on the current Selection.
+   * Handles different node types.
+   *
+   * @param isBackward whether or not the selection is backwards.
+   */
+  deleteCharacter(isBackward) {
+    const wasCollapsed = this.isCollapsed();
+    if (this.isCollapsed()) {
+      const anchor = this.anchor;
+      let anchorNode = anchor.getNode();
+      if (this.forwardDeletion(anchor, anchorNode, isBackward)) {
+        const nextSibling = $isElementNode(anchorNode) ? anchorNode.getNextSibling() : null;
+        if (!($isElementNode(anchorNode) && anchorNode.isEmpty() && $isElementNode(nextSibling) && nextSibling.isShadowRoot())) {
+          return;
+        }
+      }
+      const direction = isBackward ? "previous" : "next";
+      const initialCaret = $caretFromPoint(anchor, direction);
+      const initialRange = $extendCaretToRange(initialCaret);
+      if (initialRange.getTextSlices().every((slice) => slice === null || slice.distance === 0)) {
+        if (anchor.type === "element") {
+          const adjacent = initialCaret.getNodeAtCaret();
+          if ($isElementNode(adjacent) && $needsBlockCursorBeside(adjacent)) {
+            const container = adjacent.getParent();
+            adjacent.remove();
+            const restored = $restoreEmptyContainerParagraph(container, adjacent);
+            if (restored !== null) {
+              restored.selectStart();
+            }
+            return;
+          }
+        }
+        let state = {
+          type: "initial"
+        };
+        for (const caret of initialRange.iterNodeCarets("shadowRoot")) {
+          if ($isChildCaret(caret)) {
+            if (caret.origin.isInline()) ;
+            else if (caret.origin.isShadowRoot()) {
+              if (state.type === "merge-block") {
+                break;
+              }
+              if ($isElementNode(initialRange.anchor.origin) && initialRange.anchor.origin.isEmpty()) {
+                const normCaret = $normalizeCaret(caret);
+                $updateRangeSelectionFromCaretRange(this, $getCaretRange(normCaret, normCaret));
+                initialRange.anchor.origin.remove();
+              }
+              return;
+            } else if (state.type === "merge-next-block" || state.type === "merge-block") {
+              state = {
+                block: state.block,
+                caret,
+                type: "merge-block"
+              };
+            }
+          } else if (state.type === "merge-block") {
+            break;
+          } else if ($isSiblingCaret(caret)) {
+            if ($isElementNode(caret.origin)) {
+              if (!caret.origin.isInline()) {
+                state = {
+                  block: caret.origin,
+                  type: "merge-next-block"
+                };
+              } else if (!caret.origin.isParentOf(initialRange.anchor.origin)) {
+                break;
+              }
+              continue;
+            } else if ($isDecoratorNode(caret.origin)) {
+              if (caret.origin.isIsolated()) ;
+              else if (state.type === "merge-next-block" && (caret.origin.isKeyboardSelectable() || !caret.origin.isInline()) && $isElementNode(initialRange.anchor.origin) && initialRange.anchor.origin.isEmpty()) {
+                initialRange.anchor.origin.remove();
+                const nodeSelection = $createNodeSelection();
+                nodeSelection.add(caret.origin.getKey());
+                $setSelection(nodeSelection);
+              } else {
+                const decorator = caret.origin;
+                const container = decorator.getParent();
+                decorator.remove();
+                const restored = $restoreEmptyContainerParagraph(container, decorator);
+                if (restored !== null) {
+                  restored.selectStart();
+                }
+              }
+              return;
+            } else if ($isLineBreakNode(caret.origin)) {
+              caret.origin.remove();
+              return;
+            }
+            break;
+          }
+        }
+        if (state.type === "merge-block") {
+          const {
+            caret,
+            block
+          } = state;
+          if ($getSlotNames(block).length > 0) {
+            return;
+          }
+          if (caret.origin.isEmpty() && !block.isEmpty() && caret.origin.getParent() === block.getParent()) {
+            caret.origin.remove(true);
+            return;
+          }
+          $updateRangeSelectionFromCaretRange(this, $getCaretRange(!caret.origin.isEmpty() && block.isEmpty() ? $rewindSiblingCaret($getSiblingCaret(block, caret.direction)) : initialRange.anchor, caret));
+          return this.removeText();
+        }
+        for (let node = anchor.getNode(); node !== null; ) {
+          if ($getSlotHostKey(node) !== null) {
+            return;
+          }
+          if ($isElementNode(node) && node.isShadowRoot()) {
+            break;
+          }
+          node = node.getParent();
+        }
+      }
+      const focus = this.focus;
+      $extendSelectionForDeletion(this, isBackward, "character");
+      if (!this.isCollapsed()) {
+        const focusNode = focus.type === "text" ? focus.getNode() : null;
+        anchorNode = anchor.type === "text" ? anchor.getNode() : null;
+        if (focusNode !== null && focusNode.isSegmented()) {
+          const offset = focus.offset;
+          const textContentSize = focusNode.getTextContentSize();
+          if (focusNode.is(anchorNode) || isBackward && offset !== textContentSize || !isBackward && offset !== 0) {
+            $removeSegment(focusNode, isBackward, offset);
+            return;
+          }
+        } else if (anchorNode !== null && anchorNode.isSegmented()) {
+          const offset = anchor.offset;
+          const textContentSize = anchorNode.getTextContentSize();
+          if (anchorNode.is(focusNode) || isBackward && offset !== 0 || !isBackward && offset !== textContentSize) {
+            $removeSegment(anchorNode, isBackward, offset);
+            return;
+          }
+        }
+        $updateCaretSelectionForUnicodeCharacter(this, isBackward);
+      } else if (isBackward && anchor.offset === 0) {
+        if ($collapseAtStart(this, anchor.getNode())) {
+          return;
+        }
+      }
+    }
+    if (!wasCollapsed) {
+      INTERNAL_$expandSelectionToWholeDocument(this);
+    }
+    this.removeText();
+    if (isBackward && !wasCollapsed && this.isCollapsed() && this.anchor.type === "element" && this.anchor.offset === 0) {
+      $ensureRootHasParagraph();
+    }
+  }
+  /**
+   * Performs one logical line deletion operation on the EditorState based on the current Selection.
+   * Handles different node types.
+   *
+   * @param isBackward whether or not the selection is backwards.
+   */
+  deleteLine(isBackward) {
+    $deleteTextByGranularity(this, isBackward, "lineboundary");
+  }
+  /**
+   * Performs one logical word deletion operation on the EditorState based on the current Selection.
+   * Handles different node types.
+   *
+   * @param isBackward whether or not the selection is backwards.
+   */
+  deleteWord(isBackward) {
+    $deleteTextByGranularity(this, isBackward, "word");
+  }
+  /**
+   * Returns whether the Selection is "backwards", meaning the focus
+   * logically precedes the anchor in the EditorState.
+   * @returns true if the Selection is backwards, false otherwise.
+   */
+  isBackward() {
+    const cached = this._cachedIsBackward;
+    if (cached !== null) {
+      return cached;
+    }
+    const isBackward = this.focus.isBefore(this.anchor);
+    if (!isCurrentlyReadOnlyMode()) {
+      this._cachedIsBackward = isBackward;
+    }
+    return isBackward;
+  }
+  getStartEndPoints() {
+    return [this.anchor, this.focus];
+  }
+};
+function $isNodeSelection(x2) {
+  return x2 instanceof NodeSelection;
+}
+function $deleteTextByGranularity(selection, isBackward, granularity) {
+  const wasCollapsed = selection.isCollapsed();
+  const {
+    anchor,
+    focus
+  } = selection;
+  let stoppedAtSlot = false;
+  if (wasCollapsed) {
+    if (granularity === "word" && selection.forwardDeletion(anchor, anchor.getNode(), isBackward)) {
+      return;
+    }
+    stoppedAtSlot = $extendSelectionForDeletion(selection, isBackward, granularity);
+    if (granularity === "lineboundary") {
+      $stopLineDeletionAtLineBreak(selection);
+    }
+  }
+  if (granularity === "lineboundary" && !selection.isCollapsed() && $findMatchingParent(anchor.getNode(), INTERNAL_$isBlock) !== $findMatchingParent(focus.getNode(), INTERNAL_$isBlock)) {
+    focus.set(anchor.key, anchor.offset, anchor.type);
+  }
+  if (selection.isCollapsed()) {
+    if (!stoppedAtSlot) {
+      selection.deleteCharacter(isBackward);
+    }
+  } else {
+    if (!wasCollapsed) {
+      INTERNAL_$expandSelectionToWholeDocument(selection);
+    }
+    selection.removeText();
+  }
+}
+function $stopLineDeletionAtLineBreak(selection) {
+  for (const caret of $caretRangeFromSelection(selection).iterNodeCarets("shadowRoot")) {
+    if ($isSiblingCaret(caret) && $isLineBreakNode(caret.origin)) {
+      $setPointFromCaret(selection.focus, $rewindSiblingCaret(caret));
+      return;
+    }
+  }
+}
+function $updateTextFormat(selection, applyFormat) {
+  if ($isNodeSelection(selection)) {
+    for (const node of selection.getNodes()) {
+      if ($isInlineFormattable(node)) {
+        node.setFormat(applyFormat(node.getFormat()));
+      }
+    }
+    return;
+  }
+  const nodes = selection.isCollapsed() ? [] : selection.getNodes();
+  const slices = nodes.length ? $caretRangeFromSelection(selection).getTextSlices() : [];
+  let hasText = false;
+  let skippedStart;
+  let firstText;
+  let firstFormat;
+  let lastFormat = 0;
+  for (const node of nodes) {
+    if ($isTextNode(node)) {
+      if (skippedStart && firstText) {
+        skippedStart.set(firstText.__key, 0, "text");
+        skippedStart = void 0;
+      }
+      const slice = $getTextPointCaretSliceForNode(slices, node);
+      if (!hasText && slice && slice.distance === 0) {
+        const start = selection.isBackward() ? selection.focus : selection.anchor;
+        if (start.type === "text" && start.key === node.__key) {
+          skippedStart = start;
+        }
+      }
+      hasText = true;
+      if (slice && slice.distance === 0) {
+        continue;
+      }
+      const nextFormat = applyFormat(node.getFormat());
+      const originalSize = skippedStart ? node.getTextContentSize() : 0;
+      const replacement = slice && !$isTokenOrSegmented(node) ? $splitTextPointCaretSlice(slice, selection) : node;
+      if (replacement !== null) {
+        replacement.setFormat(nextFormat);
+        if (firstFormat === void 0) {
+          firstFormat = nextFormat;
+          firstText = replacement;
+          if (skippedStart && replacement.getTextContentSize() !== originalSize) {
+            skippedStart.set(replacement.__key, 0, "text");
+            skippedStart = void 0;
+          }
+        }
+        lastFormat = nextFormat;
+      }
+    } else if ($isElementNode(node)) {
+      node.setTextFormat(applyFormat(node.getTextFormat()));
+    } else if ($isInlineFormattable(node)) {
+      node.setFormat(applyFormat(node.getFormat()));
+    }
+  }
+  if (!hasText) {
+    selection.setFormat(applyFormat(selection.format));
+    $setCompositionKey(null);
+  } else if (firstFormat !== void 0) {
+    selection.format = firstFormat | lastFormat;
+  }
+}
+function $setTextFormat(selection, formats) {
+  const entries = [];
+  for (const [type, value] of Object.entries(formats)) {
+    if (typeof value === "boolean") {
+      entries.push([type, value]);
+    }
+  }
+  if (entries.length === 0) {
+    return;
+  }
+  $updateTextFormat(selection, (format) => {
+    for (const [type, value] of entries) {
+      format = toggleTextFormatType(format, type, value ? TEXT_TYPE_TO_FORMAT[type] : 0);
+    }
+    return format;
+  });
+}
+function $formatText(selection, formatType, alignWithFormat = null) {
+  const effectiveAlign = alignWithFormat === null && $isRangeSelection(selection) ? toggleTextFormatType(selection.format, formatType, null) : alignWithFormat;
+  $updateTextFormat(selection, (format) => toggleTextFormatType(format, formatType, effectiveAlign));
+}
+function getCharacterOffset(point) {
+  const offset = point.offset;
+  if (point.type === "text") {
+    return offset;
+  }
+  const parent = point.getNode();
+  return offset === parent.getChildrenSize() ? parent.getTextContent().length : 0;
+}
+function $getCharacterOffsets(selection) {
+  const anchorAndFocus = selection.getStartEndPoints();
+  if (anchorAndFocus === null) {
+    return [0, 0];
+  }
+  const [anchor, focus] = anchorAndFocus;
+  if (anchor.type === "element" && focus.type === "element" && anchor.key === focus.key && anchor.offset === focus.offset) {
+    return [0, 0];
+  }
+  return [getCharacterOffset(anchor), getCharacterOffset(focus)];
+}
+function $collapseAtStart(selection, startNode) {
+  for (let node = startNode; node; node = node.getParent()) {
+    if ($isElementNode(node)) {
+      if (node.collapseAtStart(selection)) {
+        return true;
+      }
+      if ($isRootOrShadowRoot(node)) {
+        break;
+      }
+    }
+    if (node.getPreviousSibling()) {
+      break;
+    }
+  }
+  return false;
+}
+function INTERNAL_$expandSelectionToWholeDocument(selection) {
+  const root = $getRoot();
+  if (root.isEmpty() || !$isBlockFullySelected(root, selection)) {
+    return;
+  }
+  selection.anchor.set(root.getKey(), 0, "element");
+  selection.focus.set(root.getKey(), root.getChildrenSize(), "element");
+}
+function $swapPoints(selection) {
+  const focus = selection.focus;
+  const anchor = selection.anchor;
+  const anchorKey = anchor.key;
+  const anchorOffset = anchor.offset;
+  const anchorType = anchor.type;
+  anchor.set(focus.key, focus.offset, focus.type, true);
+  focus.set(anchorKey, anchorOffset, anchorType, true);
+}
+function canMoveWithinDOMText(node, offset, direction) {
+  if (node === null || node.nodeType !== DOM_TEXT_TYPE) {
+    return false;
+  }
+  if (direction === "backward") {
+    return offset > 0;
+  } else if (direction === "forward") {
+    return offset < node.length;
+  }
+  return false;
+}
+function moveNativeSelection(domSelection, alter, direction, granularity, rootElement) {
+  const points = granularity === "character" ? getDOMSelectionPoints(domSelection, rootElement) : null;
+  const focusNode = points && points.focusNode;
+  const focusOffset = points ? points.focusOffset : 0;
+  domSelection.modify(alter, direction, granularity);
+  if (points === null || !canMoveWithinDOMText(focusNode, focusOffset, direction)) {
+    return;
+  }
+  const nextPoints = getDOMSelectionPoints(domSelection, rootElement);
+  if (nextPoints.focusNode === focusNode && nextPoints.focusOffset === focusOffset) {
+    domSelection.modify(alter, direction, granularity);
+  }
+}
+function $shrinkSelectionToRoot(selection, isBackward, root) {
+  const nodes = selection.getNodes();
+  const validNodes = nodes.filter((node) => $hasAncestor(node, root));
+  if (validNodes.length === 0 || validNodes.length === nodes.length) {
+    return false;
+  }
+  const edgeNode = isBackward ? validNodes[0] : validNodes[validNodes.length - 1];
+  const edgeElement = $isElementNode(edgeNode) ? edgeNode : edgeNode.getParentOrThrow();
+  if (isBackward) {
+    edgeElement.selectStart();
+  } else {
+    edgeElement.selectEnd();
+  }
+  return true;
+}
+function $extendSelectionForDeletion(selection, isBackward, granularity) {
+  if ($modifySelectionAroundDecoratorsAndBlocks(selection, "extend", isBackward, granularity)) {
+    return false;
+  }
+  const editor = getActiveEditor();
+  const domSelection = getDOMSelection(getWindow(editor));
+  if (!domSelection || typeof domSelection.modify !== "function") {
+    return false;
+  }
+  const blockCursorElement = editor._blockCursorElement;
+  const rootElement = editor._rootElement;
+  const anchor = selection.anchor;
+  const focusNode = selection.focus.getNode();
+  if (rootElement !== null && blockCursorElement !== null && $isElementNode(focusNode) && !focusNode.isInline() && !focusNode.canBeEmpty()) {
+    removeDOMBlockCursorElement(blockCursorElement, editor, rootElement);
+  }
+  const $resolvePointDOM = (point) => {
+    const pointNode = point.getNode();
+    const keyedDOM = editor.getElementByKey(point.key);
+    return keyedDOM !== null && point.type === "text" && $isTextNode(pointNode) ? $getDOMTextNode(pointNode, keyedDOM, editor) : keyedDOM;
+  };
+  const anchorNode = anchor.getNode();
+  const anchorDOM = $resolvePointDOM(anchor);
+  if (anchorDOM === null) {
+    return false;
+  }
+  const anchorOffset = anchor.offset;
+  const wasCollapsed = selection.isCollapsed();
+  const focus = selection.focus;
+  const focusDOM = wasCollapsed ? anchorDOM : $resolvePointDOM(focus);
+  if (focusDOM === null) {
+    return false;
+  }
+  const focusOffset = focus.offset;
+  setDOMSelectionBaseAndExtent(domSelection, focusDOM, focusOffset, focusDOM, focusOffset);
+  moveNativeSelection(domSelection, "move", isBackward ? "backward" : "forward", granularity, rootElement);
+  if (domSelection.rangeCount === 0) {
+    return false;
+  }
+  const landedRange = getComposedStaticRange(domSelection, rootElement) || domSelection.getRangeAt(0);
+  let landedContainer = landedRange.startContainer;
+  let landedOffset = landedRange.startOffset;
+  if (granularity === "lineboundary" && isDOMTextNode(landedContainer) && getNearestEditorFromDOMNode(landedContainer) === editor) {
+    const landedNode2 = $getNodeFromDOM(landedContainer);
+    if ($isDecoratorNode(landedNode2) && landedNode2.isInline() && !landedNode2.isIsolated()) {
+      const decoratorDOM = editor.getElementByKey(landedNode2.getKey());
+      if (decoratorDOM !== null && decoratorDOM.contains(landedContainer)) {
+        landedContainer = decoratorDOM;
+        landedOffset = isBackward ? 0 : decoratorDOM.childNodes.length;
+      }
+    }
+  }
+  if (wasCollapsed && granularity === "character" && anchor.type === "text" && $isTextNode(anchorNode) && anchorNode.isUnmergeable()) {
+    const boundaryOffset = isBackward ? 0 : anchorNode.getTextContentSize();
+    if (anchorOffset === boundaryOffset) {
+      const sibling = $getSiblingCaret(anchorNode, isBackward ? "previous" : "next").getNodeAtCaret();
+      if ($isTextNode(sibling)) {
+        const sibOffset = isBackward ? sibling.getTextContentSize() - 1 : 1;
+        selection.focus.set(sibling.__key, sibOffset, "text");
+        selection.dirty = true;
+        return false;
+      }
+    }
+  }
+  if (wasCollapsed && granularity === "character" && anchor.type === "text") {
+    const edgeOffset = isBackward ? 0 : anchorNode.getTextContentSize();
+    const clampedOffset = landedContainer === anchorDOM ? landedOffset : anchorOffset !== edgeOffset ? edgeOffset : -1;
+    if (clampedOffset >= 0) {
+      if (clampedOffset !== anchorOffset) {
+        selection.focus.set(anchor.key, clampedOffset, "text");
+        selection.dirty = true;
+      }
+      return false;
+    }
+  }
+  const landedNode = editor._slotsUsed && $getNearestNodeFromDOMNode(landedContainer);
+  const anchorFrame = landedNode ? $getSlotFrame(anchorNode) : null;
+  const landedFrame = landedNode ? $getSlotFrame(landedNode) : null;
+  if (landedNode && !$isSameFrame(landedFrame, anchorFrame) && $setPointAtSlotBoundary(selection.focus, anchorNode, anchorFrame, landedFrame, "deletion", () => !isBackward)) {
+    return true;
+  }
+  const [startContainer, startOffset, endContainer, endOffset] = isBackward ? [landedContainer, landedOffset, anchorDOM, anchorOffset] : [anchorDOM, anchorOffset, landedContainer, landedOffset];
+  const root = $isRootNode(anchorNode) ? anchorNode : $getNearestRootOrShadowRoot(anchorNode);
+  selection.applyDOMRange({
+    collapsed: false,
+    endContainer,
+    endOffset,
+    startContainer,
+    startOffset
+  });
+  selection.dirty = true;
+  if (!$shrinkSelectionToRoot(selection, isBackward, root) && isBackward) {
+    $swapPoints(selection);
+  }
+  return false;
+}
+function $setPointAtSlotBoundary(point, anchorNode, anchorFrame, focusFrame, mode, resolveFocusAfterAnchor) {
+  const host = focusFrame && $getSlotHostInFrame(focusFrame, anchorFrame);
+  if (host === null && anchorFrame === null) {
+    return false;
+  }
+  const focusAfterAnchor = resolveFocusAfterAnchor();
+  const hostParent = host && host.getParent();
+  let parent;
+  let offset;
+  if (host === null || hostParent === null || anchorNode !== null && (host.is(anchorNode) || host.isParentOf(anchorNode))) {
+    const edge = host || anchorFrame;
+    if (!$isElementNode(edge)) {
+      if (edge !== null) {
+        $setPointToFrameEdge(point, edge, focusAfterAnchor);
+      }
+      return true;
+    }
+    parent = edge;
+    offset = focusAfterAnchor ? edge.getChildrenSize() : 0;
+  } else {
+    parent = hostParent;
+    offset = host.getIndexWithinParent() + (focusAfterAnchor === (mode === "selection") ? 1 : 0);
+  }
+  if (mode === "deletion") {
+    $setDeletionFocus(point, parent, offset, !focusAfterAnchor);
+  } else {
+    point.set(parent.getKey(), offset, "element");
+  }
+  return true;
+}
+function $setDeletionFocus(focus, parent, offset, isBackward) {
+  for (; ; ) {
+    const child = parent.getChildAtIndex(isBackward ? offset : offset - 1);
+    if ($isTextNode(child)) {
+      focus.set(child.getKey(), isBackward ? 0 : child.getTextContentSize(), "text");
+      return;
+    }
+    if (!$isElementNode(child) || $isRootOrShadowRoot(child)) {
+      break;
+    }
+    parent = child;
+    offset = isBackward ? 0 : child.getChildrenSize();
+  }
+  focus.set(parent.getKey(), offset, "element");
+}
+function $updateCaretSelectionForUnicodeCharacter(selection, isBackward) {
+  const anchor = selection.anchor;
+  const focus = selection.focus;
+  const anchorNode = anchor.getNode();
+  const focusNode = focus.getNode();
+  if (anchorNode === focusNode && anchor.type === "text" && focus.type === "text") {
+    const anchorOffset = anchor.offset;
+    const focusOffset = focus.offset;
+    const isBefore = anchorOffset < focusOffset;
+    const startOffset = isBefore ? anchorOffset : focusOffset;
+    const endOffset = isBefore ? focusOffset : anchorOffset;
+    const characterOffset = endOffset - 1;
+    if (startOffset !== characterOffset) {
+      const text = anchorNode.getTextContent().slice(startOffset, endOffset);
+      if (shouldDeleteExactlyOneCodeUnit(text)) {
+        if (isBackward) {
+          focus.set(focus.key, characterOffset, focus.type);
+        } else {
+          anchor.set(anchor.key, characterOffset, anchor.type);
+        }
+      }
+    }
+  }
+}
+function shouldDeleteExactlyOneCodeUnit(text) {
+  {
+    if (!(text.length > 1)) {
+      formatDevErrorMessage2(`shouldDeleteExactlyOneCodeUnit: expecting to be called only with sequences of two or more code units`);
+    }
+  }
+  return !(doesContainSurrogatePair(text) || doesContainEmoji(text));
+}
+// @__NO_SIDE_EFFECTS__
+function createEmojiTest() {
+  try {
+    const re = new RegExp("\\p{Emoji}", "u");
+    const test = re.test.bind(re);
+    if (
+      // Emoji in the BMP (heart) with variation selector
+      test("\u2764\uFE0F") && // Emoji in the BMP (#) with variation selector
+      test("#\uFE0F\u20E3") && // Emoji outside the BMP (thumbs up) that is encoded with a surrogate pair
+      test("\u{1F44D}")
+    ) {
+      return test;
+    }
+  } catch (_e) {
+  }
+  return () => false;
+}
+var doesContainEmoji = /* @__PURE__ */ createEmojiTest();
+function $removeSegment(node, isBackward, offset) {
+  const textNode = node;
+  const textContent = textNode.getTextContent();
+  const split = textContent.split(/(?=\s)/g);
+  const splitLength = split.length;
+  let segmentOffset = 0;
+  let restoreOffset = 0;
+  for (let i2 = 0; i2 < splitLength; i2++) {
+    const text = split[i2];
+    const isLast = i2 === splitLength - 1;
+    restoreOffset = segmentOffset;
+    segmentOffset += text.length;
+    if (isBackward && segmentOffset === offset || segmentOffset > offset || isLast) {
+      split.splice(i2, 1);
+      if (isLast) {
+        restoreOffset = void 0;
+      }
+      break;
+    }
+  }
+  const nextTextContent = split.join("").trim();
+  if (nextTextContent === "") {
+    textNode.remove();
+  } else {
+    textNode.setTextContent(nextTextContent);
+    textNode.select(restoreOffset, restoreOffset);
+  }
+}
+function shouldResolveAncestor(resolvedElement, resolvedOffset, lastPoint) {
+  const parent = resolvedElement.getParent();
+  return lastPoint === null || parent === null || !parent.canBeEmpty() || parent !== lastPoint.getNode();
+}
+function $internalResolveSelectionPoint(dom, offset, lastPoint, editor) {
+  let resolvedOffset = offset;
+  let resolvedNode;
+  let dirty = false;
+  if (isHTMLElement(dom)) {
+    let moveSelectionToEnd = false;
+    const childNodes = dom.childNodes;
+    const childNodesLength = childNodes.length;
+    const blockCursorElement = editor._blockCursorElement;
+    if (resolvedOffset === childNodesLength && childNodesLength > 0) {
+      moveSelectionToEnd = true;
+      resolvedOffset = childNodesLength - 1;
+    }
+    if (getNodeKeyFromDOMNode(dom, editor) === void 0 && !isDOMCapturingSelection(dom, editor)) {
+      dirty = true;
+    }
+    let childDOM = childNodes[resolvedOffset];
+    let hasBlockCursor = false;
+    if (childDOM === blockCursorElement) {
+      childDOM = childNodes[resolvedOffset + 1];
+      hasBlockCursor = true;
+    } else if (blockCursorElement !== null) {
+      const blockCursorElementParent = blockCursorElement.parentNode;
+      if (dom === blockCursorElementParent) {
+        const blockCursorOffset = Array.prototype.indexOf.call(blockCursorElementParent.children, blockCursorElement);
+        if (offset > blockCursorOffset) {
+          resolvedOffset--;
+        }
+      }
+    }
+    resolvedNode = $getNodeFromDOM(childDOM);
+    if ($isTextNode(resolvedNode)) {
+      resolvedOffset = $getTextNodeOffset(resolvedNode, moveSelectionToEnd ? "next" : "previous");
+    } else {
+      let resolvedElement = $getNodeFromDOM(dom);
+      if (resolvedElement === null) {
+        return null;
+      }
+      if ($isElementNode(resolvedElement)) {
+        const elementDOM = editor.getElementByKey(resolvedElement.getKey());
+        if (!(elementDOM !== null)) {
+          formatDevErrorMessage2(`$internalResolveSelectionPoint: node in DOM but not keyToDOMMap`);
+        }
+        const slot = $getDOMSlot(resolvedElement, elementDOM, editor);
+        [resolvedElement, resolvedOffset] = slot.resolveChildIndex(resolvedElement, elementDOM, dom, offset);
+        if (!$isElementNode(resolvedElement)) {
+          formatDevErrorMessage2(`$internalResolveSelectionPoint: resolvedElement is not an ElementNode`);
+        }
+        if (moveSelectionToEnd && resolvedOffset >= resolvedElement.getChildrenSize()) {
+          resolvedOffset = Math.max(0, resolvedElement.getChildrenSize() - 1);
+        }
+        let child = resolvedElement.getChildAtIndex(resolvedOffset);
+        if ($isElementNode(child) && shouldResolveAncestor(child, resolvedOffset, lastPoint)) {
+          const descendant = moveSelectionToEnd ? child.getLastDescendant() : child.getFirstDescendant();
+          if (descendant === null) {
+            resolvedElement = child;
+          } else {
+            child = descendant;
+            resolvedElement = $isElementNode(child) ? child : child.getParentOrThrow();
+          }
+          resolvedOffset = 0;
+        }
+        if ($isTextNode(child)) {
+          resolvedNode = child;
+          resolvedElement = null;
+          resolvedOffset = $getTextNodeOffset(child, moveSelectionToEnd ? "next" : "previous");
+        } else if (child !== resolvedElement && moveSelectionToEnd && !hasBlockCursor) {
+          if (!$isElementNode(resolvedElement)) {
+            formatDevErrorMessage2(`invariant`);
+          }
+          resolvedOffset = Math.min(resolvedElement.getChildrenSize(), resolvedOffset + 1);
+        }
+      } else {
+        const slotHost = $getSlotHost(resolvedElement);
+        const anchorNode = slotHost !== null ? slotHost : resolvedElement;
+        const index = anchorNode.getIndexWithinParent();
+        const elementDOM = editor.getElementByKey(resolvedElement.getKey());
+        let position = "after";
+        if (elementDOM !== null && $getNodeFromDOM(dom) === resolvedElement) {
+          const slot = $getDOMSlot(resolvedElement, elementDOM, editor);
+          if (slot.element !== elementDOM) {
+            position = slot.resolveLeafPosition(elementDOM, dom, offset);
+          } else if (offset === 0 && $isDecoratorNode(resolvedElement)) {
+            position = "before";
+          }
+        }
+        resolvedOffset = position === "before" ? index : index + 1;
+        resolvedElement = anchorNode.getParentOrThrow();
+      }
+      if ($isElementNode(resolvedElement)) {
+        return [$createPoint(resolvedElement.__key, resolvedOffset, "element"), dirty];
+      }
+    }
+  } else {
+    resolvedNode = $getNodeFromDOM(dom);
+  }
+  if (!$isTextNode(resolvedNode)) {
+    return null;
+  }
+  return [$createPoint(resolvedNode.__key, $getTextNodeOffset(resolvedNode, resolvedOffset, "clamp"), "text"), dirty];
+}
+function $resolveSelectionPointOnBoundary(point, isBackward, isCollapsed) {
+  const node = point.getNode();
+  if ($isEmptyCompositionTarget(node)) {
+    return;
+  }
+  const before = point.offset === 0;
+  if (!before && point.offset !== node.getTextContent().length) {
+    return;
+  }
+  const direction = before ? "previous" : "next";
+  const sibling = $getSiblingCaret(node, direction).getNodeAtCaret();
+  if (before !== isBackward && $isElementNode(sibling) && sibling.isInline() && (!before || !isCollapsed)) {
+    point.set(sibling.__key, before ? sibling.getChildrenSize() : 0, "element");
+  } else if (before && !isBackward) {
+    if ($isTextNode(sibling) && !node.isUnmergeable()) {
+      point.set(sibling.__key, sibling.getTextContent().length, "text");
+    }
+  } else if (sibling === null && (isCollapsed || !before && isBackward)) {
+    const parent = node.getParent();
+    if ($isElementNode(parent) && parent.isInline() && (before || !parent.canInsertTextAfter() && parent.getTextContentSize() > 1)) {
+      const parentSibling = $getSiblingCaret(parent, direction).getNodeAtCaret();
+      if ($isTextNode(parentSibling)) {
+        point.set(parentSibling.__key, before ? parentSibling.getTextContent().length : 0, "text");
+      }
+    }
+  }
+}
+function $normalizeSelectionPointsForBoundaries(anchor, focus, lastSelection) {
+  if (anchor.type === "text" && focus.type === "text") {
+    const isBackward = anchor.isBefore(focus);
+    const isCollapsed = anchor.is(focus);
+    $resolveSelectionPointOnBoundary(anchor, isBackward, isCollapsed);
+    $resolveSelectionPointOnBoundary(focus, !isBackward, isCollapsed);
+    if (isCollapsed) {
+      focus.set(anchor.key, anchor.offset, anchor.type);
+    }
+  }
+}
+function $getPointSlotFrame(point) {
+  const node = $getNodeByKey(point.key);
+  return node === null ? null : $getSlotFrame(node);
+}
+function $clampSelectionPointsToSlotFrame(anchorPoint, focusPoint, resolveFocusAfterAnchor) {
+  const anchorFrame = $getPointSlotFrame(anchorPoint);
+  const focusFrame = $getPointSlotFrame(focusPoint);
+  return !$isSameFrame(anchorFrame, focusFrame) && $setPointAtSlotBoundary(focusPoint, $getNodeByKey(anchorPoint.key), anchorFrame, focusFrame, "selection", resolveFocusAfterAnchor);
+}
+function $isSameFrame(a2, b2) {
+  return a2 === null ? b2 === null : a2.is(b2);
+}
+function $setPointToFrameEdge(point, frame, atEnd) {
+  if ($isElementNode(frame)) {
+    point.set(frame.getKey(), atEnd ? frame.getChildrenSize() : 0, "element");
+  } else {
+    point.set(frame.getKey(), atEnd ? frame.getTextContentSize() : 0, "text");
+  }
+}
+function $getSlotHostInFrame(frame, target) {
+  for (let host = $getSlotHost(frame); host !== null; ) {
+    const hostFrame = $getSlotFrame(host);
+    if ($isSameFrame(hostFrame, target)) {
+      return hostFrame !== null || host.isAttached() ? host : null;
+    }
+    host = hostFrame && $getSlotHost(hostFrame);
+  }
+  return null;
+}
+function $clampRangeSelectionToSlotFrame(selection) {
+  const clamped = $clampSelectionPointsToSlotFrame(selection.anchor, selection.focus, () => (
+    // Points are not normalized: that would move a point just before an
+    // element host into its children, past the host's slot content.
+    $comparePointCaretNextAcrossSlots($caretFromPoint(selection.anchor, "next"), $caretFromPoint(selection.focus, "next")) !== 1
+  ));
+  if (clamped) {
+    selection.dirty = true;
+  }
+  return clamped;
+}
+function isDOMPointAtOrAfter(a2, aOffset, b2, bOffset) {
+  if (a2 === b2) {
+    return bOffset >= aOffset;
+  }
+  const position = a2.compareDocumentPosition(b2);
+  if (position & Node.DOCUMENT_POSITION_CONTAINED_BY) {
+    return getIndexOfChildContaining(a2, b2) >= aOffset;
+  }
+  if (position & Node.DOCUMENT_POSITION_CONTAINS) {
+    return bOffset > getIndexOfChildContaining(b2, a2);
+  }
+  return (position & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
+}
+function getIndexOfChildContaining(parent, node) {
+  let child = node;
+  while (child !== null && child.parentNode !== parent) {
+    child = child.parentNode;
+  }
+  let index = 0;
+  for (let n2 = child && child.previousSibling; n2; n2 = n2.previousSibling) {
+    index++;
+  }
+  return index;
+}
+function $internalResolveSelectionPoints(anchorDOM, anchorOffset, focusDOM, focusOffset, editor, lastSelection) {
+  if (anchorDOM === null || focusDOM === null || !isSelectionWithinEditor(editor, anchorDOM, focusDOM)) {
+    return null;
+  }
+  const resolvedAnchor = $internalResolveSelectionPoint(anchorDOM, anchorOffset, $isRangeSelection(lastSelection) ? lastSelection.anchor : null, editor);
+  if (resolvedAnchor === null) {
+    return null;
+  }
+  const resolvedFocus = $internalResolveSelectionPoint(focusDOM, focusOffset, $isRangeSelection(lastSelection) ? lastSelection.focus : null, editor);
+  if (resolvedFocus === null) {
+    return null;
+  }
+  const [resolvedAnchorPoint, anchorDirty] = resolvedAnchor;
+  const [resolvedFocusPoint, focusDirty] = resolvedFocus;
+  {
+    $validatePoint("anchor", resolvedAnchorPoint);
+    $validatePoint("focus", resolvedFocusPoint);
+  }
+  if (resolvedAnchorPoint.type === "element" && resolvedFocusPoint.type === "element") {
+    const anchorNode = $getNodeFromDOM(anchorDOM);
+    const focusNode = $getNodeFromDOM(focusDOM);
+    if ($isDecoratorNode(anchorNode) && $isDecoratorNode(focusNode)) {
+      return null;
+    }
+  }
+  const slotClamped = editor._slotsUsed && $clampSelectionPointsToSlotFrame(resolvedAnchorPoint, resolvedFocusPoint, () => isDOMPointAtOrAfter(anchorDOM, anchorOffset, focusDOM, focusOffset));
+  $normalizeSelectionPointsForBoundaries(resolvedAnchorPoint, resolvedFocusPoint);
+  return [resolvedAnchorPoint, resolvedFocusPoint, anchorDirty || focusDirty || slotClamped];
+}
+function $isBlockElementNode(node) {
+  return $isElementNode(node) && !node.isInline();
+}
+function $internalMakeRangeSelection(anchorKey, anchorOffset, focusKey, focusOffset, anchorType, focusType) {
+  const editorState = getActiveEditorState();
+  const selection = new RangeSelection($createPoint(anchorKey, anchorOffset, anchorType), $createPoint(focusKey, focusOffset, focusType), 0, "");
+  selection.dirty = true;
+  editorState._selection = selection;
+  return selection;
+}
+function $createRangeSelection() {
+  const anchor = $createPoint("root", 0, "element");
+  const focus = $createPoint("root", 0, "element");
+  return new RangeSelection(anchor, focus, 0, "");
+}
+function $createNodeSelection() {
+  return new NodeSelection(/* @__PURE__ */ new Set());
+}
+function $internalCreateSelection(editor, event) {
+  const currentEditorState = editor.getEditorState();
+  const lastSelection = currentEditorState._selection;
+  const domSelection = getDOMSelection(getWindow(editor));
+  if ($isRangeSelection(lastSelection) || lastSelection == null) {
+    return $internalCreateRangeSelection(lastSelection, domSelection, editor, event);
+  }
+  return lastSelection.clone();
+}
+function $createRangeSelectionFromDom(domSelection, editor) {
+  return $internalCreateRangeSelection(null, domSelection, editor, null);
+}
+var SELECTION_KEYS = /* @__PURE__ */ new Set([" ", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp", "Backspace", "Delete", "End", "Enter", "Home", "Tab"]);
+function $internalCreateRangeSelection(lastSelection, domSelection, editor, event) {
+  const windowObj = editor._window;
+  if (windowObj === null) {
+    return null;
+  }
+  const windowEvent = event || windowObj.event;
+  const eventType = windowEvent ? windowEvent.type : void 0;
+  const isSelectionChange = eventType === "selectionchange";
+  const keyDown = eventType === "keydown" && windowEvent;
+  const target = keyDown && getComposedEventTarget(keyDown);
+  const isSelectionKeyDown = keyDown && (keyDown.ctrlKey || keyDown.metaKey || SELECTION_KEYS.has(keyDown.key)) && isDOMNode(target) && getNearestEditorFromDOMNode(target) === editor;
+  const useDOMSelection = !getIsProcessingMutations() && (isSelectionChange || isSelectionKeyDown || eventType === "beforeinput" || eventType === "compositionstart" || eventType === "compositionend" || eventType === "click" && windowEvent && windowEvent.detail === 3 || eventType === "drop" || eventType === void 0);
+  let anchorDOM, focusDOM, anchorOffset, focusOffset;
+  if (!$isRangeSelection(lastSelection) || useDOMSelection) {
+    if (domSelection === null) {
+      return null;
+    }
+    const points = getDOMSelectionPoints(domSelection, editor._rootElement);
+    anchorDOM = points.anchorNode;
+    focusDOM = points.focusNode;
+    anchorOffset = points.anchorOffset;
+    focusOffset = points.focusOffset;
+    if ((isSelectionChange || isSelectionKeyDown || eventType === void 0) && $isRangeSelection(lastSelection) && !isSelectionWithinEditor(editor, anchorDOM, focusDOM)) {
+      return lastSelection.clone();
+    }
+  } else {
+    return lastSelection.clone();
+  }
+  const resolvedSelectionPoints = $internalResolveSelectionPoints(anchorDOM, anchorOffset, focusDOM, focusOffset, editor, lastSelection);
+  if (resolvedSelectionPoints === null) {
+    return null;
+  }
+  const [resolvedAnchorPoint, resolvedFocusPoint, dirty] = resolvedSelectionPoints;
+  const previousRange = $isRangeSelection(lastSelection) ? lastSelection : null;
+  const newSelection = new RangeSelection(resolvedAnchorPoint, resolvedFocusPoint, previousRange ? previousRange.format : 0, previousRange ? previousRange.style : "");
+  if (previousRange) {
+    $internalRefreshSelectionFormatAndStyle(newSelection, previousRange.anchor.key);
+  }
+  newSelection.dirty = dirty;
+  return newSelection;
+}
+function $internalRefreshSelectionFormatAndStyle(selection, previousAnchorKey) {
+  const anchor = selection.anchor;
+  if (anchor.key === previousAnchorKey) {
+    return;
+  }
+  const anchorNode = anchor.getNode();
+  let format = 0;
+  let style = "";
+  if ($isTextNode(anchorNode)) {
+    format = anchorNode.getFormat();
+    style = anchorNode.getStyle();
+  } else if ($isElementNode(anchorNode)) {
+    format = anchorNode.getTextFormat();
+    style = anchorNode.getTextStyle();
+  }
+  if (selection.format !== format || selection.style !== style) {
+    selection.format = format;
+    selection.style = style;
+    selection.dirty = true;
+  }
+}
+function $validatePoint(name, point) {
+  const node = $getNodeByKey(point.key);
+  if (!(node !== void 0)) {
+    formatDevErrorMessage2(`$validatePoint: ${name} key ${point.key} not found in current editorState`);
+  }
+  if (point.type === "text") {
+    if (!$isTextNode(node)) {
+      formatDevErrorMessage2(`$validatePoint: ${name} key ${point.key} is not a TextNode`);
+    }
+    const size = node.getTextContentSize();
+    if (!(point.offset <= size)) {
+      formatDevErrorMessage2(`$validatePoint: ${name} point.offset > node.getTextContentSize() (${String(point.offset)} > ${String(size)})`);
+    }
+  } else {
+    if (!$isElementNode(node)) {
+      formatDevErrorMessage2(`$validatePoint: ${name} key ${point.key} is not an ElementNode`);
+    }
+    const size = node.getChildrenSize();
+    if (!(point.offset <= size)) {
+      formatDevErrorMessage2(`$validatePoint: ${name} point.offset > node.getChildrenSize() (${String(point.offset)} > ${String(size)})`);
+    }
+  }
+}
+function $getSelection() {
+  const editorState = getActiveEditorState();
+  return editorState._selection;
+}
+function $getPreviousSelection() {
+  const editor = getActiveEditor();
+  return editor._editorState._selection;
+}
+function $selectionTouchesElement(selection, parentNode) {
+  const parentKey = parentNode.__key;
+  return selection.anchor.key === parentKey || selection.focus.key === parentKey;
+}
+function $updateElementSelectionOnCreateDeleteNode(selection, parentNode, nodeOffset, times = 1) {
+  if (!$selectionTouchesElement(selection, parentNode)) {
+    return;
+  }
+  for (const point of [selection.anchor, selection.focus]) {
+    if (point.key === parentNode.__key && (nodeOffset <= point.offset && times > 0 || nodeOffset < point.offset && times < 0)) {
+      point.set(parentNode.__key, Math.max(0, point.offset + times), "element");
+    }
+    const node = point.getNode();
+    if ($isElementNode(node)) {
+      const size = node.getChildrenSize();
+      const atEnd = point.offset >= size;
+      const child = node.getChildAtIndex(atEnd ? size - 1 : point.offset);
+      if ($isTextNode(child)) {
+        point.set(child.__key, atEnd ? child.getTextContentSize() : 0, "text");
+      }
+    }
+  }
+}
+function applySelectionTransforms(nextEditorState, editor) {
+  const prevEditorState = editor.getEditorState();
+  const prevSelection = prevEditorState._selection;
+  const nextSelection = nextEditorState._selection;
+  if ($isRangeSelection(nextSelection)) {
+    const anchor = nextSelection.anchor;
+    const focus = nextSelection.focus;
+    let anchorNode;
+    if (anchor.type === "text") {
+      anchorNode = anchor.getNode();
+      anchorNode.selectionTransform(prevSelection, nextSelection);
+    }
+    if (focus.type === "text") {
+      const focusNode = focus.getNode();
+      if (anchorNode !== focusNode) {
+        focusNode.selectionTransform(prevSelection, nextSelection);
+      }
+    }
+  }
+}
+function moveSelectionPointToSibling(point, node, parent, prevSibling, nextSibling) {
+  const sibling = prevSibling || nextSibling;
+  if ($isTextNode(sibling) || $isElementNode(sibling)) {
+    const isText = $isTextNode(sibling);
+    point.set(sibling.__key, prevSibling === null ? 0 : isText ? sibling.getTextContentSize() : sibling.getChildrenSize(), isText ? "text" : "element");
+  } else {
+    const offset = node.getIndexWithinParent();
+    point.set(parent.__key, offset === -1 ? parent.getChildrenSize() : offset, "element");
+  }
+}
+function adjustPointOffsetForMergedSibling(point, isBefore, key, target, textLength) {
+  if (point.type === "text") {
+    point.set(key, point.offset + (isBefore ? 0 : textLength), "text");
+  } else if (point.offset > target.getIndexWithinParent()) {
+    point.set(point.key, point.offset - 1, "element");
+  }
+}
+function setDOMSelectionBaseAndExtent(domSelection, nextAnchorDOM, nextAnchorOffset, nextFocusDOM, nextFocusOffset) {
+  try {
+    domSelection.setBaseAndExtent(nextAnchorDOM, nextAnchorOffset, nextFocusDOM, nextFocusOffset);
+  } catch (error) {
+    {
+      console.warn(error);
+    }
+  }
+}
+function $getElementAndOffsetForPoint(editor, node, offset) {
+  const element = getElementByKeyOrThrow(editor, node.getKey());
+  if ($isElementNode(node)) {
+    const slot = $getDOMSlot(node, element, editor);
+    return [slot.element, offset + slot.getFirstChildOffset()];
+  }
+  return [element, offset];
+}
+function $getElementPointScrollTarget(editor, slotElement, offset) {
+  const child = slotElement.childNodes[offset];
+  if (!isHTMLElement(child)) {
+    return child || null;
+  }
+  const key = getNodeKeyFromDOMNode(child, editor);
+  const node = key !== void 0 ? $getNodeByKey(key) : null;
+  return node !== null && !$isElementNode(node) ? $getDOMSlot(node, child, editor).element : child;
+}
+function $updateDOMSelection(prevSelection, nextSelection, editor, domSelection, tags, rootElement) {
+  const rootForActive = rootElement.getRootNode();
+  const activeElement = isDOMDocumentNode(rootForActive) || isDOMShadowRoot(rootForActive) ? getActiveElementDeep(rootForActive) : null;
+  if (tags.has(COLLABORATION_TAG) && activeElement !== rootElement || activeElement !== null && $isSelectionCapturedInDecoratorInput(activeElement, activeElement)) {
+    return;
+  }
+  const currentPoints = getDOMSelectionPoints(domSelection, rootElement);
+  let currentRangeCache;
+  const getCurrentRange = () => {
+    if (currentRangeCache === void 0) {
+      currentRangeCache = getDOMSelectionRange(domSelection, rootElement);
+    }
+    return currentRangeCache;
+  };
+  if (!$isRangeSelection(nextSelection)) {
+    if (prevSelection !== null && isSelectionWithinEditor(editor, currentPoints.anchorNode, currentPoints.focusNode)) {
+      domSelection.removeAllRanges();
+    }
+    return;
+  }
+  const anchor = nextSelection.anchor;
+  const focus = nextSelection.focus;
+  const anchorNode = anchor.getNode();
+  const focusNode = focus.getNode();
+  const [anchorDOM, nextAnchorOffset] = $getElementAndOffsetForPoint(editor, anchorNode, anchor.offset);
+  const [focusDOM, modelFocusOffset] = $getElementAndOffsetForPoint(editor, focusNode, focus.offset);
+  const nextFormat = nextSelection.format;
+  const nextStyle = nextSelection.style;
+  const isCollapsed = nextSelection.isCollapsed();
+  let nextAnchorNode = anchorDOM;
+  let nextFocusNode = focusDOM;
+  let anchorFormatOrStyleChanged = false;
+  if (anchor.type === "text") {
+    nextAnchorNode = $isTextNode(anchorNode) ? $getDOMTextNode(anchorNode, anchorDOM, editor) : null;
+    anchorFormatOrStyleChanged = anchorNode.getFormat() !== nextFormat || anchorNode.getStyle() !== nextStyle;
+  } else if ($isRangeSelection(prevSelection) && prevSelection.anchor.type === "text") {
+    anchorFormatOrStyleChanged = true;
+  }
+  if (focus.type === "text") {
+    nextFocusNode = $isTextNode(focusNode) ? $getDOMTextNode(focusNode, focusDOM, editor) : null;
+  }
+  if (nextAnchorNode === null || nextFocusNode === null) {
+    return;
+  }
+  const nextFocusOffset = isCollapsed && $isTextNode(focusNode) && $isEmptyCompositionTarget(focusNode) && isDOMTextNode(nextFocusNode) && nextFocusNode.nodeValue === COMPOSITION_SUFFIX ? COMPOSITION_SUFFIX.length : modelFocusOffset;
+  if (isCollapsed && (prevSelection === null || anchorFormatOrStyleChanged || $isRangeSelection(prevSelection) && (prevSelection.format !== nextFormat || prevSelection.style !== nextStyle))) {
+    markCollapsedSelectionFormat(
+      editor,
+      nextFormat,
+      nextStyle,
+      // The Lexical offset, which onSelectionChange compares, rather than
+      // the DOM one, which also counts the DOM the editor renders between
+      // an element's children.
+      anchor.offset,
+      anchor.key,
+      performance.now()
+    );
+  }
+  if (!(domSelection.type === "Range" && isCollapsed) && // Badly interpreted range selection when collapsed - #1482
+  currentPoints.anchorOffset === nextAnchorOffset && currentPoints.focusOffset === nextFocusOffset && currentPoints.anchorNode === nextAnchorNode && currentPoints.focusNode === nextFocusNode) {
+    if (activeElement === null || !rootElement.contains(activeElement)) {
+      const focusEditor = activeElement !== null ? getNearestEditorFromDOMNode(activeElement) : null;
+      if ((focusEditor === null || focusEditor === editor) && !tags.has(SKIP_SELECTION_FOCUS_TAG)) {
+        rootElement.focus({
+          preventScroll: true
+        });
+      }
+    }
+    if (anchor.type !== "element") {
+      return;
+    }
+  }
+  setDOMSelectionBaseAndExtent(domSelection, nextAnchorNode, nextAnchorOffset, nextFocusNode, nextFocusOffset);
+  if (IS_FIREFOX && nextSelection.isCollapsed() && rootElement !== null && !tags.has(SKIP_SELECTION_FOCUS_TAG)) {
+    const focusedElement = getActiveElement(rootElement);
+    if (focusedElement === null || !rootElement.contains(focusedElement)) {
+      const deepFocusedElement = getActiveElementDeep(rootElement.ownerDocument);
+      const focusEditor = deepFocusedElement !== null ? getNearestEditorFromDOMNode(deepFocusedElement) : null;
+      if (focusEditor === null || focusEditor === editor) {
+        rootElement.focus({
+          preventScroll: true
+        });
+      }
+    }
+  }
+  if (!tags.has(SKIP_SCROLL_INTO_VIEW_TAG) && nextSelection.isCollapsed() && rootElement !== null && // Re-read the active element rather than a value cached before the focus
+  // restore / selection mutation above, which can become stale (e.g. when
+  // setting the DOM selection focuses the contentEditable as a side effect).
+  // Shallow is sufficient here for the same reason as the Firefox branch
+  // above: the equality check doesn't cross the shadow boundary.
+  rootElement === getActiveElement(rootElement)) {
+    const selectionTarget = $isRangeSelection(nextSelection) && nextSelection.anchor.type === "element" ? $getElementPointScrollTarget(editor, nextAnchorNode, nextAnchorOffset) : getCurrentRange();
+    if (selectionTarget !== null) {
+      let selectionRect;
+      if (isDOMTextNode(selectionTarget)) {
+        const range = selectionTarget.ownerDocument.createRange();
+        range.selectNode(selectionTarget);
+        selectionRect = range.getBoundingClientRect();
+      } else if (isHTMLElement(selectionTarget)) {
+        selectionRect = selectionTarget.getBoundingClientRect();
+      } else {
+        selectionRect = getCaretRect(selectionTarget);
+      }
+      scrollIntoViewIfNeeded(editor, selectionRect, rootElement, nextAnchorNode);
+    }
+  }
+  markSelectionChangeFromDOMUpdate(editor, nextAnchorNode, nextAnchorOffset, nextFocusNode, nextFocusOffset);
+}
+function $insertNodes(nodes) {
+  let selection = $getSelection() || $getPreviousSelection();
+  if (selection === null) {
+    selection = $getRoot().selectEnd();
+  }
+  selection.insertNodes(nodes);
+}
+function tokenizeRawText(text, visitor) {
+  for (const part of text.split(/(\r?\n|\t)/)) {
+    if (part === "\n" || part === "\r\n") {
+      visitor.linebreak();
+    } else if (part === "	") {
+      visitor.tab();
+    } else if (part !== "") {
+      visitor.text(part);
+    }
+  }
+}
+function $generateNodesFromRawText(text) {
+  const nodes = [];
+  tokenizeRawText(text, {
+    linebreak: () => nodes.push($createLineBreakNode()),
+    tab: () => nodes.push($createTabNode()),
+    text: (part) => nodes.push($createTextNode(part))
+  });
+  return nodes;
+}
+function $getTextContent() {
+  const selection = $getSelection();
+  if (selection === null) {
+    return "";
+  }
+  return selection.getTextContent();
+}
+function $extractInlineFromBlocks(nodes) {
+  const inlineNodes = [];
+  for (const node of nodes) {
+    if ($isLineBreakNode(node)) {
+      continue;
+    }
+    if (($isElementNode(node) || $isDecoratorNode(node)) && !node.isInline()) {
+      if ($isElementNode(node)) {
+        inlineNodes.push(...$extractInlineFromBlocks(node.getChildren()));
+      }
+      continue;
+    }
+    inlineNodes.push(node);
+  }
+  return inlineNodes;
+}
+function $removeTextAndSplitBlock(selection, stopAtUnsplittableNode = false) {
+  let selection_ = selection;
+  if (!selection.isCollapsed()) {
+    selection_.removeText();
+  }
+  const newSelection = $getSelection();
+  if ($isRangeSelection(newSelection)) {
+    selection_ = newSelection;
+  }
+  if (!$isRangeSelection(selection_)) {
+    formatDevErrorMessage2(`Unexpected dirty selection to be null`);
+  }
+  const anchor = selection_.anchor;
+  let node = anchor.getNode();
+  let offset = anchor.offset;
+  while (!INTERNAL_$isBlock(node) && $getSlotHostKey(node) === null) {
+    const prevNode = node;
+    [node, offset] = $splitNodeAtPoint(node, offset, stopAtUnsplittableNode);
+    if (prevNode.is(node)) {
+      break;
+    }
+  }
+  return [node, offset];
+}
+function $splitNodeAtPoint(node, offset, stopAtUnsplittableNode = false) {
+  const parent = node.getParent();
+  if (!parent) {
+    const paragraph = $createParagraphNode();
+    $getRoot().append(paragraph);
+    paragraph.select();
+    return [$getRoot(), 0];
+  }
+  if ($isTextNode(node)) {
+    const split = node.splitText(offset);
+    if (split.length === 0) {
+      return [parent, node.getIndexWithinParent()];
+    }
+    const x2 = offset === 0 ? 0 : 1;
+    const index = split[0].getIndexWithinParent() + x2;
+    return [parent, index];
+  }
+  if (!$isElementNode(node) || offset === 0) {
+    return [parent, node.getIndexWithinParent()];
+  }
+  const firstToAppend = node.getChildAtIndex(offset);
+  if (firstToAppend) {
+    const insertPoint = new RangeSelection($createPoint(node.__key, offset, "element"), $createPoint(node.__key, offset, "element"), 0, "");
+    const newElement = node.insertNewAfter(insertPoint);
+    if (newElement) {
+      newElement.append(firstToAppend, ...firstToAppend.getNextSiblings());
+    } else if (stopAtUnsplittableNode) {
+      return [node, offset];
+    }
+  }
+  return [parent, node.getIndexWithinParent() + 1];
+}
+function $isInlineRunNode(node) {
+  return $isLineBreakNode(node) || $isInlineElementOrDecoratorNode(node) || $isTextNode(node) || node.isParentRequired();
+}
+function $wrapInlineNodes(nodes) {
+  const virtualRoot = $createParagraphNode();
+  let currentBlock = null;
+  for (let i2 = 0; i2 < nodes.length; i2++) {
+    const node = nodes[i2];
+    if ($isInlineRunNode(node)) {
+      if (currentBlock === null) {
+        currentBlock = node.createParentElementNode();
+        virtualRoot.append(currentBlock);
+        const nextNode = nodes[i2 + 1];
+        if ($isLineBreakNode(node) && (nextNode === void 0 || !$isInlineRunNode(nextNode))) {
+          continue;
+        }
+      }
+      currentBlock.append(node);
+    } else {
+      virtualRoot.append(node);
+      currentBlock = null;
+    }
+  }
+  return virtualRoot;
+}
+function $getNodesFromCaretRangeCompat(range) {
+  const nodes = [];
+  const [beforeSlice, afterSlice] = range.getTextSlices();
+  if (beforeSlice) {
+    nodes.push(beforeSlice.caret.origin);
+  }
+  const seenAncestors = /* @__PURE__ */ new Set();
+  let openElements = 0;
+  for (const caret of range) {
+    if ($isChildCaret(caret)) {
+      const {
+        origin
+      } = caret;
+      if (nodes.length === 0) {
+        seenAncestors.add(origin);
+      } else {
+        openElements++;
+        nodes.push(origin);
+      }
+    } else {
+      const {
+        origin
+      } = caret;
+      if (!$isElementNode(origin) || openElements === 0) {
+        nodes.push(origin);
+      } else {
+        openElements--;
+      }
+    }
+  }
+  if (afterSlice) {
+    nodes.push(afterSlice.caret.origin);
+  }
+  if ($isSiblingCaret(range.focus) && $isElementNode(range.focus.origin) && range.focus.getNodeAtCaret() === null) {
+    for (let reverseCaret = $getChildCaret(range.focus.origin, "previous"); $isChildCaret(reverseCaret) && seenAncestors.has(reverseCaret.origin) && !reverseCaret.origin.isEmpty() && reverseCaret.origin.is(nodes[nodes.length - 1]); reverseCaret = $getAdjacentChildCaret(reverseCaret)) {
+      seenAncestors.delete(reverseCaret.origin);
+      nodes.pop();
+    }
+  }
+  while (nodes.length > 1) {
+    const lastIncludedNode = nodes[nodes.length - 1];
+    if ($isElementNode(lastIncludedNode)) {
+      if (
+        // A non-empty included element at the tail has not exited yet:
+        // otherwise one of its descendants would follow it in nodes.
+        openElements > 0 || lastIncludedNode.isEmpty() || seenAncestors.has(lastIncludedNode)
+      ) ;
+      else {
+        nodes.pop();
+        continue;
+      }
+    }
+    break;
+  }
+  if (nodes.length === 0 && range.isCollapsed()) {
+    const normCaret = $normalizeCaret(range.anchor);
+    const flippedNormCaret = $normalizeCaret(range.anchor.getFlipped());
+    const $getCandidate = (caret) => $isTextPointCaret(caret) ? caret.origin : caret.getNodeAtCaret();
+    const node = $getCandidate(normCaret) || $getCandidate(flippedNormCaret) || (range.anchor.getNodeAtCaret() ? normCaret.origin : flippedNormCaret.origin);
+    nodes.push(node);
+  }
+  return nodes;
+}
+function $modifySelectionAroundDecoratorsAndBlocks(selection, alter, isBackward, granularity, mode = "decorators-and-blocks") {
+  if (alter === "move" && granularity === "character" && !selection.isCollapsed()) {
+    const [src, dst] = isBackward === selection.isBackward() ? [selection.focus, selection.anchor] : [selection.anchor, selection.focus];
+    dst.set(src.key, src.offset, src.type);
+    return true;
+  }
+  const initialFocus = $caretFromPoint(selection.focus, isBackward ? "previous" : "next");
+  const isLineBoundary = granularity === "lineboundary";
+  const collapse = alter === "move";
+  let focus = initialFocus;
+  let checkForBlock = mode === "decorators-and-blocks";
+  let isolated = false;
+  if (!$isExtendableTextPointCaret(focus)) {
+    for (const siblingCaret of focus) {
+      checkForBlock = false;
+      const {
+        origin
+      } = siblingCaret;
+      if ($isDecoratorNode(origin)) {
+        if (origin.isIsolated()) {
+          isolated = true;
+          break;
+        }
+        focus = siblingCaret;
+        if (isLineBoundary && origin.isInline()) {
+          continue;
+        }
+      }
+      break;
+    }
+    if (isolated) {
+      return true;
+    }
+    if (checkForBlock) {
+      for (const nextCaret of $extendCaretToRange(initialFocus).iterNodeCarets(alter === "extend" ? "shadowRoot" : "root")) {
+        if ($isChildCaret(nextCaret)) {
+          if (!nextCaret.origin.isInline()) {
+            focus = nextCaret;
+          }
+        } else if ($isElementNode(nextCaret.origin)) {
+          continue;
+        } else if ($isDecoratorNode(nextCaret.origin) && !nextCaret.origin.isInline()) {
+          focus = nextCaret;
+        }
+        break;
+      }
+    }
+  }
+  if (focus === initialFocus) {
+    return false;
+  }
+  if (collapse && !isLineBoundary && $isDecoratorNode(focus.origin) && focus.origin.isKeyboardSelectable()) {
+    const nodeSelection = $createNodeSelection();
+    nodeSelection.add(focus.origin.getKey());
+    $setSelection(nodeSelection);
+    return true;
+  }
+  focus = $normalizeCaret(focus);
+  if (collapse) {
+    $setPointFromCaret(selection.anchor, focus);
+  }
+  $setPointFromCaret(selection.focus, focus);
+  return checkForBlock || !isLineBoundary;
+}
+function $linkSiblings(writableParent, writablePrevious, writableNext) {
+  const previousKey = writablePrevious === null ? null : writablePrevious.__key;
+  const nextKey = writableNext === null ? null : writableNext.__key;
+  if (writablePrevious === null) {
+    writableParent.__first = nextKey;
+  } else {
+    writablePrevious.__next = nextKey;
+  }
+  if (writableNext === null) {
+    writableParent.__last = previousKey;
+  } else {
+    writableNext.__prev = previousKey;
+  }
+}
+function $recordNodeMove(node) {
+  const editor = getActiveEditor();
+  if (!editor._recordNodeMoves) {
+    return;
+  }
+  const prevNodeMap = editor._editorState._nodeMap;
+  if (prevNodeMap.has(node.__key)) {
+    const editorState = getActiveEditorState();
+    const movedNodes = editorState._movedNodes ||= /* @__PURE__ */ new WeakMap();
+    let movedKeys = movedNodes.get(prevNodeMap);
+    if (movedKeys === void 0) {
+      movedKeys = /* @__PURE__ */ new Set();
+      movedNodes.set(prevNodeMap, movedKeys);
+    }
+    movedKeys.add(node.__key);
+  }
+}
+function $insertNodeBetween(writableParent, writableNode, writablePrevious, writableNext) {
+  const key = writableNode.__key;
+  if (writablePrevious === null) {
+    writableParent.__first = key;
+  } else {
+    writablePrevious.__next = key;
+  }
+  if (writableNext === null) {
+    writableParent.__last = key;
+  } else {
+    writableNext.__prev = key;
+  }
+  writableNode.__prev = writablePrevious === null ? null : writablePrevious.__key;
+  writableNode.__next = writableNext === null ? null : writableNext.__key;
+  writableNode.__parent = writableParent.__key;
+}
+function $detachNode(writableNode) {
+  if (!($getSlotHostKey(writableNode) === null)) {
+    formatDevErrorMessage2(`$removeFromParent: node ${writableNode.__key} is slotted into host ${String($getSlotHostKey(writableNode))}; a slotted node and a child are mutually exclusive. Remove it from its slot first.`);
+  }
+  const parent = writableNode.getParent();
+  if (parent !== null) {
+    const writableParent = parent.getWritable();
+    $recordNodeMove(writableNode);
+    const previous = writableNode.getPreviousSibling();
+    const next = writableNode.getNextSibling();
+    $linkSiblings(writableParent, previous && previous.getWritable(), next && next.getWritable());
+    writableNode.__prev = null;
+    writableNode.__next = null;
+    writableNode.__parent = null;
+    writableParent.__size--;
+  }
+}
+function $detachSiblingRange(writableParent, first, count, before) {
+  const nodes = [];
+  let node = first;
+  for (let i2 = 0; i2 < count; i2++) {
+    if (!(node !== null)) {
+      formatDevErrorMessage2(`splice: sibling not found`);
+    }
+    const next2 = node.getNextSibling();
+    nodes.push(node.getWritable());
+    node = next2;
+  }
+  const previous = before && before.getWritable();
+  const next = node && node.getWritable();
+  $linkSiblings(writableParent, previous, next);
+  writableParent.__size -= nodes.length;
+  return nodes.map((writable) => {
+    $recordNodeMove(writable);
+    writable.__prev = null;
+    writable.__next = null;
+    writable.__parent = null;
+    return writable.__key;
+  });
+}
+function $detachNodeWithSelection(node, selection) {
+  const parent = selection && node.getParent();
+  const index = selection && parent && $selectionTouchesElement(selection, parent) ? node.getIndexWithinParent() : -1;
+  const points = selection && parent && index !== -1 ? [selection.anchor, selection.focus].filter((point) => point.type === "element" && point.key === parent.__key && point.offset === index + 1) : null;
+  if (selection && parent && index !== -1) {
+    selection.isBackward();
+  }
+  $detachNode(node);
+  if (selection && parent && index !== -1) {
+    $updateElementSelectionOnCreateDeleteNode(selection, parent, index, -1);
+  }
+  if (selection) {
+    selection._cachedIsBackward = null;
+  }
+  return points;
+}
+function $insertSibling(origin, direction, node, restoreSelection) {
+  errorOnReadOnly();
+  const isNext = direction === "next";
+  errorOnInsertTextNodeOnRoot(origin, node);
+  const writableOrigin = origin.getWritable();
+  const writableNode = node.getWritable();
+  $errorOnSlotCycleChild(origin.getParentOrThrow(), writableNode);
+  const currentSelection = $getSelection();
+  const selection = restoreSelection && $isRangeSelection(currentSelection) ? currentSelection : null;
+  const points = $detachNodeWithSelection(writableNode, selection);
+  const parent = origin.getParentOrThrow().getWritable();
+  const index = selection && (isNext && points !== null && points.length > 0 || $selectionTouchesElement(selection, parent)) ? origin.getIndexWithinParent() + (isNext ? 1 : 0) : -1;
+  const sibling = isNext ? origin.getNextSibling() : origin.getPreviousSibling();
+  const writableSibling = sibling && sibling.getWritable();
+  $insertNodeBetween(parent, writableNode, isNext ? writableOrigin : writableSibling, isNext ? writableSibling : writableOrigin);
+  parent.__size++;
+  if (selection && index !== -1) {
+    $updateElementSelectionOnCreateDeleteNode(selection, parent, index);
+    if (isNext && points !== null) {
+      for (const point of points) {
+        point.set(parent.__key, index + 1, "element");
+      }
+    }
+  }
+  return node;
+}
+function $selectAdjacentNode(caret, anchorOffset, focusOffset) {
+  errorOnReadOnly();
+  const {
+    origin,
+    direction
+  } = caret;
+  const isNext = direction === "next";
+  const slotHost = $getSlotHost(origin);
+  if (slotHost !== null) {
+    return isNext ? slotHost.selectNext(anchorOffset, focusOffset) : slotHost.selectPrevious(anchorOffset, focusOffset);
+  }
+  const sibling = caret.getNodeAtCaret();
+  const parent = origin.getParentOrThrow();
+  if (sibling === null) {
+    return isNext ? parent.select() : parent.select(0, 0);
+  }
+  if ($isElementNode(sibling)) {
+    return isNext ? sibling.select(0, 0) : sibling.select();
+  }
+  if ($isTextNode(sibling)) {
+    return sibling.select(anchorOffset, focusOffset);
+  }
+  const index = sibling.getIndexWithinParent() + (isNext ? 0 : 1);
+  return parent.select(index, index);
+}
+function $getAdjacentNodes(initialCaret) {
+  return $collectSiblingNodes(initialCaret.getNodeAtCaret(), initialCaret.direction);
+}
+function $collectSiblingNodes(start, direction) {
+  const siblings = [];
+  for (let node = start; node !== null; node = direction === "next" ? node.getNextSibling() : node.getPreviousSibling()) {
+    siblings.push(node);
+  }
+  return siblings;
+}
 var EMPTY_SLOTS = /* @__PURE__ */ new Map();
 function $isSlotHost(node) {
   return $isElementNode(node) || $isDecoratorNode(node);
@@ -40460,8 +41937,8 @@ function getDeclaredSlots(klass) {
 }
 function $getSlotsTextContent(node) {
   let textContent = "";
-  for (const name of $getSlotNames(node)) {
-    const slot = $getSlot(node, name);
+  for (const key of $getSlotMap(node).values()) {
+    const slot = $getNodeByKey(key);
     if (slot !== null) {
       textContent += slot.getTextContent();
     }
@@ -40470,8 +41947,8 @@ function $getSlotsTextContent(node) {
 }
 function $getSlotsTextContentSize(node) {
   let textContentSize = 0;
-  for (const name of $getSlotNames(node)) {
-    const slot = $getSlot(node, name);
+  for (const key of $getSlotMap(node).values()) {
+    const slot = $getNodeByKey(key);
     if (slot !== null) {
       textContentSize += slot.getTextContentSize();
     }
@@ -40563,7 +42040,7 @@ function $setSlot(host, name, node) {
     }
     writableNode.__slotHost = null;
   }
-  $removeFromParent(writableNode);
+  $detachNode(writableNode);
   writableNode.__slotHost = writableSelf.__key;
   slots.set(name, writableNode.__key);
   $canonicalizeSlotOrder(writableSelf);
@@ -40934,24 +42411,12 @@ var CaretRangeImpl = class _CaretRangeImpl {
     return this.anchor.isSamePointCaret(this.focus);
   }
   getTextSlices() {
-    const getSlice = (k) => {
-      const caret = this[k].getLatest();
-      return $isTextPointCaret(caret) ? $getSliceFromTextPointCaret(caret, k) : null;
-    };
-    const anchorSlice = getSlice("anchor");
-    const focusSlice = getSlice("focus");
-    if (anchorSlice && focusSlice) {
-      const {
-        caret: anchorCaret
-      } = anchorSlice;
-      const {
-        caret: focusCaret
-      } = focusSlice;
-      if (anchorCaret.isSameNodeCaret(focusCaret)) {
-        return [$getTextPointCaretSlice(anchorCaret, focusCaret.offset - anchorCaret.offset), null];
-      }
+    const anchor = this.anchor.getLatest();
+    const focus = this.focus.getLatest();
+    if ($isTextPointCaret(anchor) && $isTextPointCaret(focus) && anchor.isSameNodeCaret(focus)) {
+      return [$getTextPointCaretSlice(anchor, focus.offset - anchor.offset), null];
     }
-    return [anchorSlice, focusSlice];
+    return [$isTextPointCaret(anchor) ? $getSliceFromTextPointCaret(anchor, "anchor") : null, $isTextPointCaret(focus) ? $getSliceFromTextPointCaret(focus, "focus") : null];
   }
   iterNodeCarets(rootMode = "root") {
     const anchor = $isTextPointCaret(this.anchor) ? this.anchor.getSiblingCaret() : this.anchor.getLatest();
@@ -41070,9 +42535,7 @@ function $comparePointCaretNext(a2, b2) {
   }
   switch (compare.type) {
     case "same": {
-      const aIsText = a2.type === "text";
-      const bIsText = b2.type === "text";
-      return aIsText && bIsText ? compareNumber(a2.offset, b2.offset) : a2.type === b2.type ? 0 : aIsText ? -1 : bIsText ? 1 : a2.type === "child" ? -1 : 1;
+      return $compareSameOriginCarets(a2, b2);
     }
     case "ancestor": {
       return a2.type === "child" ? -1 : 1;
@@ -41084,6 +42547,71 @@ function $comparePointCaretNext(a2, b2) {
       return $getCommonAncestorResultBranchOrder(compare);
     }
   }
+}
+function $getCommonAncestorAcrossSlots(a2, b2) {
+  const aPath = /* @__PURE__ */ new Map();
+  for (let child = null, node = a2; node !== null; child = node, node = $getParentAcrossSlots(node)) {
+    aPath.set(node.getKey(), child);
+  }
+  for (let child = null, node = b2; node !== null; child = node, node = $getParentAcrossSlots(node)) {
+    const aChild = aPath.get(node.getKey());
+    if (aChild === void 0) {
+      continue;
+    }
+    const commonAncestor = node.getLatest();
+    return aChild === null ? child === null ? {
+      commonAncestor,
+      type: "same"
+    } : {
+      b: child,
+      commonAncestor,
+      type: "ancestor"
+    } : child === null ? {
+      a: aChild,
+      commonAncestor,
+      type: "descendant"
+    } : {
+      a: aChild,
+      b: child,
+      commonAncestor,
+      type: "branch"
+    };
+  }
+  return null;
+}
+function $getParentAcrossSlots(node) {
+  return node.getParent() || $getSlotHost(node);
+}
+function $comparePointCaretNextAcrossSlots(a2, b2) {
+  const compare = $getCommonAncestorAcrossSlots(a2.origin, b2.origin);
+  if (compare === null) {
+    return null;
+  }
+  switch (compare.type) {
+    case "same":
+      return $compareSameOriginCarets(a2, b2);
+    case "ancestor":
+      return a2.type === "child" && $getSlotHostKey(compare.b) === null ? -1 : 1;
+    case "descendant":
+      return b2.type === "child" && $getSlotHostKey(compare.a) === null ? 1 : -1;
+    case "branch": {
+      const aSlotKey = $getSlotHostKey(compare.a) && compare.a.getKey();
+      const bSlotKey = $getSlotHostKey(compare.b) && compare.b.getKey();
+      if (aSlotKey && bSlotKey) {
+        for (const key of $getSlotMap(compare.commonAncestor).values()) {
+          if (key === aSlotKey || key === bSlotKey) {
+            return key === aSlotKey ? -1 : 1;
+          }
+        }
+      }
+      return aSlotKey ? -1 : bSlotKey ? 1 : compare.a.isBefore(compare.b) ? -1 : 1;
+    }
+  }
+}
+function $compareSameOriginCarets(a2, b2) {
+  const aIsText = a2.type === "text";
+  const bIsText = b2.type === "text";
+  return aIsText && bIsText ? compareNumber(a2.offset, b2.offset) : a2.type === b2.type ? 0 : aIsText ? -1 : bIsText ? 1 : a2.type === "child" ? -1 : 1;
 }
 function $getCommonAncestorResultBranchOrder(compare) {
   const {
@@ -41206,20 +42734,8 @@ function removeClassNamesFromElement(element, ...classNames) {
     element.classList.remove(...classesToRemove);
   }
 }
-function mergeRegister(...func) {
-  return () => {
-    for (let i2 = func.length - 1; i2 >= 0; i2--) {
-      func[i2]();
-    }
-    func.length = 0;
-  };
-}
-function registerEventListeners(target, listeners, options) {
-  const entries = Object.entries(listeners);
-  return mergeRegister(...entries.map(([type, listener]) => registerEventListener(target, type, listener, options)));
-}
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/lexical/dist/Lexical.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/lexical/dist/Lexical.js
 var mod2 = true ? Lexical_dev_exports : Lexical_prod_exports;
 var $addUpdateTag2 = mod2.$addUpdateTag;
 var $applyNodeReplacement2 = mod2.$applyNodeReplacement;
@@ -41265,6 +42781,7 @@ var $getDOMTextNode2 = mod2.$getDOMTextNode;
 var $getDocument2 = mod2.$getDocument;
 var $getEditor2 = mod2.$getEditor;
 var $getEditorDOMRenderConfig2 = mod2.$getEditorDOMRenderConfig;
+var $getElementAndOffsetForPoint2 = mod2.$getElementAndOffsetForPoint;
 var $getNearestNodeFromDOMNode2 = mod2.$getNearestNodeFromDOMNode;
 var $getNearestRootOrShadowRoot2 = mod2.$getNearestRootOrShadowRoot;
 var $getNodeByKey2 = mod2.$getNodeByKey;
@@ -41286,6 +42803,7 @@ var $getTextContent2 = mod2.$getTextContent;
 var $getTextNodeOffset2 = mod2.$getTextNodeOffset;
 var $getTextPointCaret2 = mod2.$getTextPointCaret;
 var $getTextPointCaretSlice2 = mod2.$getTextPointCaretSlice;
+var $getTextPointCaretSliceForNode2 = mod2.$getTextPointCaretSliceForNode;
 var $getWritableNodeState2 = mod2.$getWritableNodeState;
 var $hasAncestor2 = mod2.$hasAncestor;
 var $hasUpdateTag2 = mod2.$hasUpdateTag;
@@ -41299,6 +42817,7 @@ var $isDecoratorNode2 = mod2.$isDecoratorNode;
 var $isEditorState2 = mod2.$isEditorState;
 var $isElementDOMSlot2 = mod2.$isElementDOMSlot;
 var $isElementNode2 = mod2.$isElementNode;
+var $isEventFromEmbeddedInput2 = mod2.$isEventFromEmbeddedInput;
 var $isExtendableTextPointCaret2 = mod2.$isExtendableTextPointCaret;
 var $isInlineElementOrDecoratorNode2 = mod2.$isInlineElementOrDecoratorNode;
 var $isInlineFormattable2 = mod2.$isInlineFormattable;
@@ -41345,6 +42864,7 @@ var $setState2 = mod2.$setState;
 var $setTextFormat2 = mod2.$setTextFormat;
 var $splitAtPointCaretNext2 = mod2.$splitAtPointCaretNext;
 var $splitNode2 = mod2.$splitNode;
+var $splitTextPointCaretSlice2 = mod2.$splitTextPointCaretSlice;
 var $updateDOMSelection2 = mod2.$updateDOMSelection;
 var $updateRangeSelectionFromCaretRange2 = mod2.$updateRangeSelectionFromCaretRange;
 var $withCompactExport2 = mod2.$withCompactExport;
@@ -41403,6 +42923,9 @@ var INSERT_PARAGRAPH_COMMAND2 = mod2.INSERT_PARAGRAPH_COMMAND;
 var INSERT_TAB_COMMAND2 = mod2.INSERT_TAB_COMMAND;
 var INTERNAL_$expandSelectionToWholeDocument2 = mod2.INTERNAL_$expandSelectionToWholeDocument;
 var INTERNAL_$isBlock2 = mod2.INTERNAL_$isBlock;
+var INTERNAL_$normalizeNodeStructure2 = mod2.INTERNAL_$normalizeNodeStructure;
+var INTERNAL_isNodeStructureEnforced2 = mod2.INTERNAL_isNodeStructureEnforced;
+var INTERNAL_registerNodeStructure2 = mod2.INTERNAL_registerNodeStructure;
 var IS_ALL_FORMATTING2 = mod2.IS_ALL_FORMATTING;
 var IS_ANDROID2 = mod2.IS_ANDROID;
 var IS_ANDROID_CHROME2 = mod2.IS_ANDROID_CHROME;
@@ -41460,6 +42983,7 @@ var UNDO_COMMAND2 = mod2.UNDO_COMMAND;
 var addClassNamesToElement2 = mod2.addClassNamesToElement;
 var aliasTableOf2 = mod2.aliasTableOf;
 var aliasedValue2 = mod2.aliasedValue;
+var arraySetValue2 = mod2.arraySetValue;
 var arrayValue2 = mod2.arrayValue;
 var booleanValue2 = mod2.booleanValue;
 var buildImportMap2 = mod2.buildImportMap;
@@ -41489,6 +43013,7 @@ var getDOMSelectionRange2 = mod2.getDOMSelectionRange;
 var getDOMSelectionRangeAndPoints2 = mod2.getDOMSelectionRangeAndPoints;
 var getDOMShadowRoots2 = mod2.getDOMShadowRoots;
 var getDOMTextNode2 = mod2.getDOMTextNode;
+var getDeclaredNodeStructure2 = mod2.getDeclaredNodeStructure;
 var getDeclaredSlots2 = mod2.getDeclaredSlots;
 var getEditorPropertyFromDOMNode2 = mod2.getEditorPropertyFromDOMNode;
 var getNearestEditorFromDOMNode2 = mod2.getNearestEditorFromDOMNode;
@@ -41559,7 +43084,7 @@ var unmountSlotContainer2 = mod2.unmountSlotContainer;
 var withAccessors2 = mod2.withAccessors;
 var withField2 = mod2.withField;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/LexicalComposer.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/LexicalComposer.dev.js
 var import_react2 = __toESM(require_react(), 1);
 var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
 var useLayoutEffectImpl = CAN_USE_DOM2 ? import_react2.useLayoutEffect : import_react2.useEffect;
@@ -41650,23 +43175,23 @@ function initializeEditor(editor, initialEditorState) {
   }
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/LexicalComposer.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/LexicalComposer.js
 var mod3 = true ? LexicalComposer_dev_exports : LexicalComposer_prod_exports;
 var LexicalComposer2 = mod3.LexicalComposer;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/LexicalPlainTextPlugin.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/LexicalPlainTextPlugin.dev.js
 var LexicalPlainTextPlugin_dev_exports = {};
 __export(LexicalPlainTextPlugin_dev_exports, {
   PlainTextPlugin: () => PlainTextPlugin
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/useLexicalEditable.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/useLexicalEditable.dev.js
 var useLexicalEditable_dev_exports = {};
 __export(useLexicalEditable_dev_exports, {
   useLexicalEditable: () => useLexicalEditable
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/useLexicalSubscription.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/useLexicalSubscription.dev.js
 var useLexicalSubscription_dev_exports = {};
 __export(useLexicalSubscription_dev_exports, {
   useLexicalSubscription: () => useLexicalSubscription
@@ -41696,11 +43221,11 @@ function useLexicalSubscription(subscription2) {
   return value;
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/useLexicalSubscription.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/useLexicalSubscription.js
 var mod4 = true ? useLexicalSubscription_dev_exports : useLexicalSubscription_prod_exports;
 var useLexicalSubscription2 = mod4.useLexicalSubscription;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/useLexicalEditable.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/useLexicalEditable.dev.js
 function subscription(editor) {
   return {
     initialValueFn: () => editor.isEditable(),
@@ -41713,11 +43238,11 @@ function useLexicalEditable() {
   return useLexicalSubscription2(subscription);
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/useLexicalEditable.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/useLexicalEditable.js
 var mod5 = true ? useLexicalEditable_dev_exports : useLexicalEditable_prod_exports;
 var useLexicalEditable2 = mod5.useLexicalEditable;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionLexicalBuilder.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionLexicalBuilder.dev.js
 var LexicalExtensionLexicalBuilder_dev_exports = {};
 __export(LexicalExtensionLexicalBuilder_dev_exports, {
   LexicalBuilder: () => LexicalBuilder,
@@ -41725,7 +43250,7 @@ __export(LexicalExtensionLexicalBuilder_dev_exports, {
   builderSymbol: () => builderSymbol
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionConfig.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionConfig.dev.js
 var LexicalExtensionConfig_dev_exports = {};
 __export(LexicalExtensionConfig_dev_exports, {
   getKnownTypesAndNodes: () => getKnownTypesAndNodes,
@@ -41749,12 +43274,12 @@ function getNodeConfig(config) {
   return (typeof config.nodes === "function" ? config.nodes() : config.nodes) || [];
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionConfig.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionConfig.js
 var mod6 = true ? LexicalExtensionConfig_dev_exports : LexicalExtensionConfig_prod_exports;
 var getKnownTypesAndNodes2 = mod6.getKnownTypesAndNodes;
 var getNodeConfig2 = mod6.getNodeConfig;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionInitialStateExtension.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionInitialStateExtension.dev.js
 var LexicalExtensionInitialStateExtension_dev_exports = {};
 __export(LexicalExtensionInitialStateExtension_dev_exports, {
   InitialStateExtension: () => InitialStateExtension
@@ -41815,11 +43340,11 @@ var InitialStateExtension = {
   nodes: [RootNode2, TextNode2, LineBreakNode2, TabNode2, ParagraphNode2]
 };
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionInitialStateExtension.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionInitialStateExtension.js
 var mod7 = true ? LexicalExtensionInitialStateExtension_dev_exports : LexicalExtensionInitialStateExtension_prod_exports;
 var InitialStateExtension2 = mod7.InitialStateExtension;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionLexicalBuilder.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionLexicalBuilder.dev.js
 function formatDevErrorMessage3(message) {
   throw new Error(message);
 }
@@ -41827,8 +43352,8 @@ function formatDevErrorMessage3(message) {
 function readLexicalVersion2() {
   let envLexicalVersion;
   try {
-    envLexicalVersion = "0.51.0+dev.esm";
-  } catch (_unused) {
+    envLexicalVersion = "0.53.0+dev.esm";
+  } catch {
   }
   return envLexicalVersion ?? '"<unknown>+source"';
 }
@@ -42455,13 +43980,13 @@ var LexicalBuilder = class _LexicalBuilder {
   }
 };
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionLexicalBuilder.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionLexicalBuilder.js
 var mod8 = true ? LexicalExtensionLexicalBuilder_dev_exports : LexicalExtensionLexicalBuilder_prod_exports;
 var LexicalBuilder2 = mod8.LexicalBuilder;
 var buildEditorFromExtensions2 = mod8.buildEditorFromExtensions;
 var builderSymbol2 = mod8.builderSymbol;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/LexicalReactProviderExtension.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/LexicalReactProviderExtension.dev.js
 var LexicalReactProviderExtension_dev_exports = {};
 __export(LexicalReactProviderExtension_dev_exports, {
   ReactProviderExtension: () => ReactProviderExtension
@@ -42470,16 +43995,16 @@ var ReactProviderExtension = {
   name: "@lexical/react/ReactProvider"
 };
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/LexicalReactProviderExtension.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/LexicalReactProviderExtension.js
 var mod9 = true ? LexicalReactProviderExtension_dev_exports : LexicalReactProviderExtension_prod_exports;
 var ReactProviderExtension2 = mod9.ReactProviderExtension;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/LexicalPlainTextPlugin.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/LexicalPlainTextPlugin.dev.js
 var import_react4 = __toESM(require_react(), 1);
 var import_react_dom = __toESM(require_react_dom(), 1);
 var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/text/dist/LexicalText.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/text/dist/LexicalText.dev.js
 var LexicalText_dev_exports = {};
 __export(LexicalText_dev_exports, {
   $canShowPlaceholder: () => $canShowPlaceholder,
@@ -42710,7 +44235,7 @@ function registerLexicalTextEntity(editor, getMatch, targetNode, createNode) {
   return [removePlainTextTransform, removeReverseNodeTransform];
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/text/dist/LexicalText.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/text/dist/LexicalText.js
 var mod10 = true ? LexicalText_dev_exports : LexicalText_prod_exports;
 var $canShowPlaceholder2 = mod10.$canShowPlaceholder;
 var $canShowPlaceholderCurry2 = mod10.$canShowPlaceholderCurry;
@@ -42720,7 +44245,7 @@ var $isRootTextContentEmptyCurry2 = mod10.$isRootTextContentEmptyCurry;
 var $rootTextContent2 = mod10.$rootTextContent;
 var registerLexicalTextEntity2 = mod10.registerLexicalTextEntity;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/dragon/dist/LexicalDragon.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/dragon/dist/LexicalDragon.dev.js
 var LexicalDragon_dev_exports = {};
 __export(LexicalDragon_dev_exports, {
   DragonExtension: () => DragonExtension,
@@ -42728,17 +44253,17 @@ __export(LexicalDragon_dev_exports, {
   registerDragonSupport: () => registerDragonSupport
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionSignals.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionSignals.dev.js
 var LexicalExtensionSignals_dev_exports = {};
 __export(LexicalExtensionSignals_dev_exports, {
-  batch: () => n,
-  computed: () => g,
-  effect: () => j,
+  batch: () => r,
+  computed: () => O,
+  effect: () => x,
   signal: () => y,
   untracked: () => f
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@preact/signals-core/dist/signals-core.module.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@preact/signals-core/dist/signals-core.module.js
 var i = /* @__PURE__ */ Symbol.for("preact-signals");
 function t() {
   if (!(v > 1)) {
@@ -42749,28 +44274,28 @@ function t() {
       while (void 0 !== i3) {
         var t3 = i3.S;
         if (t3.v === i3.v) {
-          for (var n3 = t3.t; void 0 !== n3; n3 = n3.x) if (n3.i === i3.i) n3.i = t3.i;
+          for (var r3 = t3.t; void 0 !== r3; r3 = r3.x) if (r3.i === i3.i) r3.i = t3.i;
         }
         i3 = i3.o;
       }
     })();
     while (void 0 !== h) {
-      var n2 = h;
+      var r2 = h;
       h = void 0;
       s++;
-      while (void 0 !== n2) {
-        var r2 = n2.u;
-        n2.u = void 0;
-        n2.f &= -3;
-        if (!(8 & n2.f) && w(n2)) try {
-          n2.c();
-        } catch (n3) {
+      while (void 0 !== r2) {
+        var n2 = r2.u;
+        r2.u = void 0;
+        r2.f &= -3;
+        if (!(8 & r2.f) && w(r2)) try {
+          r2.c();
+        } catch (r3) {
           if (!t2) {
-            i2 = n3;
+            i2 = r3;
             t2 = true;
           }
         }
-        n2 = r2;
+        r2 = n2;
       }
     }
     s = 0;
@@ -42778,9 +44303,9 @@ function t() {
     if (t2) throw i2;
   } else v--;
 }
-function n(i2) {
+function r(i2) {
   if (v > 0) return i2();
-  e = ++u;
+  u = ++e;
   v++;
   try {
     return i2();
@@ -42788,27 +44313,27 @@ function n(i2) {
     t();
   }
 }
-var r;
+var n;
 var o = void 0;
 function f(i2) {
-  var t2 = o, n2 = r;
+  var t2 = o, r2 = n;
   o = void 0;
-  r = void 0;
+  n = void 0;
   try {
     return i2();
   } finally {
     o = t2;
-    r = n2;
+    n = r2;
   }
 }
 var h = void 0;
 var v = 0;
 var s = 0;
-var u = 0;
 var e = 0;
+var u = 0;
 var c = void 0;
-var d = 0;
-function a(i2) {
+var a = 0;
+function d(i2) {
   if (void 0 !== o) {
     var t2 = i2.n;
     if (void 0 === t2 || t2.t !== o) {
@@ -42847,11 +44372,11 @@ l.prototype.h = function() {
   return true;
 };
 l.prototype.S = function(i2) {
-  var t2 = this, n2 = this.t;
-  if (n2 !== i2 && void 0 === i2.e) {
-    i2.x = n2;
+  var t2 = this, r2 = this.t;
+  if (r2 !== i2 && void 0 === i2.e) {
+    i2.x = r2;
     this.t = i2;
-    if (void 0 !== n2) n2.e = i2;
+    if (void 0 !== r2) r2.e = i2;
     else f(function() {
       var i3;
       null == (i3 = t2.W) || i3.call(t2);
@@ -42861,18 +44386,18 @@ l.prototype.S = function(i2) {
 l.prototype.U = function(i2) {
   var t2 = this;
   if (void 0 !== this.t) {
-    var n2 = i2.e, r2 = i2.x;
-    if (void 0 !== n2) {
-      n2.x = r2;
+    var r2 = i2.e, n2 = i2.x;
+    if (void 0 !== r2) {
+      r2.x = n2;
       i2.e = void 0;
     }
-    if (void 0 !== r2) {
-      r2.e = n2;
+    if (void 0 !== n2) {
+      n2.e = r2;
       i2.x = void 0;
     }
     if (i2 === this.t) {
-      this.t = r2;
-      if (void 0 === r2) f(function() {
+      this.t = n2;
+      if (void 0 === n2) f(function() {
         var i3;
         null == (i3 = t2.Z) || i3.call(t2);
       });
@@ -42881,10 +44406,10 @@ l.prototype.U = function(i2) {
 };
 l.prototype.subscribe = function(i2) {
   var t2 = this;
-  return j(function() {
-    var n2 = t2.value;
+  return x(function() {
+    var r2 = t2.value;
     f(function() {
-      return i2(n2);
+      return i2(r2);
     });
   }, { name: "sub" });
 };
@@ -42904,7 +44429,7 @@ l.prototype.peek = function() {
   });
 };
 Object.defineProperty(l.prototype, "value", { get: function() {
-  var i2 = a(this);
+  var i2 = d(this);
   if (void 0 !== i2) i2.i = this.i;
   return this.v;
 }, set: function(i2) {
@@ -42912,18 +44437,18 @@ Object.defineProperty(l.prototype, "value", { get: function() {
     if (s > 100) throw new Error("Cycle detected");
     !(function(i3) {
       if (0 !== v && 0 === s) {
-        if (i3.l !== e) {
-          i3.l = e;
+        if (i3.l !== u) {
+          i3.l = u;
           c = { S: i3, v: i3.v, i: i3.i, o: c };
         }
       }
     })(this);
     this.v = i2;
     this.i++;
-    d++;
+    a++;
     v++;
     try {
-      for (var n2 = this.t; void 0 !== n2; n2 = n2.x) n2.t.N();
+      for (var r2 = this.t; void 0 !== r2; r2 = r2.x) r2.t.N();
     } finally {
       t();
     }
@@ -42936,10 +44461,10 @@ function w(i2) {
   for (var t2 = i2.s; void 0 !== t2; t2 = t2.n) if (t2.S.i !== t2.i || !t2.S.h() || t2.S.i !== t2.i) return true;
   return false;
 }
-function _(i2) {
+function b(i2) {
   for (var t2 = i2.s; void 0 !== t2; t2 = t2.n) {
-    var n2 = t2.S.n;
-    if (void 0 !== n2) t2.r = n2;
+    var r2 = t2.S.n;
+    if (void 0 !== r2) t2.r = r2;
     t2.S.n = t2;
     t2.i = -1;
     if (void 0 === t2.n) {
@@ -42948,36 +44473,36 @@ function _(i2) {
     }
   }
 }
-function b(i2) {
-  var t2 = i2.s, n2 = void 0;
+function _(i2) {
+  var t2 = i2.s, r2 = void 0;
   while (void 0 !== t2) {
-    var r2 = t2.p;
+    var n2 = t2.p;
     if (-1 === t2.i) {
       t2.S.U(t2);
-      if (void 0 !== r2) r2.n = t2.n;
-      if (void 0 !== t2.n) t2.n.p = r2;
-    } else n2 = t2;
+      if (void 0 !== n2) n2.n = t2.n;
+      if (void 0 !== t2.n) t2.n.p = n2;
+    } else r2 = t2;
     t2.S.n = t2.r;
     if (void 0 !== t2.r) t2.r = void 0;
-    t2 = r2;
+    t2 = n2;
   }
-  i2.s = n2;
+  i2.s = r2;
 }
-function p(i2, t2) {
+function j(i2, t2) {
   l.call(this, void 0, t2);
   this.x = i2;
   this.s = void 0;
-  this.g = d - 1;
+  this.g = a - 1;
   this.f = 4;
 }
-p.prototype = new l();
-p.prototype.h = function() {
+j.prototype = new l();
+j.prototype.h = function() {
   this.f &= -3;
   if (1 & this.f) return false;
   if (32 == (36 & this.f)) return true;
   this.f &= -5;
-  if (this.g === d) return true;
-  this.g = d;
+  if (this.g === a) return true;
+  this.g = a;
   this.f |= 1;
   if (this.i > 0 && !w(this)) {
     this.f &= -2;
@@ -42985,7 +44510,7 @@ p.prototype.h = function() {
   }
   var i2 = o;
   try {
-    _(this);
+    b(this);
     o = this;
     var t2 = this.x();
     if (16 & this.f || this.v !== t2 || 0 === this.i) {
@@ -42999,18 +44524,18 @@ p.prototype.h = function() {
     this.i++;
   }
   o = i2;
-  b(this);
+  _(this);
   this.f &= -2;
   return true;
 };
-p.prototype.S = function(i2) {
+j.prototype.S = function(i2) {
   if (void 0 === this.t) {
     this.f |= 36;
     for (var t2 = this.s; void 0 !== t2; t2 = t2.n) t2.S.S(t2);
   }
   l.prototype.S.call(this, i2);
 };
-p.prototype.U = function(i2) {
+j.prototype.U = function(i2) {
   if (void 0 !== this.t) {
     l.prototype.U.call(this, i2);
     if (void 0 === this.t) {
@@ -43019,116 +44544,119 @@ p.prototype.U = function(i2) {
     }
   }
 };
-p.prototype.N = function() {
+j.prototype.N = function() {
   if (!(2 & this.f)) {
     this.f |= 6;
     for (var i2 = this.t; void 0 !== i2; i2 = i2.x) i2.t.N();
   }
 };
-Object.defineProperty(p.prototype, "value", { get: function() {
+Object.defineProperty(j.prototype, "value", { get: function() {
   if (1 & this.f) throw new Error("Cycle detected");
-  var i2 = a(this);
+  var i2 = d(this);
   this.h();
   if (void 0 !== i2) i2.i = this.i;
   if (16 & this.f) throw this.v;
   return this.v;
 } });
-function g(i2, t2) {
-  return new p(i2, t2);
+function O(i2, t2) {
+  return new j(i2, t2);
 }
-function S(i2) {
-  var n2 = i2.m;
-  i2.m = void 0;
-  if ("function" == typeof n2) {
+function p(i2) {
+  var r2 = i2.j;
+  i2.j = void 0;
+  if ("function" == typeof r2) {
     v++;
-    var r2 = o;
+    var n2 = o;
     o = void 0;
     try {
-      n2();
+      r2();
     } catch (t2) {
       i2.f &= -2;
       i2.f |= 8;
-      m(i2);
+      g(i2);
       throw t2;
     } finally {
-      o = r2;
+      o = n2;
       t();
     }
   }
 }
-function m(i2) {
+function g(i2) {
   for (var t2 = i2.s; void 0 !== t2; t2 = t2.n) t2.S.U(t2);
   i2.x = void 0;
   i2.s = void 0;
-  S(i2);
+  p(i2);
 }
-function x(i2) {
+function S(i2) {
   if (o !== this) throw new Error("Out-of-order effect");
-  b(this);
+  _(this);
   o = i2;
   this.f &= -2;
-  if (8 & this.f) m(this);
-  t();
+  try {
+    if (8 & this.f) g(this);
+  } finally {
+    t();
+  }
 }
-function E(i2, t2) {
+function m(i2, t2) {
   this.x = i2;
-  this.m = void 0;
+  this.j = void 0;
   this.s = void 0;
   this.u = void 0;
   this.f = 32;
   this.name = null == t2 ? void 0 : t2.name;
-  if (r) r.push(this);
+  if (n) n.push(this);
 }
-E.prototype.c = function() {
+m.prototype.c = function() {
   var i2 = this.S();
   try {
     if (8 & this.f) return;
     if (void 0 === this.x) return;
     var t2 = this.x();
-    if ("function" == typeof t2) this.m = t2;
+    if ("function" == typeof t2) this.j = t2;
   } finally {
     i2();
   }
 };
-E.prototype.S = function() {
+m.prototype.S = function() {
   if (1 & this.f) throw new Error("Cycle detected");
   this.f |= 1;
   this.f &= -9;
-  S(this);
-  _(this);
+  p(this);
+  b(this);
   v++;
   var i2 = o;
   o = this;
-  return x.bind(this, i2);
+  return S.bind(this, i2);
 };
-E.prototype.N = function() {
+m.prototype.N = function() {
   if (!(2 & this.f)) {
     this.f |= 2;
     this.u = h;
     h = this;
   }
 };
-E.prototype.d = function() {
+m.prototype.d = function() {
   this.f |= 8;
-  if (!(1 & this.f)) m(this);
+  if (!(1 & this.f)) g(this);
 };
-E.prototype.dispose = function() {
+m.prototype.dispose = function() {
   this.d();
 };
-function j(i2, t2) {
-  var n2 = new E(i2, t2);
+function x(i2, t2) {
+  var r2 = new m(i2, t2);
   try {
-    n2.c();
+    r2.c();
   } catch (i3) {
-    n2.d();
+    r2.d();
     throw i3;
   }
-  var r2 = n2.d.bind(n2);
-  r2[Symbol.dispose] = r2;
-  return r2;
+  var n2 = r2.d.bind(r2);
+  n2[Symbol.dispose] = n2;
+  return n2;
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionSignals.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionSignals.js
 var mod11 = true ? LexicalExtensionSignals_dev_exports : LexicalExtensionSignals_prod_exports;
 var batch = mod11.batch;
 var computed = mod11.computed;
@@ -43136,7 +44664,7 @@ var effect = mod11.effect;
 var signal = mod11.signal;
 var untracked = mod11.untracked;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionNamedSignals.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionNamedSignals.dev.js
 var LexicalExtensionNamedSignals_dev_exports = {};
 __export(LexicalExtensionNamedSignals_dev_exports, {
   namedSignals: () => namedSignals
@@ -43151,11 +44679,11 @@ function namedSignals(defaults, opts = {}) {
   return initial;
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionNamedSignals.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionNamedSignals.js
 var mod12 = true ? LexicalExtensionNamedSignals_dev_exports : LexicalExtensionNamedSignals_prod_exports;
 var namedSignals2 = mod12.namedSignals;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionWatchedSignal.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionWatchedSignal.dev.js
 var LexicalExtensionWatchedSignal_dev_exports = {};
 __export(LexicalExtensionWatchedSignal_dev_exports, {
   watchedSignal: () => watchedSignal
@@ -43176,11 +44704,11 @@ function watchedSignal(getSnapshot, register) {
   });
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionWatchedSignal.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionWatchedSignal.js
 var mod13 = true ? LexicalExtensionWatchedSignal_dev_exports : LexicalExtensionWatchedSignal_prod_exports;
 var watchedSignal2 = mod13.watchedSignal;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/dragon/dist/LexicalDragon.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/dragon/dist/LexicalDragon.dev.js
 var TEXT_FORMAT_BY_EXEC_COMMAND = {
   bold: "bold",
   italic: "italic",
@@ -43334,20 +44862,20 @@ var DragonExtension = {
   register: (editor, config, state) => effect(() => state.getOutput().disabled.value ? void 0 : registerDragonSupport(editor))
 };
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/dragon/dist/LexicalDragon.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/dragon/dist/LexicalDragon.js
 var mod14 = true ? LexicalDragon_dev_exports : LexicalDragon_prod_exports;
 var DragonExtension2 = mod14.DragonExtension;
 var installDragonSupport2 = mod14.installDragonSupport;
 var registerDragonSupport2 = mod14.registerDragonSupport;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/plain-text/dist/LexicalPlainText.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/plain-text/dist/LexicalPlainText.dev.js
 var LexicalPlainText_dev_exports = {};
 __export(LexicalPlainText_dev_exports, {
   PlainTextExtension: () => PlainTextExtension,
   registerPlainText: () => registerPlainText
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/clipboard/dist/LexicalClipboard.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/clipboard/dist/LexicalClipboard.dev.js
 var LexicalClipboard_dev_exports = {};
 __export(LexicalClipboard_dev_exports, {
   $exportMimeTypeFromSelection: () => $exportMimeTypeFromSelection,
@@ -43372,7 +44900,7 @@ __export(LexicalClipboard_dev_exports, {
   setLexicalClipboardDataTransfer: () => setLexicalClipboardDataTransfer
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionGetPeerDependencyFromEditor.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionGetPeerDependencyFromEditor.dev.js
 var LexicalExtensionGetPeerDependencyFromEditor_dev_exports = {};
 __export(LexicalExtensionGetPeerDependencyFromEditor_dev_exports, {
   getPeerDependencyFromEditor: () => getPeerDependencyFromEditor,
@@ -43395,12 +44923,12 @@ function getPeerDependencyFromEditorOrThrow(editor, extensionName) {
   return dep;
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionGetPeerDependencyFromEditor.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionGetPeerDependencyFromEditor.js
 var mod15 = true ? LexicalExtensionGetPeerDependencyFromEditor_dev_exports : LexicalExtensionGetPeerDependencyFromEditor_prod_exports;
 var getPeerDependencyFromEditor2 = mod15.getPeerDependencyFromEditor;
 var getPeerDependencyFromEditorOrThrow2 = mod15.getPeerDependencyFromEditorOrThrow;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/html/dist/LexicalHtml.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/html/dist/LexicalHtml.dev.js
 var LexicalHtml_dev_exports = {};
 __export(LexicalHtml_dev_exports, {
   $appendNodeToHTML: () => $appendNodeToHTML,
@@ -43425,7 +44953,6 @@ __export(LexicalHtml_dev_exports, {
   CoreImportRules: () => CoreImportRules,
   DOMImportExtension: () => DOMImportExtension,
   DOMRenderExtension: () => DOMRenderExtension,
-  HorizontalRuleImportExtension: () => HorizontalRuleImportExtension,
   HorizontalRuleImportRules: () => HorizontalRuleImportRules,
   ImportOverlays: () => ImportOverlays,
   ImportSource: () => ImportSource,
@@ -43452,7 +44979,7 @@ __export(LexicalHtml_dev_exports, {
   sel: () => sel
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/selection/dist/LexicalSelection.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/selection/dist/LexicalSelection.dev.js
 var LexicalSelection_dev_exports = {};
 __export(LexicalSelection_dev_exports, {
   $addNodeStyle: () => $addNodeStyle,
@@ -43497,45 +45024,24 @@ function warnOnlyOnce2(message) {
     };
   }
 }
-function getDOMTextNode3(element) {
-  let node = element;
-  while (node != null) {
-    if (node.nodeType === Node.TEXT_NODE) {
-      return node;
-    }
-    node = node.firstChild;
+function getDOMPoint(editor, node, offset) {
+  const dom = editor.getElementByKey(node.getKey());
+  if (dom === null || $isTextNode2(node)) {
+    return [getDOMTextNode2(dom), offset];
   }
-  return null;
-}
-function getDOMIndexWithinParent(node) {
-  const parent = node.parentNode;
-  if (parent == null) {
-    throw new Error("Should never happen");
+  const parent = dom.parentNode;
+  if (parent && dom.nodeName === "BR") {
+    return [parent, Array.from(parent.childNodes).indexOf(dom)];
   }
-  return [parent, Array.from(parent.childNodes).indexOf(node)];
+  return editor.read("latest", () => $getElementAndOffsetForPoint2(editor, node, offset));
 }
 function createDOMRange(editor, anchorNode, _anchorOffset, focusNode, _focusOffset) {
-  const anchorKey = anchorNode.getKey();
-  const focusKey = focusNode.getKey();
   const range = getRootOwnerDocument2(editor.getRootElement()).createRange();
-  let anchorDOM = editor.getElementByKey(anchorKey);
-  let focusDOM = editor.getElementByKey(focusKey);
-  let anchorOffset = _anchorOffset;
-  let focusOffset = _focusOffset;
-  if ($isTextNode2(anchorNode)) {
-    anchorDOM = getDOMTextNode3(anchorDOM);
-  }
-  if ($isTextNode2(focusNode)) {
-    focusDOM = getDOMTextNode3(focusDOM);
-  }
-  if (anchorNode === void 0 || focusNode === void 0 || anchorDOM === null || focusDOM === null) {
+  const [anchorDOM, anchorOffset] = getDOMPoint(editor, anchorNode, _anchorOffset);
+  const [focusDOM, domFocusOffset] = getDOMPoint(editor, focusNode, _focusOffset);
+  let focusOffset = domFocusOffset;
+  if (anchorDOM === null || focusDOM === null) {
     return null;
-  }
-  if (anchorDOM.nodeName === "BR") {
-    [anchorDOM, anchorOffset] = getDOMIndexWithinParent(anchorDOM);
-  }
-  if (focusDOM.nodeName === "BR") {
-    [focusDOM, focusOffset] = getDOMIndexWithinParent(focusDOM);
   }
   const firstChild = anchorDOM.firstChild;
   if (anchorDOM === focusDOM && firstChild != null && firstChild.nodeName === "BR" && anchorOffset === 0 && focusOffset === 0) {
@@ -43547,7 +45053,7 @@ function createDOMRange(editor, anchorNode, _anchorOffset, focusNode, _focusOffs
   } catch (_e) {
     return null;
   }
-  if (range.collapsed && (anchorOffset !== focusOffset || anchorKey !== focusKey)) {
+  if (range.collapsed && (anchorOffset !== focusOffset || !anchorNode.is(focusNode))) {
     range.setStart(focusDOM, focusOffset);
     range.setEnd(anchorDOM, anchorOffset);
   }
@@ -43573,9 +45079,9 @@ function createRectsFromDOMRange(editor, range) {
   let prevRect;
   for (let i2 = 0; i2 < selectionRectsLength; i2++) {
     const selectionRect = selectionRects[i2];
-    const isOverlappingRect = prevRect && prevRect.top <= selectionRect.top && prevRect.top + prevRect.height > selectionRect.top && prevRect.left + prevRect.width > selectionRect.left;
+    const isContainedRect = prevRect && prevRect.top <= selectionRect.top && prevRect.bottom >= selectionRect.bottom && prevRect.left <= selectionRect.left && prevRect.right >= selectionRect.right;
     const selectionSpansElement = selectionRect.width + rootPadding === rootRect.width;
-    if (isOverlappingRect || selectionSpansElement) {
+    if (isContainedRect || selectionSpansElement) {
       selectionRects.splice(i2--, 1);
       selectionRectsLength--;
       continue;
@@ -43614,40 +45120,17 @@ function $isParentRTL(node) {
   return styles !== null && styles.direction === "rtl";
 }
 function $sliceSelectedTextNodeContent(selection, textNode, mutates = "self") {
-  const anchorAndFocus = selection.getStartEndPoints();
-  if (textNode.isSelected(selection) && !$isTokenOrSegmented2(textNode) && anchorAndFocus !== null) {
-    const [anchor, focus] = anchorAndFocus;
-    const isBackward = selection.isBackward();
-    const anchorNode = anchor.getNode();
-    const focusNode = focus.getNode();
-    const isAnchor = textNode.is(anchorNode);
-    const isFocus = textNode.is(focusNode);
-    if (isAnchor || isFocus) {
-      const [anchorOffset, focusOffset] = $getCharacterOffsets2(selection);
-      const isSame = anchorNode.is(focusNode);
-      const isFirst = textNode.is(isBackward ? focusNode : anchorNode);
-      const isLast = textNode.is(isBackward ? anchorNode : focusNode);
-      let startOffset = 0;
-      let endOffset = void 0;
-      if (isSame) {
-        startOffset = anchorOffset > focusOffset ? focusOffset : anchorOffset;
-        endOffset = anchorOffset > focusOffset ? anchorOffset : focusOffset;
-      } else if (isFirst) {
-        const offset = isBackward ? focusOffset : anchorOffset;
-        startOffset = offset;
-        endOffset = void 0;
-      } else if (isLast) {
-        const offset = isBackward ? anchorOffset : focusOffset;
-        startOffset = 0;
-        endOffset = offset;
+  const points = selection.getStartEndPoints();
+  if (points !== null && textNode.isSelected(selection) && !$isTokenOrSegmented2(textNode)) {
+    const [start, end] = selection.isBackward() ? [points[1], points[0]] : points;
+    const slice = $isRangeSelection2(selection) && (start.type === "element" || end.type === "element") ? $getTextPointCaretSliceForNode2($caretRangeFromSelection2(selection).getTextSlices(), textNode) : void 0;
+    const [startOffset, endOffset] = slice ? slice.getSliceIndices() : [textNode.__key === start.key ? start.offset : 0, textNode.__key === end.key ? end.offset : void 0];
+    const text = textNode.__text.slice(startOffset, endOffset);
+    if (text !== textNode.__text) {
+      if (mutates === "clone") {
+        textNode = $cloneWithPropertiesEphemeral2(textNode);
       }
-      const text = textNode.__text.slice(startOffset, endOffset);
-      if (text !== textNode.__text) {
-        if (mutates === "clone") {
-          textNode = $cloneWithPropertiesEphemeral2(textNode);
-        }
-        textNode.__text = text;
-      }
+      textNode.__text = text;
     }
   }
   return textNode;
@@ -43792,7 +45275,7 @@ function $patchStyleText(selection, patch) {
       $patchStyle(emptyNode, patch);
     }
   }
-  $forEachSelectedTextNode((textNode) => {
+  $forEachSelectedTextNodeInSelection(selection, (textNode) => {
     $patchStyle(textNode, patch);
   });
   const nodes = selection.getNodes();
@@ -43811,35 +45294,22 @@ function $patchStyleText(selection, patch) {
   }
 }
 function $forEachSelectedTextNode(fn) {
-  const selection = $getSelection2();
+  $forEachSelectedTextNodeInSelection($getSelection2(), fn);
+}
+function $forEachSelectedTextNodeInSelection(selection, fn) {
   if (!selection) {
     return;
   }
-  const slicedTextNodes = /* @__PURE__ */ new Map();
-  const getSliceIndices = (node) => slicedTextNodes.get(node.getKey()) || [0, node.getTextContentSize()];
-  if ($isRangeSelection2(selection)) {
-    for (const slice of $caretRangeFromSelection2(selection).getTextSlices()) {
-      if (slice) {
-        slicedTextNodes.set(slice.caret.origin.getKey(), slice.getSliceIndices());
-      }
-    }
-  }
-  const selectedNodes = selection.getNodes();
-  for (const selectedNode of selectedNodes) {
-    if (!($isTextNode2(selectedNode) && selectedNode.canHaveFormat())) {
+  const slices = $isRangeSelection2(selection) ? $caretRangeFromSelection2(selection).getTextSlices() : [];
+  for (const node of selection.getNodes()) {
+    if (!$isTextNode2(node) || !node.canHaveFormat()) {
       continue;
     }
-    const [startOffset, endOffset] = getSliceIndices(selectedNode);
-    if (endOffset === startOffset) {
+    const slice = $getTextPointCaretSliceForNode2(slices, node);
+    if (slice ? slice.distance === 0 : node.getTextContentSize() === 0) {
       continue;
     }
-    if ($isTokenOrSegmented2(selectedNode) || startOffset === 0 && endOffset === selectedNode.getTextContentSize()) {
-      fn(selectedNode);
-    } else {
-      const splitNodes = selectedNode.splitText(startOffset, endOffset);
-      const replacement = splitNodes[startOffset === 0 ? 0 : 1];
-      fn(replacement);
-    }
+    fn(slice && !$isTokenOrSegmented2(node) ? $splitTextPointCaretSlice2(slice, $isRangeSelection2(selection) ? selection : null) : node);
   }
   if ($isRangeSelection2(selection) && selection.anchor.type === "text" && selection.focus.type === "text" && selection.anchor.key === selection.focus.key) {
     $ensureForwardRangeSelection(selection);
@@ -44235,7 +45705,7 @@ function $getSelectionStyleValueForProperty(selection, styleProperty, defaultVal
 var getStyleObjectFromCSS3 = getStyleObjectFromCSS2;
 var trimTextContentFromAnchor = $trimTextContentFromAnchor;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/selection/dist/LexicalSelection.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/selection/dist/LexicalSelection.js
 var mod16 = true ? LexicalSelection_dev_exports : LexicalSelection_prod_exports;
 var $addNodeStyle2 = mod16.$addNodeStyle;
 var $cloneWithProperties3 = mod16.$cloneWithProperties;
@@ -44264,7 +45734,7 @@ var getCSSFromStyleObject2 = mod16.getCSSFromStyleObject;
 var getStyleObjectFromCSS4 = mod16.getStyleObjectFromCSS;
 var trimTextContentFromAnchor2 = mod16.trimTextContentFromAnchor;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/utils/dist/LexicalUtils.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/utils/dist/LexicalUtils.dev.js
 var LexicalUtils_dev_exports = {};
 __export(LexicalUtils_dev_exports, {
   $descendantsMatching: () => $descendantsMatching,
@@ -44367,6 +45837,19 @@ var mutationObserverConfig = {
 function prependDOMNode(parent, node) {
   parent.insertBefore(node, parent.firstChild);
 }
+function dedupeHighlightRects(rects) {
+  const kept = [];
+  for (const rect of rects) {
+    if (rect.width < 0.5 || rect.height < 0.5) {
+      continue;
+    }
+    if (kept.some((prev) => Math.abs(prev.left - rect.left) <= 1 && Math.abs(prev.top - rect.top) <= 1 && Math.abs(prev.right - rect.right) <= 1 && Math.abs(prev.bottom - rect.bottom) <= 1)) {
+      continue;
+    }
+    kept.push(rect);
+  }
+  return kept;
+}
 function mlcPositionNodeOnRange(editor, range, onReposition) {
   let rootDOMNode = null;
   let parentDOMNode = null;
@@ -44385,8 +45868,8 @@ function mlcPositionNodeOnRange(editor, range, onReposition) {
       left: parentLeft,
       top: parentTop
     } = parentDOMNode.getBoundingClientRect();
-    const rects = dedupeSelectionRects(createRectsFromDOMRange2(editor, range));
-    if (!wrapperNode.isConnected) {
+    const rects = dedupeHighlightRects(createRectsFromDOMRange2(editor, range));
+    if (wrapperNode.parentNode !== parentDOMNode) {
       prependDOMNode(parentDOMNode, wrapperNode);
     }
     let hasRepositioned = false;
@@ -45184,7 +46667,7 @@ function $isAtEndOfNode(point, node) {
   return $isAtEdgeOfElement2(point, node, "next");
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/utils/dist/LexicalUtils.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/utils/dist/LexicalUtils.js
 var mod17 = true ? LexicalUtils_dev_exports : LexicalUtils_prod_exports;
 var $descendantsMatching2 = mod17.$descendantsMatching;
 var $dfs2 = mod17.$dfs;
@@ -45252,7 +46735,7 @@ var registerNestedElementResolver2 = mod17.registerNestedElementResolver;
 var removeClassNamesFromElement3 = mod17.removeClassNamesFromElement;
 var selectionAlwaysOnDisplay2 = mod17.selectionAlwaysOnDisplay;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionHorizontalRuleExtension.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionHorizontalRuleExtension.dev.js
 var LexicalExtensionHorizontalRuleExtension_dev_exports = {};
 __export(LexicalExtensionHorizontalRuleExtension_dev_exports, {
   $createHorizontalRuleNode: () => $createHorizontalRuleNode,
@@ -45262,7 +46745,7 @@ __export(LexicalExtensionHorizontalRuleExtension_dev_exports, {
   INSERT_HORIZONTAL_RULE_COMMAND: () => INSERT_HORIZONTAL_RULE_COMMAND
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionEditorStateExtension.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionEditorStateExtension.dev.js
 var LexicalExtensionEditorStateExtension_dev_exports = {};
 __export(LexicalExtensionEditorStateExtension_dev_exports, {
   EditorStateExtension: () => EditorStateExtension
@@ -45276,11 +46759,11 @@ var EditorStateExtension = {
   name: "@lexical/extension/EditorState"
 };
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionEditorStateExtension.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionEditorStateExtension.js
 var mod18 = true ? LexicalExtensionEditorStateExtension_dev_exports : LexicalExtensionEditorStateExtension_prod_exports;
 var EditorStateExtension2 = mod18.EditorStateExtension;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionNodeSelectionExtension.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionNodeSelectionExtension.dev.js
 var LexicalExtensionNodeSelectionExtension_dev_exports = {};
 __export(LexicalExtensionNodeSelectionExtension_dev_exports, {
   NodeSelectionExtension: () => NodeSelectionExtension
@@ -45346,11 +46829,11 @@ var NodeSelectionExtension = {
   name: "@lexical/extension/NodeSelection"
 };
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionNodeSelectionExtension.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionNodeSelectionExtension.js
 var mod19 = true ? LexicalExtensionNodeSelectionExtension_dev_exports : LexicalExtensionNodeSelectionExtension_prod_exports;
 var NodeSelectionExtension2 = mod19.NodeSelectionExtension;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionHorizontalRuleExtension.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionHorizontalRuleExtension.dev.js
 var INSERT_HORIZONTAL_RULE_COMMAND = /* @__PURE__ */ createCommand2("INSERT_HORIZONTAL_RULE_COMMAND");
 var HorizontalRuleNode = class extends DecoratorNode2 {
   $config() {
@@ -45497,7 +46980,7 @@ var HorizontalRuleExtension = {
   }
 };
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionHorizontalRuleExtension.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionHorizontalRuleExtension.js
 var mod20 = true ? LexicalExtensionHorizontalRuleExtension_dev_exports : LexicalExtensionHorizontalRuleExtension_prod_exports;
 var $createHorizontalRuleNode2 = mod20.$createHorizontalRuleNode;
 var $isHorizontalRuleNode2 = mod20.$isHorizontalRuleNode;
@@ -45505,7 +46988,7 @@ var HorizontalRuleExtension2 = mod20.HorizontalRuleExtension;
 var HorizontalRuleNode2 = mod20.HorizontalRuleNode;
 var INSERT_HORIZONTAL_RULE_COMMAND2 = mod20.INSERT_HORIZONTAL_RULE_COMMAND;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionGetExtensionDependency.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionGetExtensionDependency.dev.js
 var LexicalExtensionGetExtensionDependency_dev_exports = {};
 __export(LexicalExtensionGetExtensionDependency_dev_exports, {
   $getExtensionDependency: () => $getExtensionDependency,
@@ -45513,7 +46996,7 @@ __export(LexicalExtensionGetExtensionDependency_dev_exports, {
   $getPeerDependency: () => $getPeerDependency
 });
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionGetExtensionDependencyFromEditor.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionGetExtensionDependencyFromEditor.dev.js
 var LexicalExtensionGetExtensionDependencyFromEditor_dev_exports = {};
 __export(LexicalExtensionGetExtensionDependencyFromEditor_dev_exports, {
   getExtensionDependencyFromEditor: () => getExtensionDependencyFromEditor
@@ -45530,11 +47013,11 @@ function getExtensionDependencyFromEditor(editor, extension) {
   return rep.getExtensionDependency();
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionGetExtensionDependencyFromEditor.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionGetExtensionDependencyFromEditor.js
 var mod21 = true ? LexicalExtensionGetExtensionDependencyFromEditor_dev_exports : LexicalExtensionGetExtensionDependencyFromEditor_prod_exports;
 var getExtensionDependencyFromEditor2 = mod21.getExtensionDependencyFromEditor;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionGetExtensionDependency.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionGetExtensionDependency.dev.js
 function $getExtensionDependency(extension) {
   return getExtensionDependencyFromEditor2($getEditor2(), extension);
 }
@@ -45545,15 +47028,74 @@ function $getPeerDependency(extensionName) {
   return getPeerDependencyFromEditor2($getEditor2(), extensionName);
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionGetExtensionDependency.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionGetExtensionDependency.js
 var mod22 = true ? LexicalExtensionGetExtensionDependency_dev_exports : LexicalExtensionGetExtensionDependency_prod_exports;
 var $getExtensionDependency2 = mod22.$getExtensionDependency;
 var $getExtensionOutput2 = mod22.$getExtensionOutput;
 var $getPeerDependency2 = mod22.$getPeerDependency;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/html/dist/LexicalHtml.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/html/dist/LexicalHtml.dev.js
 function formatDevErrorMessage9(message) {
   throw new Error(message);
+}
+var $inlineStylesFromStyleSheets = (dom, _ctx, $next) => {
+  $inlineStylesFromStyleSheetsDOM(dom);
+  $next();
+};
+function $inlineStylesFromStyleSheetsDOM(dom) {
+  if (!isDOMDocumentNode2(dom)) {
+    return;
+  }
+  const doc = dom;
+  if (doc.querySelector("style") === null) {
+    return;
+  }
+  const originalInlineStyles = /* @__PURE__ */ new Map();
+  function getOriginalInlineProps(el) {
+    let props = originalInlineStyles.get(el);
+    if (props === void 0) {
+      props = /* @__PURE__ */ new Set();
+      for (let i2 = 0; i2 < el.style.length; i2++) {
+        props.add(el.style[i2]);
+      }
+      originalInlineStyles.set(el, props);
+    }
+    return props;
+  }
+  try {
+    for (const sheet of Array.from(doc.styleSheets)) {
+      let rules;
+      try {
+        rules = sheet.cssRules;
+      } catch {
+        continue;
+      }
+      for (const rule of Array.from(rules)) {
+        if (!objectKlassEquals2(rule, CSSStyleRule)) {
+          continue;
+        }
+        let elements;
+        try {
+          elements = doc.querySelectorAll(rule.selectorText);
+        } catch {
+          continue;
+        }
+        for (const el of Array.from(elements)) {
+          if (!isHTMLElement2(el)) {
+            continue;
+          }
+          const originalProps = getOriginalInlineProps(el);
+          for (let i2 = 0; i2 < rule.style.length; i2++) {
+            const prop = rule.style[i2];
+            if (!originalProps.has(prop)) {
+              el.style.setProperty(prop, rule.style.getPropertyValue(prop), rule.style.getPropertyPriority(prop));
+            }
+          }
+        }
+      }
+    }
+  } catch {
+  }
 }
 var activeContext;
 function getContextValue(contextRecord, cfg) {
@@ -45643,65 +47185,6 @@ function createContextState(tag, name, getDefaultValue, isEqual) {
     [tag]: true
   });
 }
-var $inlineStylesFromStyleSheets = (dom, _ctx, $next) => {
-  $inlineStylesFromStyleSheetsDOM(dom);
-  $next();
-};
-function $inlineStylesFromStyleSheetsDOM(dom) {
-  if (!isDOMDocumentNode2(dom)) {
-    return;
-  }
-  const doc = dom;
-  if (doc.querySelector("style") === null) {
-    return;
-  }
-  const originalInlineStyles = /* @__PURE__ */ new Map();
-  function getOriginalInlineProps(el) {
-    let props = originalInlineStyles.get(el);
-    if (props === void 0) {
-      props = /* @__PURE__ */ new Set();
-      for (let i2 = 0; i2 < el.style.length; i2++) {
-        props.add(el.style[i2]);
-      }
-      originalInlineStyles.set(el, props);
-    }
-    return props;
-  }
-  try {
-    for (const sheet of Array.from(doc.styleSheets)) {
-      let rules;
-      try {
-        rules = sheet.cssRules;
-      } catch (_unused) {
-        continue;
-      }
-      for (const rule of Array.from(rules)) {
-        if (!objectKlassEquals2(rule, CSSStyleRule)) {
-          continue;
-        }
-        let elements;
-        try {
-          elements = doc.querySelectorAll(rule.selectorText);
-        } catch (_unused2) {
-          continue;
-        }
-        for (const el of Array.from(elements)) {
-          if (!isHTMLElement2(el)) {
-            continue;
-          }
-          const originalProps = getOriginalInlineProps(el);
-          for (let i2 = 0; i2 < rule.style.length; i2++) {
-            const prop = rule.style[i2];
-            if (!originalProps.has(prop)) {
-              el.style.setProperty(prop, rule.style.getPropertyValue(prop), rule.style.getPropertyPriority(prop));
-            }
-          }
-        }
-      }
-    }
-  } catch (_unused3) {
-  }
-}
 var DOMRenderExtensionName = "@lexical/html/DOM";
 var DOMRenderContextSymbol = /* @__PURE__ */ Symbol.for("@lexical/html/DOMExportContext");
 var DOMImportExtensionName = "@lexical/html/DOMImport";
@@ -45744,429 +47227,6 @@ function $getSessionDOMRenderConfig(editor = $getEditor2()) {
   return runtime ? runtime.getSessionConfig() : $getEditorDOMRenderConfig2(editor);
 }
 var $withRenderContext = /* @__PURE__ */ $withContext(DOMRenderContextSymbol, getDefaultRenderContext);
-// @__NO_SIDE_EFFECTS__
-function domOverride(nodes, config, options) {
-  return {
-    ...config,
-    ...options,
-    nodes
-  };
-}
-function buildNodePredicate(klass) {
-  return (node) => node instanceof klass;
-}
-function getPredicate(subtypeMap, {
-  nodes
-}) {
-  if (nodes === "*") {
-    return ALWAYS_TRUE;
-  }
-  let types = {};
-  const predicates = [];
-  for (const klassOrPredicate of nodes) {
-    if ("getType" in klassOrPredicate) {
-      const type = klassOrPredicate.getType();
-      if (types) {
-        const subtypes = subtypeMap.get(type);
-        if (!(subtypes !== void 0)) {
-          formatDevErrorMessage9(`Node class ${klassOrPredicate.name} with type ${type} not registered in editor`);
-        }
-        for (const subtype of subtypes) {
-          types[subtype] = true;
-        }
-      }
-      predicates.push(buildNodePredicate(klassOrPredicate));
-    } else {
-      types = void 0;
-      predicates.push(klassOrPredicate);
-    }
-  }
-  if (types) {
-    return types;
-  } else if (predicates.length === 1) {
-    return predicates[0];
-  }
-  return (node) => {
-    for (const predicate of predicates) {
-      if (predicate(node)) {
-        return true;
-      }
-    }
-    return false;
-  };
-}
-function makePrerender() {
-  return {
-    $createDOM: [],
-    $decorateDOM: [],
-    $exportDOM: [],
-    $extractWithChild: [],
-    $getDOMSlot: [],
-    $getSlotTargetElement: [],
-    $shouldExclude: [],
-    $shouldInclude: [],
-    $updateDOM: []
-  };
-}
-function ignoreNext2(acc) {
-  return (node, _$next, editor) => acc(node, editor);
-}
-function ignoreNext3(acc) {
-  return (node, a2, _$next, editor) => acc(node, a2, editor);
-}
-function ignoreNext4(acc) {
-  return (node, a2, b2, _$next, editor) => acc(node, a2, b2, editor);
-}
-function ignoreNext5(acc) {
-  return (node, a2, b2, c2, _$next, editor) => acc(node, a2, b2, c2, editor);
-}
-function merge2($acc, $getOverride) {
-  return (node, editor) => {
-    const $next = () => $acc(node, editor);
-    const $override = $getOverride(node);
-    return $override ? $override(node, $next, editor) : $next();
-  };
-}
-function merge3(acc, $getOverride) {
-  return (node, a2, editor) => {
-    const $next = () => acc(node, a2, editor);
-    const $override = $getOverride(node);
-    return $override ? $override(node, a2, $next, editor) : $next();
-  };
-}
-var merge3GetDOMSlot = merge3;
-var ignoreNext3GetDOMSlot = ignoreNext3;
-function merge4($acc, $getOverride) {
-  return (node, a2, b2, editor) => {
-    const $next = () => $acc(node, a2, b2, editor);
-    const $override = $getOverride(node);
-    return $override ? $override(node, a2, b2, $next, editor) : $next();
-  };
-}
-function merge5(acc, $getOverride) {
-  return (node, a2, b2, c2, editor) => {
-    const $next = () => acc(node, a2, b2, c2, editor);
-    const $override = $getOverride(node);
-    return $override ? $override(node, a2, b2, c2, $next, editor) : $next();
-  };
-}
-function sequence4($acc, $getOverride) {
-  return (node, a2, b2, editor) => {
-    $acc(node, a2, b2, editor);
-    const $override = $getOverride(node);
-    if ($override) {
-      $override(node, a2, b2, editor);
-    }
-  };
-}
-function compilePrerenderKey(prerender, k, defaults, mergeFunction, ignoreNextFunction) {
-  let acc = defaults[k];
-  for (const pair of prerender[k]) {
-    if (typeof pair[0] === "function") {
-      const [$predicate, $override] = pair;
-      acc = mergeFunction(acc, (node) => $predicate(node) && $override || void 0);
-    } else {
-      const typeOverrides = pair[1];
-      const compiled = {};
-      for (const type in typeOverrides) {
-        const arr = typeOverrides[type];
-        if (arr) {
-          compiled[type] = arr.reduce(($acc, $override) => mergeFunction($acc, () => $override), acc);
-        }
-      }
-      acc = mergeFunction(acc, (node) => {
-        const f2 = compiled[node.getType()];
-        return f2 && ignoreNextFunction(f2);
-      });
-    }
-  }
-  defaults[k] = acc;
-}
-function addOverride(prerender, k, predicateOrTypes, override) {
-  if (!override) {
-    return;
-  }
-  const arr = prerender[k];
-  if (typeof predicateOrTypes === "function") {
-    arr.push([predicateOrTypes, override]);
-  } else {
-    const last = arr[arr.length - 1];
-    let types;
-    if (last && last[0] === "types") {
-      types = last[1];
-    } else {
-      types = {};
-      arr.push(["types", types]);
-    }
-    for (const type in predicateOrTypes) {
-      const typeArr = types[type] || [];
-      types[type] = typeArr;
-      typeArr.push(override);
-    }
-  }
-}
-function isWildcard(override) {
-  return override.nodes === "*";
-}
-function sortedOverrides(overrides) {
-  const byWildcard = [];
-  const byPredicate = [];
-  const byNode = [];
-  for (const override of overrides) {
-    if (isWildcard(override)) {
-      byWildcard.push(override);
-    } else if (Array.isArray(override.nodes)) {
-      for (const klassOrPredicate of override.nodes) {
-        if ($isLexicalNode2(klassOrPredicate.prototype)) {
-          byNode.push(override.nodes.length === 1 ? override : {
-            ...override,
-            nodes: [klassOrPredicate]
-          });
-        } else {
-          byPredicate.push(override.nodes.length === 1 ? override : {
-            ...override,
-            nodes: [klassOrPredicate]
-          });
-        }
-      }
-    }
-  }
-  const depths = /* @__PURE__ */ new Map();
-  const depthOf = (klass) => {
-    let depth = depths.get(klass);
-    if (depth === void 0) {
-      depth = -1;
-      for (const _2 of iterStaticNodeConfigChain2(klass)) {
-        depth++;
-      }
-      depths.set(klass, depth);
-    }
-    return depth;
-  };
-  byNode.sort((a2, b2) => depthOf(a2.nodes[0]) - depthOf(b2.nodes[0]));
-  return [...byNode, ...byPredicate, ...byWildcard];
-}
-function precompileDOMRenderConfigOverrides(editorConfig, overrides) {
-  const subtypeMap = getRegisteredSubtypeMap2(getKnownTypesAndNodes2(editorConfig).nodes);
-  const prerender = makePrerender();
-  for (const override of sortedOverrides(overrides)) {
-    const predicateOrTypes = getPredicate(subtypeMap, override);
-    for (const k_ in prerender) {
-      const k = k_;
-      addOverride(prerender, k, predicateOrTypes, override[k]);
-    }
-  }
-  return prerender;
-}
-function identity(v2) {
-  return v2;
-}
-function compileDOMRenderConfigOverrides(editorConfig, {
-  overrides
-}) {
-  const prerender = precompileDOMRenderConfigOverrides(editorConfig, overrides);
-  const dom = {
-    ...DEFAULT_EDITOR_DOM_CONFIG2,
-    ...editorConfig.dom
-  };
-  compilePrerenderKey(prerender, "$createDOM", dom, merge2, ignoreNext2);
-  compilePrerenderKey(prerender, "$exportDOM", dom, merge2, ignoreNext2);
-  compilePrerenderKey(prerender, "$extractWithChild", dom, merge5, ignoreNext5);
-  compilePrerenderKey(prerender, "$getDOMSlot", dom, merge3GetDOMSlot, ignoreNext3GetDOMSlot);
-  compilePrerenderKey(prerender, "$shouldExclude", dom, merge3, ignoreNext3);
-  compilePrerenderKey(prerender, "$shouldInclude", dom, merge3, ignoreNext3);
-  compilePrerenderKey(prerender, "$getSlotTargetElement", dom, merge4, ignoreNext4);
-  compilePrerenderKey(prerender, "$updateDOM", dom, merge4, ignoreNext4);
-  compilePrerenderKey(prerender, "$decorateDOM", dom, sequence4, identity);
-  return dom;
-}
-function makeReader(record) {
-  return {
-    get(cfg) {
-      return getContextValue(record, cfg);
-    }
-  };
-}
-function createEditorContextRecord(contextDefaults) {
-  const parent = /* @__PURE__ */ Object.create(null);
-  return contextFromPairs(contextDefaults, parent) || parent;
-}
-function filterEditorInstalled(overrides, record) {
-  const reader = makeReader(record);
-  return overrides.filter((o2) => !(o2.disabledForEditor && o2.disabledForEditor(reader)));
-}
-function sameOverrides(a2, b2) {
-  if (a2.length !== b2.length) {
-    return false;
-  }
-  for (let i2 = 0; i2 < a2.length; i2++) {
-    if (a2[i2] !== b2[i2]) {
-      return false;
-    }
-  }
-  return true;
-}
-function symmetricDiff(prev, next) {
-  const prevSet = new Set(prev);
-  const nextSet = new Set(next);
-  const changed = [];
-  for (const o2 of prev) {
-    if (!nextSet.has(o2)) {
-      changed.push(o2);
-    }
-  }
-  for (const o2 of next) {
-    if (!prevSet.has(o2)) {
-      changed.push(o2);
-    }
-  }
-  return changed;
-}
-function nodeMatcher(o2) {
-  if (o2.nodes === "*") {
-    return () => true;
-  }
-  const matchers = o2.nodes.map((match) => {
-    const klass = match;
-    return $isLexicalNode2(klass.prototype) ? (node) => node instanceof klass : match;
-  });
-  return (node) => matchers.some((f2) => f2(node));
-}
-function recreatePredicate(changed) {
-  const matchers = [];
-  for (const o2 of changed) {
-    if (o2.$createDOM || o2.$getDOMSlot || o2.$decorateDOM) {
-      matchers.push(nodeMatcher(o2));
-    }
-  }
-  return matchers.length === 0 ? null : (node) => matchers.some((f2) => f2(node));
-}
-var DOMRenderRuntimeImpl = class {
-  editor;
-  /**
-   * The `nodes` and base `dom` captured at `init` (before `dom` was
-   * overwritten with the compiled config) — the clean base for every recompile.
-   */
-  initialEditorConfig;
-  overrides;
-  editorContext;
-  hasSessionGates;
-  installed;
-  /** Memoized session configs keyed by the set of session-disabled overrides. */
-  sessionCache = /* @__PURE__ */ new Map();
-  constructor(editor, initialEditorConfig, overrides, editorContext) {
-    this.editor = editor;
-    this.initialEditorConfig = initialEditorConfig;
-    this.overrides = overrides;
-    this.editorContext = editorContext;
-    this.installed = filterEditorInstalled(overrides, editorContext);
-    this.hasSessionGates = overrides.some((o2) => o2.disabledForSession);
-  }
-  setContextValue(cfg, value) {
-    const prev = this.installed;
-    this.editorContext[cfg.key] = value;
-    const next = filterEditorInstalled(this.overrides, this.editorContext);
-    if (sameOverrides(prev, next)) {
-      return;
-    }
-    const changed = symmetricDiff(prev, next);
-    this.installed = next;
-    this.sessionCache.clear();
-    const dom = compileDOMRenderConfigOverrides(this.initialEditorConfig, {
-      overrides: next
-    });
-    this.editor._config.dom = dom;
-    const recreate = recreatePredicate(changed);
-    if (!recreate) {
-      return;
-    }
-    const base = dom.$updateDOM;
-    dom.$updateDOM = (nextNode, prevNode, el, editor) => recreate(nextNode) ? true : base(nextNode, prevNode, el, editor);
-    this.editor.update($fullReconcile2, {
-      discrete: true
-    });
-    dom.$updateDOM = base;
-  }
-  getSessionConfig() {
-    const resident = this.editor._config.dom || DEFAULT_EDITOR_DOM_CONFIG2;
-    if (!this.hasSessionGates) {
-      return resident;
-    }
-    const reader = makeReader(getContextRecord(DOMRenderContextSymbol, this.editor) || this.editorContext);
-    const disabledKeys = [];
-    const sessionSet = [];
-    this.installed.forEach((o2, i2) => {
-      if (o2.disabledForSession && o2.disabledForSession(reader)) {
-        disabledKeys.push(String(i2));
-      } else {
-        sessionSet.push(o2);
-      }
-    });
-    if (disabledKeys.length === 0) {
-      return resident;
-    }
-    const key = disabledKeys.join(",");
-    let cfg = this.sessionCache.get(key);
-    if (!cfg) {
-      cfg = compileDOMRenderConfigOverrides(this.initialEditorConfig, {
-        overrides: sessionSet
-      });
-      this.sessionCache.set(key, cfg);
-    }
-    return cfg;
-  }
-};
-var DOMRenderExtension = {
-  build(editor, config, state) {
-    const {
-      initialEditorConfig
-    } = state.getInitResult();
-    const editorContext = createEditorContextRecord(config.contextDefaults);
-    const runtime = new DOMRenderRuntimeImpl(editor, initialEditorConfig, config.overrides, editorContext);
-    return {
-      defaults: editorContext,
-      runtime
-    };
-  },
-  config: {
-    contextDefaults: [],
-    overrides: []
-  },
-  html: {
-    // Define a RootNode export for $generateDOMFromRoot
-    export: /* @__PURE__ */ new Map([[RootNode2, () => {
-      const element = $getDocument2().createElement("div");
-      element.role = "textbox";
-      return {
-        element
-      };
-    }]])
-  },
-  init(editorConfig, config) {
-    const initialEditorConfig = {
-      dom: editorConfig.dom,
-      nodes: editorConfig.nodes
-    };
-    const editorContext = createEditorContextRecord(config.contextDefaults);
-    const installed = filterEditorInstalled(config.overrides, editorContext);
-    editorConfig.dom = compileDOMRenderConfigOverrides(editorConfig, {
-      overrides: installed
-    });
-    return {
-      initialEditorConfig
-    };
-  },
-  mergeConfig(config, partial) {
-    const merged = shallowMergeConfig2(config, partial);
-    for (const k of ["overrides", "contextDefaults"]) {
-      if (partial[k]) {
-        merged[k] = [...config[k], ...partial[k]];
-      }
-    }
-    return merged;
-  },
-  name: DOMRenderExtensionName
-};
 var IMPL = /* @__PURE__ */ Symbol.for("@lexical/html/SelectorImpl");
 function getSelectorImpl(sel3) {
   const impl = sel3[IMPL];
@@ -47362,10 +48422,6 @@ function defineImportRule(rule) {
   return rule;
 }
 var HorizontalRuleImportRules = [HorizontalRuleRule];
-var HorizontalRuleImportExtension = {
-  dependencies: [HorizontalRuleExtension2, CoreImportExtension],
-  name: "@lexical/html/HorizontalRuleImport"
-};
 var sel = {
   /** Match any {@link HTMLElement}. */
   any: selAny,
@@ -47384,6 +48440,429 @@ var sel = {
   tag: selTag,
   /** Match DOM {@link Text} nodes. */
   text: selText
+};
+// @__NO_SIDE_EFFECTS__
+function domOverride(nodes, config, options) {
+  return {
+    ...config,
+    ...options,
+    nodes
+  };
+}
+function buildNodePredicate(klass) {
+  return (node) => node instanceof klass;
+}
+function getPredicate(subtypeMap, {
+  nodes
+}) {
+  if (nodes === "*") {
+    return ALWAYS_TRUE;
+  }
+  let types = {};
+  const predicates = [];
+  for (const klassOrPredicate of nodes) {
+    if ("getType" in klassOrPredicate) {
+      const type = klassOrPredicate.getType();
+      if (types) {
+        const subtypes = subtypeMap.get(type);
+        if (!(subtypes !== void 0)) {
+          formatDevErrorMessage9(`Node class ${klassOrPredicate.name} with type ${type} not registered in editor`);
+        }
+        for (const subtype of subtypes) {
+          types[subtype] = true;
+        }
+      }
+      predicates.push(buildNodePredicate(klassOrPredicate));
+    } else {
+      types = void 0;
+      predicates.push(klassOrPredicate);
+    }
+  }
+  if (types) {
+    return types;
+  } else if (predicates.length === 1) {
+    return predicates[0];
+  }
+  return (node) => {
+    for (const predicate of predicates) {
+      if (predicate(node)) {
+        return true;
+      }
+    }
+    return false;
+  };
+}
+function makePrerender() {
+  return {
+    $createDOM: [],
+    $decorateDOM: [],
+    $exportDOM: [],
+    $extractWithChild: [],
+    $getDOMSlot: [],
+    $getSlotTargetElement: [],
+    $shouldExclude: [],
+    $shouldInclude: [],
+    $updateDOM: []
+  };
+}
+function ignoreNext2(acc) {
+  return (node, _$next, editor) => acc(node, editor);
+}
+function ignoreNext3(acc) {
+  return (node, a2, _$next, editor) => acc(node, a2, editor);
+}
+function ignoreNext4(acc) {
+  return (node, a2, b2, _$next, editor) => acc(node, a2, b2, editor);
+}
+function ignoreNext5(acc) {
+  return (node, a2, b2, c2, _$next, editor) => acc(node, a2, b2, c2, editor);
+}
+function merge2($acc, $getOverride) {
+  return (node, editor) => {
+    const $next = () => $acc(node, editor);
+    const $override = $getOverride(node);
+    return $override ? $override(node, $next, editor) : $next();
+  };
+}
+function merge3(acc, $getOverride) {
+  return (node, a2, editor) => {
+    const $next = () => acc(node, a2, editor);
+    const $override = $getOverride(node);
+    return $override ? $override(node, a2, $next, editor) : $next();
+  };
+}
+var merge3GetDOMSlot = merge3;
+var ignoreNext3GetDOMSlot = ignoreNext3;
+function merge4($acc, $getOverride) {
+  return (node, a2, b2, editor) => {
+    const $next = () => $acc(node, a2, b2, editor);
+    const $override = $getOverride(node);
+    return $override ? $override(node, a2, b2, $next, editor) : $next();
+  };
+}
+function merge5(acc, $getOverride) {
+  return (node, a2, b2, c2, editor) => {
+    const $next = () => acc(node, a2, b2, c2, editor);
+    const $override = $getOverride(node);
+    return $override ? $override(node, a2, b2, c2, $next, editor) : $next();
+  };
+}
+function sequence4($acc, $getOverride) {
+  return (node, a2, b2, editor) => {
+    $acc(node, a2, b2, editor);
+    const $override = $getOverride(node);
+    if ($override) {
+      $override(node, a2, b2, editor);
+    }
+  };
+}
+function compilePrerenderKey(prerender, k, defaults, mergeFunction, ignoreNextFunction) {
+  let acc = defaults[k];
+  for (const pair of prerender[k]) {
+    if (typeof pair[0] === "function") {
+      const [$predicate, $override] = pair;
+      acc = mergeFunction(acc, (node) => $predicate(node) && $override || void 0);
+    } else {
+      const typeOverrides = pair[1];
+      const compiled = {};
+      for (const type in typeOverrides) {
+        const arr = typeOverrides[type];
+        if (arr) {
+          compiled[type] = arr.reduce(($acc, $override) => mergeFunction($acc, () => $override), acc);
+        }
+      }
+      acc = mergeFunction(acc, (node) => {
+        const f2 = compiled[node.getType()];
+        return f2 && ignoreNextFunction(f2);
+      });
+    }
+  }
+  defaults[k] = acc;
+}
+function addOverride(prerender, k, predicateOrTypes, override) {
+  if (!override) {
+    return;
+  }
+  const arr = prerender[k];
+  if (typeof predicateOrTypes === "function") {
+    arr.push([predicateOrTypes, override]);
+  } else {
+    const last = arr[arr.length - 1];
+    let types;
+    if (last && last[0] === "types") {
+      types = last[1];
+    } else {
+      types = {};
+      arr.push(["types", types]);
+    }
+    for (const type in predicateOrTypes) {
+      const typeArr = types[type] || [];
+      types[type] = typeArr;
+      typeArr.push(override);
+    }
+  }
+}
+function isWildcard(override) {
+  return override.nodes === "*";
+}
+function sortedOverrides(overrides) {
+  const byWildcard = [];
+  const byPredicate = [];
+  const byNode = [];
+  for (const override of overrides) {
+    if (isWildcard(override)) {
+      byWildcard.push(override);
+    } else if (Array.isArray(override.nodes)) {
+      for (const klassOrPredicate of override.nodes) {
+        if ($isLexicalNode2(klassOrPredicate.prototype)) {
+          byNode.push(override.nodes.length === 1 ? override : {
+            ...override,
+            nodes: [klassOrPredicate]
+          });
+        } else {
+          byPredicate.push(override.nodes.length === 1 ? override : {
+            ...override,
+            nodes: [klassOrPredicate]
+          });
+        }
+      }
+    }
+  }
+  const depths = /* @__PURE__ */ new Map();
+  const depthOf = (klass) => {
+    let depth = depths.get(klass);
+    if (depth === void 0) {
+      depth = -1;
+      for (const _2 of iterStaticNodeConfigChain2(klass)) {
+        depth++;
+      }
+      depths.set(klass, depth);
+    }
+    return depth;
+  };
+  byNode.sort((a2, b2) => depthOf(a2.nodes[0]) - depthOf(b2.nodes[0]));
+  return [...byNode, ...byPredicate, ...byWildcard];
+}
+function precompileDOMRenderConfigOverrides(editorConfig, overrides) {
+  const subtypeMap = getRegisteredSubtypeMap2(getKnownTypesAndNodes2(editorConfig).nodes);
+  const prerender = makePrerender();
+  for (const override of sortedOverrides(overrides)) {
+    const predicateOrTypes = getPredicate(subtypeMap, override);
+    for (const k_ in prerender) {
+      const k = k_;
+      addOverride(prerender, k, predicateOrTypes, override[k]);
+    }
+  }
+  return prerender;
+}
+function identity(v2) {
+  return v2;
+}
+function compileDOMRenderConfigOverrides(editorConfig, {
+  overrides
+}) {
+  const prerender = precompileDOMRenderConfigOverrides(editorConfig, overrides);
+  const dom = {
+    ...DEFAULT_EDITOR_DOM_CONFIG2,
+    ...editorConfig.dom
+  };
+  compilePrerenderKey(prerender, "$createDOM", dom, merge2, ignoreNext2);
+  compilePrerenderKey(prerender, "$exportDOM", dom, merge2, ignoreNext2);
+  compilePrerenderKey(prerender, "$extractWithChild", dom, merge5, ignoreNext5);
+  compilePrerenderKey(prerender, "$getDOMSlot", dom, merge3GetDOMSlot, ignoreNext3GetDOMSlot);
+  compilePrerenderKey(prerender, "$shouldExclude", dom, merge3, ignoreNext3);
+  compilePrerenderKey(prerender, "$shouldInclude", dom, merge3, ignoreNext3);
+  compilePrerenderKey(prerender, "$getSlotTargetElement", dom, merge4, ignoreNext4);
+  compilePrerenderKey(prerender, "$updateDOM", dom, merge4, ignoreNext4);
+  compilePrerenderKey(prerender, "$decorateDOM", dom, sequence4, identity);
+  return dom;
+}
+function makeReader(record) {
+  return {
+    get(cfg) {
+      return getContextValue(record, cfg);
+    }
+  };
+}
+function createEditorContextRecord(contextDefaults) {
+  const parent = /* @__PURE__ */ Object.create(null);
+  return contextFromPairs(contextDefaults, parent) || parent;
+}
+function filterEditorInstalled(overrides, record) {
+  const reader = makeReader(record);
+  return overrides.filter((o2) => !(o2.disabledForEditor && o2.disabledForEditor(reader)));
+}
+function sameOverrides(a2, b2) {
+  if (a2.length !== b2.length) {
+    return false;
+  }
+  for (let i2 = 0; i2 < a2.length; i2++) {
+    if (a2[i2] !== b2[i2]) {
+      return false;
+    }
+  }
+  return true;
+}
+function symmetricDiff(prev, next) {
+  const prevSet = new Set(prev);
+  const nextSet = new Set(next);
+  const changed = [];
+  for (const o2 of prev) {
+    if (!nextSet.has(o2)) {
+      changed.push(o2);
+    }
+  }
+  for (const o2 of next) {
+    if (!prevSet.has(o2)) {
+      changed.push(o2);
+    }
+  }
+  return changed;
+}
+function nodeMatcher(o2) {
+  if (o2.nodes === "*") {
+    return () => true;
+  }
+  const matchers = o2.nodes.map((match) => {
+    const klass = match;
+    return $isLexicalNode2(klass.prototype) ? (node) => node instanceof klass : match;
+  });
+  return (node) => matchers.some((f2) => f2(node));
+}
+function recreatePredicate(changed) {
+  const matchers = [];
+  for (const o2 of changed) {
+    if (o2.$createDOM || o2.$getDOMSlot || o2.$decorateDOM) {
+      matchers.push(nodeMatcher(o2));
+    }
+  }
+  return matchers.length === 0 ? null : (node) => matchers.some((f2) => f2(node));
+}
+var DOMRenderRuntimeImpl = class {
+  editor;
+  /**
+   * The `nodes` and base `dom` captured at `init` (before `dom` was
+   * overwritten with the compiled config) — the clean base for every recompile.
+   */
+  initialEditorConfig;
+  overrides;
+  editorContext;
+  hasSessionGates;
+  installed;
+  /** Memoized session configs keyed by the set of session-disabled overrides. */
+  sessionCache = /* @__PURE__ */ (() => /* @__PURE__ */ new Map())();
+  constructor(editor, initialEditorConfig, overrides, editorContext) {
+    this.editor = editor;
+    this.initialEditorConfig = initialEditorConfig;
+    this.overrides = overrides;
+    this.editorContext = editorContext;
+    this.installed = filterEditorInstalled(overrides, editorContext);
+    this.hasSessionGates = overrides.some((o2) => o2.disabledForSession);
+  }
+  setContextValue(cfg, value) {
+    const prev = this.installed;
+    this.editorContext[cfg.key] = value;
+    const next = filterEditorInstalled(this.overrides, this.editorContext);
+    if (sameOverrides(prev, next)) {
+      return;
+    }
+    const changed = symmetricDiff(prev, next);
+    this.installed = next;
+    this.sessionCache.clear();
+    const dom = compileDOMRenderConfigOverrides(this.initialEditorConfig, {
+      overrides: next
+    });
+    this.editor._config.dom = dom;
+    const recreate = recreatePredicate(changed);
+    if (!recreate) {
+      return;
+    }
+    const base = dom.$updateDOM;
+    dom.$updateDOM = (nextNode, prevNode, el, editor) => recreate(nextNode) ? true : base(nextNode, prevNode, el, editor);
+    this.editor.update($fullReconcile2, {
+      discrete: true
+    });
+    dom.$updateDOM = base;
+  }
+  getSessionConfig() {
+    const resident = this.editor._config.dom || DEFAULT_EDITOR_DOM_CONFIG2;
+    if (!this.hasSessionGates) {
+      return resident;
+    }
+    const reader = makeReader(getContextRecord(DOMRenderContextSymbol, this.editor) || this.editorContext);
+    const disabledKeys = [];
+    const sessionSet = [];
+    this.installed.forEach((o2, i2) => {
+      if (o2.disabledForSession && o2.disabledForSession(reader)) {
+        disabledKeys.push(String(i2));
+      } else {
+        sessionSet.push(o2);
+      }
+    });
+    if (disabledKeys.length === 0) {
+      return resident;
+    }
+    const key = disabledKeys.join(",");
+    let cfg = this.sessionCache.get(key);
+    if (!cfg) {
+      cfg = compileDOMRenderConfigOverrides(this.initialEditorConfig, {
+        overrides: sessionSet
+      });
+      this.sessionCache.set(key, cfg);
+    }
+    return cfg;
+  }
+};
+var DOMRenderExtension = {
+  build(editor, config, state) {
+    const {
+      initialEditorConfig
+    } = state.getInitResult();
+    const editorContext = createEditorContextRecord(config.contextDefaults);
+    const runtime = new DOMRenderRuntimeImpl(editor, initialEditorConfig, config.overrides, editorContext);
+    return {
+      defaults: editorContext,
+      runtime
+    };
+  },
+  config: {
+    contextDefaults: [],
+    overrides: []
+  },
+  html: {
+    // Define a RootNode export for $generateDOMFromRoot
+    export: /* @__PURE__ */ new Map([[RootNode2, () => {
+      const element = $getDocument2().createElement("div");
+      element.role = "textbox";
+      return {
+        element
+      };
+    }]])
+  },
+  init(editorConfig, config) {
+    const initialEditorConfig = {
+      dom: editorConfig.dom,
+      nodes: editorConfig.nodes
+    };
+    const editorContext = createEditorContextRecord(config.contextDefaults);
+    const installed = filterEditorInstalled(config.overrides, editorContext);
+    editorConfig.dom = compileDOMRenderConfigOverrides(editorConfig, {
+      overrides: installed
+    });
+    return {
+      initialEditorConfig
+    };
+  },
+  mergeConfig(config, partial) {
+    const merged = shallowMergeConfig2(config, partial);
+    for (const k of ["overrides", "contextDefaults"]) {
+      if (partial[k]) {
+        merged[k] = [...config[k], ...partial[k]];
+      }
+    }
+    return merged;
+  },
+  name: DOMRenderExtensionName
 };
 var IGNORE_TAGS = /* @__PURE__ */ new Set(["STYLE", "SCRIPT"]);
 function $generateNodesFromDOM(editor, dom) {
@@ -47644,7 +49123,7 @@ function isDomNodeBetweenTwoInlineNodes(node) {
   return isInlineDomNode2(node.nextSibling) && isInlineDomNode2(node.previousSibling);
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/html/dist/LexicalHtml.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/html/dist/LexicalHtml.js
 var mod23 = true ? LexicalHtml_dev_exports : LexicalHtml_prod_exports;
 var $appendNodeToHTML2 = mod23.$appendNodeToHTML;
 var $distributeInlineWrapper2 = mod23.$distributeInlineWrapper;
@@ -47668,7 +49147,6 @@ var CoreImportExtension2 = mod23.CoreImportExtension;
 var CoreImportRules2 = mod23.CoreImportRules;
 var DOMImportExtension2 = mod23.DOMImportExtension;
 var DOMRenderExtension2 = mod23.DOMRenderExtension;
-var HorizontalRuleImportExtension2 = mod23.HorizontalRuleImportExtension;
 var HorizontalRuleImportRules2 = mod23.HorizontalRuleImportRules;
 var ImportOverlays2 = mod23.ImportOverlays;
 var ImportSource2 = mod23.ImportSource;
@@ -47694,7 +49172,7 @@ var isElementOfTag2 = mod23.isElementOfTag;
 var parseSelector2 = mod23.parseSelector;
 var sel2 = mod23.sel;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/clipboard/dist/LexicalClipboard.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/clipboard/dist/LexicalClipboard.dev.js
 function isWithinComposedTree(node, rootElement) {
   for (let current = node; current !== null; ) {
     if (current === rootElement) {
@@ -47874,8 +49352,8 @@ function $callImportMimeTypeFunctionStack(fns, data, selection, dataTransfer) {
   if (!fns) {
     return false;
   }
-  const callAt = (i2) => fns[i2] ? fns[i2](data, selection, callAt.bind(null, i2 - 1), dataTransfer) : false;
-  return callAt(fns.length - 1);
+  const callAt = (i2, currentData, currentSelection) => fns[i2] ? fns[i2](currentData, currentSelection, (nextData = currentData, nextSelection = currentSelection) => callAt(i2 - 1, nextData, nextSelection), dataTransfer) : false;
+  return callAt(fns.length - 1, data, selection);
 }
 function orderedMimeTypes(config) {
   const mimes = Object.keys(config.$importMimeType).filter((k) => config.$importMimeType[k] !== void 0);
@@ -48021,7 +49499,7 @@ function readDragMarker(dataTransfer) {
   let parsed;
   try {
     parsed = JSON.parse(raw);
-  } catch (_unused) {
+  } catch {
     return null;
   }
   return isLexicalDragMarker(parsed) ? parsed : null;
@@ -48047,21 +49525,49 @@ function $resolveDropPointCaret(event, editor) {
   if ($isTextNode2(node)) {
     return $getTextPointCaret2(node, "next", hit.offset);
   }
-  if ($isElementNode2(node)) {
-    return $getChildCaretAtIndex2(node, hit.offset, "next");
-  }
   const parent = node.getParent();
-  if (parent === null) {
-    return null;
+  if ($isElementNode2(node)) {
+    const dom = editor.getElementByKey(node.getKey());
+    if (dom === null) {
+      return null;
+    }
+    const slot = $getDOMSlot2(node, dom, editor);
+    return hit.node === slot.element || parent ? $getChildCaretAtIndex2(...slot.resolveChildIndex(node, dom, hit.node, hit.offset), "next") : null;
   }
-  return $getChildCaretAtIndex2(parent, node.getIndexWithinParent() + 1, "next");
+  return parent && $getChildCaretAtIndex2(parent, node.getIndexWithinParent() + 1, "next");
+}
+function $normalizeDropBoundary(point) {
+  let caret = point;
+  if ($isTextPointCaret2(caret)) {
+    if (caret.offset === 0) {
+      caret = $rewindSiblingCaret2(caret.getSiblingCaret());
+    } else if (caret.offset === caret.origin.getTextContentSize()) {
+      caret = caret.getSiblingCaret();
+    } else {
+      return caret;
+    }
+  }
+  for (; ; ) {
+    const parent = caret.getParentAtCaret();
+    if (parent === null || !parent.isInline() || parent.isShadowRoot()) {
+      return caret;
+    }
+    if ($isChildCaret2(caret)) {
+      caret = $rewindSiblingCaret2($getSiblingCaret2(parent, "next"));
+    } else if (caret.getNodeAtCaret() === null) {
+      caret = $getSiblingCaret2(parent, "next");
+    } else {
+      return caret;
+    }
+  }
 }
 function $isDropCaretInsideSelection(dropCaret, selection) {
   const {
     anchor: start,
     focus: end
   } = $getCaretRangeInDirection2($caretRangeFromSelection2(selection), "next");
-  return $comparePointCaretNext2(start, dropCaret) < 0 && $comparePointCaretNext2(dropCaret, end) < 0;
+  const drop = $normalizeDropBoundary(dropCaret);
+  return $comparePointCaretNext2($normalizeDropBoundary(start), drop) <= 0 && $comparePointCaretNext2(drop, $normalizeDropBoundary(end)) <= 0;
 }
 function $doDrop(event, editor, $insertDataTransfer) {
   const dataTransfer = event.dataTransfer;
@@ -48076,10 +49582,6 @@ function $doDrop(event, editor, $insertDataTransfer) {
   if (dropCaret === null) {
     return false;
   }
-  const stableDropCaret = $splitAtPointCaretNext2(dropCaret);
-  if (stableDropCaret === null) {
-    return false;
-  }
   const isSameEditorDrag = marker.editorKey === editor.getKey();
   const currentSelection = $getSelection2();
   if (isSameEditorDrag) {
@@ -48090,13 +49592,21 @@ function $doDrop(event, editor, $insertDataTransfer) {
       event.preventDefault();
       return true;
     }
+  }
+  const normalizedDropCaret = $normalizeCaret2(dropCaret);
+  const stableDropCaret = $isTextPointCaret2(normalizedDropCaret) ? $splitAtPointCaretNext2(normalizedDropCaret) : normalizedDropCaret;
+  if (stableDropCaret === null) {
+    return false;
+  }
+  const oppositeDropCaret = stableDropCaret.getFlipped();
+  if (isSameEditorDrag && $isRangeSelection2(currentSelection)) {
     currentSelection.removeText();
   }
-  if (!stableDropCaret.origin.isAttached()) {
-    event.preventDefault();
-    return true;
+  const insertCaret = stableDropCaret.origin.isAttached() ? stableDropCaret : oppositeDropCaret;
+  if (!insertCaret.origin.isAttached()) {
+    formatDevErrorMessage10(`$doDrop: drop position was removed by source deletion`);
   }
-  const dropSelection = $setSelectionFromCaretRange2($getCollapsedCaretRange2(stableDropCaret));
+  const dropSelection = $setSelectionFromCaretRange2($getCollapsedCaretRange2(insertCaret));
   $insertDataTransfer(dataTransfer, dropSelection, editor);
   if (!isSameEditorDrag) {
     const rootElement = editor.getRootElement();
@@ -48380,7 +49890,7 @@ var GetClipboardDataExtension = {
   name: "@lexical/clipboard/GetClipboardData"
 };
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/clipboard/dist/LexicalClipboard.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/clipboard/dist/LexicalClipboard.js
 var mod24 = true ? LexicalClipboard_dev_exports : LexicalClipboard_prod_exports;
 var $exportMimeTypeFromSelection2 = mod24.$exportMimeTypeFromSelection;
 var $generateJSONFromSelectedNodes2 = mod24.$generateJSONFromSelectedNodes;
@@ -48403,7 +49913,7 @@ var caretFromPoint2 = mod24.caretFromPoint;
 var copyToClipboard2 = mod24.copyToClipboard;
 var setLexicalClipboardDataTransfer2 = mod24.setLexicalClipboardDataTransfer;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionNormalizeInlineElementsExtension.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionNormalizeInlineElementsExtension.dev.js
 var LexicalExtensionNormalizeInlineElementsExtension_dev_exports = {};
 __export(LexicalExtensionNormalizeInlineElementsExtension_dev_exports, {
   NormalizeInlineElementsExtension: () => NormalizeInlineElementsExtension
@@ -48442,15 +49952,16 @@ var NormalizeInlineElementsExtension = {
   }
 };
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionNormalizeInlineElementsExtension.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionNormalizeInlineElementsExtension.js
 var mod25 = true ? LexicalExtensionNormalizeInlineElementsExtension_dev_exports : LexicalExtensionNormalizeInlineElementsExtension_prod_exports;
 var NormalizeInlineElementsExtension2 = mod25.NormalizeInlineElementsExtension;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionNormalizeTripleClickSelectionExtension.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionNormalizeTripleClickSelectionExtension.dev.js
 var LexicalExtensionNormalizeTripleClickSelectionExtension_dev_exports = {};
 __export(LexicalExtensionNormalizeTripleClickSelectionExtension_dev_exports, {
   NormalizeTripleClickSelectionExtension: () => NormalizeTripleClickSelectionExtension
 });
+var MODIFIER_KEYS = /* @__PURE__ */ new Set(["Alt", "AltGraph", "CapsLock", "Control", "Fn", "Meta", "Shift"]);
 var SKIP_TAGS = /* @__PURE__ */ new Set([SKIP_SELECTION_FOCUS_TAG2, SKIP_SCROLL_INTO_VIEW_TAG2]);
 function $fixFocusOverselection() {
   const selection = $getSelection2();
@@ -48488,9 +49999,9 @@ var NormalizeTripleClickSelectionExtension = {
   build: (editor, config, state) => namedSignals2(config),
   config: {
     $fixFocusOverselection,
-    // Wrapped rather than passing `Date.now` itself: a module-scope property
-    // read is a side effect to bundlers, which would pin this extension into
-    // every bundle that imports the module.
+    // Unused (deprecated). Wrapped rather than passing `Date.now` itself: a
+    // module-scope property read is a side effect to bundlers, which would pin
+    // this extension into every bundle that imports the module.
     dateNow: () => Date.now(),
     disabled: false,
     thresholdMsec: 100
@@ -48505,33 +50016,90 @@ var NormalizeTripleClickSelectionExtension = {
       if (!rootElement) {
         return;
       }
-      let lastTripleClick = 0;
-      const refreshTripleClick = (event) => {
-        if (event ? event.detail > 2 : lastTripleClick > 0) {
-          const now = stores.dateNow.peek()();
-          lastTripleClick = event && event.type === "mousedown" || now - lastTripleClick <= stores.thresholdMsec.peek() ? now : 0;
+      let armingEvent = null;
+      let domPointsBeforeCode = null;
+      const disarm = () => {
+        armingEvent = null;
+        domPointsBeforeCode = null;
+      };
+      const readDOMPoints = () => {
+        const domSelection = getDOMSelection2(rootElement.ownerDocument.defaultView);
+        if (domSelection === null) {
+          return {
+            anchorNode: null,
+            anchorOffset: 0,
+            focusNode: null,
+            focusOffset: 0
+          };
         }
-        return lastTripleClick;
+        const {
+          anchorNode,
+          anchorOffset,
+          focusNode,
+          focusOffset
+        } = getDOMSelectionPoints2(domSelection, rootElement);
+        return {
+          anchorNode,
+          anchorOffset,
+          focusNode,
+          focusOffset
+        };
+      };
+      const isSameDOMPoints = (a2, b2) => a2.anchorNode === b2.anchorNode && a2.anchorOffset === b2.anchorOffset && a2.focusNode === b2.focusNode && a2.focusOffset === b2.focusOffset;
+      const $isDOMSelection = () => {
+        const selection = $getSelection2();
+        const fromDOM = $createRangeSelectionFromDom2(getDOMSelection2(rootElement.ownerDocument.defaultView), editor);
+        return $isRangeSelection2(selection) && fromDOM !== null && // Points only: the browser's selection carries the format and
+        // style of the selected text, the one rebuilt from the DOM doesn't
+        selection.anchor.is(fromDOM.anchor) && selection.focus.is(fromDOM.focus);
       };
       return mergeRegister2(editor.registerCommand(SELECTION_CHANGE_COMMAND2, () => {
-        if (refreshTripleClick(null)) {
-          lastTripleClick = 0;
+        if (armingEvent === null) {
+          return false;
+        }
+        if (armingEvent.defaultPrevented) {
+          disarm();
+        } else if ($isDOMSelection()) {
+          disarm();
           stores.$fixFocusOverselection.peek()();
+        } else if (domPointsBeforeCode === null) {
+          domPointsBeforeCode = readDOMPoints();
         }
         return false;
-      }, COMMAND_PRIORITY_BEFORE_CRITICAL2), registerEventListeners2(rootElement, {
-        mousedown: refreshTripleClick,
-        mouseup: refreshTripleClick
+      }, COMMAND_PRIORITY_BEFORE_CRITICAL2), editor.registerUpdateListener(() => {
+        if (armingEvent === null || domPointsBeforeCode === null) {
+          return;
+        }
+        if (armingEvent.eventPhase === Event.NONE && !isSameDOMPoints(domPointsBeforeCode, readDOMPoints())) {
+          disarm();
+        } else {
+          domPointsBeforeCode = null;
+        }
+      }), registerEventListeners2(rootElement.ownerDocument, {
+        keydown: (event) => {
+          if (!MODIFIER_KEYS.has(event.key)) {
+            disarm();
+          }
+        },
+        mousedown: (event) => {
+          disarm();
+          if (event.detail > 2 && event.composedPath().includes(rootElement)) {
+            armingEvent = event;
+          }
+        },
+        // Not cancelled by preventDefault, unlike mousedown, and always
+        // dispatched before it (with detail 0)
+        pointerdown: disarm
       }, true));
     });
   })
 };
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/extension/dist/LexicalExtensionNormalizeTripleClickSelectionExtension.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/extension/dist/LexicalExtensionNormalizeTripleClickSelectionExtension.js
 var mod26 = true ? LexicalExtensionNormalizeTripleClickSelectionExtension_dev_exports : LexicalExtensionNormalizeTripleClickSelectionExtension_prod_exports;
 var NormalizeTripleClickSelectionExtension2 = mod26.NormalizeTripleClickSelectionExtension;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/plain-text/dist/LexicalPlainText.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/plain-text/dist/LexicalPlainText.dev.js
 function onCopyForPlainText(event, editor) {
   editor.update(() => {
     if (event !== null) {
@@ -48700,21 +50268,21 @@ function registerPlainText(editor) {
     return true;
   }, COMMAND_PRIORITY_EDITOR2), editor.registerCommand(COPY_COMMAND2, (event) => {
     const selection = $getSelection2();
-    if (!$isRangeSelection2(selection)) {
+    if (!$isRangeSelection2(selection) || $isEventFromEmbeddedInput2(event)) {
       return false;
     }
     onCopyForPlainText(event, editor);
     return true;
   }, COMMAND_PRIORITY_EDITOR2), editor.registerCommand(CUT_COMMAND2, (event) => {
     const selection = $getSelection2();
-    if (!$isRangeSelection2(selection)) {
+    if (!$isRangeSelection2(selection) || $isEventFromEmbeddedInput2(event)) {
       return false;
     }
     onCutForPlainText(event, editor);
     return true;
   }, COMMAND_PRIORITY_EDITOR2), editor.registerCommand(PASTE_COMMAND2, (event) => {
     const selection = $getSelection2();
-    if (!$isRangeSelection2(selection)) {
+    if (!$isRangeSelection2(selection) || $isEventFromEmbeddedInput2(event)) {
       return false;
     }
     onPasteForPlainText(event, editor);
@@ -48738,12 +50306,12 @@ var PlainTextExtension = {
   register: registerPlainText
 };
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/plain-text/dist/LexicalPlainText.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/plain-text/dist/LexicalPlainText.js
 var mod27 = true ? LexicalPlainText_dev_exports : LexicalPlainText_prod_exports;
 var PlainTextExtension2 = mod27.PlainTextExtension;
 var registerPlainText2 = mod27.registerPlainText;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/LexicalPlainTextPlugin.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/LexicalPlainTextPlugin.dev.js
 function formatDevErrorMessage11(message) {
   throw new Error(message);
 }
@@ -48860,11 +50428,11 @@ function Placeholder({
   }
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/LexicalPlainTextPlugin.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/LexicalPlainTextPlugin.js
 var mod28 = true ? LexicalPlainTextPlugin_dev_exports : LexicalPlainTextPlugin_prod_exports;
 var PlainTextPlugin2 = mod28.PlainTextPlugin;
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/LexicalContentEditable.dev.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/LexicalContentEditable.dev.js
 var LexicalContentEditable_dev_exports = {};
 __export(LexicalContentEditable_dev_exports, {
   ContentEditable: () => ContentEditable,
@@ -48901,7 +50469,7 @@ function ContentEditableElementImpl({
   autoCapitalize,
   className,
   id,
-  role = "textbox",
+  role,
   spellCheck = true,
   style,
   tabIndex,
@@ -48923,7 +50491,7 @@ function ContentEditableElementImpl({
       setEditable(currentIsEditable);
     });
   }, [editor]);
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", {
+  const elementProps = {
     "aria-activedescendant": isEditable ? ariaActiveDescendant : void 0,
     "aria-autocomplete": isEditable ? ariaAutoComplete : "none",
     "aria-controls": isEditable ? ariaControls : void 0,
@@ -48931,7 +50499,7 @@ function ContentEditableElementImpl({
     ...ariaErrorMessage != null ? {
       "aria-errormessage": ariaErrorMessage
     } : {},
-    "aria-expanded": isEditable && role === "combobox" ? !!ariaExpanded : void 0,
+    "aria-expanded": role === "combobox" ? ariaExpanded ?? false : void 0,
     ...ariaInvalid != null ? {
       "aria-invalid": ariaInvalid
     } : {},
@@ -48941,17 +50509,31 @@ function ContentEditableElementImpl({
     "aria-owns": isEditable ? ariaOwns : void 0,
     "aria-readonly": isEditable ? void 0 : true,
     "aria-required": ariaRequired,
+    ...rest
+  };
+  const hasAccessibleName = [elementProps["aria-label"], elementProps["aria-labelledby"], elementProps.title].some((value) => typeof value === "string" && value.trim() !== "");
+  const resolvedRole = role === void 0 ? isEditable || hasAccessibleName ? "textbox" : void 0 : role;
+  if (resolvedRole == null) {
+    elementProps["aria-activedescendant"] = void 0;
+    elementProps["aria-autocomplete"] = void 0;
+    elementProps["aria-expanded"] = void 0;
+    elementProps["aria-multiline"] = void 0;
+    elementProps["aria-placeholder"] = void 0;
+    elementProps["aria-readonly"] = void 0;
+    elementProps["aria-required"] = void 0;
+  }
+  return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", {
     autoCapitalize,
     className,
     contentEditable: isEditable,
     "data-testid": testid,
     id,
     ref: mergedRefs,
-    role,
+    role: resolvedRole,
     spellCheck,
     style,
     tabIndex: tabIndex ?? (isEditable ? void 0 : -1),
-    ...rest
+    ...elementProps
   });
 }
 var ContentEditableElement = /* @__PURE__ */ (0, import_react5.forwardRef)(ContentEditableElementImpl);
@@ -49023,7 +50605,7 @@ function Placeholder2({
   });
 }
 
-// ../../../../../tmp/tmp.3aB95HS7Ua/node_modules/@lexical/react/dist/LexicalContentEditable.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@lexical/react/dist/LexicalContentEditable.js
 var mod29 = true ? LexicalContentEditable_dev_exports : LexicalContentEditable_prod_exports;
 var ContentEditable2 = mod29.ContentEditable;
 var ContentEditableElement2 = mod29.ContentEditableElement;

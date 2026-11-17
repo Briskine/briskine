@@ -28,6 +28,11 @@ function hasAncestorTag (node, prefixes) {
   return false
 }
 
+// the host element of our own ui
+export function isExtensionHost (node) {
+  return matchesTagPrefix(node, [dialogTagPrefix, bubbleTagPrefix, formTagPrefix])
+}
+
 export function isExtensionElement (node) {
   return hasAncestorTag(node, [dialogTagPrefix, bubbleTagPrefix, formTagPrefix])
 }

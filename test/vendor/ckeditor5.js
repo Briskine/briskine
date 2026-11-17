@@ -1,9 +1,9 @@
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/isArray.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/isArray.mjs
 function isArray(value) {
   return Array.isArray(value);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/isPlainObject.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/isPlainObject.mjs
 function isPlainObject(object) {
   if (typeof object !== "object") return false;
   if (object == null) return false;
@@ -19,27 +19,27 @@ function isPlainObject(object) {
   return Object.getPrototypeOf(object) === proto;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/util/eq.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/util/eq.mjs
 function eq(value, other) {
   return value === other || Number.isNaN(value) && Number.isNaN(other);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/function/noop.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/function/noop.mjs
 function noop() {
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/_internal/getSymbols.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/_internal/getSymbols.mjs
 function getSymbols(object) {
   return Object.getOwnPropertySymbols(object).filter((symbol) => Object.prototype.propertyIsEnumerable.call(object, symbol));
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/_internal/getTag.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/_internal/getTag.mjs
 function getTag(value) {
   if (value == null) return value === void 0 ? "[object Undefined]" : "[object Null]";
   return Object.prototype.toString.call(value);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/_internal/tags.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/_internal/tags.mjs
 var regexpTag = "[object RegExp]";
 var stringTag = "[object String]";
 var numberTag = "[object Number]";
@@ -67,17 +67,17 @@ var bigInt64ArrayTag = "[object BigInt64Array]";
 var float32ArrayTag = "[object Float32Array]";
 var float64ArrayTag = "[object Float64Array]";
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/_internal/globalThis.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/_internal/globalThis.mjs
 var globalThis_ = typeof globalThis === "object" && globalThis || typeof window === "object" && window || typeof self === "object" && self || typeof global === "object" && global || /* @__PURE__ */ (function() {
   return this;
 })();
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/predicate/isBuffer.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/predicate/isBuffer.mjs
 function isBuffer(x) {
   return typeof globalThis_.Buffer !== "undefined" && globalThis_.Buffer.isBuffer(x);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/predicate/isPlainObject.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/predicate/isPlainObject.mjs
 function isPlainObject2(value) {
   if (!value || typeof value !== "object") return false;
   const proto = Object.getPrototypeOf(value);
@@ -85,7 +85,7 @@ function isPlainObject2(value) {
   return Object.prototype.toString.call(value) === "[object Object]";
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/predicate/isEqualWith.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/predicate/isEqualWith.mjs
 function isEqualWith(a, b, areValuesEqual) {
   return isEqualWithImpl(a, b, void 0, void 0, void 0, void 0, areValuesEqual);
 }
@@ -202,27 +202,27 @@ function areObjectsEqual(a, b, stack, areValuesEqual) {
   }
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/predicate/isEqual.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/predicate/isEqual.mjs
 function isEqual(a, b) {
   return isEqualWith(a, b, noop);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/predicate/isLength.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/predicate/isLength.mjs
 function isLength(value) {
   return Number.isSafeInteger(value) && value >= 0;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/isArrayLike.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/isArrayLike.mjs
 function isArrayLike(value) {
   return value != null && typeof value !== "function" && isLength(value.length);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/isSymbol.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/isSymbol.mjs
 function isSymbol(value) {
   return typeof value === "symbol" || value instanceof Symbol;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/util/toString.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/util/toString.mjs
 function toString(value) {
   if (value == null) return "";
   return baseToString(value);
@@ -236,14 +236,14 @@ function baseToString(value) {
   return result;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/_internal/toKey.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/_internal/toKey.mjs
 function toKey(value) {
   if (typeof value === "string" || typeof value === "symbol") return value;
   if (Object.is(value?.valueOf?.(), -0)) return "-0";
   return String(value);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/util/toPath.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/util/toPath.mjs
 function toPath(deepKey) {
   if (Array.isArray(deepKey)) return deepKey.map(toKey);
   if (typeof deepKey === "symbol") return [deepKey];
@@ -297,12 +297,12 @@ function toPath(deepKey) {
   return result;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/_internal/isUnsafeProperty.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/_internal/isUnsafeProperty.mjs
 function isUnsafeProperty(key) {
   return key === "__proto__";
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/_internal/isDeepKey.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/_internal/isDeepKey.mjs
 var regexIsDeepProp = /\.|(\[(?:[^[\]]*|(["'])(?:(?!\2)[^\\]|\\.)*?\2)\])/;
 function isDeepKey(key) {
   switch (typeof key) {
@@ -317,7 +317,7 @@ function isDeepKey(key) {
   }
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/object/get.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/object/get.mjs
 function get(object, path, defaultValue) {
   if (object == null) return defaultValue;
   switch (typeof path) {
@@ -358,24 +358,24 @@ function getWithPath(object, path, defaultValue) {
   return current;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/object/property.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/object/property.mjs
 function property(path) {
   return function(object) {
     return get(object, path);
   };
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/isObject.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/isObject.mjs
 function isObject(value) {
   return value !== null && (typeof value === "object" || typeof value === "function");
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/predicate/isPrimitive.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/predicate/isPrimitive.mjs
 function isPrimitive(value) {
   return value == null || typeof value !== "object" && typeof value !== "function";
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/isMatchWith.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/isMatchWith.mjs
 function isMatchWith(target, source, compare) {
   if (typeof compare !== "function") return isMatchWith(target, source, () => void 0);
   return isMatchWithInternal(target, source, function doesMatch(objValue, srcValue, key, object, source2, stack) {
@@ -464,17 +464,17 @@ function isSetMatch(target, source, compare, stack) {
   return isArrayMatch([...target], [...source], compare, stack);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/isMatch.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/isMatch.mjs
 function isMatch(target, source) {
   return isMatchWith(target, source, () => void 0);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/predicate/isTypedArray.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/predicate/isTypedArray.mjs
 function isTypedArray(x) {
   return ArrayBuffer.isView(x) && !(x instanceof DataView);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/object/cloneDeepWith.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/object/cloneDeepWith.mjs
 function cloneDeepWith(obj, cloneValue) {
   return cloneDeepWithImpl(obj, void 0, obj, /* @__PURE__ */ new Map(), cloneValue);
 }
@@ -610,12 +610,12 @@ function isCloneableObject(object) {
   }
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/object/cloneDeep.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/object/cloneDeep.mjs
 function cloneDeep(obj) {
   return cloneDeepWithImpl(obj, void 0, obj, /* @__PURE__ */ new Map(), void 0);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/matches.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/matches.mjs
 function matches(source) {
   source = cloneDeep(source);
   return (target) => {
@@ -623,7 +623,7 @@ function matches(source) {
   };
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/object/cloneDeepWith.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/object/cloneDeepWith.mjs
 function cloneDeepWith2(obj, customizer) {
   return cloneDeepWith(obj, (value, key, object, stack) => {
     const cloned = customizer?.(value, key, object, stack);
@@ -656,17 +656,17 @@ function cloneDeepWith2(obj, customizer) {
   });
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/object/cloneDeep.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/object/cloneDeep.mjs
 function cloneDeep2(obj) {
   return cloneDeepWith2(obj);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/isArguments.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/isArguments.mjs
 function isArguments(value) {
   return value !== null && typeof value === "object" && getTag(value) === "[object Arguments]";
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/_internal/isIndex.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/_internal/isIndex.mjs
 var IS_UNSIGNED_INTEGER = /^(?:0|[1-9]\d*)$/;
 function isIndex(value, length = Number.MAX_SAFE_INTEGER) {
   switch (typeof value) {
@@ -679,7 +679,7 @@ function isIndex(value, length = Number.MAX_SAFE_INTEGER) {
   }
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/object/has.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/object/has.mjs
 function has(object, path) {
   let resolvedPath;
   if (Array.isArray(path)) resolvedPath = path;
@@ -697,7 +697,7 @@ function has(object, path) {
   return true;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/matchesProperty.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/matchesProperty.mjs
 function matchesProperty(property2, source) {
   switch (typeof property2) {
     case "object":
@@ -716,12 +716,12 @@ function matchesProperty(property2, source) {
   };
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/function/identity.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/function/identity.mjs
 function identity(x) {
   return x;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/util/iteratee.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/util/iteratee.mjs
 function iteratee(value) {
   if (value == null) return identity;
   switch (typeof value) {
@@ -735,23 +735,23 @@ function iteratee(value) {
   }
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/isObjectLike.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/isObjectLike.mjs
 function isObjectLike(value) {
   return typeof value === "object" && value !== null;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/isArrayLikeObject.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/isArrayLikeObject.mjs
 function isArrayLikeObject(value) {
   return isObjectLike(value) && isArrayLike(value);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/util/toNumber.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/util/toNumber.mjs
 function toNumber(value) {
   if (isSymbol(value)) return NaN;
   return Number(value);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/util/toFinite.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/util/toFinite.mjs
 function toFinite(value) {
   if (!value) return value === 0 ? value : 0;
   value = toNumber(value);
@@ -759,19 +759,19 @@ function toFinite(value) {
   return value === value ? value : 0;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/util/toInteger.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/util/toInteger.mjs
 function toInteger(value) {
   const finite = toFinite(value);
   const remainder = finite % 1;
   return remainder ? finite - remainder : finite;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/isString.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/isString.mjs
 function isString(value) {
   return typeof value === "string" || value instanceof String;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/_internal/isKey.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/_internal/isKey.mjs
 var regexIsDeepProp2 = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/;
 var regexIsPlainProp = /^\w*$/;
 function isKey(value, object) {
@@ -780,12 +780,12 @@ function isKey(value, object) {
   return typeof value === "string" && (regexIsPlainProp.test(value) || !regexIsDeepProp2.test(value)) || object != null && Object.hasOwn(object, value);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/isTypedArray.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/isTypedArray.mjs
 function isTypedArray2(x) {
   return isTypedArray(x);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/util/times.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/util/times.mjs
 function times(n, getValue) {
   n = toInteger(n);
   if (n < 1 || !Number.isSafeInteger(n)) return [];
@@ -794,24 +794,24 @@ function times(n, getValue) {
   return result;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/_internal/isPrototype.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/_internal/isPrototype.mjs
 function isPrototype(value) {
   const constructor = value?.constructor;
   return value === (typeof constructor === "function" ? constructor.prototype : Object.prototype);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/_internal/assignValue.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/_internal/assignValue.mjs
 var assignValue = (object, key, value) => {
   const objValue = object[key];
   if (!(Object.hasOwn(object, key) && eq(objValue, value)) || value === void 0 && !(key in object)) object[key] = value;
 };
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/_internal/isUnsafeToWriteProperty.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/_internal/isUnsafeToWriteProperty.mjs
 function isUnsafeToWriteProperty(key) {
   return key === "__proto__" || key === "constructor" || key === "prototype";
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/object/updateWith.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/object/updateWith.mjs
 function updateWith(obj, path, updater, customizer) {
   if (obj == null && !isObject(obj)) return obj;
   let resolvedPath;
@@ -836,12 +836,12 @@ function updateWith(obj, path, updater, customizer) {
   return obj;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/object/set.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/object/set.mjs
 function set(obj, path, value) {
   return updateWith(obj, path, () => value, () => void 0);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/function/debounce.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/function/debounce.mjs
 function debounce(func, debounceMs, { signal, edges } = {}) {
   let pendingThis = void 0;
   let pendingArgs = null;
@@ -895,7 +895,7 @@ function debounce(func, debounceMs, { signal, edges } = {}) {
   return debounced;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/function/debounce.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/function/debounce.mjs
 function debounce2(func, debounceMs = 0, options = {}) {
   if (typeof options !== "object") options = {};
   const { leading = false, trailing = true, maxWait } = options;
@@ -931,7 +931,7 @@ function debounce2(func, debounceMs = 0, options = {}) {
   return debounced;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/function/throttle.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/function/throttle.mjs
 function throttle(func, throttleMs = 0, options = {}) {
   const { leading = true, trailing = true } = options;
   return debounce2(func, throttleMs, {
@@ -941,7 +941,7 @@ function throttle(func, throttleMs = 0, options = {}) {
   });
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/object/keysIn.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/object/keysIn.mjs
 function keysIn(object) {
   if (object == null) return [];
   switch (typeof object) {
@@ -979,7 +979,7 @@ function arrayLikeKeysIn(object) {
   return [...indices.filter((index) => Object.hasOwn(object, index)), ...inheritedKeys];
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/object/assignIn.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/object/assignIn.mjs
 function assignIn(object, ...sources) {
   for (let i = 0; i < sources.length; i++) assignInImpl(object, sources[i]);
   return object;
@@ -992,7 +992,7 @@ function assignInImpl(object, source) {
   }
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/object/clone.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/object/clone.mjs
 function clone(obj) {
   if (isPrimitive(obj)) return obj;
   const tag = getTag(obj);
@@ -1116,7 +1116,7 @@ function copyPrototype(target, source) {
   }
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/object/mapValues.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/object/mapValues.mjs
 function mapValues(object, getNewValue) {
   const result = {};
   const keys = Object.keys(object);
@@ -1128,13 +1128,13 @@ function mapValues(object, getNewValue) {
   return result;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/object/mapValues.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/object/mapValues.mjs
 function mapValues2(object, getNewValue = identity) {
   if (object == null) return {};
   return mapValues(object, iteratee(getNewValue));
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/object/clone.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/object/clone.mjs
 function clone2(obj) {
   if (isPrimitive(obj)) return obj;
   if (Array.isArray(obj) || isTypedArray(obj) || obj instanceof ArrayBuffer || typeof SharedArrayBuffer !== "undefined" && obj instanceof SharedArrayBuffer) return obj.slice(0);
@@ -1164,7 +1164,7 @@ function clone2(obj) {
   return obj;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/object/mergeWith.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/object/mergeWith.mjs
 function mergeWith(object, ...otherArgs) {
   const sources = otherArgs.slice(0, -1);
   const merge2 = otherArgs[otherArgs.length - 1];
@@ -1217,22 +1217,22 @@ function mergeWithDeep(target, source, merge2, stack) {
   return target;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/object/merge.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/object/merge.mjs
 function merge(object, ...sources) {
   return mergeWith(object, ...sources, noop);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/isFunction.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/isFunction.mjs
 function isFunction(value) {
   return typeof value === "function";
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/isElement.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/isElement.mjs
 function isElement(value) {
   return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/function/after.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/function/after.mjs
 function after(n, func) {
   if (!Number.isInteger(n) || n < 0) throw new Error(`n must be a non-negative integer.`);
   let counter = 0;
@@ -1241,7 +1241,7 @@ function after(n, func) {
   };
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/es-toolkit/dist/compat/predicate/isEqualWith.mjs
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/es-toolkit/dist/compat/predicate/isEqualWith.mjs
 function isEqualWith2(a, b, areValuesEqual) {
   if (typeof areValuesEqual !== "function") areValuesEqual = () => void 0;
   return isEqualWith(a, b, (...args) => {
@@ -1252,7 +1252,7 @@ function isEqualWith2(a, b, areValuesEqual) {
   });
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-utils/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-utils/dist/index.js
 var globalVar;
 try {
   globalVar = {
@@ -1514,7 +1514,7 @@ function insertToPriorityArray(objects, objectToInsert) {
 var DOCUMENTATION_URL = "https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html";
 var CKEditorError = class CKEditorError2 extends Error {
   /**
-  * A context of the error by which the Watchdog is able to determine which editor crashed.
+  * A context of the error by which error reporting works out which editor the error came from.
   */
   context;
   /**
@@ -1526,11 +1526,9 @@ var CKEditorError = class CKEditorError2 extends Error {
   *
   * @param errorName The error id in an `error-name` format. A link to this error documentation page will be added
   * to the thrown error's `message`.
-  * @param context A context of the error by which the {@link module:watchdog/watchdog~Watchdog watchdog}
-  * is able to determine which editor crashed. It should be an editor instance or a property connected to it. It can be also
-  * a `null` value if the editor should not be restarted in case of the error (e.g. during the editor initialization).
-  * The error context should be checked using the `areConnectedThroughProperties( editor, context )` utility
-  * to check if the object works as the context.
+  * @param context A context of the error by which {@link module:core/errorreporter~onEditorError error reporting}
+  * works out which editor the error came from. Pass the editor, the context, or the plugin or command that throws the error.
+  * Pass `null` if the error should not be attributed to any editor (e.g. during the editor initialization).
   * @param data Additional data describing the error. A stringified version of this object
   * will be appended to the error message, so the data are quickly visible in the console. The original
   * data object will also be later available under the {@link #data} property.
@@ -1551,12 +1549,13 @@ var CKEditorError = class CKEditorError2 extends Error {
   }
   /**
   * A utility that ensures that the thrown error is a {@link module:utils/ckeditorerror~CKEditorError} one.
-  * It is useful when combined with the {@link module:watchdog/watchdog~Watchdog} feature, which can restart the editor in case
-  * of a {@link module:utils/ckeditorerror~CKEditorError} error.
+  * Only a {@link module:utils/ckeditorerror~CKEditorError} is reported to the callbacks registered with
+  * {@link module:core/errorreporter~onEditorError `onEditorError()`}, so wrapping an unexpected error in one is what
+  * makes it reach them.
   *
   * @param error The error to rethrow.
-  * @param context An object connected through properties with the editor instance. This context will be used
-  * by the watchdog to verify which editor should be restarted.
+  * @param context An object connected through properties with the editor instance. This context is what error
+  * reporting uses to work out which editor the error came from.
   */
   static rethrowUnexpectedError(error, context) {
     if (error.is && error.is("CKEditorError")) throw error;
@@ -1596,8 +1595,8 @@ function formatConsoleArguments(errorName, data) {
     documentationMessage
   ] : [errorName, documentationMessage];
 }
-var version = "48.5.2";
-var releaseDate = new Date(2026, 5, 2);
+var version = "49.1.0";
+var releaseDate = new Date(2026, 10, 4);
 if (globalThis.CKEDITOR_VERSION)
   throw new CKEditorError("ckeditor-duplicated-modules", null);
 else globalThis.CKEDITOR_VERSION = version;
@@ -1647,8 +1646,10 @@ function EmitterMixin(base) {
       if (!emitters || emitter && !emitterInfo || event && !eventCallbacks) return;
       if (callback) {
         removeEventListener(this, emitter, event, callback);
-        if (eventCallbacks.indexOf(callback) !== -1) if (eventCallbacks.length === 1) delete emitterInfo.callbacks[event];
-        else removeEventListener(this, emitter, event, callback);
+        if (eventCallbacks.indexOf(callback) !== -1) {
+          if (eventCallbacks.length === 1) delete emitterInfo.callbacks[event];
+          else removeEventListener(this, emitter, event, callback);
+        }
       } else if (eventCallbacks) {
         while (callback = eventCallbacks.pop()) removeEventListener(this, emitter, event, callback);
         delete emitterInfo.callbacks[event];
@@ -2034,6 +2035,17 @@ function attachBindToListeners(observable, toBindings) {
     });
   });
 }
+function isShadowRoot(obj) {
+  if (!obj) return false;
+  const defaultView = obj.ownerDocument?.defaultView;
+  return obj instanceof (defaultView ? defaultView.ShadowRoot : ShadowRoot);
+}
+function isNativeShadowRoot(obj) {
+  return isShadowRoot(obj) && obj.synthetic !== true;
+}
+function getParentNode(node) {
+  return isShadowRoot(node) ? node.host : node.parentNode;
+}
 var ElementReplacer = class {
   /**
   * The elements replaced by {@link #replace} and their replacements.
@@ -2056,7 +2068,7 @@ var ElementReplacer = class {
       newElement
     });
     element.style.display = "none";
-    if (newElement) element.parentNode.insertBefore(newElement, element.nextSibling);
+    if (newElement) getParentNode(element).insertBefore(newElement, element.nextSibling);
   }
   /**
   * Restores what {@link #replace} did.
@@ -2229,6 +2241,7 @@ function DomEmitterMixin(base) {
   class Mixin extends base {
     listenTo(emitter, event, callback, options = {}) {
       if (isNode(emitter) || isWindow(emitter) || emitter instanceof globalVar.window.EventTarget) {
+        if (isShadowRoot(emitter) && !isNativeShadowRoot(emitter)) return;
         const proxyOptions = {
           capture: !!options.useCapture,
           passive: !!options.usePassive
@@ -2386,6 +2399,35 @@ function getProxyEmitterId(node, options) {
   for (const option of Object.keys(options).sort()) if (options[option]) id += "-" + option;
   return id;
 }
+function getParentElement(node) {
+  const parent = node.parentNode;
+  return isShadowRoot(parent) ? parent.host : node.parentElement;
+}
+function getLayoutParentElement(node) {
+  return node.assignedSlot || getParentElement(node);
+}
+function findClosestScrollableAncestor(domElement) {
+  let element = getLayoutParentElement(domElement);
+  if (!element) return null;
+  while (element.tagName != "BODY") {
+    const overflow = element.style.overflowY || globalVar.window.getComputedStyle(element).overflowY;
+    if (overflow === "auto" || overflow === "scroll") break;
+    element = getLayoutParentElement(element);
+    if (!element) return null;
+  }
+  return element;
+}
+function getLayoutParentNode(node) {
+  return node.assignedSlot || getParentNode(node);
+}
+function containsNode(container, node) {
+  let current = node;
+  while (current) {
+    if (current === container) return true;
+    current = getLayoutParentNode(current);
+  }
+  return false;
+}
 function getAncestors(node) {
   const nodes = [];
   let currentNode = node;
@@ -2410,11 +2452,24 @@ function getBorderWidths(element) {
 }
 function getRangeFromMouseEvent(domEvent) {
   if (!domEvent.target) return null;
-  const domDoc = domEvent.target.ownerDocument;
+  const domTarget = domEvent.target;
+  const domDoc = domTarget.ownerDocument;
   const x = domEvent.clientX;
   const y = domEvent.clientY;
   let domRange = null;
-  if (domDoc.caretRangeFromPoint && domDoc.caretRangeFromPoint(x, y)) domRange = domDoc.caretRangeFromPoint(x, y);
+  if (domDoc.caretPositionFromPoint) {
+    const rootNode = domTarget.getRootNode();
+    const shadowRoots = isNativeShadowRoot(rootNode) ? [rootNode] : [];
+    const caretPosition = domDoc.caretPositionFromPoint(x, y, { shadowRoots });
+    if (caretPosition) {
+      const offsetNode = caretPosition.offsetNode;
+      const maxOffset = offsetNode.nodeType === Node.TEXT_NODE ? offsetNode.data.length : offsetNode.childNodes.length;
+      const offset = Math.min(caretPosition.offset, maxOffset);
+      domRange = domDoc.createRange();
+      domRange.setStart(offsetNode, offset);
+      domRange.collapse(true);
+    }
+  } else if (domDoc.caretRangeFromPoint && domDoc.caretRangeFromPoint(x, y)) domRange = domDoc.caretRangeFromPoint(x, y);
   else if (domEvent.rangeParent) {
     domRange = domDoc.createRange();
     domRange.setStart(domEvent.rangeParent, domEvent.rangeOffset);
@@ -2422,13 +2477,364 @@ function getRangeFromMouseEvent(domEvent) {
   }
   return domRange;
 }
+function getElementFromPoint(x, y, shadowRoots = []) {
+  const doc = globalVar.document;
+  const [firstRoot] = shadowRoots;
+  if (firstRoot && "elementFromPoint" in firstRoot) for (const root of shadowRoots) {
+    const element = root.elementFromPoint(x, y);
+    if (element && element.getRootNode() === root) return element;
+  }
+  else if (firstRoot && doc.caretPositionFromPoint) {
+    const nativeShadowRoots = shadowRoots.filter(isNativeShadowRoot);
+    const caretPosition = doc.caretPositionFromPoint(x, y, { shadowRoots: nativeShadowRoots });
+    const offsetNode = caretPosition && caretPosition.offsetNode;
+    const element = offsetNode && offsetNode.nodeType === Node.TEXT_NODE ? getParentElement(offsetNode) : offsetNode;
+    if (isElement$2(element) && nativeShadowRoots.includes(element.getRootNode())) return element;
+  }
+  return doc.elementFromPoint(x, y);
+}
+function isElement$2(value) {
+  return isElement(value);
+}
 function getPositionedAncestor(element) {
-  if (!element || !element.parentNode) return null;
-  if (element.offsetParent === globalVar.document.body) return null;
-  return element.offsetParent;
+  if (!element || !element.isConnected) return null;
+  const offsetParent = element.offsetParent;
+  if (!offsetParent) return null;
+  const slot = findSlotCloserThan(element, offsetParent);
+  if (!slot) {
+    if (offsetParent === offsetParent.ownerDocument.body && !isContainingBlock(offsetParent)) return null;
+    return offsetParent;
+  }
+  let candidate = slot;
+  while (candidate.localName === "slot" && !isContainingBlock(candidate)) candidate = getLayoutParentElement(candidate);
+  if (isContainingBlock(candidate)) return candidate;
+  return getPositionedAncestor(candidate);
+}
+function findSlotCloserThan(node, offsetParent) {
+  let current = node;
+  while (current && current !== offsetParent) {
+    if (current.assignedSlot) return current.assignedSlot;
+    current = getParentElement(current);
+  }
+  return null;
+}
+var CONTAINING_BLOCK_CONTAIN = /\b(?:layout|paint|strict|content)\b/;
+var CONTAINING_BLOCK_WILL_CHANGE = /\b(?:transform|perspective|filter|contain)\b/;
+function isContainingBlock(element) {
+  const styles = element.ownerDocument.defaultView.getComputedStyle(element);
+  if (styles.display === "contents") return false;
+  if (styles.position !== "static") return true;
+  return isNonInitial(styles.transform, "none") || isNonInitial(styles.translate, "none") || isNonInitial(styles.rotate, "none") || isNonInitial(styles.scale, "none") || isNonInitial(styles.perspective, "none") || isNonInitial(styles.filter, "none") || isNonInitial(styles.backdropFilter, "none") || isNonInitial(styles.contentVisibility, "visible") || CONTAINING_BLOCK_CONTAIN.test(styles.contain) || CONTAINING_BLOCK_WILL_CHANGE.test(styles.willChange);
+}
+function isNonInitial(value, initialValue) {
+  return !!value && value !== initialValue;
+}
+function getActiveElement(node) {
+  return node.getRootNode().activeElement ?? null;
+}
+function getShadowRoots(node) {
+  const shadowRoots = [];
+  let current = node;
+  while (current) {
+    if (isShadowRoot(current)) shadowRoots.push(current);
+    current = getLayoutParentNode(current);
+  }
+  return shadowRoots;
+}
+function getEventRoots(node) {
+  if (!node) return [];
+  const roots = getShadowRoots(node);
+  if (node.nodeType == Node.DOCUMENT_NODE) roots.push(node);
+  else if (node.isConnected) roots.push(node.ownerDocument);
+  return roots;
+}
+var DomTargetsListener = class {
+  /**
+  * Returns the targets that should be listened to.
+  */
+  _getTargets;
+  /**
+  * The emitter the callback is attached with.
+  */
+  _emitter;
+  /**
+  * The DOM event the callback is attached to.
+  */
+  _event;
+  /**
+  * The callback attached to each target.
+  */
+  _callback;
+  /**
+  * The options the callback is attached with.
+  */
+  _listenerOptions;
+  /**
+  * The targets the callback is currently attached to.
+  */
+  _attachedTargets = /* @__PURE__ */ new Set();
+  /**
+  * Creates the listener and attaches the callback to the targets returned by `getTargets()`.
+  *
+  * @param getTargets Returns the targets that should be listened to. `null` and `undefined` entries are skipped.
+  * @param options Describes the listener to attach to each target.
+  */
+  constructor(getTargets, { emitter, event, listenerOptions, callback }) {
+    this._getTargets = getTargets;
+    this._emitter = emitter;
+    this._event = event;
+    this._callback = callback;
+    this._listenerOptions = listenerOptions;
+    this.refresh();
+  }
+  /**
+  * Reads the targets again: attaches the callback to the targets that appeared and detaches it from the targets that
+  * disappeared.
+  */
+  refresh() {
+    const targets = /* @__PURE__ */ new Set();
+    for (const target of this._getTargets()) if (target) targets.add(target);
+    this._attachTo(targets);
+  }
+  /**
+  * Detaches the callback from every target.
+  */
+  destroy() {
+    this._attachTo(/* @__PURE__ */ new Set());
+  }
+  /**
+  * Attaches the callback to exactly the given targets.
+  */
+  _attachTo(targets) {
+    for (const target of this._attachedTargets) if (!targets.has(target)) {
+      this._emitter.stopListening(target, this._event, this._callback);
+      this._attachedTargets.delete(target);
+    }
+    for (const target of targets) if (!this._attachedTargets.has(target)) {
+      this._emitter.listenTo(target, this._event, this._callback, this._listenerOptions);
+      this._attachedTargets.add(target);
+    }
+  }
+};
+function getOverlayMountRoot(containerNode) {
+  if (!containerNode.isConnected) return null;
+  const root = containerNode.getRootNode();
+  return isNativeShadowRoot(root) ? root : containerNode.ownerDocument.body;
+}
+var adoptedStyleSheets = /* @__PURE__ */ new WeakMap();
+function adoptGlobalStyleSheet(doc, css) {
+  const adopted = adoptedStyleSheets.get(doc) || /* @__PURE__ */ new Set();
+  adoptedStyleSheets.set(doc, adopted);
+  if (adopted.has(css)) return;
+  adopted.add(css);
+  const styleSheet = new doc.defaultView.CSSStyleSheet();
+  styleSheet.replaceSync(css);
+  doc.adoptedStyleSheets.push(styleSheet);
+}
+function toArray(data) {
+  return Array.isArray(data) ? data : [data];
+}
+function isDomSelectionBackward(selection) {
+  if (selection.isCollapsed) return false;
+  if ("direction" in selection && selection.direction != "none") return selection.direction == "backward";
+  const range = selection.anchorNode.ownerDocument.createRange();
+  try {
+    range.setStart(selection.anchorNode, selection.anchorOffset);
+    range.setEnd(selection.focusNode, selection.focusOffset);
+  } catch {
+    return false;
+  }
+  const backward = range.collapsed;
+  range.detach();
+  return backward;
+}
+function isComment(obj) {
+  return obj && obj.nodeType === Node.COMMENT_NODE;
 }
 function isText(obj) {
   return Object.prototype.toString.call(obj) == "[object Text]";
+}
+function getSelection(nodeOrNodes) {
+  const nodes = toArray(nodeOrNodes);
+  if (!nodes.length) return null;
+  const shadowRoots = /* @__PURE__ */ new Set();
+  for (const node of nodes) {
+    const treeRoot = node.getRootNode();
+    if (isNativeShadowRoot(treeRoot)) shadowRoots.add(treeRoot);
+  }
+  if (shadowRoots.size) {
+    const [firstShadowRoot] = shadowRoots;
+    const domWindow = firstShadowRoot.ownerDocument.defaultView;
+    if (!domWindow) return null;
+    const domSelection = domWindow.getSelection();
+    if (domSelection && typeof domSelection.getComposedRanges == "function") return new ShadowSelection(domSelection, Array.from(shadowRoots));
+    for (const shadowRoot of shadowRoots) {
+      const shadowRootSelection = shadowRoot;
+      if (typeof shadowRootSelection.getSelection == "function") {
+        const selection = shadowRootSelection.getSelection();
+        if (selection?.anchorNode) return selection;
+      }
+    }
+    return domSelection;
+  }
+  for (const node of nodes) {
+    if (!node.isConnected) continue;
+    const domWindow = node.ownerDocument?.defaultView;
+    if (domWindow) return domWindow.getSelection();
+  }
+  return null;
+}
+var ShadowSelection = class ShadowSelection2 {
+  /**
+  * The underlying document-level selection that mutations are delegated to and composed ranges read
+  * from.
+  */
+  _domSelection;
+  /**
+  * The shadow roots the composed ranges are resolved against.
+  */
+  _shadowRoots;
+  /**
+  * Whether the engine only accepts the legacy rest-parameter form of `getComposedRanges()`. This is
+  * a fixed property of the engine, so it is detected once (the first call throws on the dictionary
+  * form) and cached for all instances, keeping the exception off the selection-read hot path.
+  */
+  static _useLegacyComposedRanges = false;
+  /**
+  * @internal
+  */
+  constructor(domSelection, shadowRoots) {
+    this._domSelection = domSelection;
+    this._shadowRoots = shadowRoots;
+  }
+  get rangeCount() {
+    return this._getRanges().length;
+  }
+  get isCollapsed() {
+    const ranges = this._getRanges();
+    return !ranges.length || ranges[0].collapsed;
+  }
+  get anchorNode() {
+    return this._getEndpoint("anchor").node;
+  }
+  get anchorOffset() {
+    return this._getEndpoint("anchor").offset;
+  }
+  get focusNode() {
+    return this._getEndpoint("focus").node;
+  }
+  get focusOffset() {
+    return this._getEndpoint("focus").offset;
+  }
+  /**
+  * The direction of the selection, resolved against the tree the first composed range lives in. It is
+  * already computed to orient the anchor and focus endpoints, so exposing it lets consumers read the
+  * orientation directly instead of re-deriving it from the endpoints.
+  */
+  get direction() {
+    const ranges = this._getRanges();
+    if (!ranges.length) return "none";
+    return this._getDirection(ranges[0].startContainer.getRootNode());
+  }
+  getRangeAt(index) {
+    const staticRange = this._getRanges()[index];
+    if (!staticRange) throw new DOMException(`Index ${index} is out of range.`, "IndexSizeError");
+    const range = this._shadowRoots[0].ownerDocument.createRange();
+    range.setStart(staticRange.startContainer, staticRange.startOffset);
+    range.setEnd(staticRange.endContainer, staticRange.endOffset);
+    return range;
+  }
+  removeAllRanges() {
+    this._domSelection.removeAllRanges();
+  }
+  addRange(range) {
+    this._domSelection.addRange(range);
+  }
+  collapse(node, offset) {
+    this._domSelection.collapse(node, offset);
+  }
+  extend(node, offset) {
+    this._domSelection.extend(node, offset);
+  }
+  setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset) {
+    this._domSelection.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+  }
+  /**
+  * The composed ranges fully contained in one of the trees on the path from the given nodes to the
+  * document, in document order (start before end).
+  *
+  * Only ranges whose both endpoints resolve into the same tree can be represented as a live, single-tree
+  * `Range`. A range crossing a shadow boundary is therefore dropped, and so is one resolving into an
+  * unrelated tree, rather than surfacing foreign nodes. The document itself is one of those trees: it is
+  * where every node ends up when walking out of its shadow roots, and it is where a selection made in a
+  * sibling light-DOM editable lives, so such a selection is kept rather than dropped.
+  *
+  * A range with an endpoint outside its container is dropped as well, see `isOffsetInNode()` below.
+  */
+  _getRanges() {
+    const domDocument = this._shadowRoots[0].ownerDocument;
+    return this._getComposedRanges().filter((range) => {
+      const rootNode = range.startContainer.getRootNode();
+      if (rootNode != range.endContainer.getRootNode()) return false;
+      if (rootNode != domDocument && !this._shadowRoots.includes(rootNode)) return false;
+      return isOffsetInNode(range.startContainer, range.startOffset) && isOffsetInNode(range.endContainer, range.endOffset);
+    });
+  }
+  /**
+  * The raw composed ranges reported for the shadow roots by the underlying selection.
+  */
+  _getComposedRanges() {
+    const domSelection = this._domSelection;
+    const shadowRoots = this._shadowRoots;
+    if (ShadowSelection2._useLegacyComposedRanges) return domSelection.getComposedRanges(...shadowRoots);
+    try {
+      return domSelection.getComposedRanges({ shadowRoots });
+    } catch {
+      ShadowSelection2._useLegacyComposedRanges = true;
+      return domSelection.getComposedRanges(...shadowRoots);
+    }
+  }
+  /**
+  * The direction of the underlying selection, preferring the one reported by Blink's shadow-scoped
+  * selection, which stays meaningful for a mouse selection made inside a shadow root.
+  */
+  _getDirection(rootNode) {
+    const shadowRootSelection = rootNode.getSelection?.();
+    if (shadowRootSelection) {
+      if (shadowRootSelection.direction && shadowRootSelection.direction != "none") return shadowRootSelection.direction;
+      if (shadowRootSelection.anchorNode) return isDomSelectionBackward(shadowRootSelection) ? "backward" : "forward";
+    }
+    return this._domSelection.direction ?? "forward";
+  }
+  /**
+  * The anchor or focus endpoint of the first composed range.
+  *
+  * `getComposedRanges()` returns ranges in document order (start before end); the anchor/focus
+  * orientation therefore has to come from `Selection#direction`. Known limitation: WebKit and Blink
+  * report `direction` as `'none'` for a selection made *with the mouse* inside a shadow root (a
+  * keyboard selection reports it correctly). Blink's shadow-scoped selection still knows the direction
+  * in that case, so it is consulted first; it is of no use for the ranges themselves, as it covers
+  * a single tree only. Safari has no such API, so its mouse selections fall back to forward.
+  */
+  _getEndpoint(endpoint) {
+    const ranges = this._getRanges();
+    if (!ranges.length) return {
+      node: null,
+      offset: 0
+    };
+    const range = ranges[0];
+    const isBackward = this._getDirection(range.startContainer.getRootNode()) == "backward";
+    return (endpoint == "anchor" ? !isBackward : isBackward) ? {
+      node: range.startContainer,
+      offset: range.startOffset
+    } : {
+      node: range.endContainer,
+      offset: range.endOffset
+    };
+  }
+};
+function isOffsetInNode(node, offset) {
+  return offset <= (isText(node) || isComment(node) ? node.length : node.childNodes.length);
 }
 function isRange(obj) {
   return Object.prototype.toString.apply(obj) == "[object Range]";
@@ -2526,11 +2932,12 @@ var Rect = class Rect2 {
       writable: true,
       enumerable: false
     });
-    if (isDomElement(source) || isSourceRange) if (isSourceRange) {
-      const rangeRects = Rect2.getDomRangeRects(source);
-      copyRectProperties(this, Rect2.getBoundingRect(rangeRects));
-    } else copyRectProperties(this, source.getBoundingClientRect());
-    else if (isWindow(source)) {
+    if (isDomElement(source) || isSourceRange) {
+      if (isSourceRange) {
+        const rangeRects = Rect2.getDomRangeRects(source);
+        copyRectProperties(this, Rect2.getBoundingRect(rangeRects));
+      } else copyRectProperties(this, source.getBoundingClientRect());
+    } else if (isWindow(source)) {
       const { innerWidth, innerHeight } = source;
       copyRectProperties(this, {
         top: 0,
@@ -2630,6 +3037,10 @@ var Rect = class Rect2 {
   * const visibleInViewportRect = new Rect( window ).getIntersection( new Rect( source ).getVisible() );
   * ```
   *
+  * **Note**: The ancestor walk crosses shadow DOM boundaries, continuing from the host element of a shadow
+  * root instead of stopping at it, so a rect inside a shadow tree is still cropped by the ancestors in the
+  * surrounding document. Works for open and closed shadow roots alike.
+  *
   * @returns A visible rect instance or `null`, if there's none.
   */
   getVisible() {
@@ -2637,14 +3048,19 @@ var Rect = class Rect2 {
     let visibleRect = this.clone();
     if (isBody(source)) return visibleRect;
     let child = source;
-    let parent = source.parentNode || source.commonAncestorContainer;
+    let parent = null;
+    if (isDomElement(source)) parent = getLayoutParentElement(source);
+    else if (isRange(source)) {
+      const container = source.commonAncestorContainer;
+      parent = isShadowRoot(container) ? container.host : container;
+    }
     let lastPositionedChildElement;
     while (parent && !isBody(parent)) {
       const isNonClippingParent = getElementOverflow(parent) === "visible";
       if (isPositioned(child)) lastPositionedChildElement = child;
       if (isNonClippingParent || lastPositionedChildElement && getElementPosition(lastPositionedChildElement) === "absolute" && !isPositioned(parent)) {
         child = parent;
-        parent = parent.parentNode;
+        parent = getLayoutParentElement(parent);
         continue;
       }
       const parentRect = new Rect2(parent);
@@ -2653,7 +3069,7 @@ var Rect = class Rect2 {
         if (intersectionRect.getArea() < visibleRect.getArea()) visibleRect = intersectionRect;
       } else return null;
       child = parent;
-      parent = parent.parentNode;
+      parent = getLayoutParentElement(parent);
     }
     return visibleRect;
   }
@@ -2683,12 +3099,10 @@ var Rect = class Rect2 {
   * Recalculates screen coordinates to coordinates relative to the positioned ancestor offset.
   */
   toAbsoluteRect() {
-    const { scrollX, scrollY } = globalVar.window;
-    const absoluteRect = this.clone().moveBy(scrollX, scrollY);
-    if (isDomElement(absoluteRect._source)) {
-      const positionedAncestor = getPositionedAncestor(absoluteRect._source);
-      if (positionedAncestor) shiftRectToCompensatePositionedAncestor(absoluteRect, positionedAncestor);
-    }
+    const absoluteRect = this.clone();
+    const positionedAncestor = isDomElement(this._source) ? getPositionedAncestor(this._source) : null;
+    if (positionedAncestor) shiftRectToCompensatePositionedAncestor(absoluteRect, positionedAncestor);
+    else absoluteRect.moveBy(globalVar.window.scrollX, globalVar.window.scrollY);
     return absoluteRect;
   }
   /**
@@ -2743,7 +3157,7 @@ var Rect = class Rect2 {
     }
     else {
       let startContainer = range.startContainer;
-      if (isText(startContainer)) startContainer = startContainer.parentNode;
+      if (isText(startContainer)) startContainer = getParentElement(startContainer);
       const rect = new Rect2(startContainer.getBoundingClientRect());
       rect.right = rect.left;
       rect.width = 0;
@@ -2919,9 +3333,55 @@ var ResizeObserver2 = class ResizeObserver3 {
     });
   }
 };
+var POLICY_NAME = "ckeditor5";
+var PASS_THROUGH = {
+  createHTML: (input) => input,
+  createScript: (input) => input,
+  createScriptURL: (input) => input
+};
+var policy;
+var isEnforced;
+function trustedHtml(html) {
+  if (!policy) policy = createPolicy();
+  return policy.createHTML(html);
+}
+function isTrustedTypesEnforced() {
+  if (isEnforced === void 0) try {
+    globalVar.document.createElement("div").innerHTML = "";
+    isEnforced = false;
+  } catch {
+    isEnforced = typeof globalVar.document.createElement === "function";
+  }
+  return isEnforced;
+}
+function _trustedAttributeValue(element, attributeName, value) {
+  const trustedTypes = globalVar.window.trustedTypes;
+  if (!trustedTypes || typeof trustedTypes.getAttributeType != "function") return value;
+  if (!policy) policy = createPolicy();
+  switch (trustedTypes.getAttributeType(element.localName, attributeName, element.namespaceURI)) {
+    case "TrustedHTML":
+      return policy.createHTML(value);
+    case "TrustedScript":
+      return policy.createScript(value);
+    case "TrustedScriptURL":
+      return policy.createScriptURL(value);
+    default:
+      return value;
+  }
+}
+function createPolicy() {
+  const trustedTypes = globalVar.window.trustedTypes;
+  if (trustedTypes) try {
+    return trustedTypes.createPolicy(POLICY_NAME, PASS_THROUGH);
+  } catch {
+    if (!isTrustedTypesEnforced()) return PASS_THROUGH;
+    logWarning("trusted-types-policy-creation-failed");
+  }
+  return PASS_THROUGH;
+}
 function setDataInElement(el, data) {
   if (el instanceof HTMLTextAreaElement) el.value = data;
-  el.innerHTML = data;
+  el.innerHTML = trustedHtml(data);
 }
 function toUnit(unit) {
   return (value) => value + unit;
@@ -2937,8 +3397,111 @@ function indexOf(node) {
 function insertAt(parentElement, index, nodeToInsert) {
   parentElement.insertBefore(nodeToInsert, parentElement.childNodes[index] || null);
 }
-function isComment(obj) {
-  return obj && obj.nodeType === Node.COMMENT_NODE;
+function isProcessingInstruction(obj) {
+  return obj && obj.nodeType === Node.PROCESSING_INSTRUCTION_NODE;
+}
+function isShadowHostOf(node, shadowRoots) {
+  if (!node) return false;
+  for (const root of shadowRoots) if (root.host === node) return true;
+  return false;
+}
+var ShadowRootRegistryBase = /* @__PURE__ */ EmitterMixin();
+var ShadowRootRegistry = class extends ShadowRootRegistryBase {
+  /**
+  * The event roots of each registered node, as of the last time that node was looked at: the shadow roots hosting
+  * it and the document it is connected to. Empty for a node that was detached then. Re-derived for every node by
+  * each {@link #refresh}, so a node that has since been attached, or moved to another tree, is picked up.
+  * The union of the values is {@link #getEventRoots}, and its shadow roots are {@link #getShadowRoots}.
+  */
+  _rootsByNode = /* @__PURE__ */ new Map();
+  /**
+  * Returns the shadow roots currently hosting at least one registered node.
+  */
+  getShadowRoots() {
+    const roots = /* @__PURE__ */ new Set();
+    for (const root of this.getEventRoots()) if (isShadowRoot(root)) roots.add(root);
+    return roots;
+  }
+  /**
+  * Returns the event roots of the currently registered nodes: every shadow root hosting at least one of them,
+  * as in {@link #getShadowRoots}, and every document at least one of them is connected to.
+  *
+  * See {@link module:utils/dom/geteventroots~getEventRoots} for what an event root is.
+  */
+  getEventRoots() {
+    const roots = /* @__PURE__ */ new Set();
+    for (const nodeRoots of this._rootsByNode.values()) for (const root of nodeRoots) roots.add(root);
+    return roots;
+  }
+  /**
+  * Registers a node, so the shadow roots hosting it become a part of {@link #getShadowRoots}.
+  *
+  * The node does not have to be attached to the DOM yet; while it is not, it simply contributes no shadow root.
+  * The next {@link #refresh} picks it up once it is attached.
+  */
+  registerNode(node) {
+    if (this._rootsByNode.has(node)) return;
+    const previousRoots = this.getEventRoots();
+    this._rootsByNode.set(node, deriveRoots(node));
+    this._fireRootChanges(previousRoots);
+  }
+  /**
+  * Unregisters a previously {@link #registerNode registered} node. Shadow roots that no longer host any
+  * registered node stop being a part of {@link #getShadowRoots}.
+  */
+  unregisterNode(node) {
+    if (!this._rootsByNode.has(node)) return;
+    const previousRoots = this.getEventRoots();
+    this._rootsByNode.delete(node);
+    this._fireRootChanges(previousRoots);
+  }
+  /**
+  * Re-derives the shadow roots of every registered node, firing {@link #event:add} for the roots that started
+  * hosting one and {@link #event:remove} for those that stopped. Fires {@link #event:changeEventRoots} if
+  * the {@link #getEventRoots event roots} changed.
+  *
+  * Call it whenever a registered node may have been attached, detached, or moved – for example on every editor
+  * UI update. Nodes are re-derived rather than resolved once, because the tree a node lives in is not fixed:
+  * an editable mounted by the integrator after the editor was created, or moved into a fullscreen container in
+  * another tree, ends up somewhere its roots were never derived from.
+  */
+  refresh() {
+    const previousRoots = this.getEventRoots();
+    for (const node of this._rootsByNode.keys()) this._rootsByNode.set(node, deriveRoots(node));
+    this._fireRootChanges(previousRoots);
+  }
+  /**
+  * Unregisters every currently registered node at once, firing {@link #event:remove} for every shadow root
+  * that consequently stops being tracked, and {@link #event:changeEventRoots} if any event root was tracked.
+  *
+  * @internal
+  */
+  destroy() {
+    const previousRoots = this.getEventRoots();
+    this._rootsByNode.clear();
+    this._fireRootChanges(previousRoots);
+  }
+  /**
+  * Fires {@link #event:add} and {@link #event:remove} for the difference between the shadow roots in the given
+  * set of tracked event roots and the current ones, followed by a single {@link #event:changeEventRoots} if
+  * the event roots differ at all.
+  */
+  _fireRootChanges(previousRoots) {
+    const currentRoots = this.getEventRoots();
+    let hasChanged = false;
+    for (const root of previousRoots) if (!currentRoots.has(root)) {
+      hasChanged = true;
+      if (isShadowRoot(root)) this.fire("remove", root);
+    }
+    for (const root of currentRoots) if (!previousRoots.has(root)) {
+      hasChanged = true;
+      if (isShadowRoot(root)) this.fire("add", root);
+    }
+    if (hasChanged) this.fire("changeEventRoots");
+  }
+};
+function deriveRoots(node) {
+  return node.isConnected ? getEventRoots(node) : [];
 }
 function isValidAttributeName(name) {
   try {
@@ -2950,7 +3513,7 @@ function isValidAttributeName(name) {
 }
 function isVisible(element) {
   if (!element) return false;
-  if (isText(element)) return isVisible(element.parentElement);
+  if (isText(element)) return isVisible(getParentElement(element));
   if (element.getClientRects) return !!element.getClientRects().length;
   return false;
 }
@@ -3096,7 +3659,7 @@ var PositionObject = class {
   }
 };
 function remove(node) {
-  const parent = node.parentNode;
+  const parent = getParentNode(node);
   if (parent) parent.removeChild(node);
 }
 function getVisualViewportOffset() {
@@ -3117,8 +3680,8 @@ function scrollViewportToShowTarget({ target, viewportOffset = 0, ancestorOffset
   viewportOffset = normalizeViewportOffset(viewportOffset);
   while (currentWindow) {
     let firstAncestorToScroll;
-    if (currentWindow == targetWindow) firstAncestorToScroll = getParentElement(target);
-    else firstAncestorToScroll = getParentElement(currentFrame);
+    if (currentWindow == targetWindow) firstAncestorToScroll = getTargetParentElement(target);
+    else firstAncestorToScroll = getTargetParentElement(currentFrame);
     scrollAncestorsToShowRect({
       parent: firstAncestorToScroll,
       getRect: () => {
@@ -3161,8 +3724,10 @@ function scrollWindowToShowRect({ window: window2, rect, alignToTop, forceScroll
   if (forceScrollToTop) scrollY -= viewportRect.top - rect.top + viewportOffset.top;
   else if (!allRectsFitInViewport) {
     if (isAbove(targetShiftedUpRect, viewportRect)) scrollY -= viewportRect.top - rect.top + viewportOffset.top;
-    else if (isBelow(targetShiftedDownRect, viewportRect)) if (alignToTop) scrollY += rect.top - viewportRect.top - viewportOffset.top;
-    else scrollY += rect.bottom - viewportRect.bottom + viewportOffset.bottom;
+    else if (isBelow(targetShiftedDownRect, viewportRect)) {
+      if (alignToTop) scrollY += rect.top - viewportRect.top - viewportOffset.top;
+      else scrollY += rect.bottom - viewportRect.bottom + viewportOffset.bottom;
+    }
   }
   if (!allRectsFitInViewport) {
     if (isLeftOf(rect, viewportRect)) scrollX -= viewportRect.left - rect.left + viewportOffset.left;
@@ -3175,21 +3740,24 @@ function scrollAncestorsToShowRect({ parent, getRect, alignToTop, forceScroll, a
   const forceScrollToTop = alignToTop && forceScroll;
   let parentRect, targetRect, targetFitsInTarget;
   const limiter = limiterElement || parentWindow.document.body;
-  while (parent != limiter) {
+  let currentParent = parent;
+  while (currentParent && currentParent != limiter) {
     targetRect = getRect();
-    parentRect = new Rect(parent).excludeScrollbarsAndBorders();
+    parentRect = new Rect(currentParent).excludeScrollbarsAndBorders();
     targetFitsInTarget = parentRect.contains(targetRect);
-    if (forceScrollToTop) parent.scrollTop -= parentRect.top - targetRect.top + ancestorOffset;
+    if (forceScrollToTop) currentParent.scrollTop -= parentRect.top - targetRect.top + ancestorOffset;
     else if (!targetFitsInTarget) {
-      if (isAbove(targetRect, parentRect)) parent.scrollTop -= parentRect.top - targetRect.top + ancestorOffset;
-      else if (isBelow(targetRect, parentRect)) if (alignToTop) parent.scrollTop += targetRect.top - parentRect.top - ancestorOffset;
-      else parent.scrollTop += targetRect.bottom - parentRect.bottom + ancestorOffset;
+      if (isAbove(targetRect, parentRect)) currentParent.scrollTop -= parentRect.top - targetRect.top + ancestorOffset;
+      else if (isBelow(targetRect, parentRect)) {
+        if (alignToTop) currentParent.scrollTop += targetRect.top - parentRect.top - ancestorOffset;
+        else currentParent.scrollTop += targetRect.bottom - parentRect.bottom + ancestorOffset;
+      }
     }
     if (!targetFitsInTarget) {
-      if (isLeftOf(targetRect, parentRect)) parent.scrollLeft -= parentRect.left - targetRect.left + ancestorOffset;
-      else if (isRightOf(targetRect, parentRect)) parent.scrollLeft += targetRect.right - parentRect.right + ancestorOffset;
+      if (isLeftOf(targetRect, parentRect)) currentParent.scrollLeft -= parentRect.left - targetRect.left + ancestorOffset;
+      else if (isRightOf(targetRect, parentRect)) currentParent.scrollLeft += targetRect.right - parentRect.right + ancestorOffset;
     }
-    parent = parent.parentNode;
+    currentParent = getLayoutParentElement(currentParent);
   }
 }
 function isBelow(firstRect, secondRect) {
@@ -3208,12 +3776,13 @@ function getWindow(elementOrRange) {
   if (isRange(elementOrRange)) return elementOrRange.startContainer.ownerDocument.defaultView;
   else return elementOrRange.ownerDocument.defaultView;
 }
-function getParentElement(elementOrRange) {
+function getTargetParentElement(elementOrRange) {
   if (isRange(elementOrRange)) {
     let parent = elementOrRange.commonAncestorContainer;
-    if (isText(parent)) parent = parent.parentNode;
+    if (isShadowRoot(parent)) return parent.host;
+    if (isText(parent)) parent = getLayoutParentElement(parent);
     return parent;
-  } else return elementOrRange.parentNode;
+  } else return getLayoutParentElement(elementOrRange);
 }
 function getRectRelativeToWindow(target, relativeWindow) {
   const targetWindow = getWindow(target);
@@ -3380,9 +3949,6 @@ var RTL_LANGUAGE_CODES = [
 function getLanguageDirection(languageCode) {
   return RTL_LANGUAGE_CODES.includes(languageCode) ? "rtl" : "ltr";
 }
-function toArray(data) {
-  return Array.isArray(data) ? data : [data];
-}
 if (!globalVar.window.CKEDITOR_TRANSLATIONS) globalVar.window.CKEDITOR_TRANSLATIONS = {};
 function _translate(language, message, quantity = 1, translations) {
   if (typeof quantity !== "number")
@@ -3402,7 +3968,7 @@ function _translate(language, message, quantity = 1, translations) {
   return translation[Number(getPluralForm(quantity))];
 }
 function _unifyTranslations(translations) {
-  return Array.isArray(translations) ? translations.reduce((acc, translation) => merge(acc, translation)) : translations;
+  return Array.isArray(translations) ? translations.reduce((acc, translation) => merge(acc, translation), {}) : translations;
 }
 function hasTranslation(language, messageId, translations) {
   return !!translations[language] && !!translations[language].dictionary[messageId];
@@ -4137,7 +4703,7 @@ var FocusTracker = class extends FocusTrackerBase {
   * a focus tracker state would experience UI flashes and glitches as the user focus travels across the UI.
   */
   _blur() {
-    if (this.elements.find((element) => element.contains(document.activeElement))) return;
+    if (this.elements.find((element) => element.contains(getActiveElement(element)))) return;
     if (this.externalViews.find((view) => {
       return view.focusTracker.isFocused && !view.focusTracker._blurTimeout;
     })) return;
@@ -4166,7 +4732,7 @@ function isExternalViewSubtreeFocused(subTreeRoot, view) {
   return !!view.focusTracker.externalViews.find((view2) => isFocusedView(subTreeRoot, view2));
 }
 function isFocusedView(subTreeRoot, view) {
-  return !!view.element && view.element.contains(document.activeElement) && subTreeRoot.contains(view.element);
+  return !!view.element && view.element.contains(getActiveElement(view.element)) && subTreeRoot.contains(view.element);
 }
 var KeystrokeHandler = class {
   /**
@@ -4339,7 +4905,7 @@ function isFeatureBlockedByLicenseKey(licensePayload, licenseFeatureCode) {
   return (licensePayload.removeFeatures || []).includes(licenseFeatureCode);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-engine/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-engine/dist/index.js
 var documentPlaceholders = /* @__PURE__ */ new WeakMap();
 var hasDisplayedPlaceholderDeprecationWarning = false;
 function enableViewPlaceholder({ view, element, text, isDirectHost = true, keepOnFocus = false }) {
@@ -4972,8 +5538,10 @@ var ViewConsumable = class ViewConsumable2 {
   */
   revert(element, consumables) {
     const elementConsumables = this._consumables.get(element);
-    if (elementConsumables !== void 0) if (element.is("$text") || element.is("documentFragment")) this._consumables.set(element, true);
-    else elementConsumables.revert(normalizeConsumables(consumables));
+    if (elementConsumables !== void 0) {
+      if (element.is("$text") || element.is("documentFragment")) this._consumables.set(element, true);
+      else elementConsumables.revert(normalizeConsumables(consumables));
+    }
   }
   /**
   * Creates {@link module:engine/conversion/viewconsumable~ViewConsumable ViewConsumable} instance from
@@ -6428,8 +6996,10 @@ var ViewElement = class ViewElement2 extends ViewNode {
   */
   hasAttribute(key, token) {
     if (!this._attrs.has(key)) return false;
-    if (token !== void 0) if (usesStylesMap(this.name, key) || usesTokenList(this.name, key)) return this._attrs.get(key).has(token);
-    else return this._attrs.get(key) === token;
+    if (token !== void 0) {
+      if (usesStylesMap(this.name, key) || usesTokenList(this.name, key)) return this._attrs.get(key).has(token);
+      else return this._attrs.get(key) === token;
+    }
     return true;
   }
   /**
@@ -6735,9 +7305,10 @@ var ViewElement = class ViewElement2 extends ViewNode {
         this._attrs.set(key, currentValue);
       }
       if (overwrite) currentValue.setTo(String(value));
-      else if (usesStylesMap(this.name, key)) if (Array.isArray(value)) currentValue.set(value[0], value[1]);
-      else currentValue.set(value);
-      else currentValue.set(typeof value == "string" ? value.split(/\s+/) : value);
+      else if (usesStylesMap(this.name, key)) {
+        if (Array.isArray(value)) currentValue.set(value[0], value[1]);
+        else currentValue.set(value);
+      } else currentValue.set(typeof value == "string" ? value.split(/\s+/) : value);
     } else this._attrs.set(key, String(value));
   }
   /**
@@ -6936,8 +7507,10 @@ var ViewElement = class ViewElement2 extends ViewNode {
     const attributes = [];
     if (key) {
       const value = this._attrs.get(key);
-      if (value !== void 0) if (typeof value == "string") attributes.push([key]);
-      else for (const prop of value._getConsumables(token)) attributes.push([key, prop]);
+      if (value !== void 0) {
+        if (typeof value == "string") attributes.push([key]);
+        else for (const prop of value._getConsumables(token)) attributes.push([key, prop]);
+      }
     } else for (const [key2, value] of this._attrs) if (typeof value == "string") attributes.push([key2]);
     else for (const prop of value._getConsumables()) attributes.push([key2, prop]);
     return {
@@ -7503,14 +8076,18 @@ var ViewTreeWalker = class {
   */
   _formatReturnValue(type, item, previousPosition, nextPosition, length) {
     if (item.is("view:$textProxy")) {
-      if (item.offsetInText + item.data.length == item.textNode.data.length) if (this.direction == "forward" && !(this.boundaries && this.boundaries.end.isEqual(this.position))) {
-        nextPosition = ViewPosition._createAfter(item.textNode);
-        this._position = nextPosition;
-      } else previousPosition = ViewPosition._createAfter(item.textNode);
-      if (item.offsetInText === 0) if (this.direction == "backward" && !(this.boundaries && this.boundaries.start.isEqual(this.position))) {
-        nextPosition = ViewPosition._createBefore(item.textNode);
-        this._position = nextPosition;
-      } else previousPosition = ViewPosition._createBefore(item.textNode);
+      if (item.offsetInText + item.data.length == item.textNode.data.length) {
+        if (this.direction == "forward" && !(this.boundaries && this.boundaries.end.isEqual(this.position))) {
+          nextPosition = ViewPosition._createAfter(item.textNode);
+          this._position = nextPosition;
+        } else previousPosition = ViewPosition._createAfter(item.textNode);
+      }
+      if (item.offsetInText === 0) {
+        if (this.direction == "backward" && !(this.boundaries && this.boundaries.start.isEqual(this.position))) {
+          nextPosition = ViewPosition._createBefore(item.textNode);
+          this._position = nextPosition;
+        } else previousPosition = ViewPosition._createBefore(item.textNode);
+      }
     }
     return {
       done: false,
@@ -8926,11 +9503,11 @@ function BubblingEmitterMixin(base) {
       }
     }
     _addEventListener(event, callback, options) {
-      const contexts = toArray(options.context || "$document");
+      const contexts2 = toArray(options.context || "$document");
       const bubblingEmitter = getBubblingEmitter(this);
       const callbacksMap = getCallbackMap(this);
-      for (const context of contexts) if (typeof context == "function") getCustomContexts(this).add(context);
-      const wrappedCallback = wrapCallback(this, contexts, callback);
+      for (const context of contexts2) if (typeof context == "function") getCustomContexts(this).add(context);
+      const wrappedCallback = wrapCallback(this, contexts2, callback);
       callbacksMap.set(callback, wrappedCallback);
       this.listenTo(bubblingEmitter, event, wrappedCallback, options);
     }
@@ -8960,22 +9537,22 @@ function fireListenerFor(emitter, currentTarget, eventInfo, ...eventArgs) {
   if (eventInfo.stop.called) return true;
   return false;
 }
-function wrapCallback(emitter, contexts, callback) {
+function wrapCallback(emitter, contexts2, callback) {
   return function(event, data) {
     const { currentTarget, eventArgs } = data;
     if (typeof currentTarget == "string") {
-      if (contexts.includes(currentTarget)) callback.call(emitter, event, ...eventArgs);
+      if (contexts2.includes(currentTarget)) callback.call(emitter, event, ...eventArgs);
       return;
     }
-    if (currentTarget.is("rootElement") && contexts.includes("$root")) {
+    if (currentTarget.is("rootElement") && contexts2.includes("$root")) {
       callback.call(emitter, event, ...eventArgs);
       return;
     }
-    if (contexts.includes(currentTarget.name)) {
+    if (contexts2.includes(currentTarget.name)) {
       callback.call(emitter, event, ...eventArgs);
       return;
     }
-    for (const context of contexts) if (typeof context == "function" && context(currentTarget)) {
+    for (const context of contexts2) if (typeof context == "function" && context(currentTarget)) {
       callback.call(emitter, event, ...eventArgs);
       return;
     }
@@ -9397,7 +9974,7 @@ var ViewUIElement = class extends ViewElement {
   */
   toDomElement(domDocument) {
     const domElement = domDocument.createElement(this.name);
-    for (const key of this.getAttributeKeys()) domElement.setAttribute(key, this.getAttribute(key));
+    for (const key of this.getAttributeKeys()) domElement.setAttribute(key, _trustedAttributeValue(domElement, key, this.getAttribute(key)));
     return domElement;
   }
   /**
@@ -9423,7 +10000,8 @@ function getFillerOffset$1() {
 }
 function jumpOverUiElement(evt, data, domConverter) {
   if (data.keyCode == keyCodes.arrowright) {
-    const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+    const domSelection = getSelection(data.domTarget);
+    if (!domSelection) return;
     const domSelectionCollapsed = domSelection.rangeCount == 1 && domSelection.getRangeAt(0).collapsed;
     if (domSelectionCollapsed || data.shiftKey) {
       const domParent = domSelection.focusNode;
@@ -9871,11 +10449,14 @@ var ViewDowncastWriter = class {
   * ```ts
   * writer.createUIElement( 'span', null, function( domDocument ) {
   * 	const domElement = this.toDomElement( domDocument );
-  * 	domElement.innerHTML = '<b>this is ui element</b>';
+  * 	domElement.innerHTML = trustedHtml( '<b>this is ui element</b>' );
   *
   * 	return domElement;
   * } );
   * ```
+  *
+  * The {@link module:utils/dom/trustedtypes~trustedHtml `trustedHtml()`} helper keeps the assignment working in
+  * applications that enforce Trusted Types.
   *
   * Unlike {@link #createRawElement raw elements}, UI elements are by no means editor content, for instance,
   * they are ignored by the editor selection system.
@@ -9897,9 +10478,12 @@ var ViewDowncastWriter = class {
   *
   * ```ts
   * writer.createRawElement( 'span', { id: 'foo-1234' }, function( domElement ) {
-  * 	domElement.innerHTML = '<b>This is the raw content of the raw element.</b>';
+  * 	domElement.innerHTML = trustedHtml( '<b>This is the raw content of the raw element.</b>' );
   * } );
   * ```
+  *
+  * The {@link module:utils/dom/trustedtypes~trustedHtml `trustedHtml()`} helper keeps the assignment working in
+  * applications that enforce Trusted Types.
   *
   * Raw elements work as data containers ("wrappers", "sandboxes") but their children are not managed or
   * even recognized by the editor. This encapsulation allows integrations to maintain custom DOM structures
@@ -10840,8 +11424,8 @@ function injectQuirksHandling(view) {
 }
 function jumpOverInlineFiller(evt, data) {
   if (data.keyCode == keyCodes.arrowleft) {
-    const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
-    if (domSelection.rangeCount == 1 && domSelection.getRangeAt(0).collapsed) {
+    const domSelection = getSelection(data.domTarget);
+    if (domSelection && domSelection.rangeCount == 1 && domSelection.getRangeAt(0).collapsed) {
       const domParent = domSelection.getRangeAt(0).startContainer;
       const domOffset = domSelection.getRangeAt(0).startOffset;
       if (startsWithFiller(domParent) && domOffset <= 7) domSelection.collapse(domParent, 0);
@@ -10850,10 +11434,6 @@ function jumpOverInlineFiller(evt, data) {
 }
 var ViewRendererBase = /* @__PURE__ */ ObservableMixin();
 var ViewRenderer = class extends ViewRendererBase {
-  /**
-  * Set of DOM Documents instances.
-  */
-  domDocuments = /* @__PURE__ */ new Set();
   /**
   * Converter instance.
   */
@@ -10874,6 +11454,10 @@ var ViewRenderer = class extends ViewRendererBase {
   * View selection. Renderer updates DOM selection based on the view selection.
   */
   selection;
+  /**
+  * A set of the DOM editing root elements whose selection this renderer manages.
+  */
+  _domRoots = /* @__PURE__ */ new Set();
   /**
   * The text node in which the inline filler was rendered.
   */
@@ -10923,6 +11507,22 @@ var ViewRenderer = class extends ViewRendererBase {
     }
   }
   /**
+  * Starts tracking an editing root so its DOM selection can later be cleared.
+  *
+  * @param domRoot The DOM editing root element.
+  */
+  addDomRoot(domRoot) {
+    this._domRoots.add(domRoot);
+  }
+  /**
+  * Stops tracking an editing root (see {@link #addDomRoot}).
+  *
+  * @param domRoot The DOM editing root element.
+  */
+  removeDomRoot(domRoot) {
+    this._domRoots.delete(domRoot);
+  }
+  /**
   * Renders all buffered changes ({@link #markedAttributes}, {@link #markedChildren} and {@link #markedTexts}) and
   * the current view selection (if needed) to the DOM by applying a minimal set of changes to it.
   *
@@ -10945,19 +11545,21 @@ var ViewRenderer = class extends ViewRendererBase {
         inlineFillerPosition = this.selection.getFirstPosition();
         this.markedChildren.add(inlineFillerPosition.parent);
       }
-    } else if (this._inlineFiller && this._inlineFiller.parentNode) {
+    } else if (this._inlineFiller && getParentNode(this._inlineFiller)) {
       inlineFillerPosition = this.domConverter.domPositionToView(this._inlineFiller);
       if (inlineFillerPosition && inlineFillerPosition.parent.is("$text")) inlineFillerPosition = ViewPosition._createBefore(inlineFillerPosition.parent);
     }
     for (const element of this.markedAttributes) this._updateAttrs(element);
     for (const element of this.markedChildren) this._updateChildren(element, { inlineFillerPosition });
     for (const node of this.markedTexts) if (!this.markedChildren.has(node.parent) && this.domConverter.mapViewToDom(node.parent)) this._updateText(node, { inlineFillerPosition });
-    if (isInlineFillerRenderingPossible) if (inlineFillerPosition) {
-      const fillerDomPosition = this.domConverter.viewPositionToDom(inlineFillerPosition);
-      const domDocument = fillerDomPosition.parent.ownerDocument;
-      if (!startsWithFiller(fillerDomPosition.parent)) this._inlineFiller = addInlineFiller(domDocument, fillerDomPosition.parent, fillerDomPosition.offset);
-      else this._inlineFiller = fillerDomPosition.parent;
-    } else this._inlineFiller = null;
+    if (isInlineFillerRenderingPossible) {
+      if (inlineFillerPosition) {
+        const fillerDomPosition = this.domConverter.viewPositionToDom(inlineFillerPosition);
+        const domDocument = fillerDomPosition.parent.ownerDocument;
+        if (!startsWithFiller(fillerDomPosition.parent)) this._inlineFiller = addInlineFiller(domDocument, fillerDomPosition.parent, fillerDomPosition.offset);
+        else this._inlineFiller = fillerDomPosition.parent;
+      } else this._inlineFiller = null;
+    }
     this._updateFocus();
     this._updateSelection();
     this.domConverter._clearTemporaryCustomProperties();
@@ -11141,7 +11743,7 @@ var ViewRenderer = class extends ViewRendererBase {
       this._markDescendantTextToSync(this.domConverter.domToView(expectedDomChildren[i]));
       i++;
     }
-    for (const node of nodesToUnbind) if (!node.parentNode) this.domConverter.unbindDomElement(node);
+    for (const node of nodesToUnbind) if (!getParentNode(node)) this.domConverter.unbindDomElement(node);
   }
   /**
   * Shorthand for diffing two arrays or node lists of DOM nodes.
@@ -11260,13 +11862,14 @@ var ViewRenderer = class extends ViewRendererBase {
     const container = this._fakeSelectionContainer;
     this.domConverter.bindFakeSelection(container, this.selection);
     if (!this._fakeSelectionNeedsUpdate(domEditable)) return;
-    if (!container.parentElement || container.parentElement != domEditable) domEditable.appendChild(container);
+    const containerParent = getParentElement(container);
+    if (!containerParent || containerParent != domEditable) domEditable.appendChild(container);
     container.textContent = this.selection.fakeSelectionLabel || "\xA0";
-    const domSelection = domDocument.getSelection();
+    const domSelection = getSelection(domEditable);
+    if (!domSelection) return;
     const domRange = domDocument.createRange();
-    domSelection.removeAllRanges();
     domRange.selectNodeContents(container);
-    domSelection.addRange(domRange);
+    domSelection.setBaseAndExtent(domRange.startContainer, domRange.startOffset, domRange.endContainer, domRange.endOffset);
   }
   /**
   * Updates the DOM selection.
@@ -11274,7 +11877,8 @@ var ViewRenderer = class extends ViewRendererBase {
   * @param domEditable A valid DOM editable where the DOM selection should be rendered.
   */
   _updateDomSelection(domEditable) {
-    const domSelection = domEditable.ownerDocument.defaultView.getSelection();
+    const domSelection = getSelection(domEditable);
+    if (!domSelection) return;
     if (!this._domSelectionNeedsUpdate(domSelection)) return;
     const anchor = this.domConverter.viewPositionToDom(this.selection.anchor);
     const focus = this.domConverter.viewPositionToDom(this.selection.focus);
@@ -11300,20 +11904,20 @@ var ViewRenderer = class extends ViewRendererBase {
   */
   _fakeSelectionNeedsUpdate(domEditable) {
     const container = this._fakeSelectionContainer;
-    const domSelection = domEditable.ownerDocument.getSelection();
-    if (!container || container.parentElement !== domEditable) return true;
-    if (domSelection.anchorNode !== container && !container.contains(domSelection.anchorNode)) return true;
+    const domSelection = getSelection(domEditable);
+    if (!container || getParentElement(container) !== domEditable) return true;
+    if (domSelection && domSelection.anchorNode !== container && !container.contains(domSelection.anchorNode)) return true;
     return container.textContent !== this.selection.fakeSelectionLabel;
   }
   /**
   * Removes the DOM selection.
   */
   _removeDomSelection() {
-    for (const doc of this.domDocuments) {
-      const domSelection = doc.getSelection();
-      if (domSelection.rangeCount) {
-        const activeDomElement = doc.activeElement;
-        const viewElement = this.domConverter.mapDomToView(activeDomElement);
+    for (const domRoot of this._domRoots) {
+      const domSelection = getSelection(domRoot);
+      if (domSelection && domSelection.rangeCount) {
+        const activeDomElement = getActiveElement(domRoot);
+        const viewElement = activeDomElement && this.domConverter.mapDomToView(activeDomElement);
         if (activeDomElement && viewElement) domSelection.removeAllRanges();
       }
     }
@@ -11354,7 +11958,7 @@ function addInlineFiller(domDocument, domParentOrArray, offset) {
   }
 }
 function areSimilarElements(node1, node2) {
-  return isNode(node1) && isNode(node2) && !isText(node1) && !isText(node2) && !isComment(node1) && !isComment(node2) && node1.tagName.toLowerCase() === node2.tagName.toLowerCase();
+  return isNode(node1) && isNode(node2) && !isText(node1) && !isText(node2) && !isComment(node1) && !isComment(node2) && !isProcessingInstruction(node1) && !isProcessingInstruction(node2) && node1.tagName.toLowerCase() === node2.tagName.toLowerCase();
 }
 function areTextNodes(node1, node2) {
   return isNode(node1) && isNode(node2) && isText(node1) && isText(node2);
@@ -11370,7 +11974,7 @@ function fixGeckoSelectionAfterBr(focus, domSelection) {
   let offset = focus.offset;
   if (isText(parent) && isInlineFiller(parent)) {
     offset = indexOf(parent) + 1;
-    parent = parent.parentNode;
+    parent = getParentNode(parent);
   }
   if (parent.nodeType != Node.ELEMENT_NODE || offset != parent.childNodes.length - 1) return;
   const childAtOffset = parent.childNodes[offset];
@@ -11635,10 +12239,10 @@ var ViewDomConverter = class {
   */
   setContentOf(domElement, html) {
     if (this.renderingMode === "data") {
-      domElement.innerHTML = html;
+      domElement.innerHTML = trustedHtml(html);
       return;
     }
-    const document2 = new DOMParser().parseFromString(html, "text/html");
+    const document2 = new DOMParser().parseFromString(trustedHtml(html), "text/html");
     const fragment = document2.createDocumentFragment();
     const bodyChildNodes = document2.body.childNodes;
     while (bodyChildNodes.length > 0) fragment.appendChild(bodyChildNodes[0]);
@@ -11673,14 +12277,17 @@ var ViewDomConverter = class {
       return this._domDocument.createTextNode(textData);
     } else {
       const viewElementOrFragment = viewNode;
-      if (this.mapViewToDom(viewElementOrFragment)) if (viewElementOrFragment.getCustomProperty("editingPipeline:doNotReuseOnce")) this._elementsWithTemporaryCustomProperties.add(viewElementOrFragment);
-      else return this.mapViewToDom(viewElementOrFragment);
+      if (this.mapViewToDom(viewElementOrFragment)) {
+        if (viewElementOrFragment.getCustomProperty("editingPipeline:doNotReuseOnce")) this._elementsWithTemporaryCustomProperties.add(viewElementOrFragment);
+        else return this.mapViewToDom(viewElementOrFragment);
+      }
       let domElement;
       if (viewElementOrFragment.is("documentFragment")) {
         domElement = this._domDocument.createDocumentFragment();
         if (options.bind) this.bindDocumentFragments(domElement, viewElementOrFragment);
       } else if (viewElementOrFragment.is("uiElement")) {
-        if (viewElementOrFragment.name === "$comment") domElement = this._domDocument.createComment(viewElementOrFragment.getCustomProperty("$rawContent"));
+        if (viewElementOrFragment.name === "$processingInstruction") domElement = this._domDocument.createProcessingInstruction(viewElementOrFragment.getCustomProperty("$processingTarget"), viewElementOrFragment.getCustomProperty("$processingData"));
+        else if (viewElementOrFragment.name === "$comment") domElement = this._domDocument.createComment(viewElementOrFragment.getCustomProperty("$rawContent"));
         else domElement = viewElementOrFragment.render(this._domDocument, this);
         if (options.bind) this.bindElements(domElement, viewElementOrFragment);
         return domElement;
@@ -11729,7 +12336,8 @@ var ViewDomConverter = class {
     }
     if (domElement.hasAttribute(key) && !shouldRenderAttribute) domElement.removeAttribute(key);
     else if (domElement.hasAttribute(UNSAFE_ATTRIBUTE_NAME_PREFIX + key) && shouldRenderAttribute) domElement.removeAttribute(UNSAFE_ATTRIBUTE_NAME_PREFIX + key);
-    domElement.setAttribute(shouldRenderAttribute ? key : UNSAFE_ATTRIBUTE_NAME_PREFIX + key, value);
+    const attributeName = shouldRenderAttribute ? key : UNSAFE_ATTRIBUTE_NAME_PREFIX + key;
+    domElement.setAttribute(attributeName, _trustedAttributeValue(domElement, attributeName, value));
   }
   /**
   * Removes an attribute from a DOM element.
@@ -11759,12 +12367,13 @@ var ViewDomConverter = class {
     for (const childView of viewElement.getChildren()) {
       if (fillerPositionOffset === offset) yield this._getBlockFiller();
       const transparentRendering = childView.is("element") && !!childView.getCustomProperty("dataPipeline:transparentRendering") && !first(childView.getAttributes());
-      if (transparentRendering && this.renderingMode == "data") if (childView.is("rawElement")) {
-        const tempElement = this._domDocument.createElement(childView.name);
-        childView.render(tempElement, this);
-        yield* [...tempElement.childNodes];
-      } else yield* this.viewChildrenToDom(childView, options);
-      else {
+      if (transparentRendering && this.renderingMode == "data") {
+        if (childView.is("rawElement")) {
+          const tempElement = this._domDocument.createElement(childView.name);
+          childView.render(tempElement, this);
+          yield* [...tempElement.childNodes];
+        } else yield* this.viewChildrenToDom(childView, options);
+      } else {
         if (transparentRendering)
           logWarning("domconverter-transparent-rendering-unsupported-in-editing-pipeline", { viewElement: childView });
         yield this.viewToDom(childView, options);
@@ -11822,7 +12431,7 @@ var ViewDomConverter = class {
         const nodeBefore = viewPosition.nodeBefore;
         domBefore = nodeBefore.is("$text") ? this.findCorrespondingDomText(nodeBefore) : this.mapViewToDom(nodeBefore);
         if (!domBefore) return null;
-        domParent = domBefore.parentNode;
+        domParent = getParentNode(domBefore);
         domAfter = domBefore.nextSibling;
       }
       if (isText(domAfter) && startsWithFiller(domAfter)) return {
@@ -11849,6 +12458,7 @@ var ViewDomConverter = class {
   * @param options.keepOriginalCase If `false`, node's tag name will be converted to lower case. False by default.
   * @param options.skipComments If `false`, comment nodes will be converted to `$comment`
   * {@link module:engine/view/uielement~ViewUIElement view UI elements}. False by default.
+  * @param options.skipProcessingInstructions If `false`, processing instruction nodes will be converted to `$processingInstruction`
   * @returns Converted node or document fragment or `null` if DOM node is a {@link module:engine/view/filler filler}
   * or the given node is an empty text node.
   */
@@ -11900,7 +12510,7 @@ var ViewDomConverter = class {
     if (isGeckoRestrictedDomSelection(domSelection)) return new ViewSelection([]);
     if (domSelection.rangeCount === 1) {
       let container = domSelection.getRangeAt(0).startContainer;
-      if (isText(container)) container = container.parentNode;
+      if (isText(container)) container = getParentNode(container);
       const viewSelection = this.fakeSelectionToView(container);
       if (viewSelection) return viewSelection;
     }
@@ -11942,11 +12552,11 @@ var ViewDomConverter = class {
   * @returns View position.
   */
   domPositionToView(domParent, domOffset = 0) {
-    if (this.isBlockFiller(domParent)) return this.domPositionToView(domParent.parentNode, indexOf(domParent));
+    if (this.isBlockFiller(domParent)) return this.domPositionToView(getParentNode(domParent), indexOf(domParent));
     const viewElement = this.mapDomToView(domParent);
     if (viewElement && (viewElement.is("uiElement") || viewElement.is("rawElement"))) return ViewPosition._createBefore(viewElement);
     if (isText(domParent)) {
-      if (isInlineFiller(domParent)) return this.domPositionToView(domParent.parentNode, indexOf(domParent));
+      if (isInlineFiller(domParent)) return this.domPositionToView(getParentNode(domParent), indexOf(domParent));
       const viewParent = this.findCorrespondingViewText(domParent);
       let offset = domOffset;
       if (!viewParent) return null;
@@ -11961,7 +12571,7 @@ var ViewDomConverter = class {
         if (viewParent) return new ViewPosition(viewParent, 0);
       } else {
         const domBefore = domParent.childNodes[domOffset - 1];
-        if (isText(domBefore) && isInlineFiller(domBefore) || domBefore && this.isBlockFiller(domBefore)) return this.domPositionToView(domBefore.parentNode, indexOf(domBefore));
+        if (isText(domBefore) && isInlineFiller(domBefore) || domBefore && this.isBlockFiller(domBefore)) return this.domPositionToView(getParentNode(domBefore), indexOf(domBefore));
         const viewBefore = isText(domBefore) ? this.findCorrespondingViewText(domBefore) : this.mapDomToView(domBefore);
         if (viewBefore && viewBefore.parent) return new ViewPosition(viewBefore.parent, viewBefore.index + 1);
       }
@@ -12018,7 +12628,7 @@ var ViewDomConverter = class {
         else return null;
       }
     } else {
-      const viewElement = this.mapDomToView(domText.parentNode);
+      const viewElement = this.mapDomToView(getParentNode(domText));
       if (viewElement) {
         const firstChild = viewElement.getChild(0);
         if (firstChild instanceof ViewText) return firstChild;
@@ -12057,7 +12667,7 @@ var ViewDomConverter = class {
   */
   focus(viewEditable) {
     const domEditable = this.mapViewToDom(viewEditable);
-    if (!domEditable || domEditable.ownerDocument.activeElement === domEditable) return;
+    if (!domEditable || getActiveElement(domEditable) === domEditable) return;
     const { scrollX, scrollY } = globalVar.window;
     const scrollPositions = [];
     forEachDomElementAncestor(domEditable, (node) => {
@@ -12080,7 +12690,8 @@ var ViewDomConverter = class {
   _clearDomSelection() {
     const domEditable = this.mapViewToDom(this.document.selection.editableElement);
     if (!domEditable) return;
-    const domSelection = domEditable.ownerDocument.defaultView.getSelection();
+    const domSelection = getSelection(domEditable);
+    if (!domSelection) return;
     const newViewSelection = this.domSelectionToView(domSelection);
     if (newViewSelection && newViewSelection.rangeCount > 0) domSelection.removeAllRanges();
   }
@@ -12128,17 +12739,7 @@ var ViewDomConverter = class {
   * @param selection Selection instance to check.
   */
   isDomSelectionBackward(selection) {
-    if (selection.isCollapsed) return false;
-    const range = this._domDocument.createRange();
-    try {
-      range.setStart(selection.anchorNode, selection.anchorOffset);
-      range.setEnd(selection.focusNode, selection.focusOffset);
-    } catch {
-      return false;
-    }
-    const backward = range.collapsed;
-    range.detach();
-    return backward;
+    return isDomSelectionBackward(selection);
   }
   /**
   * Returns a parent {@link module:engine/view/uielement~ViewUIElement} or {@link module:engine/view/rawelement~ViewRawElement}
@@ -12247,15 +12848,17 @@ var ViewDomConverter = class {
     const hostElement = this.getHostViewElement(domNode);
     if (hostElement) return hostElement;
     if (isComment(domNode) && options.skipComments) return null;
-    if (isText(domNode)) if (isInlineFiller(domNode)) return null;
-    else {
-      const textData = domNode.data;
-      if (textData === "") return null;
-      const textNode = new ViewText(this.document, textData);
-      inlineNodes.push(textNode);
-      return textNode;
-    }
-    else {
+    if (isProcessingInstruction(domNode) && options.skipProcessingInstructions) return null;
+    if (isText(domNode)) {
+      if (isInlineFiller(domNode)) return null;
+      else {
+        const textData = domNode.data;
+        if (textData === "") return null;
+        const textNode = new ViewText(this.document, textData);
+        inlineNodes.push(textNode);
+        return textNode;
+      }
+    } else {
       let viewElement = this.mapDomToView(domNode);
       if (viewElement) {
         if (this._isInlineObjectElement(viewElement)) inlineNodes.push(viewElement);
@@ -12276,6 +12879,11 @@ var ViewDomConverter = class {
         }
         if (isComment(domNode)) {
           viewElement._setCustomProperty("$rawContent", domNode.data);
+          return viewElement;
+        }
+        if (isProcessingInstruction(domNode)) {
+          viewElement._setCustomProperty("$processingTarget", domNode.target);
+          viewElement._setCustomProperty("$processingData", domNode.data);
           return viewElement;
         }
       }
@@ -12459,6 +13067,7 @@ var ViewDomConverter = class {
   */
   _createViewElement(node, options) {
     if (isComment(node)) return new ViewUIElement(this.document, "$comment");
+    if (isProcessingInstruction(node)) return new ViewUIElement(this.document, "$processingInstruction");
     const viewName = options.keepOriginalCase ? node.tagName : node.tagName.toLowerCase();
     return new ViewElement(this.document, viewName);
   }
@@ -12504,14 +13113,14 @@ function forEachDomElementAncestor(element, callback) {
   let node = element;
   while (node) {
     callback(node);
-    node = node.parentElement;
+    node = getParentElement(node);
   }
 }
 function isNbspBlockFiller(domNode, blockElements) {
-  return domNode.isEqualNode(NBSP_FILLER_REF) && hasBlockParent(domNode, blockElements) && domNode.parentNode.childNodes.length === 1;
+  return domNode.isEqualNode(NBSP_FILLER_REF) && hasBlockParent(domNode, blockElements) && getParentNode(domNode).childNodes.length === 1;
 }
 function hasBlockParent(domNode, blockElements) {
-  const parent = domNode.parentNode;
+  const parent = getParentNode(domNode);
   return !!parent && !!parent.tagName && blockElements.includes(parent.tagName.toLowerCase());
 }
 function isViewNbspFiller(parent, data, blockElements) {
@@ -12524,7 +13133,7 @@ function isViewBrFiller(node) {
   return node.is("element", "br") && node.hasAttribute("data-cke-filler");
 }
 function isOnlyBrInBlock(domNode, blockElements) {
-  return domNode.tagName === "BR" && hasBlockParent(domNode, blockElements) && domNode.parentNode.childNodes.length === 1;
+  return domNode.tagName === "BR" && hasBlockParent(domNode, blockElements) && getParentNode(domNode).childNodes.length === 1;
 }
 function _logUnsafeElement(elementName) {
   if (elementName === "script") logWarning("domconverter-unsafe-script-element-detected");
@@ -12611,7 +13220,7 @@ var Observer = class extends ObserverBase {
   * @returns Whether this event should be ignored by the observer.
   */
   checkShouldIgnoreEventFromTarget(domTarget) {
-    if (domTarget && domTarget.nodeType === 3) domTarget = domTarget.parentNode;
+    if (domTarget && domTarget.nodeType === 3) domTarget = getParentNode(domTarget);
     if (!domTarget || domTarget.nodeType !== 1) return false;
     return domTarget.matches("[data-cke-ignore-events], [data-cke-ignore-events] *");
   }
@@ -12889,7 +13498,7 @@ var MutationObserver2 = class extends Observer {
       if (mutation.type === "characterData") {
         const text = domConverter.findCorrespondingViewText(mutation.target);
         if (text && !elementsWithMutatedChildren.has(text.parent)) mutatedTextNodes.add(text);
-        else if (!text && startsWithFiller(mutation.target)) elementsWithMutatedChildren.add(domConverter.mapDomToView(mutation.target.parentNode));
+        else if (!text && startsWithFiller(mutation.target)) elementsWithMutatedChildren.add(domConverter.mapDomToView(getParentNode(mutation.target)));
       }
     }
     const mutations = [];
@@ -13059,10 +13668,15 @@ var SelectionObserver = class extends Observer {
   */
   _loopbackCounter = 0;
   /**
-  * A set of DOM documents that have a pending selection change.
+  * A set of DOM trees (editing roots' shadow roots, or documents) that have a pending selection change.
   * Pending selection change is recorded while selection change event is detected on non focused editable.
   */
   _pendingSelectionChange = /* @__PURE__ */ new Set();
+  /**
+  * The observed editing roots. The DOM selection is resolved against all of them at once, which is what
+  * makes it pierce every shadow boundary they live behind.
+  */
+  _observedDomRoots = /* @__PURE__ */ new Set();
   constructor(view) {
     super(view);
     this.mutationObserver = view.getObserver(MutationObserver2);
@@ -13076,7 +13690,7 @@ var SelectionObserver = class extends Observer {
     this._documentIsSelectingInactivityTimeoutDebounced = debounce2(() => this.document.isSelecting = false, 5e3);
     this.view.document.on("change:isFocused", (evt, name, isFocused) => {
       if (isFocused && this._pendingSelectionChange.size) {
-        for (const domDocument of Array.from(this._pendingSelectionChange)) this._handleSelectionChange(domDocument);
+        this._handleSelectionChange();
         this._pendingSelectionChange.clear();
       }
     });
@@ -13092,7 +13706,7 @@ var SelectionObserver = class extends Observer {
     };
     const endDocumentIsSelecting = () => {
       if (!this.document.isSelecting) return;
-      this._handleSelectionChange(domDocument);
+      this._handleSelectionChange();
       this.document.isSelecting = false;
       this._documentIsSelectingInactivityTimeoutDebounced.cancel();
     };
@@ -13105,6 +13719,7 @@ var SelectionObserver = class extends Observer {
       priority: "highest",
       useCapture: true
     });
+    this._observedDomRoots.add(domElement);
     if (this._documents.has(domDocument)) return;
     this.listenTo(domDocument, "mouseup", endDocumentIsSelecting, {
       priority: "highest",
@@ -13112,11 +13727,11 @@ var SelectionObserver = class extends Observer {
     });
     this.listenTo(domDocument, "selectionchange", () => {
       if (this.document.isComposing && !env.isAndroid) return;
-      this._handleSelectionChange(domDocument);
+      this._handleSelectionChange();
       this._documentIsSelectingInactivityTimeoutDebounced();
     });
     this.listenTo(this.view.document, "compositionstart", () => {
-      this._handleSelectionChange(domDocument);
+      this._handleSelectionChange();
     }, { priority: "lowest" });
     this._documents.add(domDocument);
   }
@@ -13125,6 +13740,7 @@ var SelectionObserver = class extends Observer {
   */
   stopObserving(domElement) {
     this.stopListening(domElement);
+    this._observedDomRoots.delete(domElement);
   }
   /**
   * @inheritDoc
@@ -13142,12 +13758,14 @@ var SelectionObserver = class extends Observer {
   * Selection change listener. {@link module:engine/view/observer/mutationobserver~MutationObserver#flush Flush} mutations, check if
   * a selection changes and fires {@link module:engine/view/document~ViewDocument#event:selectionChange} event on every change
   * and {@link module:engine/view/document~ViewDocument#event:selectionChangeDone} when a selection stop changing.
-  *
-  * @param domDocument DOM document.
   */
-  _handleSelectionChange(domDocument) {
+  _handleSelectionChange() {
     if (!this.isEnabled) return;
-    const domSelection = domDocument.defaultView.getSelection();
+    const domSelection = getSelection(Array.from(this._observedDomRoots));
+    if (!domSelection) {
+      this.view.hasDomSelection = false;
+      return;
+    }
     if (this.checkShouldIgnoreEventFromTarget(domSelection.anchorNode)) return;
     this.mutationObserver.flush();
     const newViewSelection = this.domConverter.domSelectionToView(domSelection);
@@ -13156,12 +13774,13 @@ var SelectionObserver = class extends Observer {
       return;
     }
     this.view.hasDomSelection = true;
+    const domTarget = domSelection.anchorNode.getRootNode();
     this.focusObserver.flush();
     if (!this.view.document.isFocused && !this.view.document.isReadOnly) {
-      this._pendingSelectionChange.add(domDocument);
+      this._pendingSelectionChange.add(domTarget);
       return;
     }
-    this._pendingSelectionChange.delete(domDocument);
+    this._pendingSelectionChange.delete(domTarget);
     if (this.selection.isEqual(newViewSelection) && this.domConverter.isDomSelectionCorrect(domSelection)) return;
     if (++this._loopbackCounter > 60) {
       this._reportInfiniteLoop();
@@ -13346,7 +13965,7 @@ var InputObserver = class extends DomEventObserver {
       else if (viewEnd) return view.createRange(viewEnd);
     }).filter((range) => !!range);
     else if (env.isAndroid) {
-      const domSelection = domEvent.target.ownerDocument.defaultView.getSelection();
+      const domSelection = getSelection(domEvent.target);
       targetRanges = Array.from(view.domConverter.domSelectionToView(domSelection).getRanges());
     }
     if (env.isAndroid && domEvent.inputType == "insertCompositionText" && data && data.endsWith("\n")) {
@@ -13392,12 +14011,12 @@ var InputObserver = class extends DomEventObserver {
   }
 };
 function isFollowedByInlineFiller(node, offset) {
-  while (node.parentNode) {
+  while (getParentNode(node)) {
     if (isText(node)) {
       if (offset != node.data.length) return false;
     } else if (offset != node.childNodes.length) return false;
     offset = indexOf(node) + 1;
-    node = node.parentNode;
+    node = getParentNode(node);
     if (offset < node.childNodes.length && startsWithFiller(node.childNodes[offset])) return true;
   }
   return false;
@@ -13581,7 +14200,7 @@ var EditingView = class extends EditingViewBase {
     this.domConverter.bindElements(domRoot, viewRoot);
     this._renderer.markToSync("children", viewRoot);
     this._renderer.markToSync("attributes", viewRoot);
-    this._renderer.domDocuments.add(domRoot.ownerDocument);
+    this._renderer.addDomRoot(domRoot);
     viewRoot.on("change:children", (evt, node) => this._renderer.markToSync("children", node));
     viewRoot.on("change:attributes", (evt, node) => this._renderer.markToSync("attributes", node));
     viewRoot.on("change:text", (evt, node) => this._renderer.markToSync("text", node));
@@ -13601,9 +14220,10 @@ var EditingView = class extends EditingViewBase {
     const domRoot = this.domRoots.get(name);
     Array.from(domRoot.attributes).forEach(({ name: name2 }) => domRoot.removeAttribute(name2));
     const initialDomRootAttributes = this._initialDomRootAttributes.get(domRoot);
-    for (const attribute in initialDomRootAttributes) domRoot.setAttribute(attribute, initialDomRootAttributes[attribute]);
+    for (const attribute in initialDomRootAttributes) domRoot.setAttribute(attribute, _trustedAttributeValue(domRoot, attribute, initialDomRootAttributes[attribute]));
     this.domRoots.delete(name);
     this.domConverter.unbindDomElement(domRoot);
+    this._renderer.removeDomRoot(domRoot);
     for (const observer of this._observers.values()) observer.stopObserving(domRoot);
   }
   /**
@@ -14756,12 +15376,16 @@ var ModelPosition = class ModelPosition2 extends ModelTypeCheckable {
     const transformed = ModelPosition2._createAt(this);
     if (this.root != deletePosition.root) return transformed;
     if (compareArrays(deletePosition.getParentPath(), this.getParentPath()) == "same") {
-      if (deletePosition.offset < this.offset) if (deletePosition.offset + howMany > this.offset) return null;
-      else transformed.offset -= howMany;
+      if (deletePosition.offset < this.offset) {
+        if (deletePosition.offset + howMany > this.offset) return null;
+        else transformed.offset -= howMany;
+      }
     } else if (compareArrays(deletePosition.getParentPath(), this.getParentPath()) == "prefix") {
       const i = deletePosition.path.length - 1;
-      if (deletePosition.offset <= this.path[i]) if (deletePosition.offset + howMany > this.path[i]) return null;
-      else transformed.path[i] -= howMany;
+      if (deletePosition.offset <= this.path[i]) {
+        if (deletePosition.offset + howMany > this.path[i]) return null;
+        else transformed.path[i] -= howMany;
+      }
     }
     return transformed;
   }
@@ -15184,8 +15808,10 @@ var ModelRange = class ModelRange2 extends ModelTypeCheckable {
   */
   getJoined(otherRange, loose = false) {
     let shouldJoin = this.isIntersecting(otherRange);
-    if (!shouldJoin) if (this.start.isBefore(otherRange.start)) shouldJoin = loose ? this.end.isTouching(otherRange.start) : this.end.isEqual(otherRange.start);
-    else shouldJoin = loose ? otherRange.end.isTouching(this.start) : otherRange.end.isEqual(this.start);
+    if (!shouldJoin) {
+      if (this.start.isBefore(otherRange.start)) shouldJoin = loose ? this.end.isTouching(otherRange.start) : this.end.isEqual(otherRange.start);
+      else shouldJoin = loose ? otherRange.end.isTouching(this.start) : otherRange.end.isEqual(this.start);
+    }
     if (!shouldJoin) return null;
     let startPosition = this.start;
     let endPosition = this.end;
@@ -16074,16 +16700,18 @@ var Mapper = class extends MapperBase {
     let lastLength = 0;
     while (traversedModelOffset < targetModelOffset) {
       viewNode = viewParent.getChild(viewOffset);
-      if (!viewNode) if (viewParent == viewContainer)
-        throw new CKEditorError("mapping-model-offset-not-found", this, {
-          modelOffset: targetModelOffset,
-          viewContainer
-        });
-      else {
-        viewOffset = viewParent.parent.getChildIndex(viewParent) + 1;
-        viewParent = viewParent.parent;
-        if (useCache) this._cache.save(viewParent, viewOffset, viewContainer, traversedModelOffset);
-        continue;
+      if (!viewNode) {
+        if (viewParent == viewContainer)
+          throw new CKEditorError("mapping-model-offset-not-found", this, {
+            modelOffset: targetModelOffset,
+            viewContainer
+          });
+        else {
+          viewOffset = viewParent.parent.getChildIndex(viewParent) + 1;
+          viewParent = viewParent.parent;
+          if (useCache) this._cache.save(viewParent, viewOffset, viewContainer, traversedModelOffset);
+          continue;
+        }
       }
       if (useCache) lastLength = this._getModelLengthAndCache(viewNode, viewContainer, traversedModelOffset);
       else lastLength = this.getModelLength(viewNode);
@@ -16253,13 +16881,14 @@ var MapperCache = class extends MapperCacheBase {
   getClosest(viewContainer, modelOffset) {
     const cache = this._cachedMapping.get(viewContainer);
     let result;
-    if (cache) if (modelOffset > cache.maxModelOffset) result = cache.cacheList[cache.cacheList.length - 1];
-    else {
-      const cacheItem = cache.cacheMap.get(modelOffset);
-      if (cacheItem) result = cacheItem;
-      else result = this._findInCacheList(cache.cacheList, modelOffset);
-    }
-    else result = this.startTracking(viewContainer);
+    if (cache) {
+      if (modelOffset > cache.maxModelOffset) result = cache.cacheList[cache.cacheList.length - 1];
+      else {
+        const cacheItem = cache.cacheMap.get(modelOffset);
+        if (cacheItem) result = cacheItem;
+        else result = this._findInCacheList(cache.cacheList, modelOffset);
+      }
+    } else result = this.startTracking(viewContainer);
     return {
       modelOffset: result.modelOffset,
       viewPosition: result.viewPosition.clone()
@@ -16308,9 +16937,10 @@ var MapperCache = class extends MapperCacheBase {
   * will invalidate everything after `index`.
   */
   _clearCacheInsideParent(viewParent, index) {
-    if (index == 0) if (this._cachedMapping.has(viewParent)) this._clearCacheAll(viewParent);
-    else this._clearCacheInsideParent(viewParent.parent, viewParent.index);
-    else {
+    if (index == 0) {
+      if (this._cachedMapping.has(viewParent)) this._clearCacheAll(viewParent);
+      else this._clearCacheInsideParent(viewParent.parent, viewParent.index);
+    } else {
       const lastValidNode = viewParent.getChild(index - 1);
       this._clearCacheAfter(lastValidNode);
     }
@@ -17946,8 +18576,10 @@ function transform$2(operation) {
   const contentChanged = doesOperationChangeRangeContent(this, operation);
   let deletionPosition = null;
   if (boundariesChanged) {
-    if (result.root.rootName == "$graveyard") if (operation.type == "remove") deletionPosition = operation.sourcePosition;
-    else deletionPosition = operation.deletionPosition;
+    if (result.root.rootName == "$graveyard") {
+      if (operation.type == "remove") deletionPosition = operation.sourcePosition;
+      else deletionPosition = operation.deletionPosition;
+    }
     const oldRange = this.toRange();
     this.start = result.start;
     this.end = result.end;
@@ -20264,8 +20896,10 @@ function changeAttribute(attributeCreator) {
       throw new CKEditorError("conversion-attribute-to-attribute-on-text", conversionApi.dispatcher, data);
     if (data.attributeOldValue !== null && oldAttribute) {
       let value = oldAttribute.value;
-      if (oldAttribute.key == "style") if (typeof oldAttribute.value == "string") value = new StylesMap(viewWriter.document.stylesProcessor).setTo(oldAttribute.value).getStylesEntries().map(([key]) => key);
-      else value = Object.keys(oldAttribute.value);
+      if (oldAttribute.key == "style") {
+        if (typeof oldAttribute.value == "string") value = new StylesMap(viewWriter.document.stylesProcessor).setTo(oldAttribute.value).getStylesEntries().map(([key]) => key);
+        else value = Object.keys(oldAttribute.value);
+      }
       viewWriter.removeAttribute(oldAttribute.key, value, viewElement);
     }
     if (data.attributeNewValue !== null && newAttribute) {
@@ -20448,12 +21082,13 @@ function normalizeToAttributeConfig(view) {
     key: view,
     value: modelAttributeValue
   });
-  else if (typeof view == "object") if (view.value) return () => view;
-  else return (modelAttributeValue) => ({
-    key: view.key,
-    value: modelAttributeValue
-  });
-  else return view;
+  else if (typeof view == "object") {
+    if (view.value) return () => view;
+    else return (modelAttributeValue) => ({
+      key: view.key,
+      value: modelAttributeValue
+    });
+  } else return view;
 }
 function prepareDescriptor(highlightDescriptor, data, conversionApi) {
   const descriptor = typeof highlightDescriptor == "function" ? highlightDescriptor(data, conversionApi) : { ...highlightDescriptor };
@@ -22115,10 +22750,12 @@ var ModelSchema = class extends ModelSchemaBase {
     let start = range.start;
     let end = range.start;
     for (const item of range.getItems({ shallow: true })) {
-      if (item.is("element")) if (options.includeEmptyRanges && item.isEmpty) {
-        const context = this.createContext(item);
-        if (this.checkChild(context, "$text") && this.checkAttribute(context.push("$text"), attribute)) yield ModelRange._createIn(item);
-      } else yield* this._getValidRangesForRange(ModelRange._createIn(item), attribute, options);
+      if (item.is("element")) {
+        if (options.includeEmptyRanges && item.isEmpty) {
+          const context = this.createContext(item);
+          if (this.checkChild(context, "$text") && this.checkAttribute(context.push("$text"), attribute)) yield ModelRange._createIn(item);
+        } else yield* this._getValidRangesForRange(ModelRange._createIn(item), attribute, options);
+      }
       if (!this.checkAttribute(item, attribute)) {
         if (!start.isEqual(end)) yield new ModelRange(start, end);
         start = ModelPosition._createAfter(item);
@@ -22759,7 +23396,19 @@ var HtmlDataProcessor = class {
   * A basic HTML writer instance used to convert DOM elements to an HTML string.
   */
   htmlWriter;
+  /**
+  * If `false`, comment nodes will be converted. Otherwise, comment nodes are ignored.
+  *
+  * @default true
+  */
   skipComments = true;
+  /**
+  * If `false`, processing instruction nodes (for example `<?target data?>`) will be converted.
+  * Otherwise, processing instruction nodes are ignored.
+  *
+  * @default true
+  */
+  skipProcessingInstructions = true;
   /**
   * Creates a new instance of the HTML data processor class.
   *
@@ -22788,7 +23437,10 @@ var HtmlDataProcessor = class {
   */
   toView(data) {
     const domFragment = this._toDom(data);
-    return this.domConverter.domToView(domFragment, { skipComments: this.skipComments });
+    return this.domConverter.domToView(domFragment, {
+      skipComments: this.skipComments,
+      skipProcessingInstructions: this.skipProcessingInstructions
+    });
   }
   /**
   * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as raw data
@@ -22822,7 +23474,7 @@ var HtmlDataProcessor = class {
   */
   _toDom(data) {
     if (!/<(?:html|body|head|meta)(?:\s[^>]*)?>/i.test(data.trim().slice(0, 1e4))) data = `<body>${data}</body>`;
-    const document2 = this.domParser.parseFromString(data, "text/html");
+    const document2 = this.domParser.parseFromString(trustedHtml(data), "text/html");
     const fragment = document2.createDocumentFragment();
     const bodyChildNodes = document2.body.childNodes;
     while (bodyChildNodes.length > 0) fragment.appendChild(bodyChildNodes[0]);
@@ -24457,8 +25109,10 @@ var MarkerOperation = class MarkerOperation2 extends Operation {
   get affectedSelectable() {
     const ranges = [];
     if (this.oldRange) ranges.push(this.oldRange.clone());
-    if (this.newRange) if (this.oldRange) ranges.push(...this.newRange.getDifference(this.oldRange));
-    else ranges.push(this.newRange.clone());
+    if (this.newRange) {
+      if (this.oldRange) ranges.push(...this.newRange.getDifference(this.oldRange));
+      else ranges.push(this.newRange.clone());
+    }
     return ranges;
   }
   /**
@@ -25140,21 +25794,25 @@ var ContextFactory = class {
         else if (opA.targetPosition.isAfter(opB.sourcePosition)) this._setRelation(opA, opB, "moveTargetAfter");
         else if (opA.howMany > 1 && opA.sourcePosition.isEqual(opB.deletionPosition)) this._setRelation(opA, opB, "firstToMoveMerged");
         else if (opA.howMany > 1 && opA.sourcePosition.getShiftedBy(opA.howMany - 1).isEqual(opB.deletionPosition)) this._setRelation(opA, opB, "lastToMoveMerged");
-      } else if (opB instanceof MoveOperation) if (opA.targetPosition.isEqual(opB.sourcePosition) || opA.targetPosition.isBefore(opB.sourcePosition)) this._setRelation(opA, opB, "insertBefore");
-      else this._setRelation(opA, opB, "insertAfter");
+      } else if (opB instanceof MoveOperation) {
+        if (opA.targetPosition.isEqual(opB.sourcePosition) || opA.targetPosition.isBefore(opB.sourcePosition)) this._setRelation(opA, opB, "insertBefore");
+        else this._setRelation(opA, opB, "insertAfter");
+      }
     } else if (opA instanceof SplitOperation) {
       if (opB instanceof MergeOperation) {
         if (opA.splitPosition.isBefore(opB.sourcePosition)) this._setRelation(opA, opB, "splitBefore");
-      } else if (opB instanceof MoveOperation) if (opA.splitPosition.isEqual(opB.sourcePosition) || opA.splitPosition.isBefore(opB.sourcePosition)) this._setRelation(opA, opB, "splitBefore");
-      else {
-        const range = ModelRange._createFromPositionAndShift(opB.sourcePosition, opB.howMany);
-        if (opA.splitPosition.hasSameParentAs(opB.sourcePosition) && range.containsPosition(opA.splitPosition)) {
-          const howMany = range.end.offset - opA.splitPosition.offset;
-          const offset = opA.splitPosition.offset - range.start.offset;
-          this._setRelation(opA, opB, {
-            howMany,
-            offset
-          });
+      } else if (opB instanceof MoveOperation) {
+        if (opA.splitPosition.isEqual(opB.sourcePosition) || opA.splitPosition.isBefore(opB.sourcePosition)) this._setRelation(opA, opB, "splitBefore");
+        else {
+          const range = ModelRange._createFromPositionAndShift(opB.sourcePosition, opB.howMany);
+          if (opA.splitPosition.hasSameParentAs(opB.sourcePosition) && range.containsPosition(opA.splitPosition)) {
+            const howMany = range.end.offset - opA.splitPosition.offset;
+            const offset = opA.splitPosition.offset - range.start.offset;
+            this._setRelation(opA, opB, {
+              howMany,
+              offset
+            });
+          }
         }
       }
     } else if (opA instanceof MergeOperation) {
@@ -25392,8 +26050,10 @@ setTransformation(MarkerOperation, InsertOperation, (a, b) => {
   return [a];
 });
 setTransformation(MarkerOperation, MarkerOperation, (a, b, context) => {
-  if (a.name == b.name) if (context.aIsStrong) a.oldRange = b.newRange ? b.newRange.clone() : null;
-  else return [new NoOperation(0)];
+  if (a.name == b.name) {
+    if (context.aIsStrong) a.oldRange = b.newRange ? b.newRange.clone() : null;
+    else return [new NoOperation(0)];
+  }
   return [a];
 });
 setTransformation(MarkerOperation, MergeOperation, (a, b) => {
@@ -25422,14 +26082,16 @@ setTransformation(MarkerOperation, SplitOperation, (a, b, context) => {
   if (a.newRange) {
     if (context.abRelation) {
       const aNewRange = a.newRange._getTransformedBySplitOperation(b);
-      if (a.newRange.start.isEqual(b.splitPosition)) if (context.abRelation.wasStartBeforeMergedElement) a.newRange.start = ModelPosition._createAt(b.insertionPosition);
-      else if (context.abRelation.wasInLeftElement) a.newRange.start = ModelPosition._createAt(a.newRange.start);
-      else a.newRange.start = ModelPosition._createAt(b.moveTargetPosition);
-      else a.newRange.start = aNewRange.start;
-      if (a.newRange.end.isEqual(b.splitPosition)) if (a.newRange.end.isEqual(b.splitPosition) && context.abRelation.wasEndBeforeMergedElement) a.newRange.end = ModelPosition._createAt(b.insertionPosition);
-      else if (context.abRelation.wasInRightElement) a.newRange.end = ModelPosition._createAt(b.moveTargetPosition);
-      else a.newRange.end = ModelPosition._createAt(a.newRange.end);
-      else a.newRange.end = aNewRange.end;
+      if (a.newRange.start.isEqual(b.splitPosition)) {
+        if (context.abRelation.wasStartBeforeMergedElement) a.newRange.start = ModelPosition._createAt(b.insertionPosition);
+        else if (context.abRelation.wasInLeftElement) a.newRange.start = ModelPosition._createAt(a.newRange.start);
+        else a.newRange.start = ModelPosition._createAt(b.moveTargetPosition);
+      } else a.newRange.start = aNewRange.start;
+      if (a.newRange.end.isEqual(b.splitPosition)) {
+        if (a.newRange.end.isEqual(b.splitPosition) && context.abRelation.wasEndBeforeMergedElement) a.newRange.end = ModelPosition._createAt(b.insertionPosition);
+        else if (context.abRelation.wasInRightElement) a.newRange.end = ModelPosition._createAt(b.moveTargetPosition);
+        else a.newRange.end = ModelPosition._createAt(a.newRange.end);
+      } else a.newRange.end = aNewRange.end;
       return [a];
     }
     a.newRange = a.newRange._getTransformedBySplitOperation(b);
@@ -25443,13 +26105,15 @@ setTransformation(MergeOperation, InsertOperation, (a, b) => {
   return [a];
 });
 setTransformation(MergeOperation, MergeOperation, (a, b, context) => {
-  if (a.sourcePosition.isEqual(b.sourcePosition) && a.targetPosition.isEqual(b.targetPosition)) if (!context.bWasUndone) return [new NoOperation(0)];
-  else {
-    const path = b.graveyardPosition.path.slice();
-    path.push(0);
-    a.sourcePosition = new ModelPosition(b.graveyardPosition.root, path);
-    a.howMany = 0;
-    return [a];
+  if (a.sourcePosition.isEqual(b.sourcePosition) && a.targetPosition.isEqual(b.targetPosition)) {
+    if (!context.bWasUndone) return [new NoOperation(0)];
+    else {
+      const path = b.graveyardPosition.path.slice();
+      path.push(0);
+      a.sourcePosition = new ModelPosition(b.graveyardPosition.root, path);
+      a.howMany = 0;
+      return [a];
+    }
   }
   if (a.sourcePosition.isEqual(b.sourcePosition) && !a.targetPosition.isEqual(b.targetPosition) && !context.bWasUndone && context.abRelation != "splitAtSource") {
     const aToGraveyard = a.targetPosition.root.rootName == "$graveyard";
@@ -25568,9 +26232,10 @@ setTransformation(MoveOperation, MoveOperation, (a, b, context) => {
     common.start = common.start._getCombined(b.sourcePosition, b.getMovedRangeStart());
     common.end = common.end._getCombined(b.sourcePosition, b.getMovedRangeStart());
     if (ranges.length === 0) ranges.push(common);
-    else if (ranges.length == 1) if (rangeB.start.isBefore(rangeA.start) || rangeB.start.isEqual(rangeA.start)) ranges.unshift(common);
-    else ranges.push(common);
-    else ranges.splice(1, 0, common);
+    else if (ranges.length == 1) {
+      if (rangeB.start.isBefore(rangeA.start) || rangeB.start.isEqual(rangeA.start)) ranges.unshift(common);
+      else ranges.push(common);
+    } else ranges.splice(1, 0, common);
   }
   if (ranges.length === 0) return [new NoOperation(a.baseVersion)];
   return _makeMoveOperationsFromRanges(ranges, newTargetPosition);
@@ -25628,11 +26293,13 @@ setTransformation(MoveOperation, MergeOperation, (a, b, context) => {
         results.push(splitNodesMove);
         return results;
       }
-    } else if (a.howMany == 1) if (!context.bWasUndone) return [new NoOperation(0)];
-    else {
-      a.sourcePosition = b.graveyardPosition.clone();
-      a.targetPosition = a.targetPosition._getTransformedByMergeOperation(b);
-      return [a];
+    } else if (a.howMany == 1) {
+      if (!context.bWasUndone) return [new NoOperation(0)];
+      else {
+        a.sourcePosition = b.graveyardPosition.clone();
+        a.targetPosition = a.targetPosition._getTransformedByMergeOperation(b);
+        return [a];
+      }
     }
   }
   const transformed = ModelRange._createFromPositionAndShift(a.sourcePosition, a.howMany)._getTransformedByMergeOperation(b);
@@ -25659,8 +26326,10 @@ setTransformation(RenameOperation, MoveOperation, (a, b) => {
   return [a];
 });
 setTransformation(RenameOperation, RenameOperation, (a, b, context) => {
-  if (a.position.isEqual(b.position)) if (context.aIsStrong) a.oldName = b.newName;
-  else return [new NoOperation(0)];
+  if (a.position.isEqual(b.position)) {
+    if (context.aIsStrong) a.oldName = b.newName;
+    else return [new NoOperation(0)];
+  }
   return [a];
 });
 setTransformation(RenameOperation, SplitOperation, (a, b) => {
@@ -25671,8 +26340,10 @@ setTransformation(RenameOperation, SplitOperation, (a, b) => {
   return [a];
 });
 setTransformation(RootAttributeOperation, RootAttributeOperation, (a, b, context) => {
-  if (a.root === b.root && a.key === b.key) if (!context.aIsStrong) return [new NoOperation(0)];
-  else a.oldValue = b.newValue;
+  if (a.root === b.root && a.key === b.key) {
+    if (!context.aIsStrong) return [new NoOperation(0)];
+    else a.oldValue = b.newValue;
+  }
   return [a];
 });
 setTransformation(RootOperation, RootOperation, (a, b) => {
@@ -26236,8 +26907,10 @@ var Differ = class Differ2 {
   * @returns Diff between the old and the new model tree state.
   */
   getChanges(options = {}) {
-    if (this._cachedChanges) if (options.includeChangesInGraveyard) return this._cachedChangesWithGraveyard.slice();
-    else return this._cachedChanges.slice();
+    if (this._cachedChanges) {
+      if (options.includeChangesInGraveyard) return this._cachedChangesWithGraveyard.slice();
+      else return this._cachedChanges.slice();
+    }
     let diffSet = [];
     for (const element of this._changesInElement.keys()) {
       const changes = this._changesInElement.get(element).sort((a, b) => {
@@ -26571,16 +27244,17 @@ var Differ = class Differ2 {
       if (inc.type == "remove") {
         if (old.type == "insert") {
           if (incEnd <= old.offset) old.offset -= inc.howMany;
-          else if (incEnd <= oldEnd) if (inc.offset < old.offset) {
-            const intersectionLength = incEnd - old.offset;
-            old.offset = inc.offset;
-            old.howMany -= intersectionLength;
-            inc.nodesToHandle -= intersectionLength;
-          } else {
-            old.howMany -= inc.nodesToHandle;
-            inc.nodesToHandle = 0;
-          }
-          else if (inc.offset <= old.offset) {
+          else if (incEnd <= oldEnd) {
+            if (inc.offset < old.offset) {
+              const intersectionLength = incEnd - old.offset;
+              old.offset = inc.offset;
+              old.howMany -= intersectionLength;
+              inc.nodesToHandle -= intersectionLength;
+            } else {
+              old.howMany -= inc.nodesToHandle;
+              inc.nodesToHandle = 0;
+            }
+          } else if (inc.offset <= old.offset) {
             inc.nodesToHandle -= old.howMany;
             old.howMany = 0;
           } else if (inc.offset < oldEnd) {
@@ -26602,17 +27276,19 @@ var Differ = class Differ2 {
             const intersectionLength = incEnd - old.offset;
             old.offset = inc.offset;
             old.howMany -= intersectionLength;
-          } else if (inc.offset < oldEnd) if (incEnd <= oldEnd) {
-            const howMany = old.howMany;
-            old.howMany = inc.offset - old.offset;
-            const howManyAfter = howMany - old.howMany - inc.nodesToHandle;
-            changes.unshift({
-              type: "attribute",
-              offset: inc.offset,
-              howMany: howManyAfter,
-              count: this._changeCount++
-            });
-          } else old.howMany -= oldEnd - inc.offset;
+          } else if (inc.offset < oldEnd) {
+            if (incEnd <= oldEnd) {
+              const howMany = old.howMany;
+              old.howMany = inc.offset - old.offset;
+              const howManyAfter = howMany - old.howMany - inc.nodesToHandle;
+              changes.unshift({
+                type: "attribute",
+                offset: inc.offset,
+                howMany: howManyAfter,
+                count: this._changeCount++
+              });
+            } else old.howMany -= oldEnd - inc.offset;
+          }
         }
       }
       if (inc.type == "attribute") {
@@ -26630,10 +27306,12 @@ var Differ = class Differ2 {
             }
             inc.nodesToHandle = old.offset - inc.offset;
             inc.howMany = inc.nodesToHandle;
-          } else if (inc.offset >= old.offset && inc.offset < oldEnd) if (incEnd > oldEnd) {
-            inc.nodesToHandle = incEnd - oldEnd;
-            inc.offset = oldEnd;
-          } else inc.nodesToHandle = 0;
+          } else if (inc.offset >= old.offset && inc.offset < oldEnd) {
+            if (incEnd > oldEnd) {
+              inc.nodesToHandle = incEnd - oldEnd;
+              inc.offset = oldEnd;
+            } else inc.nodesToHandle = 0;
+          }
         }
         if (old.type == "remove") {
           if (inc.offset < old.offset && incEnd > old.offset) {
@@ -28102,12 +28780,14 @@ var ModelWriter = class {
     this._assertWriterUsedCorrectly();
     if (item instanceof ModelText && item.data == "") return;
     const position = ModelPosition._createAt(itemOrPosition, offset);
-    if (item.parent) if (isSameTree(item.root, position.root)) {
-      this.move(ModelRange._createOn(item), position);
-      return;
-    } else if (item.root.document)
-      throw new CKEditorError("model-writer-insert-forbidden-move", this);
-    else this.remove(item);
+    if (item.parent) {
+      if (isSameTree(item.root, position.root)) {
+        this.move(ModelRange._createOn(item), position);
+        return;
+      } else if (item.root.document)
+        throw new CKEditorError("model-writer-insert-forbidden-move", this);
+      else this.remove(item);
+    }
     const version2 = position.root.document ? position.root.document.version : null;
     const children = item instanceof ModelDocumentFragment ? item._removeChildren(0, item.childCount) : item;
     const insert = new InsertOperation(position, children, version2);
@@ -29299,8 +29979,10 @@ function insertContent(model, content, selectable) {
         selectionLiveRange.detach();
       }
     }
-    if (newRange) if (selection instanceof ModelDocumentSelection) writer.setSelection(newRange);
-    else selection.setTo(newRange);
+    if (newRange) {
+      if (selection instanceof ModelDocumentSelection) writer.setSelection(newRange);
+      else selection.setTo(newRange);
+    }
     const affectedRange = insertion.getAffectedRange() || model.createRange(selection.anchor);
     insertion.destroy();
     return affectedRange;
@@ -30361,10 +31043,12 @@ var Model = class extends ModelBase {
     if (!ignoreMarkers) {
       for (const intersectingMarker of this.markers.getMarkersIntersectingRange(range)) if (intersectingMarker.affectsData) return true;
     }
-    for (const item of range.getItems()) if (this.schema.isContent(item)) if (item.is("$textProxy")) {
-      if (!ignoreWhitespaces) return true;
-      else if (item.data.search(/\S/) !== -1) return true;
-    } else return true;
+    for (const item of range.getItems()) if (this.schema.isContent(item)) {
+      if (item.is("$textProxy")) {
+        if (!ignoreWhitespaces) return true;
+        else if (item.data.search(/\S/) !== -1) return true;
+      } else return true;
+    }
     return false;
   }
   /**
@@ -30557,9 +31241,11 @@ var Model = class extends ModelBase {
 function normalizeSelectable(selectable, placeOrOffset) {
   if (!selectable) return;
   if (selectable instanceof ModelSelection || selectable instanceof ModelDocumentSelection) return selectable;
-  if (selectable instanceof ModelNode) if (placeOrOffset || placeOrOffset === 0) return new ModelSelection(selectable, placeOrOffset);
-  else if (selectable.is("rootElement")) return new ModelSelection(selectable, "in");
-  else return new ModelSelection(selectable, "on");
+  if (selectable instanceof ModelNode) {
+    if (placeOrOffset || placeOrOffset === 0) return new ModelSelection(selectable, placeOrOffset);
+    else if (selectable.is("rootElement")) return new ModelSelection(selectable, "in");
+    else return new ModelSelection(selectable, "on");
+  }
   return new ModelSelection(selectable);
 }
 var MouseObserver = class extends DomEventObserver {
@@ -30918,1016 +31604,7 @@ var ViewUpcastWriter = class {
   }
 };
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-watchdog/dist/index.js
-var Watchdog = class {
-  /**
-  * An array of crashes saved as an object with the following properties:
-  *
-  * * `message`: `String`,
-  * * `stack`: `String`,
-  * * `date`: `Number`,
-  * * `filename`: `String | undefined`,
-  * * `lineno`: `Number | undefined`,
-  * * `colno`: `Number | undefined`,
-  */
-  crashes = [];
-  /**
-  * Specifies the state of the item watched by the watchdog. The state can be one of the following values:
-  *
-  * * `initializing` &ndash; Before the first initialization, and after crashes, before the item is ready.
-  * * `ready` &ndash; A state when the user can interact with the item.
-  * * `crashed` &ndash; A state when an error occurs. It quickly changes to `initializing` or `crashedPermanently`
-  * depending on how many and how frequent errors have been caught recently.
-  * * `crashedPermanently` &ndash; A state when the watchdog stops reacting to errors and keeps the item it is watching crashed,
-  * * `destroyed` &ndash; A state when the item is manually destroyed by the user after calling `watchdog.destroy()`.
-  */
-  state = "initializing";
-  /**
-  * @see module:watchdog/watchdog~WatchdogConfig
-  */
-  _crashNumberLimit;
-  /**
-  * Returns the result of the `Date.now()` call. It can be overridden in tests to mock time as some popular
-  * approaches like `sinon.useFakeTimers()` do not work well with error handling.
-  */
-  _now = Date.now;
-  /**
-  * @see module:watchdog/watchdog~WatchdogConfig
-  */
-  _minimumNonErrorTimePeriod;
-  /**
-  * Checks if the event error comes from the underlying item and restarts the item.
-  */
-  _boundErrorHandler;
-  /**
-  * A dictionary of event emitter listeners.
-  */
-  _listeners;
-  /**
-  * @param {module:watchdog/watchdog~WatchdogConfig} config The watchdog plugin configuration.
-  */
-  constructor(config) {
-    this.crashes = [];
-    this._crashNumberLimit = typeof config.crashNumberLimit === "number" ? config.crashNumberLimit : 3;
-    this._minimumNonErrorTimePeriod = typeof config.minimumNonErrorTimePeriod === "number" ? config.minimumNonErrorTimePeriod : 5e3;
-    this._boundErrorHandler = (evt) => {
-      const error = "error" in evt ? evt.error : evt.reason;
-      if (error instanceof Error) this._handleError(error, evt);
-    };
-    this._listeners = {};
-    if (!this._restart) throw new Error("The Watchdog class was split into the abstract `Watchdog` class and the `EditorWatchdog` class. Please, use `EditorWatchdog` if you have used the `Watchdog` class previously.");
-  }
-  /**
-  * Destroys the watchdog and releases the resources.
-  */
-  destroy() {
-    this._stopErrorHandling();
-    this._listeners = {};
-  }
-  /**
-  * Starts listening to a specific event name by registering a callback that will be executed
-  * whenever an event with a given name fires.
-  *
-  * Note that this method differs from the CKEditor 5's default `EventEmitterMixin` implementation.
-  *
-  * @param eventName The event name.
-  * @param callback A callback which will be added to event listeners.
-  */
-  on(eventName, callback) {
-    if (!this._listeners[eventName]) this._listeners[eventName] = [];
-    this._listeners[eventName].push(callback);
-  }
-  /**
-  * Stops listening to the specified event name by removing the callback from event listeners.
-  *
-  * Note that this method differs from the CKEditor 5's default `EventEmitterMixin` implementation.
-  *
-  * @param eventName The event name.
-  * @param callback A callback which will be removed from event listeners.
-  */
-  off(eventName, callback) {
-    this._listeners[eventName] = this._listeners[eventName].filter((cb) => cb !== callback);
-  }
-  /**
-  * Fires an event with a given event name and arguments.
-  *
-  * Note that this method differs from the CKEditor 5's default `EventEmitterMixin` implementation.
-  */
-  _fire(eventName, ...args) {
-    const callbacks = this._listeners[eventName] || [];
-    for (const callback of callbacks) callback.apply(this, [null, ...args]);
-  }
-  /**
-  * Starts error handling by attaching global error handlers.
-  */
-  _startErrorHandling() {
-    window.addEventListener("error", this._boundErrorHandler);
-    window.addEventListener("unhandledrejection", this._boundErrorHandler);
-  }
-  /**
-  * Stops error handling by detaching global error handlers.
-  */
-  _stopErrorHandling() {
-    window.removeEventListener("error", this._boundErrorHandler);
-    window.removeEventListener("unhandledrejection", this._boundErrorHandler);
-  }
-  /**
-  * Checks if an error comes from the watched item and restarts it.
-  * It reacts to {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} only.
-  *
-  * @fires error
-  * @param error Error.
-  * @param evt An error event.
-  */
-  _handleError(error, evt) {
-    if (this._shouldReactToError(error)) {
-      this.crashes.push({
-        message: error.message,
-        stack: error.stack,
-        filename: evt instanceof ErrorEvent ? evt.filename : void 0,
-        lineno: evt instanceof ErrorEvent ? evt.lineno : void 0,
-        colno: evt instanceof ErrorEvent ? evt.colno : void 0,
-        date: this._now()
-      });
-      const causesRestart = this._shouldRestart();
-      this.state = "crashed";
-      this._fire("stateChange");
-      this._fire("error", {
-        error,
-        causesRestart
-      });
-      if (causesRestart) this._restart();
-      else {
-        this.state = "crashedPermanently";
-        this._fire("stateChange");
-      }
-    }
-  }
-  /**
-  * Checks whether an error should be handled by the watchdog.
-  *
-  * @param error An error that was caught by the error handling process.
-  */
-  _shouldReactToError(error) {
-    return error.is && error.is("CKEditorError") && error.context !== void 0 && error.context !== null && this.state === "ready" && this._isErrorComingFromThisItem(error);
-  }
-  /**
-  * Checks if the watchdog should restart the underlying item.
-  */
-  _shouldRestart() {
-    if (this.crashes.length <= this._crashNumberLimit) return true;
-    return (this.crashes[this.crashes.length - 1].date - this.crashes[this.crashes.length - 1 - this._crashNumberLimit].date) / this._crashNumberLimit > this._minimumNonErrorTimePeriod;
-  }
-};
-function getSubNodes(head, excludedProperties = /* @__PURE__ */ new Set()) {
-  const nodes = [head];
-  const subNodes = /* @__PURE__ */ new Set();
-  let nodeIndex = 0;
-  while (nodes.length > nodeIndex) {
-    const node = nodes[nodeIndex++];
-    if (subNodes.has(node) || !shouldNodeBeIncluded(node) || excludedProperties.has(node)) continue;
-    subNodes.add(node);
-    if (Symbol.iterator in node) try {
-      for (const n of node) nodes.push(n);
-    } catch {
-    }
-    else for (const key in node) {
-      if (key === "defaultValue") continue;
-      nodes.push(node[key]);
-    }
-  }
-  return subNodes;
-}
-function shouldNodeBeIncluded(node) {
-  const type = Object.prototype.toString.call(node);
-  const typeOfNode = typeof node;
-  return !(typeOfNode === "number" || typeOfNode === "boolean" || typeOfNode === "string" || typeOfNode === "symbol" || typeOfNode === "function" || type === "[object Date]" || type === "[object RegExp]" || type === "[object Module]" || node === void 0 || node === null || node._watchdogExcluded || node instanceof EventTarget || node instanceof Event);
-}
-function areConnectedThroughProperties(target1, target2, excludedNodes = /* @__PURE__ */ new Set()) {
-  if (target1 === target2 && isObject2(target1)) return true;
-  const subNodes1 = getSubNodes(target1, excludedNodes);
-  const subNodes2 = getSubNodes(target2, excludedNodes);
-  for (const node of subNodes1) if (subNodes2.has(node)) return true;
-  return false;
-}
-function isObject2(structure) {
-  return typeof structure === "object" && structure !== null;
-}
-function normalizeRootsConfig(sourceElementsOrData, config, defaultRootName) {
-  const mainRootConfig = config.root;
-  const rootsConfig = config.roots || /* @__PURE__ */ Object.create(null);
-  if (defaultRootName && !rootsConfig[defaultRootName]) rootsConfig[defaultRootName] = mainRootConfig || /* @__PURE__ */ Object.create(null);
-  const sourceElementIsPlainObject = isPlainObject$1(sourceElementsOrData);
-  const legacyInitialData = getLegacyInitialData(config, sourceElementIsPlainObject, defaultRootName);
-  const rootNames = Array.from(/* @__PURE__ */ new Set([
-    ...sourceElementIsPlainObject ? Object.keys(sourceElementsOrData) : [],
-    ...Object.keys(rootsConfig),
-    ...Object.keys(legacyInitialData)
-  ]));
-  for (const rootName of rootNames) {
-    const rootConfig = rootsConfig[rootName] || /* @__PURE__ */ Object.create(null);
-    rootConfig.initialData = "";
-    rootConfig.placeholder ??= getLegacyPlainConfigValue(config, "placeholder", rootName);
-    rootConfig.label ??= getLegacyPlainConfigValue(config, "label", rootName);
-    rootsConfig[rootName] = rootConfig;
-  }
-  config.roots = rootsConfig;
-}
-function isPlainObject$1(sourceElementsOrData) {
-  return !!sourceElementsOrData && typeof sourceElementsOrData == "object" && !Array.isArray(sourceElementsOrData) && !isElement$2(sourceElementsOrData);
-}
-function getLegacyInitialData(config, sourceElementIsObject, defaultRootName) {
-  return sourceElementIsObject || !defaultRootName ? config.initialData || /* @__PURE__ */ Object.create(null) : { [defaultRootName]: config.initialData };
-}
-function getLegacyPlainConfigValue(config, key, rootName) {
-  const legacyValue = config[key];
-  if (legacyValue) return typeof legacyValue == "string" ? legacyValue : legacyValue[rootName];
-}
-function isElement$2(value) {
-  return isElement(value);
-}
-var EditorWatchdog = class extends Watchdog {
-  /**
-  * The current editor instance.
-  */
-  _editor = null;
-  /**
-  * A promise associated with the life cycle of the editor (creation or destruction processes).
-  *
-  * It is used to prevent the initialization of the editor if the previous instance has not been destroyed yet,
-  * and conversely, to prevent the destruction of the editor if it has not been initialized.
-  */
-  _lifecyclePromise = null;
-  /**
-  * Throttled save method. The `save()` method is called the specified `saveInterval` after `throttledSave()` is called,
-  * unless a new action happens in the meantime.
-  */
-  _throttledSave;
-  /**
-  * The latest saved editor data represented as a root name -> root data object.
-  */
-  _data;
-  /**
-  * The last document version.
-  */
-  _lastDocumentVersion;
-  /**
-  * The editor source element or data.
-  */
-  _elementOrData;
-  /**
-  * Stores the original DOM element for single-root editors.
-  */
-  _editorAttachTo = null;
-  /**
-  * Specifies whether the editor is a single-root editor (e.g. ClassicEditor) or a multi-root editor (e.g. MultiRootEditor).
-  */
-  _isSingleRootEditor = true;
-  /**
-  * Specifies whether the editor was created using config-based creator mode (without a source element or data as the first argument).
-  *
-  * @internal
-  */
-  _isUsingConfigBasedCreator = false;
-  /**
-  * The latest record of the editor editable elements. Used to restart the editor.
-  */
-  _editables = {};
-  /**
-  * The editor configuration.
-  */
-  _config;
-  _excludedProps;
-  /**
-  * @param Editor The editor class.
-  * @param watchdogConfig The watchdog plugin configuration.
-  */
-  constructor(Editor2, watchdogConfig = {}) {
-    super(watchdogConfig);
-    this._throttledSave = throttle(this._save.bind(this), typeof watchdogConfig.saveInterval === "number" ? watchdogConfig.saveInterval : 5e3);
-    if (Editor2) this._creator = ((elementOrDataOrConfig, config) => {
-      if (config === void 0) return Editor2.create(elementOrDataOrConfig);
-      return Editor2.create(elementOrDataOrConfig, config);
-    });
-    this._destructor = (editor) => editor.destroy();
-  }
-  /**
-  * The current editor instance.
-  */
-  get editor() {
-    return this._editor;
-  }
-  /**
-  * @internal
-  */
-  get _item() {
-    return this._editor;
-  }
-  /**
-  * Sets the function that is responsible for the editor creation.
-  * It expects a function that should return a promise.
-  *
-  * For config-based editor creation:
-  *
-  * ```ts
-  * watchdog.setCreator( config => ClassicEditor.create( config ) );
-  * ```
-  *
-  * For legacy editor creation (with element or data as the first argument):
-  *
-  * ```ts
-  * watchdog.setCreator( ( element, config ) => ClassicEditor.create( element, config ) );
-  * ```
-  */
-  setCreator(creator) {
-    this._creator = creator;
-  }
-  /**
-  * Sets the function that is responsible for the editor destruction.
-  * Overrides the default destruction function, which destroys only the editor instance.
-  * It expects a function that should return a promise or `undefined`.
-  *
-  * ```ts
-  * watchdog.setDestructor( editor => {
-  * 	// Do something before the editor is destroyed.
-  *
-  * 	return editor
-  * 		.destroy()
-  * 		.then( () => {
-  * 			// Do something after the editor is destroyed.
-  * 		} );
-  * } );
-  * ```
-  */
-  setDestructor(destructor) {
-    this._destructor = destructor;
-  }
-  /**
-  * Restarts the editor instance. This method is called whenever an editor error occurs. It fires the `restart` event and changes
-  * the state to `initializing`.
-  *
-  * @fires restart
-  */
-  _restart() {
-    return Promise.resolve().then(() => {
-      this.state = "initializing";
-      this._fire("stateChange");
-      return this._destroy();
-    }).catch((err) => {
-      console.error("An error happened during the editor destroying.", err);
-    }).then(() => {
-      if (this._isUsingConfigBasedCreator) normalizeRootsConfig(this._isSingleRootEditor ? "" : {}, this._config, this._isSingleRootEditor ? "main" : false);
-      else normalizeRootsConfig(this._isSingleRootEditor ? this._editorAttachTo || "" : this._editables, this._config, this._isSingleRootEditor ? "main" : false);
-      const updatedConfig = {
-        ...this._config,
-        extraPlugins: this._config.extraPlugins || [],
-        _watchdogInitialData: this._data
-      };
-      updatedConfig.extraPlugins.push(EditorWatchdogInitPlugin);
-      const updatedRootsConfig = {};
-      for (const [rootName, rootData] of Object.entries(this._data.roots)) {
-        const rootConfig = updatedConfig.roots[rootName] || /* @__PURE__ */ Object.create(null);
-        rootConfig.initialData = "";
-        rootConfig.modelElement = rootData.modelElement;
-        if (this._isUsingConfigBasedCreator) {
-          if (this._editables[rootName]?.isConnected) rootConfig.element = this._editables[rootName];
-          else if (rootData.isLoaded && !rootConfig.element) Object.assign(rootConfig, getSavedRootEditableOptions(rootData.attributes));
-        }
-        if (rootData.isLoaded) rootConfig.lazyLoad = false;
-        else delete rootConfig.modelAttributes;
-        updatedRootsConfig[rootName] = rootConfig;
-      }
-      updatedConfig.roots = updatedRootsConfig;
-      delete updatedConfig.initialData;
-      delete updatedConfig.root;
-      if (this._isUsingConfigBasedCreator) return this.create(updatedConfig, updatedConfig.context);
-      const elementOrData = this._isSingleRootEditor ? this._editorAttachTo || "" : this._editables;
-      return this.create(elementOrData, updatedConfig, updatedConfig.context);
-    }).then(() => {
-      this._fire("restart");
-    });
-  }
-  create(elementOrDataOrConfig = this._isUsingConfigBasedCreator ? this._config : this._elementOrData, configOrContext = this._isUsingConfigBasedCreator ? void 0 : this._config, context) {
-    const isUsingConfigBasedCreator = this._detectConfigBasedCreator(elementOrDataOrConfig, configOrContext);
-    const elementOrData = isUsingConfigBasedCreator ? void 0 : elementOrDataOrConfig;
-    const config = isUsingConfigBasedCreator ? elementOrDataOrConfig : configOrContext;
-    const resolvedContext = isUsingConfigBasedCreator ? configOrContext : context;
-    this._lifecyclePromise = Promise.resolve(this._lifecyclePromise).then(() => {
-      super._startErrorHandling();
-      this._isUsingConfigBasedCreator = isUsingConfigBasedCreator;
-      this._elementOrData = elementOrData;
-      this._config = this._cloneEditorConfiguration(config || {});
-      this._config.context = resolvedContext;
-      if (isUsingConfigBasedCreator) {
-        this._editorAttachTo = null;
-        const rootsCount = this._config.roots ? Object.keys(this._config.roots).length : 0;
-        const legacyInitialData = this._config.initialData;
-        const isMultiRootFromLegacy = legacyInitialData && typeof legacyInitialData === "object";
-        this._isSingleRootEditor = !isMultiRootFromLegacy && rootsCount <= 1;
-      } else {
-        this._editorAttachTo = isElement$12(elementOrData) ? elementOrData : null;
-        this._isSingleRootEditor = isElement$12(elementOrData) || typeof elementOrData == "string";
-      }
-      if (isUsingConfigBasedCreator) return this._creator(this._config);
-      return this._creator(elementOrData, this._config);
-    }).then((editor) => {
-      this._editor = editor;
-      editor.model.document.on("change:data", this._throttledSave);
-      this._lastDocumentVersion = editor.model.document.version;
-      this._data = this._getData();
-      if (!this._editorAttachTo) this._editables = this._getEditables();
-      this.state = "ready";
-      this._fire("stateChange");
-    }).finally(() => {
-      this._lifecyclePromise = null;
-    });
-    return this._lifecyclePromise;
-  }
-  /**
-  * Destroys the watchdog and the current editor instance. It fires the callback
-  * registered in {@link #setDestructor `setDestructor()`} and uses it to destroy the editor instance.
-  * It also sets the state to `destroyed`.
-  */
-  destroy() {
-    this._lifecyclePromise = Promise.resolve(this._lifecyclePromise).then(() => {
-      this.state = "destroyed";
-      this._fire("stateChange");
-      super.destroy();
-      return this._destroy();
-    }).finally(() => {
-      this._lifecyclePromise = null;
-    });
-    return this._lifecyclePromise;
-  }
-  _destroy() {
-    return Promise.resolve().then(() => {
-      this._stopErrorHandling();
-      this._throttledSave.cancel();
-      const editor = this._editor;
-      this._editor = null;
-      editor.model.document.off("change:data", this._throttledSave);
-      return this._destructor(editor);
-    });
-  }
-  /**
-  * Saves the editor data, so it can be restored after the crash even if the data cannot be fetched at
-  * the moment of the crash.
-  */
-  _save() {
-    const version2 = this._editor.model.document.version;
-    try {
-      this._data = this._getData();
-      if (!this._editorAttachTo) this._editables = this._getEditables();
-      this._lastDocumentVersion = version2;
-    } catch (err) {
-      console.error(err, "An error happened during restoring editor data. Editor will be restored from the previously saved data.");
-    }
-  }
-  /**
-  * @internal
-  */
-  _setExcludedProperties(props) {
-    this._excludedProps = props;
-  }
-  /**
-  * Gets all data that is required to reinitialize editor instance.
-  */
-  _getData() {
-    const editor = this._editor;
-    const roots = editor.model.document.roots.filter((root) => root.isAttached() && root.rootName != "$graveyard");
-    const { plugins } = editor;
-    const commentsRepository = plugins.has("CommentsRepository") && plugins.get("CommentsRepository");
-    const trackChanges = plugins.has("TrackChanges") && plugins.get("TrackChanges");
-    const data = {
-      roots: {},
-      markers: {},
-      commentThreads: JSON.stringify([]),
-      suggestions: JSON.stringify([])
-    };
-    roots.forEach((root) => {
-      data.roots[root.rootName] = {
-        content: JSON.stringify(Array.from(root.getChildren())),
-        attributes: JSON.stringify(Array.from(root.getAttributes())),
-        modelElement: root.name,
-        isLoaded: root._isLoaded
-      };
-    });
-    for (const marker of editor.model.markers) {
-      if (!marker._affectsData) continue;
-      data.markers[marker.name] = {
-        rangeJSON: marker.getRange().toJSON(),
-        usingOperation: marker._managedUsingOperations,
-        affectsData: marker._affectsData
-      };
-    }
-    if (commentsRepository) data.commentThreads = JSON.stringify(commentsRepository.getCommentThreads({
-      toJSON: true,
-      skipNotAttached: true
-    }));
-    if (trackChanges) data.suggestions = JSON.stringify(trackChanges.getSuggestions({
-      toJSON: true,
-      skipNotAttached: true
-    }));
-    return data;
-  }
-  /**
-  * For each attached model root, returns its HTML editable element (if available).
-  */
-  _getEditables() {
-    const editables = {};
-    for (const rootName of this.editor.model.document.getRootNames()) {
-      const editable = this.editor.ui.getEditableElement(rootName);
-      if (editable) editables[rootName] = editable;
-    }
-    return editables;
-  }
-  /**
-  * Traverses the error context and the current editor to find out whether these structures are connected
-  * to each other via properties.
-  *
-  * @internal
-  */
-  _isErrorComingFromThisItem(error) {
-    return areConnectedThroughProperties(this._editor, error.context, this._excludedProps);
-  }
-  /**
-  * Detects whether the `create()` call was made in config-based creator mode
-  * (i.e., the first argument is a config object rather than a source element or data).
-  */
-  _detectConfigBasedCreator(elementOrDataOrConfig, configOrContext) {
-    if (typeof elementOrDataOrConfig === "string" || isElement$12(elementOrDataOrConfig)) return false;
-    if (configOrContext && typeof configOrContext === "object" && !("destroy" in configOrContext) && Object.keys(configOrContext).length > 0) return false;
-    if (elementOrDataOrConfig && typeof elementOrDataOrConfig === "object") {
-      const values = Object.values(elementOrDataOrConfig);
-      if (values.length > 0 && values.every((v) => typeof v === "string" || isElement$12(v))) return false;
-    }
-    return true;
-  }
-  /**
-  * Clones the editor configuration.
-  */
-  _cloneEditorConfiguration(config) {
-    return cloneDeepWith2(config, (value, key) => {
-      if (isElement$12(value)) return value;
-      if (key === "context") return value;
-    });
-  }
-};
-var EditorWatchdogInitPlugin = class {
-  editor;
-  _data;
-  constructor(editor) {
-    this.editor = editor;
-    this._data = editor.config.get("_watchdogInitialData");
-  }
-  /**
-  * @inheritDoc
-  */
-  init() {
-    this.editor.data.on("init", (evt) => {
-      evt.stop();
-      this.editor.model.enqueueChange({ isUndoable: false }, (writer) => {
-        this._restoreCollaborationData();
-        this._restoreEditorData(writer);
-      });
-      this.editor.data.fire("ready");
-    }, { priority: 999 });
-  }
-  /**
-  * Creates a model node (element or text) based on provided JSON.
-  */
-  _createNode(writer, jsonNode) {
-    if ("name" in jsonNode) {
-      const element = writer.createElement(jsonNode.name, jsonNode.attributes);
-      if (jsonNode.children) for (const child of jsonNode.children) element._appendChild(this._createNode(writer, child));
-      return element;
-    } else return writer.createText(jsonNode.data, jsonNode.attributes);
-  }
-  /**
-  * Restores the editor by setting the document data, roots attributes and markers.
-  */
-  _restoreEditorData(writer) {
-    const editor = this.editor;
-    Object.entries(this._data.roots).forEach(([rootName, { content, attributes }]) => {
-      const parsedNodes = JSON.parse(content);
-      const parsedAttributes = JSON.parse(attributes);
-      const rootElement = editor.model.document.getRoot(rootName);
-      for (const [key, value] of parsedAttributes) writer.setAttribute(key, value, rootElement);
-      for (const child of parsedNodes) {
-        const node = this._createNode(writer, child);
-        writer.insert(node, rootElement, "end");
-      }
-    });
-    Object.entries(this._data.markers).forEach(([markerName, markerOptions]) => {
-      const { document: document2 } = editor.model;
-      const { rangeJSON: { start, end }, ...options } = markerOptions;
-      const root = document2.getRoot(start.root);
-      const startPosition = writer.createPositionFromPath(root, start.path, start.stickiness);
-      const endPosition = writer.createPositionFromPath(root, end.path, end.stickiness);
-      const range = writer.createRange(startPosition, endPosition);
-      writer.addMarker(markerName, {
-        range,
-        ...options
-      });
-    });
-  }
-  /**
-  * Restores the editor collaboration data - comment threads and suggestions.
-  */
-  _restoreCollaborationData() {
-    const parsedCommentThreads = JSON.parse(this._data.commentThreads);
-    const parsedSuggestions = JSON.parse(this._data.suggestions);
-    if (this.editor.plugins.has("CommentsRepository")) {
-      const commentsRepository = this.editor.plugins.get("CommentsRepository");
-      for (const commentThread of commentsRepository.getCommentThreads()) commentsRepository._removeCommentThread({ threadId: commentThread.id });
-      parsedCommentThreads.forEach((commentThreadData) => {
-        const channelId = this.editor.config.get("collaboration.channelId");
-        this.editor.plugins.get("CommentsRepository").addCommentThread({
-          channelId,
-          ...commentThreadData
-        });
-      });
-    }
-    if (this.editor.plugins.has("TrackChangesEditing")) {
-      const trackChangesEditing = this.editor.plugins.get("TrackChangesEditing");
-      for (const suggestion of trackChangesEditing.getSuggestions()) trackChangesEditing._removeSuggestion(suggestion);
-      parsedSuggestions.forEach((suggestionData) => {
-        trackChangesEditing.addSuggestionData(suggestionData);
-      });
-    }
-  }
-};
-function isElement$12(value) {
-  return isElement(value);
-}
-function getSavedRootEditableOptions(serializedAttributes) {
-  const { $rootEditableOptions: options } = Object.fromEntries(JSON.parse(serializedAttributes));
-  if (!options || typeof options != "object") return {};
-  return {
-    ...options.placeholder && { placeholder: options.placeholder },
-    ...options.label && { label: options.label },
-    ...options.element && { element: options.element }
-  };
-}
-var mainQueueId = /* @__PURE__ */ Symbol("MainQueueId");
-var ContextWatchdog = class extends Watchdog {
-  /**
-  * A map of internal watchdogs for added items.
-  */
-  _watchdogs = /* @__PURE__ */ new Map();
-  /**
-  * The watchdog configuration.
-  */
-  _watchdogConfig;
-  /**
-  * The current context instance.
-  */
-  _context = null;
-  /**
-  * Context properties (nodes/references) that are gathered during the initial context creation
-  * and are used to distinguish the origin of an error.
-  */
-  _contextProps = /* @__PURE__ */ new Set();
-  /**
-  * An action queue, which is used to handle async functions queuing.
-  */
-  _actionQueues = new ActionQueues();
-  /**
-  * The configuration for the {@link module:core/context~Context}.
-  */
-  _contextConfig;
-  /**
-  * The watched item.
-  */
-  _item;
-  /**
-  * The context watchdog class constructor.
-  *
-  * ```ts
-  * const watchdog = new ContextWatchdog( Context );
-  *
-  * await watchdog.create( contextConfiguration );
-  *
-  * await watchdog.add( item );
-  * ```
-  *
-  * See the {@glink features/watchdog Watchdog feature guide} to learn more how to use this feature.
-  *
-  * @param Context The {@link module:core/context~Context} class.
-  * @param watchdogConfig The watchdog configuration.
-  */
-  constructor(Context2, watchdogConfig = {}) {
-    super(watchdogConfig);
-    this._watchdogConfig = watchdogConfig;
-    this._creator = (contextConfig) => Context2.create(contextConfig);
-    this._destructor = (context) => context.destroy();
-    this._actionQueues.onEmpty(() => {
-      if (this.state === "initializing") {
-        this.state = "ready";
-        this._fire("stateChange");
-      }
-    });
-  }
-  /**
-  * Sets the function that is responsible for the context creation.
-  * It expects a function that should return a promise (or `undefined`).
-  *
-  * ```ts
-  * watchdog.setCreator( config => Context.create( config ) );
-  * ```
-  */
-  setCreator(creator) {
-    this._creator = creator;
-  }
-  /**
-  * Sets the function that is responsible for the context destruction.
-  * Overrides the default destruction function, which destroys only the context instance.
-  * It expects a function that should return a promise (or `undefined`).
-  *
-  * ```ts
-  * watchdog.setDestructor( context => {
-  * 	// Do something before the context is destroyed.
-  *
-  * 	return context
-  * 		.destroy()
-  * 		.then( () => {
-  * 			// Do something after the context is destroyed.
-  * 		} );
-  * } );
-  * ```
-  */
-  setDestructor(destructor) {
-    this._destructor = destructor;
-  }
-  /**
-  * The context instance. Keep in mind that this property might be changed when the context watchdog restarts,
-  * so do not keep this instance internally. Always operate on the `ContextWatchdog#context` property.
-  */
-  get context() {
-    return this._context;
-  }
-  /**
-  * Initializes the context watchdog. Once it is created, the watchdog takes care about
-  * recreating the context and the provided items, and starts the error handling mechanism.
-  *
-  * ```ts
-  * await watchdog.create( {
-  * 	plugins: []
-  * } );
-  * ```
-  *
-  * @param contextConfig The context configuration. See {@link module:core/context~Context}.
-  */
-  create(contextConfig = {}) {
-    return this._actionQueues.enqueue(mainQueueId, () => {
-      this._contextConfig = contextConfig;
-      return this._create();
-    });
-  }
-  /**
-  * Returns an item instance with the given `itemId`.
-  *
-  * ```ts
-  * const editor1 = watchdog.getItem( 'editor1' );
-  * ```
-  *
-  * @param itemId The item ID.
-  * @returns The item instance or `undefined` if an item with a given ID has not been found.
-  */
-  getItem(itemId) {
-    return this._getWatchdog(itemId)._item;
-  }
-  /**
-  * Gets the state of the given item. See {@link #state} for a list of available states.
-  *
-  * ```ts
-  * const editor1State = watchdog.getItemState( 'editor1' );
-  * ```
-  *
-  * @param itemId Item ID.
-  * @returns The state of the item.
-  */
-  getItemState(itemId) {
-    return this._getWatchdog(itemId).state;
-  }
-  /**
-  * Adds items to the watchdog. Once created, instances of these items will be available using the {@link #getItem} method.
-  *
-  * Items can be passed together as an array of objects:
-  *
-  * ```ts
-  * await watchdog.add( [ {
-  * 	id: 'editor1',
-  * 	type: 'editor',
-  * 	config: {
-  * 		attachTo: document.querySelector( '#editor' ),
-  * 		plugins: [ Essentials, Paragraph, Bold, Italic ],
-  * 		toolbar: [ 'bold', 'italic', 'alignment' ]
-  * 	},
-  * 	creator: config => ClassicEditor.create( config )
-  * } ] );
-  * ```
-  *
-  * Or one by one as objects:
-  *
-  * ```ts
-  * await watchdog.add( {
-  * 	id: 'editor1',
-  * 	type: 'editor',
-  * 	config: {
-  * 		attachTo: document.querySelector( '#editor' ),
-  * 		plugins: [ Essentials, Paragraph, Bold, Italic ],
-  * 		toolbar: [ 'bold', 'italic', 'alignment' ]
-  * 	},
-  * 	creator: config => ClassicEditor.create( config )
-  * } );
-  * ```
-  *
-  * Then an instance can be retrieved using the {@link #getItem} method:
-  *
-  * ```ts
-  * const editor1 = watchdog.getItem( 'editor1' );
-  * ```
-  *
-  * Note that this method can be called multiple times, but for performance reasons it is better
-  * to pass all items together.
-  *
-  * @param itemConfigurationOrItemConfigurations An item configuration object or an array of item configurations.
-  */
-  add(itemConfigurationOrItemConfigurations) {
-    const itemConfigurations = toArray2(itemConfigurationOrItemConfigurations);
-    return Promise.all(itemConfigurations.map((item) => {
-      return this._actionQueues.enqueue(item.id, () => {
-        if (this.state === "destroyed") throw new Error("Cannot add items to destroyed watchdog.");
-        if (!this._context) throw new Error("Context was not created yet. You should call the `ContextWatchdog#create()` method first.");
-        let watchdog;
-        if (this._watchdogs.has(item.id)) throw new Error(`Item with the given id is already added: '${item.id}'.`);
-        if (item.type === "editor") {
-          watchdog = new EditorWatchdog(null, this._watchdogConfig);
-          watchdog.setCreator(item.creator);
-          watchdog._setExcludedProperties(this._contextProps);
-          if (item.destructor) watchdog.setDestructor(item.destructor);
-          this._watchdogs.set(item.id, watchdog);
-          watchdog.on("error", (evt, { error, causesRestart }) => {
-            this._fire("itemError", {
-              itemId: item.id,
-              error
-            });
-            if (!causesRestart) return;
-            this._actionQueues.enqueue(item.id, () => new Promise((res) => {
-              const rethrowRestartEventOnce = () => {
-                watchdog.off("restart", rethrowRestartEventOnce);
-                this._fire("itemRestart", { itemId: item.id });
-                res();
-              };
-              watchdog.on("restart", rethrowRestartEventOnce);
-            }));
-          });
-          if (item.sourceElementOrData !== void 0) return watchdog.create(item.sourceElementOrData, item.config, this._context);
-          return watchdog.create(item.config, this._context);
-        } else throw new Error(`Not supported item type: '${item.type}'.`);
-      });
-    }));
-  }
-  /**
-  * Removes and destroys item(s) with given ID(s).
-  *
-  * ```ts
-  * await watchdog.remove( 'editor1' );
-  * ```
-  *
-  * Or
-  *
-  * ```ts
-  * await watchdog.remove( [ 'editor1', 'editor2' ] );
-  * ```
-  *
-  * @param itemIdOrItemIds Item ID or an array of item IDs.
-  */
-  remove(itemIdOrItemIds) {
-    const itemIds = toArray2(itemIdOrItemIds);
-    return Promise.all(itemIds.map((itemId) => {
-      return this._actionQueues.enqueue(itemId, () => {
-        const watchdog = this._getWatchdog(itemId);
-        this._watchdogs.delete(itemId);
-        return watchdog.destroy();
-      });
-    }));
-  }
-  /**
-  * Destroys the context watchdog and all added items.
-  * Once the context watchdog is destroyed, new items cannot be added.
-  *
-  * ```ts
-  * await watchdog.destroy();
-  * ```
-  */
-  destroy() {
-    return this._actionQueues.enqueue(mainQueueId, () => {
-      this.state = "destroyed";
-      this._fire("stateChange");
-      super.destroy();
-      return this._destroy();
-    });
-  }
-  /**
-  * Restarts the context watchdog.
-  */
-  _restart() {
-    return this._actionQueues.enqueue(mainQueueId, () => {
-      this.state = "initializing";
-      this._fire("stateChange");
-      return this._destroy().catch((err) => {
-        console.error("An error happened during destroying the context or items.", err);
-      }).then(() => this._create()).then(() => this._fire("restart"));
-    });
-  }
-  /**
-  * Initializes the context watchdog.
-  */
-  _create() {
-    return Promise.resolve().then(() => {
-      this._startErrorHandling();
-      return this._creator(this._contextConfig);
-    }).then((context) => {
-      this._context = context;
-      this._contextProps = getSubNodes(this._context);
-      return Promise.all(Array.from(this._watchdogs.values()).map((watchdog) => {
-        watchdog._setExcludedProperties(this._contextProps);
-        if (watchdog._isUsingConfigBasedCreator) return watchdog.create(void 0, this._context);
-        return watchdog.create(void 0, void 0, this._context);
-      }));
-    });
-  }
-  /**
-  * Destroys the context instance and all added items.
-  */
-  _destroy() {
-    return Promise.resolve().then(() => {
-      this._stopErrorHandling();
-      const context = this._context;
-      this._context = null;
-      this._contextProps = /* @__PURE__ */ new Set();
-      return Promise.all(Array.from(this._watchdogs.values()).map((watchdog) => watchdog.destroy())).then(() => this._destructor(context));
-    });
-  }
-  /**
-  * Returns the watchdog for a given item ID.
-  *
-  * @param itemId Item ID.
-  */
-  _getWatchdog(itemId) {
-    const watchdog = this._watchdogs.get(itemId);
-    if (!watchdog) throw new Error(`Item with the given id was not registered: ${itemId}.`);
-    return watchdog;
-  }
-  /**
-  * Checks whether an error comes from the context instance and not from the item instances.
-  *
-  * @internal
-  */
-  _isErrorComingFromThisItem(error) {
-    for (const watchdog of this._watchdogs.values()) if (watchdog._isErrorComingFromThisItem(error)) return false;
-    return areConnectedThroughProperties(this._context, error.context);
-  }
-};
-var ActionQueues = class {
-  _onEmptyCallbacks = [];
-  _queues = /* @__PURE__ */ new Map();
-  _activeActions = 0;
-  /**
-  * Used to register callbacks that will be run when the queue becomes empty.
-  *
-  * @param onEmptyCallback A callback that will be run whenever the queue becomes empty.
-  */
-  onEmpty(onEmptyCallback) {
-    this._onEmptyCallbacks.push(onEmptyCallback);
-  }
-  /**
-  * It adds asynchronous actions (functions) to the proper queue and runs them one by one.
-  *
-  * @param queueId The action queue ID.
-  * @param action A function that should be enqueued.
-  */
-  enqueue(queueId, action) {
-    const isMainAction = queueId === mainQueueId;
-    this._activeActions++;
-    if (!this._queues.get(queueId)) this._queues.set(queueId, Promise.resolve());
-    const queueWithAction = (isMainAction ? Promise.all(this._queues.values()) : Promise.all([this._queues.get(mainQueueId), this._queues.get(queueId)])).then(action);
-    const nonErrorQueue = queueWithAction.catch(() => {
-    });
-    this._queues.set(queueId, nonErrorQueue);
-    return queueWithAction.finally(() => {
-      this._activeActions--;
-      if (this._queues.get(queueId) === nonErrorQueue && this._activeActions === 0) this._onEmptyCallbacks.forEach((cb) => cb());
-    });
-  }
-};
-function toArray2(elementOrArray) {
-  return Array.isArray(elementOrArray) ? elementOrArray : [elementOrArray];
-}
-
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-core/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-core/dist/index.js
 var PluginBase = /* @__PURE__ */ ObservableMixin();
 var Plugin = class extends PluginBase {
   /**
@@ -32562,255 +32239,78 @@ var PluginCollection = class extends PluginCollectionBase {
     this._plugins.set(pluginName, plugin);
   }
 };
-var Context = class {
-  /**
-  * Stores all the configurations specific to this context instance.
-  */
-  config;
-  /**
-  * The plugins loaded and in use by this context instance.
-  */
-  plugins;
-  locale;
-  /**
-  * Shorthand for {@link module:utils/locale~Locale#t}.
-  */
-  t;
-  /**
-  * A list of editors that this context instance is injected to.
-  */
-  editors;
-  /**
-  * The default configuration which is built into the `Context` class.
-  *
-  * It was used in the now deprecated CKEditor 5 builds featuring `Context` to provide the default configuration options
-  * which are later used during the context initialization.
-  *
-  * ```ts
-  * Context.defaultConfig = {
-  * 	foo: 1,
-  * 	bar: 2
-  * };
-  *
-  * Context
-  * 	.create()
-  * 	.then( context => {
-  * 		context.config.get( 'foo' ); // -> 1
-  * 		context.config.get( 'bar' ); // -> 2
-  * 	} );
-  *
-  * // The default options can be overridden by the configuration passed to create().
-  * Context
-  * 	.create( { bar: 3 } )
-  * 	.then( context => {
-  * 		context.config.get( 'foo' ); // -> 1
-  * 		context.config.get( 'bar' ); // -> 3
-  * 	} );
-  * ```
-  *
-  * See also {@link module:core/context~Context.builtinPlugins `Context.builtinPlugins`}
-  * and {@link module:core/editor/editor~Editor.defaultConfig `Editor.defaultConfig`}.
-  */
-  static defaultConfig;
-  /**
-  * An array of plugins built into the `Context` class.
-  *
-  * It was used in the now deprecated CKEditor 5 builds featuring `Context` to provide the default configuration options
-  * which are later used during the context initialization.
-  *
-  * They will be automatically initialized by `Context` unless `config.plugins` is passed.
-  *
-  * ```ts
-  * // Build some context plugins into the Context class first.
-  * Context.builtinPlugins = [ FooPlugin, BarPlugin ];
-  *
-  * // Normally, you need to define config.plugins, but since Context.builtinPlugins was
-  * // defined, now you can call create() without any configuration.
-  * Context
-  * 	.create()
-  * 	.then( context => {
-  * 		context.plugins.get( FooPlugin ); // -> An instance of the Foo plugin.
-  * 		context.plugins.get( BarPlugin ); // -> An instance of the Bar plugin.
-  * 	} );
-  * ```
-  *
-  * See also {@link module:core/context~Context.defaultConfig `Context.defaultConfig`}
-  * and {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}.
-  */
-  static builtinPlugins;
-  /**
-  * Reference to the editor which created the context.
-  * Null when the context was created outside of the editor.
-  *
-  * It is used to destroy the context when removing the editor that has created the context.
-  */
-  _contextOwner = null;
-  /**
-  * Creates a context instance with a given configuration.
-  *
-  * Usually not to be used directly. See the static {@link module:core/context~Context.create `create()`} method.
-  *
-  * @param config The context configuration.
-  */
-  constructor(config) {
-    const { translations, ...rest } = config || {};
-    this.config = new Config(rest, this.constructor.defaultConfig);
-    const availablePlugins = this.constructor.builtinPlugins;
-    this.config.define("plugins", availablePlugins);
-    this.plugins = new PluginCollection(this, availablePlugins);
-    const languageConfig = this.config.get("language") || {};
-    this.locale = new Locale({
-      uiLanguage: typeof languageConfig === "string" ? languageConfig : languageConfig.ui,
-      contentLanguage: this.config.get("language.content"),
-      translations
-    });
-    this.t = this.locale.t;
-    this.editors = new Collection();
-  }
-  /**
-  * Loads and initializes plugins specified in the configuration.
-  *
-  * @returns A promise which resolves once the initialization is completed, providing an array of loaded plugins.
-  */
-  initPlugins() {
-    const plugins = this.config.get("plugins") || [];
-    const substitutePlugins = this.config.get("substitutePlugins") || [];
-    for (const Plugin2 of plugins.concat(substitutePlugins)) {
-      if (typeof Plugin2 != "function")
-        throw new CKEditorError("context-initplugins-constructor-only", null, { Plugin: Plugin2 });
-      if (Plugin2.isContextPlugin !== true)
-        throw new CKEditorError("context-initplugins-invalid-plugin", null, { Plugin: Plugin2 });
+function getSubNodes(head, excludedProperties = /* @__PURE__ */ new Set()) {
+  const nodes = [head];
+  const subNodes = /* @__PURE__ */ new Set();
+  let nodeIndex = 0;
+  while (nodes.length > nodeIndex) {
+    const node = nodes[nodeIndex++];
+    if (subNodes.has(node) || !shouldNodeBeIncluded(node) || excludedProperties.has(node)) continue;
+    subNodes.add(node);
+    if (Symbol.iterator in node) try {
+      for (const n of node) nodes.push(n);
+    } catch {
     }
-    return this.plugins.init(plugins, [], substitutePlugins);
+    else for (const key in node) {
+      if (key === "defaultValue") continue;
+      nodes.push(node[key]);
+    }
   }
-  /**
-  * Destroys the context instance and all editors used with the context,
-  * releasing all resources used by the context.
-  *
-  * @returns A promise that resolves once the context instance is fully destroyed.
-  */
-  destroy() {
-    return Promise.all(Array.from(this.editors, (editor) => editor.destroy())).then(() => this.plugins.destroy());
+  return subNodes;
+}
+function shouldNodeBeIncluded(node) {
+  const type = Object.prototype.toString.call(node);
+  const typeOfNode = typeof node;
+  return !(typeOfNode === "number" || typeOfNode === "boolean" || typeOfNode === "string" || typeOfNode === "symbol" || typeOfNode === "function" || type === "[object Date]" || type === "[object RegExp]" || type === "[object Module]" || node === void 0 || node === null || node._watchdogExcluded || node instanceof EventTarget || node instanceof Event);
+}
+var editors = /* @__PURE__ */ new Set();
+function _addLiveEditor(editor) {
+  editors.add(new WeakRef(editor));
+}
+function _removeLiveEditor(editor) {
+  for (const reference of editors) if (reference.deref() === editor) {
+    editors.delete(reference);
+    return;
   }
-  /**
-  * Adds a reference to the editor which is used with this context.
-  *
-  * When the given editor has created the context, the reference to this editor will be stored
-  * as a {@link ~Context#_contextOwner}.
-  *
-  * This method should only be used by the editor.
-  *
-  * @internal
-  * @param isContextOwner Stores the given editor as a context owner.
-  */
-  _addEditor(editor, isContextOwner) {
-    if (this._contextOwner)
-      throw new CKEditorError("context-addeditor-private-context");
-    this.editors.add(editor);
-    if (isContextOwner) this._contextOwner = editor;
+}
+function* _getLiveEditors() {
+  yield* read(editors);
+}
+var contexts = /* @__PURE__ */ new Set();
+function _addLiveContext(context) {
+  if (_isLiveContext(context)) return;
+  contexts.add(new WeakRef(context));
+}
+function _removeLiveContext(context) {
+  for (const reference of contexts) if (reference.deref() === context) {
+    contexts.delete(reference);
+    return;
   }
-  /**
-  * Removes a reference to the editor which was used with this context.
-  * When the context was created by the given editor, the context will be destroyed.
-  *
-  * This method should only be used by the editor.
-  *
-  * @internal
-  * @return A promise that resolves once the editor is removed from the context or when the context was destroyed.
-  */
-  _removeEditor(editor) {
-    if (this.editors.has(editor)) this.editors.remove(editor);
-    if (this._contextOwner === editor) return this.destroy();
-    return Promise.resolve();
+}
+function* _getLiveContexts() {
+  yield* read(contexts);
+}
+function _isLiveContext(context) {
+  for (const liveContext of _getLiveContexts()) if (liveContext === context) return true;
+  return false;
+}
+function* read(references) {
+  for (const reference of references) {
+    const value = reference.deref();
+    if (value) yield value;
+    else references.delete(reference);
   }
-  /**
-  * Returns the context configuration which will be copied to the editors created using this context.
-  *
-  * The configuration returned by this method has the plugins configuration removed &ndash; plugins are shared with all editors
-  * through another mechanism.
-  *
-  * This method should only be used by the editor.
-  *
-  * @internal
-  * @returns Configuration as a plain object.
-  */
-  _getEditorConfig() {
-    const result = {};
-    for (const name of this.config.names()) if (![
-      "plugins",
-      "removePlugins",
-      "extraPlugins"
-    ].includes(name)) result[name] = this.config.get(name);
-    return result;
-  }
-  /**
-  * Creates and initializes a new context instance.
-  *
-  * ```ts
-  * const commonConfig = { ... }; // Configuration for all the plugins and editors.
-  * const editorPlugins = [ ... ]; // Regular plugins here.
-  *
-  * Context
-  * 	.create( {
-  * 		// Only context plugins here.
-  * 		plugins: [ ... ],
-  *
-  * 		// Configure the language for all the editors (it cannot be overwritten).
-  * 		language: { ... },
-  *
-  * 		// Configuration for context plugins.
-  * 		comments: { ... },
-  * 		...
-  *
-  * 		// Default configuration for editor plugins.
-  * 		toolbar: { ... },
-  * 		image: { ... },
-  * 		...
-  * 	} )
-  * 	.then( context => {
-  * 		const promises = [];
-  *
-  * 		promises.push( ClassicEditor.create(
-  * 			document.getElementById( 'editor1' ),
-  * 			{
-  * 				editorPlugins,
-  * 				context
-  * 			}
-  * 		) );
-  *
-  * 		promises.push( ClassicEditor.create(
-  * 			document.getElementById( 'editor2' ),
-  * 			{
-  * 				editorPlugins,
-  * 				context,
-  * 				toolbar: { ... } // You can overwrite the configuration of the context.
-  * 			}
-  * 		) );
-  *
-  * 		return Promise.all( promises );
-  * 	} );
-  * ```
-  *
-  * @param config The context configuration.
-  * @returns A promise resolved once the context is ready. The promise resolves with the created context instance.
-  */
-  static create(config) {
-    return new Promise((resolve) => {
-      const context = new this(config);
-      resolve(context.initPlugins().then(() => context));
-    });
-  }
-  /**
-  * `Context` class is commonly put in `config.plugins` array.
-  *
-  * This property helps with better error detection.
-  *
-  * @internal
-  */
-  static get _throwErrorWhenUsedAsAPlugin() {
-    return true;
-  }
-};
+}
+function areConnectedThroughProperties(target1, target2, excludedNodes = /* @__PURE__ */ new Set()) {
+  if (target1 === target2 && isObject2(target1)) return true;
+  const subNodes1 = getSubNodes(target1, excludedNodes);
+  const subNodes2 = getSubNodes(target2, excludedNodes);
+  for (const node of subNodes1) if (subNodes2.has(node)) return true;
+  return false;
+}
+function isObject2(structure) {
+  return typeof structure === "object" && structure !== null;
+}
 var EditingKeystrokeHandler = class extends KeystrokeHandler {
   /**
   * The editor instance.
@@ -33413,6 +32913,23 @@ var Editor = class extends EditorBase {
   */
   _context;
   /**
+  * Objects that error attribution must not walk into when deciding whether something belongs to this
+  * editor — see {@link module:core/context~Context#_errorExclusions}.
+  *
+  * Exposed here because `_context` is protected and attribution runs outside this class.
+  *
+  * It has to be a getter rather than a property. Editors sharing a context share one exclusion set, and
+  * the set is not a member of itself, so holding it in a property would put the same object on every
+  * editor — and the search would find it there and match them all. A getter lives on the prototype and
+  * is not enumerable, so the search does not see it, and the only route left to the set runs through the
+  * context, which is excluded.
+  *
+  * @internal
+  */
+  get _errorExclusions() {
+    return this._context._errorExclusions;
+  }
+  /**
   * A set of lock IDs for the {@link #isReadOnly} getter.
   */
   _readOnlyLocks;
@@ -33467,6 +32984,8 @@ var Editor = class extends EditorBase {
     this.set("state", "initializing");
     this.once("ready", () => this.state = "ready", { priority: "high" });
     this.once("destroy", () => this.state = "destroyed", { priority: "high" });
+    this.once("ready", () => _addLiveEditor(this), { priority: "high" });
+    this.once("destroy", () => _removeLiveEditor(this), { priority: "high" });
     this.model = new Model(this.config);
     this.on("change:isReadOnly", () => {
       this.model.document.isReadOnly = this.isReadOnly;
@@ -33876,21 +33395,44 @@ var Editor = class extends EditorBase {
   /**
   * The {@link module:core/context~Context} class.
   *
-  * Exposed as static editor field for easier access in editor builds.
-  */
-  static Context = Context;
-  /**
-  * The {@link module:watchdog/editorwatchdog~EditorWatchdog} class.
+  * Exposed as a static editor member for easier access in editor builds.
   *
-  * Exposed as static editor field for easier access in editor builds.
+  * A getter rather than a field, for the same reason as {@link ~Editor.onEditorError}: a field would
+  * read `Context` while this class is being defined, and the error reporter puts this module and
+  * `context.ts` in an import cycle, so at that moment `Context` is not always initialized yet.
   */
-  static EditorWatchdog = EditorWatchdog;
+  static get Context() {
+    return Context;
+  }
   /**
-  * The {@link module:watchdog/contextwatchdog~ContextWatchdog} class.
+  * {@link module:core/errorreporter~onEditorError `onEditorError()`}, reachable without importing it.
   *
-  * Exposed as static editor field for easier access in editor builds.
+  * Code that is handed an editor class rather than importing one — a framework integration, above all —
+  * cannot import from CKEditor at all. Importing anything as a value loads the npm build, and an
+  * application that meant to load CKEditor from a CDN is then refused. Reading the function off the class
+  * it was given avoids that, and it also lands on the copy of this package the editor itself came from.
+  *
+  * ```ts
+  * const off = ClassicEditor.onEditorError( ( { error, source } ) => {
+  * 	if ( source !== myEditor ) {
+  * 		return;
+  * 	}
+  *
+  * 	reportToMyErrorTracker( error );
+  * } );
+  * ```
+  *
+  * The same page-level registration as the exported function — not a registration scoped to this editor
+  * class. Prefer the import wherever imports are an option.
+  *
+  * A getter rather than a field: this module and the error reporter already refer to each other, so
+  * reading its export while defining this class would read it before it exists. A getter body runs on
+  * access, long after both modules are done. It also keeps the property off the list of the class's own
+  * enumerable properties, which a field would have joined.
   */
-  static ContextWatchdog = ContextWatchdog;
+  static get onEditorError() {
+    return onEditorError;
+  }
   _showLicenseError(reason, name) {
     setTimeout(() => {
       if (reason == "invalid")
@@ -33947,6 +33489,370 @@ function collectUsageData(editor) {
   editor.fire("collectUsageData", { setUsageData });
   return collectedData;
 }
+function resolveErrorSources(context) {
+  if (context instanceof Editor) return [context];
+  if (context instanceof Context && _isLiveContext(context)) return [context];
+  if (!context || typeof context != "object") return [];
+  const editors2 = Array.from(_getLiveEditors()).filter((editor) => areConnectedThroughProperties(editor, context, editor._errorExclusions));
+  if (editors2.length) return editors2;
+  return Array.from(_getLiveContexts()).filter((liveContext) => areConnectedThroughProperties(liveContext, context) && !belongsToAnyEditorIn(liveContext, context));
+}
+function belongsToAnyEditorIn(liveContext, context) {
+  return Array.from(liveContext.editors).some((editor) => areConnectedThroughProperties(editor, context, editor._errorExclusions));
+}
+var EditorErrorReporter = class {
+  /**
+  * Holders rather than the callbacks themselves, so that registering the same function twice produces
+  * two independent registrations and one unsubscribe call removes only its own.
+  */
+  _registrations = /* @__PURE__ */ new Set();
+  /**
+  * Errors already handed out. An error can reach both listeners, and a rejected promise carrying an
+  * error that also fired `error` would otherwise be reported twice.
+  */
+  _reported = /* @__PURE__ */ new WeakSet();
+  /**
+  * Declared here rather than created in `_attach()`, so that the reference handed to
+  * `removeEventListener()` is provably the one `addEventListener()` was given.
+  */
+  _onError = (event) => {
+    this._handle(event.error);
+  };
+  _onRejection = (event) => {
+    this._handle(event.reason);
+  };
+  _isAttached = false;
+  add(callback) {
+    const registration = { callback };
+    this._registrations.add(registration);
+    this._attach();
+    return () => {
+      if (this._registrations.delete(registration)) this._detach();
+    };
+  }
+  /**
+  * Listeners go up with the first registration rather than on import, so a bundle that only imports this
+  * module never touches `window`. Registering does, in line with the rest of the editor — this is browser
+  * code.
+  */
+  _attach() {
+    if (this._isAttached || this._registrations.size === 0) return;
+    this._isAttached = true;
+    globalVar.window.addEventListener("error", this._onError);
+    globalVar.window.addEventListener("unhandledrejection", this._onRejection);
+  }
+  _detach() {
+    if (!this._isAttached || this._registrations.size > 0) return;
+    this._isAttached = false;
+    globalVar.window.removeEventListener("error", this._onError);
+    globalVar.window.removeEventListener("unhandledrejection", this._onRejection);
+  }
+  _handle(error) {
+    if (!isCKEditorError(error) || this._reported.has(error)) return;
+    const sources = resolveErrorSources(error.context).filter((source) => !(source instanceof Editor) || source.state === "ready");
+    if (!sources.length) return;
+    this._reported.add(error);
+    for (const source of sources) for (const { callback } of Array.from(this._registrations)) try {
+      callback({
+        error,
+        source
+      });
+    } catch (callbackError) {
+      console.error("An error happened in an editor error callback.", callbackError);
+    }
+  }
+};
+function isCKEditorError(error) {
+  if (!(error instanceof Error)) return false;
+  const candidate = error;
+  return typeof candidate.is == "function" && candidate.is("CKEditorError");
+}
+var reporter = /* @__PURE__ */ new EditorErrorReporter();
+function onEditorError(callback) {
+  return reporter.add(callback);
+}
+var Context = class {
+  /**
+  * Stores all the configurations specific to this context instance.
+  */
+  config;
+  /**
+  * The plugins loaded and in use by this context instance.
+  */
+  plugins;
+  locale;
+  /**
+  * Shorthand for {@link module:utils/locale~Locale#t}.
+  */
+  t;
+  /**
+  * A list of editors that this context instance is injected to.
+  */
+  editors;
+  /**
+  * Everything reachable from this context, with the editors in it left out.
+  *
+  * Error attribution decides whether an object belongs to an editor by looking for anything the two have
+  * in common. Every editor in a context can be reached from every other one through
+  * {@link #editors}, so without excluding what the context itself owns, any error would look like it
+  * belongs to any editor.
+  *
+  * Filled in by {@link ~Context#initPlugins}, so it covers a context created through
+  * {@link ~Context.create} as well as one built by hand, as long as its plugins were initialized. A
+  * context an editor made for itself never gets there, because the editor initializes its own plugins
+  * instead: it holds that editor alone, so there is nothing to tell apart.
+  *
+  * Temporary, for as long as attribution walks object graphs.
+  *
+  * @internal
+  */
+  _errorExclusions;
+  /**
+  * The default configuration which is built into the `Context` class.
+  *
+  * It was used in the now deprecated CKEditor 5 builds featuring `Context` to provide the default configuration options
+  * which are later used during the context initialization.
+  *
+  * ```ts
+  * Context.defaultConfig = {
+  * 	foo: 1,
+  * 	bar: 2
+  * };
+  *
+  * Context
+  * 	.create()
+  * 	.then( context => {
+  * 		context.config.get( 'foo' ); // -> 1
+  * 		context.config.get( 'bar' ); // -> 2
+  * 	} );
+  *
+  * // The default options can be overridden by the configuration passed to create().
+  * Context
+  * 	.create( { bar: 3 } )
+  * 	.then( context => {
+  * 		context.config.get( 'foo' ); // -> 1
+  * 		context.config.get( 'bar' ); // -> 3
+  * 	} );
+  * ```
+  *
+  * See also {@link module:core/context~Context.builtinPlugins `Context.builtinPlugins`}
+  * and {@link module:core/editor/editor~Editor.defaultConfig `Editor.defaultConfig`}.
+  */
+  static defaultConfig;
+  /**
+  * An array of plugins built into the `Context` class.
+  *
+  * It was used in the now deprecated CKEditor 5 builds featuring `Context` to provide the default configuration options
+  * which are later used during the context initialization.
+  *
+  * They will be automatically initialized by `Context` unless `config.plugins` is passed.
+  *
+  * ```ts
+  * // Build some context plugins into the Context class first.
+  * Context.builtinPlugins = [ FooPlugin, BarPlugin ];
+  *
+  * // Normally, you need to define config.plugins, but since Context.builtinPlugins was
+  * // defined, now you can call create() without any configuration.
+  * Context
+  * 	.create()
+  * 	.then( context => {
+  * 		context.plugins.get( FooPlugin ); // -> An instance of the Foo plugin.
+  * 		context.plugins.get( BarPlugin ); // -> An instance of the Bar plugin.
+  * 	} );
+  * ```
+  *
+  * See also {@link module:core/context~Context.defaultConfig `Context.defaultConfig`}
+  * and {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}.
+  */
+  static builtinPlugins;
+  /**
+  * Reference to the editor which created the context.
+  * Null when the context was created outside of the editor.
+  *
+  * It is used to destroy the context when removing the editor that has created the context.
+  */
+  _contextOwner = null;
+  /**
+  * Creates a context instance with a given configuration.
+  *
+  * Usually not to be used directly. See the static {@link module:core/context~Context.create `create()`} method.
+  *
+  * @param config The context configuration.
+  */
+  constructor(config) {
+    const { translations, ...rest } = config || {};
+    this.config = new Config(rest, this.constructor.defaultConfig);
+    const availablePlugins = this.constructor.builtinPlugins;
+    this.config.define("plugins", availablePlugins);
+    this.plugins = new PluginCollection(this, availablePlugins);
+    const languageConfig = this.config.get("language") || {};
+    this.locale = new Locale({
+      uiLanguage: typeof languageConfig === "string" ? languageConfig : languageConfig.ui,
+      contentLanguage: this.config.get("language.content"),
+      translations
+    });
+    this.t = this.locale.t;
+    this.editors = new Collection();
+  }
+  /**
+  * Loads and initializes plugins specified in the configuration.
+  *
+  * @returns A promise which resolves once the initialization is completed, providing an array of loaded plugins.
+  */
+  initPlugins() {
+    const plugins = this.config.get("plugins") || [];
+    const substitutePlugins = this.config.get("substitutePlugins") || [];
+    for (const Plugin2 of plugins.concat(substitutePlugins)) {
+      if (typeof Plugin2 != "function")
+        throw new CKEditorError("context-initplugins-constructor-only", null, { Plugin: Plugin2 });
+      if (Plugin2.isContextPlugin !== true)
+        throw new CKEditorError("context-initplugins-invalid-plugin", null, { Plugin: Plugin2 });
+    }
+    return this.plugins.init(plugins, [], substitutePlugins).then((loadedPlugins) => {
+      this._errorExclusions = getSubNodes(this, new Set(this.editors));
+      _addLiveContext(this);
+      return loadedPlugins;
+    });
+  }
+  /**
+  * Destroys the context instance and all editors used with the context,
+  * releasing all resources used by the context.
+  *
+  * @returns A promise that resolves once the context instance is fully destroyed.
+  */
+  destroy() {
+    _removeLiveContext(this);
+    return Promise.all(Array.from(this.editors, (editor) => editor.destroy())).then(() => this.plugins.destroy());
+  }
+  /**
+  * Adds a reference to the editor which is used with this context.
+  *
+  * When the given editor has created the context, the reference to this editor will be stored
+  * as a {@link ~Context#_contextOwner}.
+  *
+  * This method should only be used by the editor.
+  *
+  * @internal
+  * @param isContextOwner Stores the given editor as a context owner.
+  */
+  _addEditor(editor, isContextOwner) {
+    if (this._contextOwner)
+      throw new CKEditorError("context-addeditor-private-context");
+    this.editors.add(editor);
+    if (isContextOwner) this._contextOwner = editor;
+  }
+  /**
+  * Removes a reference to the editor which was used with this context.
+  * When the context was created by the given editor, the context will be destroyed.
+  *
+  * This method should only be used by the editor.
+  *
+  * @internal
+  * @return A promise that resolves once the editor is removed from the context or when the context was destroyed.
+  */
+  _removeEditor(editor) {
+    if (this.editors.has(editor)) this.editors.remove(editor);
+    if (this._contextOwner === editor) return this.destroy();
+    return Promise.resolve();
+  }
+  /**
+  * Returns the context configuration which will be copied to the editors created using this context.
+  *
+  * The configuration returned by this method has the plugins configuration removed &ndash; plugins are shared with all editors
+  * through another mechanism.
+  *
+  * This method should only be used by the editor.
+  *
+  * @internal
+  * @returns Configuration as a plain object.
+  */
+  _getEditorConfig() {
+    const result = {};
+    for (const name of this.config.names()) if (![
+      "plugins",
+      "removePlugins",
+      "extraPlugins"
+    ].includes(name)) result[name] = this.config.get(name);
+    return result;
+  }
+  /**
+  * Creates and initializes a new context instance.
+  *
+  * ```ts
+  * const commonConfig = { ... }; // Configuration for all the plugins and editors.
+  * const editorPlugins = [ ... ]; // Regular plugins here.
+  *
+  * Context
+  * 	.create( {
+  * 		// Only context plugins here.
+  * 		plugins: [ ... ],
+  *
+  * 		// Configure the language for all the editors (it cannot be overwritten).
+  * 		language: { ... },
+  *
+  * 		// Configuration for context plugins.
+  * 		comments: { ... },
+  * 		...
+  *
+  * 		// Default configuration for editor plugins.
+  * 		toolbar: { ... },
+  * 		image: { ... },
+  * 		...
+  * 	} )
+  * 	.then( context => {
+  * 		const promises = [];
+  *
+  * 		promises.push( ClassicEditor.create(
+  * 			document.getElementById( 'editor1' ),
+  * 			{
+  * 				editorPlugins,
+  * 				context
+  * 			}
+  * 		) );
+  *
+  * 		promises.push( ClassicEditor.create(
+  * 			document.getElementById( 'editor2' ),
+  * 			{
+  * 				editorPlugins,
+  * 				context,
+  * 				toolbar: { ... } // You can overwrite the configuration of the context.
+  * 			}
+  * 		) );
+  *
+  * 		return Promise.all( promises );
+  * 	} );
+  * ```
+  *
+  * @param config The context configuration.
+  * @returns A promise resolved once the context is ready. The promise resolves with the created context instance.
+  */
+  static create(config) {
+    return new Promise((resolve) => {
+      const context = new this(config);
+      resolve(context.initPlugins().then(() => context));
+    });
+  }
+  /**
+  * {@link module:core/errorreporter~onEditorError `onEditorError()`}, reachable without importing it.
+  *
+  * The same accessor as {@link module:core/editor/editor~Editor.onEditorError `Editor.onEditorError`},
+  * and here for the same reason. A context is the only handle some integrations have: a component that
+  * provides a shared context holds no editor class at all.
+  */
+  static get onEditorError() {
+    return onEditorError;
+  }
+  /**
+  * `Context` class is commonly put in `config.plugins` array.
+  *
+  * This property helps with better error detection.
+  *
+  * @internal
+  */
+  static get _throwErrorWhenUsedAsAPlugin() {
+    return true;
+  }
+};
 function attachToForm(editor) {
   if (!isFunction(editor.updateSourceElement))
     throw new CKEditorError("attachtoform-missing-elementapi-interface", editor);
@@ -34019,7 +33925,7 @@ function registerAndInitializeRootConfigAttributes(editor) {
     });
   });
 }
-function normalizeRootsConfig2(sourceElementsOrData, config, defaultRootName = "main", separateAttachTo = false) {
+function normalizeRootsConfig(sourceElementsOrData, config, defaultRootName = "main", separateAttachTo = false) {
   const mainRootConfig = config.get("root");
   const rootsConfig = config.get("roots") || /* @__PURE__ */ Object.create(null);
   if (!isPlainObject(rootsConfig))
@@ -34032,7 +33938,7 @@ function normalizeRootsConfig2(sourceElementsOrData, config, defaultRootName = "
   }
   if (defaultRootName && !rootsConfig[defaultRootName]) rootsConfig[defaultRootName] = mainRootConfig || /* @__PURE__ */ Object.create(null);
   const sourceElementIsPlainObject = isSourceElementsOrDataRecord(sourceElementsOrData);
-  const legacyInitialData = getLegacyInitialData2(config, sourceElementIsPlainObject, defaultRootName);
+  const legacyInitialData = getLegacyInitialData(config, sourceElementIsPlainObject, defaultRootName);
   const rootNames = Array.from(/* @__PURE__ */ new Set([
     ...sourceElementIsPlainObject ? Object.keys(sourceElementsOrData) : [],
     ...Object.keys(rootsConfig),
@@ -34041,32 +33947,33 @@ function normalizeRootsConfig2(sourceElementsOrData, config, defaultRootName = "
   for (const rootName of rootNames) {
     const rootConfig = rootsConfig[rootName] || /* @__PURE__ */ Object.create(null);
     const sourceElementOrDataForRoot = sourceElementIsPlainObject ? sourceElementsOrData[rootName] : sourceElementsOrData;
-    if (!separateAttachTo && isElement$13(sourceElementOrDataForRoot)) {
+    if (!separateAttachTo && isElement$12(sourceElementOrDataForRoot)) {
       if (rootConfig.element)
         throw new CKEditorError("editor-create-root-element-overspecified", null);
       rootConfig.element = sourceElementOrDataForRoot;
     }
-    if (separateAttachTo && isElement$13(rootConfig.element)) {
+    if (separateAttachTo && isElement$12(rootConfig.element)) {
       logWarning("editor-create-root-element-not-supported");
       rootConfig.element = void 0;
     }
-    if (rootConfig.initialData === void 0) if (legacyInitialData[rootName] === void 0) {
-      const rootConfigElement = isElement$13(rootConfig.element) ? rootConfig.element : void 0;
-      rootConfig.initialData = getInitialData(sourceElementOrDataForRoot || rootConfigElement || separateAttachTo && config.get("attachTo") || "");
-    } else if (sourceElementOrDataForRoot && !isElement$13(sourceElementOrDataForRoot))
-      throw new CKEditorError("editor-create-initial-data-overspecified", null);
-    else rootConfig.initialData = legacyInitialData[rootName];
-    else if (sourceElementOrDataForRoot && !isElement$13(sourceElementOrDataForRoot))
+    if (rootConfig.initialData === void 0) {
+      if (legacyInitialData[rootName] === void 0) {
+        const rootConfigElement = isElement$12(rootConfig.element) ? rootConfig.element : void 0;
+        rootConfig.initialData = getInitialData(sourceElementOrDataForRoot || rootConfigElement || separateAttachTo && config.get("attachTo") || "");
+      } else if (sourceElementOrDataForRoot && !isElement$12(sourceElementOrDataForRoot))
+        throw new CKEditorError("editor-create-initial-data-overspecified", null);
+      else rootConfig.initialData = legacyInitialData[rootName];
+    } else if (sourceElementOrDataForRoot && !isElement$12(sourceElementOrDataForRoot))
       throw new CKEditorError("editor-create-root-initial-data-overspecified", null);
     else if (legacyInitialData[rootName] !== void 0)
       throw new CKEditorError("editor-create-legacy-initial-data-overspecified", null);
-    rootConfig.placeholder ??= getLegacyPlainConfigValue2(config, "placeholder", rootName);
-    rootConfig.label ??= getLegacyPlainConfigValue2(config, "label", rootName);
+    rootConfig.placeholder ??= getLegacyPlainConfigValue(config, "placeholder", rootName);
+    rootConfig.label ??= getLegacyPlainConfigValue(config, "label", rootName);
     rootConfig.modelElement ||= "$root";
     rootConfig.element = normalizeViewRootElementDefinition(rootConfig.element);
     rootsConfig[rootName] = rootConfig;
   }
-  if (separateAttachTo && isElement$13(sourceElementsOrData)) {
+  if (separateAttachTo && isElement$12(sourceElementsOrData)) {
     if (config.get("attachTo"))
       throw new CKEditorError("editor-create-attachto-overspecified", null);
     config.set("attachTo", sourceElementsOrData);
@@ -34076,7 +33983,7 @@ function normalizeRootsConfig2(sourceElementsOrData, config, defaultRootName = "
   config.set("roots", rootsConfig);
 }
 function normalizeSingleRootEditorConstructorParams(sourceElementOrDataOrConfig, editorConfig) {
-  if (typeof sourceElementOrDataOrConfig === "string" || isElement$13(sourceElementOrDataOrConfig) || editorConfig && Object.keys(editorConfig).length) return {
+  if (typeof sourceElementOrDataOrConfig === "string" || isElement$12(sourceElementOrDataOrConfig) || editorConfig && Object.keys(editorConfig).length) return {
     sourceElementOrData: sourceElementOrDataOrConfig,
     editorConfig
   };
@@ -34086,21 +33993,21 @@ function normalizeSingleRootEditorConstructorParams(sourceElementOrDataOrConfig,
   };
 }
 function isSourceElementsOrDataRecord(sourceElementsOrData) {
-  return !!sourceElementsOrData && typeof sourceElementsOrData == "object" && !Array.isArray(sourceElementsOrData) && !isElement$13(sourceElementsOrData);
+  return !!sourceElementsOrData && typeof sourceElementsOrData == "object" && !Array.isArray(sourceElementsOrData) && !isElement$12(sourceElementsOrData);
 }
 function getInitialData(sourceElementOrData) {
-  return isElement$13(sourceElementOrData) ? getDataFromElement(sourceElementOrData) : sourceElementOrData;
+  return isElement$12(sourceElementOrData) ? getDataFromElement(sourceElementOrData) : sourceElementOrData;
 }
-function getLegacyInitialData2(config, sourceElementIsObject, defaultRootName) {
+function getLegacyInitialData(config, sourceElementIsObject, defaultRootName) {
   return sourceElementIsObject || !defaultRootName ? config.get("initialData") || /* @__PURE__ */ Object.create(null) : { [defaultRootName]: config.get("initialData") };
 }
-function getLegacyPlainConfigValue2(config, key, rootName) {
+function getLegacyPlainConfigValue(config, key, rootName) {
   const legacyValue = config.get(key);
   if (legacyValue) return typeof legacyValue == "string" ? legacyValue : legacyValue[rootName];
 }
 function normalizeViewRootElementDefinition(spec) {
   if (spec == null) return;
-  if (isElement$13(spec)) {
+  if (isElement$12(spec)) {
     assertAllowedTagName(spec.tagName);
     return spec;
   }
@@ -34138,7 +34045,7 @@ function assertAllowedTagName(name) {
   if (["textarea", "input"].includes(name.toLowerCase()))
     throw new CKEditorError("editor-wrong-element", null);
 }
-function isElement$13(value) {
+function isElement$12(value) {
   return isElement(value);
 }
 function verifyRootElements(editor) {
@@ -34158,7 +34065,7 @@ function rootAcceptsBlocks(editor, rootName) {
   return editor.model.schema.checkChild(root, "$block");
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-icons/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-icons/dist/index.js
 var accessibility_default = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M10 6.628a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M8.5 9.125a.3.3 0 0 0-.253-.296L5.11 8.327a.75.75 0 1 1 .388-1.449l4.04.716c.267.072.624.08.893.009l4.066-.724a.75.75 0 1 1 .388 1.45l-3.132.5a.3.3 0 0 0-.253.296v1.357a.3.3 0 0 0 .018.102l1.615 4.438a.75.75 0 0 1-1.41.513l-1.35-3.71a.3.3 0 0 0-.281-.197h-.209a.3.3 0 0 0-.282.198l-1.35 3.711a.75.75 0 0 1-1.41-.513l1.64-4.509a.3.3 0 0 0 .019-.103z"/><path d="M10 18.5a8.5 8.5 0 1 1 0-17 8.5 8.5 0 0 1 0 17m0 1.5c5.523 0 10-4.477 10-10S15.523 0 10 0 0 4.477 0 10s4.477 10 10 10" clip-rule="evenodd"/></svg>';
 var align_left_default = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2 3.75c0 .414.336.75.75.75h14.5a.75.75 0 1 0 0-1.5H2.75a.75.75 0 0 0-.75.75m0 8c0 .414.336.75.75.75h14.5a.75.75 0 1 0 0-1.5H2.75a.75.75 0 0 0-.75.75m0 4c0 .414.336.75.75.75h9.929a.75.75 0 1 0 0-1.5H2.75a.75.75 0 0 0-.75.75m0-8c0 .414.336.75.75.75h9.929a.75.75 0 1 0 0-1.5H2.75a.75.75 0 0 0-.75.75"/></svg>';
 var bold_default = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M10.187 17H5.773q-.956 0-1.364-.415-.41-.416-.409-1.323V4.738q0-.926.419-1.332.418-.405 1.354-.406h4.68q1.035 0 1.793.124.76.124 1.36.478.512.296.906.75a3.26 3.26 0 0 1 .808 2.162q0 2.102-2.167 3.075 2.846.879 2.847 3.421a3.76 3.76 0 0 1-2.296 3.504 6 6 0 0 1-1.517.377q-.857.11-2 .11zm-.217-6.217H7v4.087h3.069q2.965 0 2.965-2.072 0-1.061-.768-1.537-.768-.478-2.296-.478M7 5.13v3.619h2.606q1.093 0 1.69-.2a1.6 1.6 0 0 0 .91-.765q.247-.4.247-.897 0-1.06-.778-1.409-.778-.348-2.375-.348z"/></svg>';
@@ -34184,7 +34091,7 @@ var text_default = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
 var three_vertical_dots_default = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><circle cx="9.5" cy="4.5" r="1.5"/><circle cx="9.5" cy="10.5" r="1.5"/><circle cx="9.5" cy="16.5" r="1.5"/></svg>';
 var undo_default = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="m5.042 9.367 2.189 1.837a.75.75 0 0 1-.965 1.149l-3.788-3.18a.75.75 0 0 1-.21-.284.75.75 0 0 1 .17-.945L6.23 4.762a.75.75 0 1 1 .964 1.15L4.863 7.866h8.917A.8.8 0 0 1 14 7.9a4 4 0 1 1-1.477 7.718l.344-1.489a2.5 2.5 0 1 0 1.094-4.73l.008-.032z"/></svg>';
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/color-name/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/color-name/index.js
 var colors = {
   aliceblue: [240, 248, 255],
   antiquewhite: [250, 235, 215],
@@ -34338,7 +34245,7 @@ var colors = {
 for (const key in colors) Object.freeze(colors[key]);
 var color_name_default = Object.freeze(colors);
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/color-convert/conversions.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/color-convert/conversions.js
 var reverseKeywords = {};
 for (const key of Object.keys(color_name_default)) {
   reverseKeywords[color_name_default[key]] = key;
@@ -35086,7 +34993,7 @@ convert.rgb.gray = function(rgb) {
   return [value / 255 * 100];
 };
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/color-convert/route.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/color-convert/route.js
 function buildGraph() {
   const graph = {};
   const models2 = Object.keys(conversions_default);
@@ -35152,7 +35059,7 @@ function route(fromModel) {
 }
 var route_default = route;
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/color-convert/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/color-convert/index.js
 var convert2 = {};
 var models = Object.keys(conversions_default);
 function wrapRaw(fn) {
@@ -35206,7 +35113,7 @@ for (const fromModel of models) {
   }
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-ui/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-ui/dist/index.js
 var ViewCollection = class extends Collection {
   /**
   * A parent element within which child views are rendered and managed in DOM.
@@ -35915,8 +35822,10 @@ var TemplateToBinding = class extends TemplateBinding {
   */
   activateDomEventListener(domEvtName, domSelector, data) {
     const callback = (evt, domEvt) => {
-      if (!domSelector || domEvt.target.matches(domSelector)) if (typeof this.eventNameOrFunction == "function") this.eventNameOrFunction(domEvt);
-      else this.observable.fire(this.eventNameOrFunction, domEvt);
+      if (!domSelector || domEvt.target.matches(domSelector)) {
+        if (typeof this.eventNameOrFunction == "function") this.eventNameOrFunction(domEvt);
+        else this.observable.fire(this.eventNameOrFunction, domEvt);
+      }
     };
     this.emitter.listenTo(data.node, domEvtName, callback);
     return () => {
@@ -36012,9 +35921,11 @@ function normalize2(def) {
   if (!def.text) {
     if (def.attributes) normalizeAttributes(def.attributes);
     const children = [];
-    if (def.children) if (isViewCollection(def.children)) children.push(def.children);
-    else for (const child of def.children) if (isTemplate(child) || isView(child) || isNode(child)) children.push(child);
-    else children.push(new Template(child));
+    if (def.children) {
+      if (isViewCollection(def.children)) children.push(def.children);
+      else for (const child of def.children) if (isTemplate(child) || isView(child) || isNode(child)) children.push(child);
+      else children.push(new Template(child));
+    }
     def.children = children;
   }
   return def;
@@ -36554,14 +36465,34 @@ var AriaLiveAnnouncerRegionView = class extends View {
     return this.element.querySelector("ul");
   }
 };
-function clickOutsideHandler({ emitter, activator, callback, contextElements, listenerOptions }) {
+function clickOutsideHandler({ emitter, activator, callback, contextElements }) {
+  const listenedRoots = /* @__PURE__ */ new WeakSet();
+  let insideContext = false;
+  function getContextElements() {
+    return (typeof contextElements == "function" ? contextElements() : contextElements).filter((element) => element);
+  }
+  function listenToContextElementRoots(contextElements2) {
+    for (const contextElement of contextElements2) {
+      const root = contextElement.getRootNode();
+      if (root === document || !isShadowRoot(root) || listenedRoots.has(root)) continue;
+      listenedRoots.add(root);
+      emitter.listenTo(root, "mousedown", (evt, domEvt) => {
+        if (activator() && isInsideContext(domEvt, getContextElements())) insideContext = true;
+      });
+    }
+  }
+  emitter.listenTo(document, "mousedown", () => {
+    if (activator()) listenToContextElementRoots(getContextElements());
+    insideContext = false;
+  }, { useCapture: true });
   emitter.listenTo(document, "mousedown", (evt, domEvt) => {
-    if (!activator()) return;
-    const path = typeof domEvt.composedPath == "function" ? domEvt.composedPath() : [];
-    const contextElementsList = typeof contextElements == "function" ? contextElements() : contextElements;
-    for (const contextElement of contextElementsList) if (contextElement.contains(domEvt.target) || path.includes(contextElement)) return;
-    callback();
-  }, listenerOptions);
+    if (activator() && !isInsideContext(domEvt, getContextElements()) && !insideContext) callback();
+    insideContext = false;
+  });
+}
+function isInsideContext(domEvt, contextElements) {
+  for (const contextElement of contextElements) if (contextElement.contains(domEvt.target)) return true;
+  return false;
 }
 function CssTransitionDisablerMixin(view) {
   class Mixin extends view {
@@ -36694,7 +36625,7 @@ function DraggableViewMixin(view) {
     */
     _isHandleElementPressed(domEvt) {
       if (!this.dragHandleElement) return false;
-      return this.dragHandleElement === domEvt.target || domEvt.target instanceof HTMLElement && this.dragHandleElement.contains(domEvt.target);
+      return this.dragHandleElement === domEvt.target || domEvt.target instanceof HTMLElement && containsNode(this.dragHandleElement, domEvt.target);
     }
   }
   return DraggableMixin;
@@ -36790,8 +36721,8 @@ var AccessibilityHelpContentView = class extends View {
     const normalizedKeystrokeDefinition = normalizeKeystrokeDefinition(keystrokeDefinition.keystroke);
     const keystrokeAlternativeHTMLs = [];
     for (const keystrokeAlternative of normalizedKeystrokeDefinition) keystrokeAlternativeHTMLs.push(keystrokeAlternative.map(keystrokeToEnvKbd).join(""));
-    dt.innerHTML = keystrokeDefinition.label;
-    dd.innerHTML = keystrokeAlternativeHTMLs.join(", ") + (keystrokeDefinition.mayRequireFn && env.isMac ? ` ${t("(may require <kbd>Fn</kbd>)")}` : "");
+    dt.innerHTML = trustedHtml(keystrokeDefinition.label);
+    dd.innerHTML = trustedHtml(keystrokeAlternativeHTMLs.join(", ") + (keystrokeDefinition.mayRequireFn && env.isMac ? ` ${t("(may require <kbd>Fn</kbd>)")}` : ""));
     return [dt, dd];
   }
 };
@@ -36917,7 +36848,7 @@ var IconView = class IconView2 extends View {
   */
   _updateXMLContent() {
     if (this.content) {
-      const svg = new DOMParser().parseFromString(this.content.trim(), "image/svg+xml").querySelector("svg");
+      const svg = new DOMParser().parseFromString(trustedHtml(this.content.trim()), "image/svg+xml").querySelector("svg");
       if (!svg)
         throw new CKEditorError("ui-iconview-invalid-svg", this);
       const viewBox = svg.getAttribute("viewBox");
@@ -37130,11 +37061,13 @@ var ButtonView = class extends View {
   * @param keystroke Button keystroke.
   */
   _getTooltipString(tooltip, label, keystroke) {
-    if (tooltip) if (typeof tooltip == "string") return tooltip;
-    else {
-      if (keystroke) keystroke = getEnvKeystrokeText(keystroke);
-      if (tooltip instanceof Function) return tooltip(label, keystroke);
-      else return `${label}${keystroke ? ` (${keystroke})` : ""}`;
+    if (tooltip) {
+      if (typeof tooltip == "string") return tooltip;
+      else {
+        if (keystroke) keystroke = getEnvKeystrokeText(keystroke);
+        if (tooltip instanceof Function) return tooltip(label, keystroke);
+        else return `${label}${keystroke ? ` (${keystroke})` : ""}`;
+      }
     }
     return "";
   }
@@ -37520,6 +37453,7 @@ var DialogActionsView = class extends View {
       button.on("execute", () => definition.onExecute());
       if (definition.onCreate) definition.onCreate(button);
       for (property2 in definition) if (property2 != "onExecute" && property2 != "onCreate") button.set(property2, definition[property2]);
+      button.extendTemplate({ attributes: { class: "ck-button_standard" } });
       this.children.add(button);
     }
     this._updateFocusCyclableItems();
@@ -37815,7 +37749,7 @@ var DialogView = class DialogView2 extends DialogViewBase {
   * and moves it to the new position.
   */
   updatePosition() {
-    if (!this.element || !this.element.parentNode) return;
+    if (!this.element || !this.element.isConnected) return;
     const viewportRect = this._getViewportRect();
     let configuredPosition = this.position;
     let domRootRect = null;
@@ -37929,6 +37863,7 @@ var DialogView = class DialogView2 extends DialogViewBase {
     return buttonView;
   }
 };
+var SCROLL_LOCK_STYLES = ".ck-dialog-scroll-locked{overflow:hidden}";
 var Dialog = class Dialog2 extends Plugin {
   /**
   * The currently visible dialog view instance.
@@ -38056,7 +37991,7 @@ var Dialog = class Dialog2 extends Plugin {
   * 	tag: 'div',
   * 	attributes: {
   * 		style: {
-  * 			padding: 'var(--ck-spacing-large)',
+  * 			padding: 'var(--ck-spacing-padding-comfortable)',
   * 			whiteSpace: 'initial',
   * 			width: '100%',
   * 			maxWidth: '500px'
@@ -38197,6 +38132,7 @@ var Dialog = class Dialog2 extends Plugin {
   * Makes the <body> unscrollable (e.g. when the modal shows up).
   */
   _lockBodyScroll() {
+    adoptGlobalStyleSheet(document, SCROLL_LOCK_STYLES);
     document.documentElement.classList.add("ck-dialog-scroll-locked");
   }
   /**
@@ -38418,7 +38354,6 @@ var AccessibilityHelp = class extends Plugin {
       id: "accessibilityHelp",
       className: "ck-accessibility-help-dialog",
       title: t("Accessibility help"),
-      icon: accessibility_default,
       hasCloseButton: true,
       content: this.contentView
     });
@@ -38435,9 +38370,19 @@ var BodyCollection = class BodyCollection2 extends ViewCollection {
   */
   _bodyCollectionContainer;
   /**
-  * The wrapper element that holds all of the {@link #_bodyCollectionContainer} elements.
+  * The mount target the {@link #_bodyCollectionContainer} is currently attached to (through the shared
+  * wrapper): the `document.body` for editors in the light DOM, or a `ShadowRoot` (or a configured element)
+  * for editors living inside a shadow root. Tracked so the collection can be re-mounted into a different
+  * target and cleaned up from the right wrapper.
   */
-  static _bodyWrapper;
+  _mountTarget;
+  /**
+  * The shared wrapper elements that hold the {@link #_bodyCollectionContainer} elements, keyed by the
+  * mount target (the element or shadow root the wrapper is attached to – not the editor's editing root).
+  * Body collections attached to the same target (e.g. the same shadow root) share a single wrapper;
+  * body collections attached to different targets get separate wrappers.
+  */
+  static _bodyWrappers = /* @__PURE__ */ new Map();
   /**
   * Creates a new instance of the {@link module:ui/editorui/bodycollection~BodyCollection}.
   *
@@ -38449,17 +38394,13 @@ var BodyCollection = class BodyCollection2 extends ViewCollection {
     this.locale = locale;
   }
   /**
-  * The element holding elements of the body collection.
+  * The element holding elements of the body collection. It is created on demand – the first time it is
+  * accessed or the collection is {@link #attachToDom attached} – and reused afterwards. Creating it does
+  * not attach it to the DOM (that happens in {@link #attachToDom}), so it is available for focus tracking
+  * and styling even while the collection is not mounted yet.
   */
   get bodyCollectionContainer() {
-    return this._bodyCollectionContainer;
-  }
-  /**
-  * Attaches the body collection to the DOM body element. You need to execute this method to render the content of
-  * the body collection.
-  */
-  attachToDom() {
-    this._bodyCollectionContainer = new Template({
+    if (!this._bodyCollectionContainer) this._bodyCollectionContainer = new Template({
       tag: "div",
       attributes: {
         class: [
@@ -38473,22 +38414,112 @@ var BodyCollection = class BodyCollection2 extends ViewCollection {
       },
       children: this
     }).render();
-    if (!BodyCollection2._bodyWrapper || !BodyCollection2._bodyWrapper.isConnected) {
-      BodyCollection2._bodyWrapper = createElement(document, "div", { class: "ck-body-wrapper" });
-      document.body.appendChild(BodyCollection2._bodyWrapper);
-    }
-    BodyCollection2._bodyWrapper.appendChild(this._bodyCollectionContainer);
+    return this._bodyCollectionContainer;
   }
   /**
-  * Detaches the collection from the DOM structure. Use this method when you do not need to use the body collection
-  * anymore to clean-up the DOM structure.
+  * The mount target (element or shadow root) the collection is currently attached to, or `undefined`
+  * before {@link #attachToDom} is called or after {@link #unmountFromDom} or {@link #destroy}.
   */
-  detachFromDom() {
+  get mountTarget() {
+    return this._mountTarget;
+  }
+  /**
+  * Attaches the body collection to the DOM. You need to execute this method to render the content of
+  * the body collection.
+  *
+  * By default the collection mounts in a shared wrapper under the `document.body`. Pass a `target` to
+  * mount it elsewhere – for example inside the {@link module:utils/dom/isshadowroot~isShadowRoot shadow root}
+  * an editor lives in, so that floating UI (balloons, dialogs, tooltips) can be styled within that
+  * boundary. The `target` may be a regular element or a shadow root, open or closed. Calling this method
+  * again with a different `target` re-mounts the already rendered collection into the new location.
+  *
+  * @param target The element or shadow root to mount the body collection in. Defaults to `document.body`.
+  */
+  attachToDom(target) {
+    const mountTarget = target || document.body;
+    const previousMountTarget = this._mountTarget;
+    BodyCollection2._getBodyWrapper(mountTarget).appendChild(this.bodyCollectionContainer);
+    this._mountTarget = mountTarget;
+    if (previousMountTarget && previousMountTarget !== mountTarget) BodyCollection2._removeBodyWrapperIfEmpty(previousMountTarget);
+    if (previousMountTarget !== mountTarget) this.fire("remount");
+  }
+  /**
+  * Keeps the collection mounted in the given target: attaches it there when the target differs from the
+  * current {@link #mountTarget} (see {@link #attachToDom}), unmounts it on a `null` target (see
+  * {@link #unmountFromDom}), and leaves the DOM untouched when the collection already sits in the target.
+  *
+  * Designed for repeated calls with a freshly resolved target (for example on every editor UI update, or
+  * with the result of {@link module:utils/dom/getoverlaymountroot~getOverlayMountRoot}), as opposed to
+  * {@link #attachToDom}, which re-appends the container even when the target did not change.
+  *
+  * @param target The element or shadow root to mount the body collection in, or `null` to unmount it.
+  */
+  syncMountTarget(target) {
+    if (target) {
+      if (this._mountTarget !== target) this.attachToDom(target);
+    } else if (this._mountTarget) this.unmountFromDom();
+  }
+  /**
+  * Destroys the body collection: destroys its views and removes their shared container from the DOM. Use this
+  * method when you do not need the body collection anymore. For a reversible removal that keeps the views so the
+  * collection can be {@link #attachToDom attached} again, use {@link #unmountFromDom} instead.
+  */
+  destroy() {
     super.destroy();
+    this._removeFromDom();
+  }
+  /**
+  * Removes the collection's container from the DOM without destroying its views, so it can be attached
+  * again later with {@link #attachToDom} – for example when the editor is temporarily disconnected from
+  * the document. For permanent teardown use {@link #destroy} instead.
+  */
+  unmountFromDom() {
+    this._removeFromDom();
+  }
+  /**
+  * Removes the collection's container (and the shared wrapper, if now empty) from the DOM, keeping the
+  * container instance so it can be re-attached.
+  */
+  _removeFromDom() {
+    const wasMounted = !!this._mountTarget;
     if (this._bodyCollectionContainer) this._bodyCollectionContainer.remove();
-    if (BodyCollection2._bodyWrapper && !BodyCollection2._bodyWrapper.childElementCount) {
-      BodyCollection2._bodyWrapper.remove();
-      delete BodyCollection2._bodyWrapper;
+    BodyCollection2._removeBodyWrapperIfEmpty(this._mountTarget);
+    this._mountTarget = void 0;
+    if (wasMounted) this.fire("remount");
+  }
+  /**
+  * Returns the shared wrapper element for the given mount target, creating (and attaching) it if it does
+  * not exist yet or is no longer contained by the target. Body collections sharing a target share a wrapper.
+  *
+  * The staleness check asks whether the target still contains the wrapper rather than testing `isConnected`,
+  * so a wrapper stays reused when the target itself is legitimately detached from the document (for example a
+  * configured {@link module:core/editor/editorconfig~UiConfig#overlayContainer `ui.overlayContainer`} that
+  * is inserted later). Testing `isConnected` there would treat the still-attached wrapper as stale and build
+  * a duplicate wrapper for every body collection sharing that target.
+  *
+  * @param mountTarget The element or shadow root the wrapper is (or should be) attached to.
+  */
+  static _getBodyWrapper(mountTarget) {
+    let wrapper = BodyCollection2._bodyWrappers.get(mountTarget);
+    if (!wrapper || !mountTarget.contains(wrapper)) {
+      wrapper = createElement(mountTarget.ownerDocument, "div", { class: "ck-body-wrapper" });
+      mountTarget.appendChild(wrapper);
+      BodyCollection2._bodyWrappers.set(mountTarget, wrapper);
+    }
+    return wrapper;
+  }
+  /**
+  * Removes the shared wrapper for the given mount target (and forgets it) once it holds no more body
+  * collections.
+  *
+  * @param mountTarget The element or shadow root the wrapper is attached to.
+  */
+  static _removeBodyWrapperIfEmpty(mountTarget) {
+    if (!mountTarget) return;
+    const wrapper = BodyCollection2._bodyWrappers.get(mountTarget);
+    if (wrapper && !wrapper.childElementCount) {
+      wrapper.remove();
+      BodyCollection2._bodyWrappers.delete(mountTarget);
     }
   }
 };
@@ -38515,6 +38546,15 @@ var BalloonPanelView = class BalloonPanelView2 extends View {
   * An instance of resize observer used to detect if target element is still visible.
   */
   _resizeObserver;
+  /**
+  * Keeps the `scroll` listener of the currently pinned panel on `document` and on every event root of
+  * the positioning target or the limiter. Stopped by {@link #_stopPinning}.
+  *
+  * A single `document` listener is not enough, because `scroll` is not `composed` — its event path ends at
+  * the shadow root it originated in, so not even a capturing listener on `document` sees a scrollable
+  * container living inside a shadow root.
+  */
+  _scrollListener = null;
   /**
   * @inheritDoc
   */
@@ -38705,17 +38745,26 @@ var BalloonPanelView = class BalloonPanelView2 extends View {
     if (!this.attachTo(options)) return false;
     let targetElement = getDomElement(options.target);
     const limiterElement = options.limiter ? getDomElement(options.limiter) : globalVar.document.body;
-    this.listenTo(globalVar.document, "scroll", (evt, domEvt) => {
-      const scrollTarget = domEvt.target;
-      const isWithinScrollTarget = targetElement && scrollTarget.contains(targetElement);
-      const isLimiterWithinScrollTarget = limiterElement && scrollTarget.contains(limiterElement);
-      if (isWithinScrollTarget || isLimiterWithinScrollTarget || !targetElement || !limiterElement) this.attachTo(options);
-    }, { useCapture: true });
+    this._scrollListener = new DomTargetsListener(() => [
+      globalVar.document,
+      ...getEventRoots(targetElement),
+      ...getEventRoots(limiterElement)
+    ], {
+      emitter: this,
+      event: "scroll",
+      listenerOptions: { useCapture: true },
+      callback: (evt, domEvt) => {
+        const scrollTarget = domEvt.target;
+        const isWithinScrollTarget = targetElement && containsNode(scrollTarget, targetElement);
+        const isLimiterWithinScrollTarget = limiterElement && containsNode(scrollTarget, limiterElement);
+        if (isWithinScrollTarget || isLimiterWithinScrollTarget || !targetElement || !limiterElement) this.attachTo(options);
+      }
+    });
     this.listenTo(globalVar.window, "resize", () => {
       this.attachTo(options);
     });
     if (!this._resizeObserver) {
-      if (targetElement && isText(targetElement)) targetElement = targetElement.parentElement;
+      if (targetElement && isText(targetElement)) targetElement = getParentElement(targetElement);
       if (targetElement) {
         const checkVisibility = () => {
           if (!isVisible(targetElement)) this.unpin();
@@ -38729,7 +38778,10 @@ var BalloonPanelView = class BalloonPanelView2 extends View {
   * Stops managing the pinned state of the panel. See {@link #pin}.
   */
   _stopPinning() {
-    this.stopListening(globalVar.document, "scroll");
+    if (this._scrollListener) {
+      this._scrollListener.destroy();
+      this._scrollListener = null;
+    }
     this.stopListening(globalVar.window, "resize");
     if (this._resizeObserver) {
       this._resizeObserver.destroy();
@@ -40215,6 +40267,18 @@ var DropdownView = class DropdownView2 extends View {
   */
   menuView;
   /**
+  * An optional limiter used when {@link #panelPosition} is `'auto'`.
+  *
+  * By default, the `'auto'` position is only checked against the browser viewport, so a dropdown
+  * nested in a scrollable ancestor (e.g. a sidebar list) may pick a position that fits the window
+  * but is actually clipped by, or forces extra scrolling in, that ancestor. Set this to the
+  * scrollable ancestor (or a callback returning it) to have the optimal position calculation take
+  * its visible bounds into account too.
+  *
+  * @default null
+  */
+  panelPositionLimiter = null;
+  /**
   * Creates an instance of the dropdown.
   *
   * Also see {@link #render}.
@@ -40266,11 +40330,13 @@ var DropdownView = class DropdownView2 extends View {
     this.on("change:isOpen", (evt, name, isOpen) => {
       if (!isOpen) return;
       if (this.panelPosition === "auto") {
+        const limiter = typeof this.panelPositionLimiter === "function" ? this.panelPositionLimiter() : this.panelPositionLimiter;
         const optimalPanelPosition = DropdownView2._getOptimalPosition({
           element: this.panelView.element,
           target: this.buttonView.element,
           fitInViewport: true,
-          positions: this._panelPositions
+          positions: this._panelPositions,
+          ...limiter ? { limiter } : {}
         });
         this.panelView.position = optimalPanelPosition ? optimalPanelPosition.name : this._defaultPanelPositionName;
       } else this.panelView.position = this.panelPosition;
@@ -41372,7 +41438,7 @@ var DynamicGrouping = class {
   * without the toolbar wrapping.
   */
   _updateGrouping() {
-    if (!this.viewElement.ownerDocument.body.contains(this.viewElement)) return;
+    if (!this.viewElement.isConnected) return;
     if (!isVisible(this.viewElement)) {
       this.shouldUpdateGroupingOnNextResize = true;
       return;
@@ -41404,8 +41470,9 @@ var DynamicGrouping = class {
       const paddingProperty = uiLanguageDirection === "ltr" ? "paddingRight" : "paddingLeft";
       this.cachedPadding = Number.parseInt(computedStyle[paddingProperty]);
     }
-    if (uiLanguageDirection === "ltr") return lastChildRect.right > toolbarRect.right - this.cachedPadding;
-    else return lastChildRect.left < toolbarRect.left + this.cachedPadding;
+    const overflowTolerance = 1;
+    if (uiLanguageDirection === "ltr") return lastChildRect.right > toolbarRect.right - this.cachedPadding + overflowTolerance;
+    else return lastChildRect.left < toolbarRect.left + this.cachedPadding - overflowTolerance;
   }
   /**
   * Enables the functionality that prevents {@link #ungroupedItems} from overflowing (wrapping to the next row)
@@ -41691,7 +41758,7 @@ function closeDropdownOnClickOutside(dropdownView) {
     callback: () => {
       dropdownView.isOpen = false;
     },
-    contextElements: () => [dropdownView.element, ...getFocusTrackerTreeElements(dropdownView.focusTracker).filter((element) => !dropdownView.element.contains(element))]
+    contextElements: () => [dropdownView.element, ...getFocusTrackerTreeElements(dropdownView.focusTracker).filter((element) => !containsNode(dropdownView.element, element))]
   });
 }
 function getFocusTrackerTreeElements(focusTracker) {
@@ -41726,7 +41793,7 @@ function focusDropdownContentsOnArrows(dropdownView) {
 function focusDropdownButtonOnClose(dropdownView) {
   dropdownView.on("change:isOpen", (evt, name, isOpen) => {
     if (isOpen) return;
-    if (dropdownView.focusTracker.elements.some((element) => element.contains(globalVar.document.activeElement))) dropdownView.buttonView.focus();
+    if (dropdownView.focusTracker.elements.some((element) => element.contains(getActiveElement(element)))) dropdownView.buttonView.focus();
   });
 }
 function focusDropdownPanelOnOpen(dropdownView) {
@@ -41855,33 +41922,69 @@ var TooltipManager = class TooltipManager2 extends TooltipManagerBase {
   * A debounced version of {@link #_unpinTooltip}. Tooltips hide with a delay to allow hovering of their titles.
   */
   _unpinTooltipDebounced;
+  /**
+  * Shadow roots the manager currently has listeners attached to.
+  */
+  _shadowRoots = /* @__PURE__ */ new Set();
+  /**
+  * The listeners of the DOM events the manager reacts to, each attached to `document` and to every shadow root in
+  * {@link #_shadowRoots}. See the constructor.
+  */
+  _rootListeners;
+  /**
+  * Maps each DOM tree (the document or a shadow root) that hosts tooltip-bearing UI to the body collection
+  * the shared tooltip balloon should be pinned into for targets in that tree. Rebuilt from
+  * {@link module:ui/tooltipmanager~TooltipManager._registrations} by {@link #_rebuild}.
+  */
+  _bodyCollectionByTree = /* @__PURE__ */ new Map();
   _watchdogExcluded;
   /**
-  * A set of editors the single tooltip manager instance must listen to.
-  * This is mostly to handle `EditorUI#update` listeners from individual editors.
+  * The number of holders (editors and features) currently using the singleton, so it is destroyed only when
+  * the last one {@link #release releases} it.
   */
-  static _editors = /* @__PURE__ */ new Set();
+  _refCount = 0;
   /**
   * A reference to the `TooltipManager` instance. The class is a singleton and as such,
   * successive attempts at creating instances should return this instance.
   */
   static _instance = null;
   /**
-  * Creates an instance of the tooltip manager.
+  * The body collections the shared tooltip balloon may be pinned into, each with the sources describing where
+  * its tooltip-bearing UI lives: an optional {@link module:utils/dom/shadowrootregistry~ShadowRootRegistry}
+  * (the shadow roots its out-of-collection UI occupies) and an optional emitter whose `update` event should
+  * reposition a pinned tooltip.
   */
-  constructor(editor) {
+  static _registrations = /* @__PURE__ */ new Map();
+  /**
+  * Returns the shared `TooltipManager` singleton, creating it – with the given locale – on first use, and
+  * marks one more holder as using it. Every caller must later {@link #release} it, so the singleton is
+  * destroyed once the last holder is gone.
+  *
+  * Editors and features obtain the manager this way and then {@link #registerBodyCollection register} the
+  * body collection their tooltip-bearing UI renders into. A feature therefore does not need an editor
+  * reference to display tooltips – it attaches to the same singleton directly.
+  *
+  * @param locale The locale used to create the tooltip views on first use.
+  */
+  static for(locale) {
+    if (!TooltipManager2._instance) TooltipManager2._instance = new TooltipManager2(locale);
+    TooltipManager2._instance._refCount++;
+    return TooltipManager2._instance;
+  }
+  /**
+  * Creates an instance of the tooltip manager. Private – use {@link module:ui/tooltipmanager~TooltipManager.for} to obtain the shared
+  * singleton.
+  */
+  constructor(locale) {
     super();
-    TooltipManager2._editors.add(editor);
-    if (TooltipManager2._instance) return TooltipManager2._instance;
-    TooltipManager2._instance = this;
-    this.tooltipTextView = new View(editor.locale);
+    this.tooltipTextView = new View(locale);
     this.tooltipTextView.set("text", "");
     this.tooltipTextView.setTemplate({
       tag: "span",
       attributes: { class: ["ck", "ck-tooltip__text"] },
       children: [{ text: this.tooltipTextView.bindTemplate.to("text") }]
     });
-    this.balloonPanelView = new BalloonPanelView(editor.locale);
+    this.balloonPanelView = new BalloonPanelView(locale);
     this.balloonPanelView.class = BALLOON_CLASS;
     this.balloonPanelView.content.add(this.tooltipTextView);
     this._mutationObserver = createMutationObserver(() => {
@@ -41890,31 +41993,120 @@ var TooltipManager = class TooltipManager2 extends TooltipManagerBase {
     this._pinTooltipDebounced = debounce2(this._pinTooltip, 600);
     this._unpinTooltipDebounced = debounce2(this._unpinTooltip, 400);
     this.listenTo(globalVar.document, "keydown", this._onKeyDown.bind(this), { useCapture: true });
-    this.listenTo(globalVar.document, "mouseenter", this._onEnterOrFocus.bind(this), { useCapture: true });
-    this.listenTo(globalVar.document, "mouseleave", this._onLeaveOrBlur.bind(this), { useCapture: true });
-    this.listenTo(globalVar.document, "focus", this._onEnterOrFocus.bind(this), { useCapture: true });
-    this.listenTo(globalVar.document, "blur", this._onLeaveOrBlur.bind(this), { useCapture: true });
-    this.listenTo(globalVar.document, "scroll", this._onScroll.bind(this), { useCapture: true });
+    this._rootListeners = [
+      this._createRootsListener("mouseenter", this._onEnterOrFocus.bind(this)),
+      this._createRootsListener("mouseleave", this._onLeaveOrBlur.bind(this)),
+      this._createRootsListener("focus", this._onEnterOrFocus.bind(this)),
+      this._createRootsListener("blur", this._onLeaveOrBlur.bind(this)),
+      this._createRootsListener("scroll", this._onScroll.bind(this))
+    ];
     this._watchdogExcluded = true;
   }
   /**
-  * Destroys the tooltip manager.
-  *
-  * **Note**: The manager singleton cannot be destroyed until all editors that use it are destroyed.
-  *
-  * @param editor The editor the manager was created for.
+  * Marks one holder as done with the singleton (see {@link module:ui/tooltipmanager~TooltipManager.for}). When the last holder
+  * releases it, the singleton unpins the tooltip, destroys the shared balloon and drops every listener.
   */
-  destroy(editor) {
-    const editorBodyViewCollection = editor.ui.view && editor.ui.view.body;
-    TooltipManager2._editors.delete(editor);
-    this.stopListening(editor.ui);
-    if (editorBodyViewCollection && editorBodyViewCollection.has(this.balloonPanelView)) editorBodyViewCollection.remove(this.balloonPanelView);
-    if (!TooltipManager2._editors.size) {
-      this._unpinTooltip();
-      this.balloonPanelView.destroy();
-      this.stopListening();
-      TooltipManager2._instance = null;
+  release() {
+    if (this._refCount === 0 || --this._refCount > 0) return;
+    this._unpinTooltip();
+    this.balloonPanelView.destroy();
+    this.stopListening();
+    TooltipManager2._registrations.clear();
+    this._bodyCollectionByTree.clear();
+    this._shadowRoots.clear();
+    TooltipManager2._instance = null;
+  }
+  /**
+  * Registers a body collection the shared tooltip balloon may be pinned into, so that a tooltip triggered
+  * inside its DOM tree is hosted there instead of an unrelated one – keeping it in the same shadow tree, not
+  * clipped by or mis-styled across a boundary. Editors register their own
+  * {@link module:ui/editorui/editoruiview~EditorUIView#body body collection}; features that render floating UI
+  * in their own body collection register it too, which is what lets them display tooltips without an editor.
+  *
+  * @param bodyCollection The body collection to register.
+  * @param options Additional sources describing where this collection's tooltip-bearing UI lives.
+  * @param options.shadowRootRegistry The shadow roots hosting UI that is *not* inside `bodyCollection` (an
+  * editor's editables, toolbar, menu bar). Omit it when all tooltip-bearing UI lives inside the collection.
+  * @param options.updateEmitter An emitter whose `update` event should reposition a pinned tooltip (an editor
+  * passes its {@link module:ui/editorui/editorui~EditorUI}). Omit it when nothing moves the tooltip anchor.
+  */
+  registerBodyCollection(bodyCollection, { shadowRootRegistry, updateEmitter } = {}) {
+    if (TooltipManager2._registrations.has(bodyCollection)) return;
+    TooltipManager2._registrations.set(bodyCollection, {
+      shadowRootRegistry,
+      updateEmitter
+    });
+    this.listenTo(bodyCollection, "remount", () => {
+      if (!bodyCollection.mountTarget && bodyCollection.has(this.balloonPanelView) && this._currentElementWithTooltip) this._unpinTooltip();
+      this._rebuild();
+    });
+    if (shadowRootRegistry) {
+      this.listenTo(shadowRootRegistry, "add", () => this._rebuild());
+      this.listenTo(shadowRootRegistry, "remove", () => this._rebuild());
     }
+    this._rebuild();
+  }
+  /**
+  * Reverts {@link #registerBodyCollection}: stops hosting the shared balloon in the given collection and
+  * drops the listeners set up for it. Pulls the shared balloon out first, so it never dangles in a collection
+  * that is going away.
+  *
+  * @param bodyCollection The body collection to unregister.
+  */
+  unregisterBodyCollection(bodyCollection) {
+    const registration = TooltipManager2._registrations.get(bodyCollection);
+    if (!registration) return;
+    TooltipManager2._registrations.delete(bodyCollection);
+    this.stopListening(bodyCollection);
+    if (registration.shadowRootRegistry) this.stopListening(registration.shadowRootRegistry);
+    if (registration.updateEmitter && !this._getUpdateEmitters().has(registration.updateEmitter)) this.stopListening(registration.updateEmitter);
+    if (bodyCollection.has(this.balloonPanelView)) {
+      if (this._currentElementWithTooltip) this._unpinTooltip();
+      bodyCollection.remove(this.balloonPanelView);
+    }
+    this._rebuild();
+  }
+  /**
+  * Returns the distinct `update` emitters of all registered body collections.
+  *
+  * Deduplicated, because an emitter can be shared by several registrations (an editor and a feature hosting its
+  * own overlay layer both follow the editor's UI update) while listeners are attached per emitter, not per
+  * registration – listening once per registration would reposition a pinned tooltip several times per update.
+  */
+  _getUpdateEmitters() {
+    const updateEmitters = /* @__PURE__ */ new Set();
+    for (const { updateEmitter } of TooltipManager2._registrations.values()) if (updateEmitter) updateEmitters.add(updateEmitter);
+    return updateEmitters;
+  }
+  /**
+  * Rebuilds {@link #_bodyCollectionByTree} from {@link module:ui/tooltipmanager~TooltipManager._registrations}: every registered
+  * collection claims the DOM tree it is mounted in, and – for editors – every shadow root its registry reports (ancestor-inclusive,
+  * so nested and decoupled trees resolve too). Then updates the listeners attached to the shadow roots among them.
+  */
+  _rebuild() {
+    const map = /* @__PURE__ */ new Map();
+    const claim = (tree, bodyCollection) => {
+      if (!map.has(tree)) map.set(tree, bodyCollection);
+    };
+    for (const [bodyCollection, { shadowRootRegistry }] of TooltipManager2._registrations) {
+      const mountTarget = bodyCollection.mountTarget;
+      if (mountTarget) claim(mountTarget.getRootNode(), bodyCollection);
+      if (shadowRootRegistry) for (const root of shadowRootRegistry.getShadowRoots()) claim(root, bodyCollection);
+    }
+    this._bodyCollectionByTree = map;
+    this._shadowRoots = new Set(Array.from(map.keys()).filter(isShadowRoot));
+    for (const rootListener of this._rootListeners) rootListener.refresh();
+  }
+  /**
+  * Attaches the callback to `document` and to every shadow root in {@link #_shadowRoots}. See the constructor.
+  */
+  _createRootsListener(event, callback) {
+    return new DomTargetsListener(() => [globalVar.document, ...this._shadowRoots], {
+      emitter: this,
+      event,
+      listenerOptions: { useCapture: true },
+      callback
+    });
   }
   /**
   * Returns {@link #balloonPanelView} {@link module:utils/dom/position~PositioningFunction positioning functions} for a given position
@@ -41946,8 +42138,8 @@ var TooltipManager = class TooltipManager2 extends TooltipManagerBase {
   */
   _onKeyDown(evt, domEvent) {
     if (domEvent.key === "Escape" && this._currentElementWithTooltip) {
+      if (!containsNode(this._currentElementWithTooltip, getActiveElement(this._currentElementWithTooltip))) domEvent.stopPropagation();
       this._unpinTooltip();
-      domEvent.stopPropagation();
     }
   }
   /**
@@ -41956,9 +42148,15 @@ var TooltipManager = class TooltipManager2 extends TooltipManagerBase {
   * @param evt An object containing information about the fired event.
   * @param domEvent The DOM event.
   */
-  _onEnterOrFocus(evt, { target }) {
+  _onEnterOrFocus(evt, domEvent) {
+    if (isShadowHostOf(domEvent.target, this._shadowRoots)) return;
+    const { target } = domEvent;
     const elementWithTooltipAttribute = getDescendantWithTooltip(target);
     if (!elementWithTooltipAttribute) {
+      if (evt.name === "mouseenter" && containsNode(this.balloonPanelView.element, target)) {
+        this._unpinTooltipDebounced.cancel();
+        return;
+      }
       if (evt.name === "focus") this._unpinTooltip();
       return;
     }
@@ -41976,11 +42174,13 @@ var TooltipManager = class TooltipManager2 extends TooltipManagerBase {
   * @param evt An object containing information about the fired event.
   * @param domEvent The DOM event.
   */
-  _onLeaveOrBlur(evt, { target, relatedTarget }) {
+  _onLeaveOrBlur(evt, domEvent) {
+    if (isShadowHostOf(domEvent.target, this._shadowRoots)) return;
+    const { target, relatedTarget } = domEvent;
     if (evt.name === "mouseleave") {
       if (!isElement(target)) return;
       const balloonElement = this.balloonPanelView.element;
-      const isEnteringBalloon = balloonElement && (balloonElement === relatedTarget || balloonElement.contains(relatedTarget));
+      const isEnteringBalloon = !!balloonElement && containsNode(balloonElement, relatedTarget);
       const isLeavingBalloon = !isEnteringBalloon && target === balloonElement;
       if (isEnteringBalloon) {
         this._unpinTooltipDebounced.cancel();
@@ -42008,7 +42208,7 @@ var TooltipManager = class TooltipManager2 extends TooltipManagerBase {
   */
   _onScroll(evt, { target }) {
     if (!this._currentElementWithTooltip) return;
-    if (target.contains(this.balloonPanelView.element) && target.contains(this._currentElementWithTooltip)) return;
+    if (containsNode(target, this.balloonPanelView.element) && containsNode(target, this._currentElementWithTooltip)) return;
     this._unpinTooltip();
   }
   /**
@@ -42022,8 +42222,7 @@ var TooltipManager = class TooltipManager2 extends TooltipManagerBase {
   */
   _pinTooltip(targetDomElement, { text, position, cssClass }) {
     this._unpinTooltip();
-    const bodyViewCollection = first(TooltipManager2._editors.values()).ui.view.body;
-    if (!bodyViewCollection.has(this.balloonPanelView)) bodyViewCollection.add(this.balloonPanelView);
+    if (!this._moveBalloonToConnectedBodyCollection(targetDomElement)) return;
     this.tooltipTextView.text = text;
     this.balloonPanelView.class = [BALLOON_CLASS, cssClass].filter((className) => className).join(" ");
     this.balloonPanelView.pin({
@@ -42031,9 +42230,51 @@ var TooltipManager = class TooltipManager2 extends TooltipManagerBase {
       positions: TooltipManager2.getPositioningFunctions(position)
     });
     this._mutationObserver.attach(targetDomElement);
-    for (const editor of TooltipManager2._editors) this.listenTo(editor.ui, "update", this._updateTooltipPosition.bind(this), { priority: "low" });
+    for (const updateEmitter of this._getUpdateEmitters()) this.listenTo(updateEmitter, "update", this._updateTooltipPosition.bind(this), { priority: "low" });
     this._currentElementWithTooltip = targetDomElement;
     this._currentTooltipPosition = position;
+  }
+  /**
+  * Moves the shared tooltip balloon into the body collection returned by {@link #_getConnectedBodyCollection},
+  * first removing it from any registered body collection that previously hosted it. The balloon is a singleton
+  * shared by every registrant, so it must belong to exactly one collection at a time; otherwise unregistering
+  * one collection would detach the shared element while another registrant still references it.
+  *
+  * @param targetDomElement The element the tooltip is being pinned to, used to prefer the body collection
+  * that hosts its DOM tree.
+  * @returns `true` if a host body collection was found (and the balloon moved into it), `false` when none is
+  * registered and the tooltip therefore cannot be shown.
+  */
+  _moveBalloonToConnectedBodyCollection(targetDomElement) {
+    const balloon = this.balloonPanelView;
+    const targetBodyCollection = this._getConnectedBodyCollection(targetDomElement);
+    if (!targetBodyCollection) return false;
+    for (const bodyCollection of TooltipManager2._registrations.keys()) if (bodyCollection !== targetBodyCollection && bodyCollection.has(balloon)) bodyCollection.remove(balloon);
+    if (!targetBodyCollection.has(balloon)) targetBodyCollection.add(balloon);
+    return true;
+  }
+  /**
+  * Returns the body collection the shared tooltip balloon should be pinned into. The balloon is a singleton,
+  * but each registered body collection can live in a different DOM tree (a shadow root, or a configured
+  * `ui.overlayContainer`). To keep the tooltip in the tree of the hovered element — so it is styled by that
+  * tree's sheets and not clipped by another root — the tree is looked up in {@link #_bodyCollectionByTree},
+  * which maps every tree hosting tooltip-bearing UI (a collection's own mount tree, and an editor's editable,
+  * toolbar or menu bar trees) to the collection that should host it.
+  *
+  * A body collection is mounted lazily and unmounted when its host leaves the document, and a configured
+  * `ui.overlayContainer` may be detached — a body in either state would render the balloon outside the
+  * document and hide tooltips, so the mount target must be connected, not merely set. When no connected body
+  * collection hosts the hovered element's tree, it falls back to the first connected registrant, then to the
+  * first registered one, and to `null` when nothing is registered at all.
+  *
+  * @param targetDomElement The element the tooltip is being pinned to.
+  */
+  _getConnectedBodyCollection(targetDomElement) {
+    const targetRoot = targetDomElement.getRootNode();
+    const owning = this._bodyCollectionByTree.get(targetRoot);
+    if (owning && owning.mountTarget && owning.mountTarget.isConnected) return owning;
+    for (const bodyCollection of TooltipManager2._registrations.keys()) if (bodyCollection.mountTarget && bodyCollection.mountTarget.isConnected) return bodyCollection;
+    return first(TooltipManager2._registrations.keys()) || null;
   }
   /**
   * Unpins the tooltip and cancels all queued pinning.
@@ -42042,7 +42283,7 @@ var TooltipManager = class TooltipManager2 extends TooltipManagerBase {
     this._unpinTooltipDebounced.cancel();
     this._pinTooltipDebounced.cancel();
     this.balloonPanelView.unpin();
-    for (const editor of TooltipManager2._editors) this.stopListening(editor.ui, "update");
+    for (const updateEmitter of this._getUpdateEmitters()) this.stopListening(updateEmitter, "update");
     this._currentElementWithTooltip = null;
     this._currentTooltipPosition = null;
     this.tooltipTextView.text = "";
@@ -42093,6 +42334,122 @@ function createMutationObserver(callback) {
     }
   };
 }
+var OverlayHostBase = /* @__PURE__ */ EmitterMixin();
+var OverlayHost = class extends OverlayHostBase {
+  /**
+  * The body collection holding the floating views. Add the feature's balloons and panels here.
+  */
+  bodyCollection;
+  /**
+  * Tracks the event roots (shadow roots and documents) of the tooltip-bearing UI that lives outside the {@link #bodyCollection}:
+  * the {@link module:ui/overlayhost~OverlayHostOptions#resolveInlineContainer inline UI container} and any
+  * nodes registered directly by the owner (an editor registers its editables, toolbars and menu bar).
+  */
+  shadowRootRegistry;
+  /**
+  * The shared tooltip manager the {@link #bodyCollection} is registered with.
+  */
+  _tooltipManager;
+  /**
+  * See {@link module:ui/overlayhost~OverlayHostOptions#resolveMountTarget}.
+  */
+  _resolveMountTarget;
+  /**
+  * See {@link module:ui/overlayhost~OverlayHostOptions#resolveInlineContainer}.
+  */
+  _resolveInlineContainer;
+  /**
+  * The inline UI container currently registered with {@link #shadowRootRegistry}, so it can be
+  * replaced when the feature moves to a different container.
+  */
+  _registeredInlineContainer = null;
+  /**
+  * Whether the {@link #bodyCollection} was created by this host (and is destroyed with it), as opposed to
+  * a borrowed one whose owner manages its life cycle.
+  */
+  _ownsBodyCollection;
+  /**
+  * Whether the {@link #shadowRootRegistry} was created by this host (and is destroyed with it), as opposed
+  * to a borrowed one whose owner manages its life cycle.
+  */
+  _ownsShadowRootRegistry;
+  /**
+  * Whether this host acquired its own reference to the shared tooltip manager (and releases it on
+  * {@link #destroy}), as opposed to using a borrowed reference whose holder releases it – an editor counts
+  * as a single holder no matter how it splits the work internally.
+  */
+  _ownsTooltipManagerReference;
+  /**
+  * Whether {@link #destroy} has run, so a repeated call does not release the shared tooltip manager on
+  * behalf of another holder.
+  */
+  _destroyed = false;
+  /**
+  * Creates the host: the {@link #bodyCollection} (unless a borrowed one is given) and its registration in
+  * the shared {@link module:ui/tooltipmanager~TooltipManager}. The collection is not mounted in the DOM
+  * yet – call {@link #sync} for that.
+  *
+  * @param locale The locale of the feature (used by the body collection and the tooltip views).
+  * @param options The resolvers describing where the feature UI lives.
+  */
+  constructor(locale, options) {
+    super();
+    this.bodyCollection = options.bodyCollection || new BodyCollection(locale);
+    this._ownsBodyCollection = !options.bodyCollection;
+    this.shadowRootRegistry = options.shadowRootRegistry || new ShadowRootRegistry();
+    this._ownsShadowRootRegistry = !options.shadowRootRegistry;
+    this._resolveMountTarget = options.resolveMountTarget;
+    this._resolveInlineContainer = options.resolveInlineContainer;
+    this._tooltipManager = options.tooltipManager || TooltipManager.for(locale);
+    this._ownsTooltipManagerReference = !options.tooltipManager;
+    this._tooltipManager.registerBodyCollection(this.bodyCollection, {
+      shadowRootRegistry: this.shadowRootRegistry,
+      updateEmitter: options.updateEmitter
+    });
+    if (options.updateEmitter) this.listenTo(options.updateEmitter, "update", () => this.sync(), { priority: "high" });
+    this.listenTo(this.bodyCollection, "add", () => this.sync());
+  }
+  /**
+  * Brings the host up to date with the resolved targets:
+  *
+  * * keeps the {@link #bodyCollection} mounted in the target resolved by
+  *   {@link module:ui/overlayhost~OverlayHostOptions#resolveMountTarget} (re-mounting only when the target
+  *   changes, unmounting on `null`);
+  * * keeps the {@link module:ui/overlayhost~OverlayHostOptions#resolveInlineContainer inline UI container}
+  *   tracked for tooltips, re-resolving its shadow root in case a detached container has become connected.
+  *
+  * Idempotent – call it whenever the targets may have changed: after attaching the feature to a container,
+  * right before showing a floating panel (an editor's UI may be mounted lazily), or on any relevant layout
+  * change.
+  */
+  sync() {
+    this.bodyCollection.syncMountTarget(this._resolveMountTarget());
+    if (this._resolveInlineContainer) {
+      const container = this._resolveInlineContainer() || null;
+      if (container !== this._registeredInlineContainer) {
+        if (this._registeredInlineContainer) this.shadowRootRegistry.unregisterNode(this._registeredInlineContainer);
+        this._registeredInlineContainer = container;
+        if (container) this.shadowRootRegistry.registerNode(container);
+      }
+    }
+    this.shadowRootRegistry.refresh();
+  }
+  /**
+  * Destroys the host: stops hosting tooltips in the {@link #bodyCollection}, releases the shared
+  * {@link module:ui/tooltipmanager~TooltipManager} (so it is destroyed with its last holder) and destroys
+  * the collection together with its views and the {@link #shadowRootRegistry} – except the borrowed ones,
+  * which their owners destroy. Safe to call more than once.
+  */
+  destroy() {
+    if (this._destroyed) return;
+    this._destroyed = true;
+    this.stopListening();
+    this._tooltipManager.unregisterBodyCollection(this.bodyCollection);
+    if (this._ownsTooltipManagerReference) this._tooltipManager.release();
+    if (this._ownsShadowRootRegistry) this.shadowRootRegistry.destroy();
+    if (this._ownsBodyCollection) this.bodyCollection.destroy();
+  }
+};
 var EvaluationBadge = class extends Badge {
   licenseTypeMessage = {
     evaluation: "For evaluation purposes only",
@@ -42711,27 +43068,28 @@ function handleAdditions(originalConfig, config, items) {
   for (const itemToAdd of items) {
     const relation = getRelationFromPosition(itemToAdd.position);
     const relativeId = getRelativeIdFromPosition(itemToAdd.position);
-    if (isMenuBarMenuAddition(itemToAdd)) if (!relativeId) {
-      if (relation === "start") {
-        config.items.unshift(itemToAdd.menu);
-        successFullyAddedItems.push(itemToAdd);
-      } else if (relation === "end") {
-        config.items.push(itemToAdd.menu);
-        successFullyAddedItems.push(itemToAdd);
-      }
-    } else {
-      const topLevelMenuDefinitionIndex = config.items.findIndex((menuDefinition) => menuDefinition.menuId === relativeId);
-      if (topLevelMenuDefinitionIndex != -1) {
-        if (relation === "before") {
-          config.items.splice(topLevelMenuDefinitionIndex, 0, itemToAdd.menu);
+    if (isMenuBarMenuAddition(itemToAdd)) {
+      if (!relativeId) {
+        if (relation === "start") {
+          config.items.unshift(itemToAdd.menu);
           successFullyAddedItems.push(itemToAdd);
-        } else if (relation === "after") {
-          config.items.splice(topLevelMenuDefinitionIndex + 1, 0, itemToAdd.menu);
+        } else if (relation === "end") {
+          config.items.push(itemToAdd.menu);
           successFullyAddedItems.push(itemToAdd);
         }
-      } else if (addMenuOrItemToGroup(config, itemToAdd.menu, relativeId, relation)) successFullyAddedItems.push(itemToAdd);
-    }
-    else if (isMenuBarMenuGroupAddition(itemToAdd)) walkConfigMenus(config.items, (menuDefinition) => {
+      } else {
+        const topLevelMenuDefinitionIndex = config.items.findIndex((menuDefinition) => menuDefinition.menuId === relativeId);
+        if (topLevelMenuDefinitionIndex != -1) {
+          if (relation === "before") {
+            config.items.splice(topLevelMenuDefinitionIndex, 0, itemToAdd.menu);
+            successFullyAddedItems.push(itemToAdd);
+          } else if (relation === "after") {
+            config.items.splice(topLevelMenuDefinitionIndex + 1, 0, itemToAdd.menu);
+            successFullyAddedItems.push(itemToAdd);
+          }
+        } else if (addMenuOrItemToGroup(config, itemToAdd.menu, relativeId, relation)) successFullyAddedItems.push(itemToAdd);
+      }
+    } else if (isMenuBarMenuGroupAddition(itemToAdd)) walkConfigMenus(config.items, (menuDefinition) => {
       if (menuDefinition.menuId === relativeId) {
         if (relation === "start") {
           menuDefinition.groups.unshift(itemToAdd.group);
@@ -42961,6 +43319,26 @@ var EditorUI = class extends EditorUIBase {
   */
   isReady = false;
   /**
+  * Tracks the event roots of the DOM elements used by the editor UI (editables, toolbars, menu bar): the shadow
+  * roots hosting them and the documents they are connected to.
+  *
+  * Features that need the DOM events which do not cross a shadow boundary – `scroll`, `mouseenter`,
+  * `mouseleave` – attach them to `document` and every tracked root with
+  * {@link module:utils/dom/shadowrootregistry~listenToEventRoots `listenToEventRoots()`}, or to the shadow roots
+  * only with {@link module:utils/dom/shadowrootregistry~listenToShadowRoots `listenToShadowRoots()`}. A feature
+  * that has a node in hand wants a shadow-aware helper instead, such as
+  * {@link module:utils/dom/geteventroots~getEventRoots `getEventRoots()`} or
+  * {@link module:utils/dom/getshadowroots~getShadowRoots `getShadowRoots()`}.
+  */
+  shadowRootRegistry = new ShadowRootRegistry();
+  /**
+  * Hosts the editor's floating UI: keeps the {@link module:ui/editorui/editoruiview~EditorUIView#body body
+  * collection} mounted in the target resolved by {@link #_getBodyCollectionMountTarget} and registers it
+  * with the shared tooltip manager. Created once the editor is {@link #isReady ready} – the view does not
+  * exist earlier.
+  */
+  _overlayHost = null;
+  /**
   * Stores all editable elements used by the editor instance.
   */
   _editableElementsMap = /* @__PURE__ */ new Map();
@@ -42991,13 +43369,23 @@ var EditorUI = class extends EditorUIBase {
     this.editor = editor;
     this.componentFactory = new ComponentFactory(editor);
     this.focusTracker = new FocusTracker();
-    this.tooltipManager = new TooltipManager(editor);
+    this.tooltipManager = TooltipManager.for(editor.locale);
     this.poweredBy = new PoweredBy(editor);
     this.evaluationBadge = new EvaluationBadge(editor);
     this.ariaLiveAnnouncer = new AriaLiveAnnouncer(editor);
     this._initViewportOffset(this._readViewportOffsetFromConfig());
+    warnIfShadowRootUsedWithoutOverlayContainer(this);
     this.once("ready", () => {
-      this._bindBodyCollectionWithFocusTracker();
+      warnIfConfiguredOverlayContainerDetached(editor);
+      this._overlayHost = new OverlayHost(editor.locale, {
+        bodyCollection: this.view.body,
+        shadowRootRegistry: this.shadowRootRegistry,
+        tooltipManager: this.tooltipManager,
+        resolveMountTarget: () => this._getBodyCollectionMountTarget(),
+        updateEmitter: this
+      });
+      this._bindBodyCollectionWatchers();
+      this._overlayHost.sync();
       this.isReady = true;
     });
     this.listenTo(editingView.document, "layoutChanged", this.update.bind(this));
@@ -43035,13 +43423,18 @@ var EditorUI = class extends EditorUIBase {
   destroy() {
     this.stopListening();
     this.focusTracker.destroy();
-    this.tooltipManager.destroy(this.editor);
+    if (this._overlayHost) {
+      this._overlayHost.destroy();
+      this._overlayHost = null;
+    }
+    this.tooltipManager.release();
     this.poweredBy.destroy();
     this.evaluationBadge.destroy();
     for (const domElement of this._editableElementsMap.values()) {
       domElement.ckeditorInstance = null;
       this.editor.keystrokes.stopListening(domElement);
     }
+    this.shadowRootRegistry.destroy();
     this._editableElementsMap = /* @__PURE__ */ new Map();
     this._focusableToolbarDefinitions = [];
     if (this._domEmitter) this._domEmitter.stopListening();
@@ -43059,6 +43452,7 @@ var EditorUI = class extends EditorUIBase {
     this._editableElementsMap.set(rootName, domElement);
     if (!domElement.ckeditorInstance) domElement.ckeditorInstance = this.editor;
     this.focusTracker.add(domElement);
+    this.shadowRootRegistry.registerNode(domElement);
     const setUpKeystrokeHandler = () => {
       if (this.editor.editing.view.getDomRoot(rootName)) return;
       this.editor.keystrokes.listenTo(domElement);
@@ -43077,6 +43471,7 @@ var EditorUI = class extends EditorUIBase {
     this._editableElementsMap.delete(rootName);
     this.editor.keystrokes.stopListening(domElement);
     this.focusTracker.remove(domElement);
+    this.shadowRootRegistry.unregisterNode(domElement);
     domElement.ckeditorInstance = null;
   }
   /**
@@ -43102,13 +43497,13 @@ var EditorUI = class extends EditorUIBase {
   * @param toolbarView A instance of the toolbar to be registered.
   */
   addToolbar(toolbarView, options = {}) {
-    if (toolbarView.isRendered) {
+    const attach = () => {
       this.focusTracker.add(toolbarView);
       this.editor.keystrokes.listenTo(toolbarView.element);
-    } else toolbarView.once("render", () => {
-      this.focusTracker.add(toolbarView);
-      this.editor.keystrokes.listenTo(toolbarView.element);
-    });
+      this.shadowRootRegistry.registerNode(toolbarView.element);
+    };
+    if (toolbarView.isRendered) attach();
+    else toolbarView.once("render", attach);
     this._focusableToolbarDefinitions.push({
       toolbarView,
       options
@@ -43163,6 +43558,7 @@ var EditorUI = class extends EditorUIBase {
     const menuBarViewElement = menuBarView.element;
     this.focusTracker.add(menuBarViewElement);
     this.editor.keystrokes.listenTo(menuBarViewElement);
+    this.shadowRootRegistry.registerNode(menuBarViewElement);
     const normalizedMenuBarConfig = normalizeMenuBarConfig(this.editor.config.get("menuBar") || {});
     menuBarView.fillFromConfig(normalizedMenuBarConfig, this.componentFactory, this._extraMenuBarElements);
     this.editor.keystrokes.set("Esc", (data, cancel) => {
@@ -43309,16 +43705,46 @@ var EditorUI = class extends EditorUIBase {
     data.viewportOffset.right += configuredViewportOffset.right;
   }
   /**
-  * Ensures that the focus tracker is aware of all views' DOM elements in the body collection.
+  * Resolves where the {@link module:ui/editorui/editoruiview~EditorUIView#body body collection} should be
+  * mounted:
+  *
+  * * the {@link module:core/editor/editorconfig~UiConfig#overlayContainer `ui.overlayContainer`}
+  *   configuration, if set;
+  * * otherwise, resolved from the first editing root connected to a document (an editor may span several,
+  *   for example a multi-root editor): the shadow root that root lives in (open or closed) when there is
+  *   one, otherwise `document.body`;
+  * * otherwise `null` – no editing root is connected yet, so the body collection is not attached to the
+  *   DOM before the editor itself is.
+  *
+  * Resolving from the connected editing root on every sync also moves the body collection back out
+  * of a shadow root if the editing root ever leaves it.
   */
-  _bindBodyCollectionWithFocusTracker() {
+  _getBodyCollectionMountTarget() {
+    const configuredTarget = this.editor.config.get("ui.overlayContainer");
+    if (configuredTarget) return configuredTarget;
+    for (const domRoot of this.editor.editing.view.domRoots.values()) {
+      const mountRoot = getOverlayMountRoot(domRoot);
+      if (mountRoot) return mountRoot;
+    }
+    return null;
+  }
+  /**
+  * Ensures that the focus tracker and the shadow root registry are aware of all views' DOM elements in the
+  * body collection.
+  */
+  _bindBodyCollectionWatchers() {
     const body = this.view.body;
-    for (const view of body) this.focusTracker.add(view.element);
+    for (const view of body) {
+      this.focusTracker.add(view.element);
+      this.shadowRootRegistry.registerNode(view.element);
+    }
     body.on("add", (evt, view) => {
       this.focusTracker.add(view.element);
+      this.shadowRootRegistry.registerNode(view.element);
     });
     body.on("remove", (evt, view) => {
       this.focusTracker.remove(view.element);
+      this.shadowRootRegistry.unregisterNode(view.element);
     });
   }
   /**
@@ -43367,6 +43793,17 @@ function getToolbarDefinitionWeight(toolbarDef) {
   if (options.isContextual) weight -= 2;
   return weight;
 }
+function warnIfConfiguredOverlayContainerDetached(editor) {
+  const configuredContainer = editor.config.get("ui.overlayContainer");
+  if (configuredContainer && !configuredContainer.isConnected)
+    logWarning("ui-overlay-container-not-connected", { overlayContainer: configuredContainer });
+}
+function warnIfShadowRootUsedWithoutOverlayContainer(ui) {
+  if (ui.editor.config.get("ui.overlayContainer")) return;
+  ui.shadowRootRegistry.once("add", (evt, shadowRoot) => {
+    logWarning("ui-overlay-container-not-configured", { shadowRoot });
+  });
+}
 var EditorUIView = class extends View {
   /**
   * Collection of the child views, detached from the DOM
@@ -43402,15 +43839,8 @@ var EditorUIView = class extends View {
   /**
   * @inheritDoc
   */
-  render() {
-    super.render();
-    this.body.attachToDom();
-  }
-  /**
-  * @inheritDoc
-  */
   destroy() {
-    this.body.detachFromDom();
+    this.body.destroy();
     return super.destroy();
   }
 };
@@ -43523,9 +43953,10 @@ var EditableUIView = class extends View {
   */
   constructor(locale, editingView, editableElement) {
     super(locale);
-    const { name, classes, styles, attributes } = (isElement$14(editableElement) ? void 0 : editableElement) || {};
+    const { name, classes, styles, attributes } = (isElement$13(editableElement) ? void 0 : editableElement) || {};
     this.set("isFocused", false);
     this.set("isInlineRoot", false);
+    this.set("isMainFrameEditingRoot", false);
     this.setTemplate({
       tag: name || "div",
       attributes: {
@@ -43536,6 +43967,7 @@ var EditableUIView = class extends View {
           "ck-editor__editable",
           "ck-rounded-corners",
           this.bindTemplate.if("isInlineRoot", "ck-editor__editable_inline-root"),
+          this.bindTemplate.if("isMainFrameEditingRoot", "ck-editor__editable_root"),
           ...classes ? toArray(classes) : []
         ],
         ...styles && { style: styles },
@@ -43543,7 +43975,7 @@ var EditableUIView = class extends View {
         dir: locale.contentLanguageDirection
       }
     });
-    this._editableElement = isElement$14(editableElement) ? editableElement : void 0;
+    this._editableElement = isElement$13(editableElement) ? editableElement : void 0;
     this._hasExternalElement = !!this._editableElement;
     this._editingView = editingView;
   }
@@ -43596,7 +44028,7 @@ var EditableUIView = class extends View {
     }
   }
 };
-function isElement$14(value) {
+function isElement$13(value) {
   return isElement(value);
 }
 var InlineEditableUIView = class extends EditableUIView {
@@ -43820,13 +44252,16 @@ var ContextualBalloon = class extends Plugin {
       throw new CKEditorError("contextualballoon-remove-view-not-exist", [this, view]);
     const stack = this._viewToStack.get(view);
     if (this._singleViewMode && this.visibleView === view) this._singleViewMode = false;
-    if (this.visibleView === view) if (stack.size === 1) if (this._idToStack.size > 1) this._showNextStack();
-    else {
-      this.view.hide();
-      this.visibleView = null;
-      this._rotatorView.hideView();
+    if (this.visibleView === view) {
+      if (stack.size === 1) {
+        if (this._idToStack.size > 1) this._showNextStack();
+        else {
+          this.view.hide();
+          this.visibleView = null;
+          this._rotatorView.hideView();
+        }
+      } else this._showView(Array.from(stack.values())[stack.size - 2]);
     }
-    else this._showView(Array.from(stack.values())[stack.size - 2]);
     if (stack.size === 1) {
       this._idToStack.delete(this._getStackId(stack));
       this._numberOfStacks = this._idToStack.size;
@@ -44157,6 +44592,12 @@ var StickyPanelView = class extends View {
   */
   _contentPanelPlaceholder;
   /**
+  * Keeps the `scroll` listener on `document` and on every event root of {@link #limiterElement}. `scroll` is not
+  * `composed`, so it never crosses a shadow boundary: a listener on `document`, even with `useCapture: true`, never
+  * sees a scrollable container inside a shadow root hosting the limiter. Created in {@link #render}.
+  */
+  _scrollListener = null;
+  /**
   * @inheritDoc
   */
   constructor(locale) {
@@ -44215,10 +44656,16 @@ var StickyPanelView = class extends View {
   */
   render() {
     super.render();
+    this._scrollListener = new DomTargetsListener(() => [globalVar.document, ...getEventRoots(this.limiterElement)], {
+      emitter: this,
+      event: "scroll",
+      listenerOptions: { useCapture: true },
+      callback: () => this.checkIfShouldBeSticky()
+    });
     this.checkIfShouldBeSticky();
-    this.listenTo(globalVar.document, "scroll", () => {
-      this.checkIfShouldBeSticky();
-    }, { useCapture: true });
+    this.listenTo(this, "change:limiterElement", () => {
+      this._scrollListener.refresh();
+    });
     this.listenTo(this, "change:isActive", () => {
       this.checkIfShouldBeSticky();
     });
@@ -44236,6 +44683,7 @@ var StickyPanelView = class extends View {
   * Then handles the positioning of the panel.
   */
   checkIfShouldBeSticky() {
+    this._scrollListener?.refresh();
     if (!this.limiterElement || !this.isActive) {
       this._unstick();
       return;
@@ -44251,13 +44699,14 @@ var StickyPanelView = class extends View {
     const { left: visualViewportOffsetLeft, top: visualViewportOffsetTop } = getVisualViewportOffset();
     limiterRect.moveBy(visualViewportOffsetLeft, visualViewportOffsetTop);
     if (visibleLimiterRect) visibleLimiterRect.moveBy(visualViewportOffsetLeft, visualViewportOffsetTop);
-    if (visibleLimiterRect && limiterRect.top < visibleLimiterRect.top) if (this._contentPanelRect.height + this.limiterBottomOffset > visibleLimiterRect.height) {
-      const stickyBottomOffset = Math.max(limiterRect.bottom - visibleLimiterRect.bottom, 0) + this.limiterBottomOffset;
-      if (this._contentPanelRect.height + stickyBottomOffset + 1 < limiterRect.height) this._stickToBottomOfLimiter(stickyBottomOffset);
+    if (visibleLimiterRect && limiterRect.top < visibleLimiterRect.top) {
+      if (this._contentPanelRect.height + this.limiterBottomOffset > visibleLimiterRect.height) {
+        const stickyBottomOffset = Math.max(limiterRect.bottom - visibleLimiterRect.bottom, 0) + this.limiterBottomOffset;
+        if (this._contentPanelRect.height + stickyBottomOffset + 1 < limiterRect.height) this._stickToBottomOfLimiter(stickyBottomOffset);
+        else this._unstick();
+      } else if (this._contentPanelRect.height + this.limiterBottomOffset < limiterRect.height) this._stickToTopOfAncestors(visibleLimiterRect.top);
       else this._unstick();
-    } else if (this._contentPanelRect.height + this.limiterBottomOffset < limiterRect.height) this._stickToTopOfAncestors(visibleLimiterRect.top);
-    else this._unstick();
-    else this._unstick();
+    } else this._unstick();
   }
   /**
   * Sticks the panel at the given CSS `top` offset.
@@ -44291,11 +44740,11 @@ var StickyPanelView = class extends View {
   * @private
   */
   _unstick() {
-    this.isSticky = false;
     this._isStickyToTheBottomOfLimiter = false;
     this._stickyTopOffset = null;
     this._stickyBottomOffset = null;
     this._marginLeft = null;
+    this.isSticky = false;
   }
   /**
   * Returns the bounding rect of the {@link #contentPanelElement}.
@@ -44390,8 +44839,10 @@ var MenuBarMenuPanelView = class extends View {
   * Focuses the first child of the panel (default) or the last one if the `direction` is `-1`.
   */
   focus(direction = 1) {
-    if (this.children.length) if (direction === 1) this.children.first.focus();
-    else this.children.last.focus();
+    if (this.children.length) {
+      if (direction === 1) this.children.first.focus();
+      else this.children.last.focus();
+    }
   }
 };
 var MenuBarMenuView = class MenuBarMenuView2 extends View {
@@ -44523,19 +44974,20 @@ var MenuBarMenuView = class MenuBarMenuView2 extends View {
   */
   get _panelPositions() {
     const { southEast, southWest, northEast, northWest, westSouth, eastSouth, westNorth, eastNorth } = MenuBarMenuViewPanelPositioningFunctions;
-    if (this.locale.uiLanguageDirection === "ltr") if (this.parentMenuView) return [
-      eastSouth,
-      eastNorth,
-      westSouth,
-      westNorth
-    ];
-    else return [
-      southEast,
-      southWest,
-      northEast,
-      northWest
-    ];
-    else if (this.parentMenuView) return [
+    if (this.locale.uiLanguageDirection === "ltr") {
+      if (this.parentMenuView) return [
+        eastSouth,
+        eastNorth,
+        westSouth,
+        westNorth
+      ];
+      else return [
+        southEast,
+        southWest,
+        northEast,
+        northWest
+      ];
+    } else if (this.parentMenuView) return [
       westSouth,
       westNorth,
       eastSouth,
@@ -44553,9 +45005,10 @@ var MenuBarMenuView = class MenuBarMenuView2 extends View {
   * It is used when the optimal position cannot be calculated.
   */
   get _defaultMenuPositionName() {
-    if (this.locale.uiLanguageDirection === "ltr") if (this.parentMenuView) return "es";
-    else return "se";
-    else if (this.parentMenuView) return "ws";
+    if (this.locale.uiLanguageDirection === "ltr") {
+      if (this.parentMenuView) return "es";
+      else return "se";
+    } else if (this.parentMenuView) return "ws";
     else return "sw";
   }
   /**
@@ -44836,7 +45289,7 @@ var MenuBarView = class extends View {
   }
 };
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-typing/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-typing/dist/index.js
 var TypingChangeBuffer = class {
   /**
   * The model instance.
@@ -45651,7 +46104,7 @@ var Delete = class extends Plugin {
         if (!modelRange) return;
         const viewSelection = view.createSelection(editor.editing.mapper.toViewRange(modelRange));
         const targetRange = viewSelection.getFirstRange();
-        const eventInfo = new BubblingEventInfo(document, "delete", targetRange);
+        const eventInfo = new BubblingEventInfo(viewDocument, "delete", targetRange);
         const deleteData = {
           unit: "selection",
           direction: "backward",
@@ -45852,7 +46305,7 @@ function buildQuotesRegExp(quoteCharacter) {
   return new RegExp(`(^|\\s)(${quoteCharacter})([^${quoteCharacter}]*)(${quoteCharacter})$`);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-basic-styles/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-basic-styles/dist/index.js
 var AttributeCommand = class extends Command {
   /**
   * The attribute that will be set by the command.
@@ -45899,9 +46352,10 @@ var AttributeCommand = class extends Command {
     const selection = model.document.selection;
     const value = options.forceValue === void 0 ? !this.value : options.forceValue;
     model.change((writer) => {
-      if (selection.isCollapsed) if (value) writer.setSelectionAttribute(this.attributeKey, true);
-      else writer.removeSelectionAttribute(this.attributeKey);
-      else {
+      if (selection.isCollapsed) {
+        if (value) writer.setSelectionAttribute(this.attributeKey, true);
+        else writer.removeSelectionAttribute(this.attributeKey);
+      } else {
         const ranges = model.schema.getValidRanges(selection.getRanges(), this.attributeKey, { includeEmptyRanges: true });
         for (const range of ranges) {
           let itemOrRange = range;
@@ -46141,7 +46595,7 @@ var Italic = class extends Plugin {
   }
 };
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-enter/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-enter/dist/index.js
 function* getCopyOnEnterAttributes(schema, allAttributes) {
   for (const attribute of allAttributes) if (attribute && schema.getAttributeProperties(attribute[0]).copyOnEnter) yield attribute;
 }
@@ -46198,10 +46652,12 @@ var EnterCommand = class extends Command {
       const leaveUnmerged = !(range.start.isAtStart && range.end.isAtEnd);
       const isContainedWithinOneElement = startElement == endElement;
       model.deleteContent(selection, { leaveUnmerged });
-      if (leaveUnmerged) if (isContainedWithinOneElement) {
-        splitBlock(writer, selection.focus);
-        return true;
-      } else writer.setSelection(endElement, 0);
+      if (leaveUnmerged) {
+        if (isContainedWithinOneElement) {
+          splitBlock(writer, selection.focus);
+          return true;
+        } else writer.setSelection(endElement, 0);
+      }
     }
     return false;
   }
@@ -46407,7 +46863,7 @@ function hasSameAttribute(node, key, value) {
   return node?.getAttribute(key) === value;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-widget/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-widget/dist/index.js
 var WidgetHighlightStackBase = /* @__PURE__ */ EmitterMixin();
 var WidgetHighlightStack = class extends WidgetHighlightStackBase {
   _stack = [];
@@ -46585,7 +47041,7 @@ function* extractStoredSelectionAttributes(iterator) {
   }
 }
 var POSSIBLE_INSERTION_POSITIONS = ["before", "after"];
-var RETURN_ARROW_ICON_ELEMENT = new DOMParser().parseFromString(return_arrow_default, "image/svg+xml").firstChild;
+var RETURN_ARROW_ICON_ELEMENT = new DOMParser().parseFromString(trustedHtml(return_arrow_default), "image/svg+xml").firstChild;
 var PLUGIN_DISABLED_EDITING_ROOT_CLASS = "ck-widget__type-around_disabled";
 var WidgetTypeAround = class extends Plugin {
   /**
@@ -47025,20 +47481,22 @@ var WidgetTypeAround = class extends Plugin {
       if (isFakeCaretBefore === isDeleteForward) editor.execute("delete", { selection: model.createSelection(selectedModelWidget, "on") });
       else {
         const range = schema.getNearestSelectionRange(model.createPositionAt(selectedModelWidget, typeAroundFakeCaretPosition), direction);
-        if (range) if (!range.isCollapsed) model.change((writer) => {
-          writer.setSelection(range);
-          editor.execute(isDeleteForward ? "deleteForward" : "delete");
-        });
-        else {
-          const probe = model.createSelection(range.start);
-          model.modifySelection(probe, { direction });
-          if (!probe.focus.isEqual(range.start)) model.change((writer) => {
+        if (range) {
+          if (!range.isCollapsed) model.change((writer) => {
             writer.setSelection(range);
             editor.execute(isDeleteForward ? "deleteForward" : "delete");
           });
           else {
-            const deepestEmptyRangeAncestor = getDeepestEmptyElementAncestor(schema, range.start.parent);
-            model.deleteContent(model.createSelection(deepestEmptyRangeAncestor, "on"), { doNotAutoparagraph: true });
+            const probe = model.createSelection(range.start);
+            model.modifySelection(probe, { direction });
+            if (!probe.focus.isEqual(range.start)) model.change((writer) => {
+              writer.setSelection(range);
+              editor.execute(isDeleteForward ? "deleteForward" : "delete");
+            });
+            else {
+              const deepestEmptyRangeAncestor = getDeepestEmptyElementAncestor(schema, range.start.parent);
+              model.deleteContent(model.createSelection(deepestEmptyRangeAncestor, "on"), { doNotAutoparagraph: true });
+            }
           }
         }
       }
@@ -47386,7 +47844,7 @@ var Widget = class extends Plugin {
       if (!editableOrWidgetElement) return;
       if (isWidget(editableOrWidgetElement)) element = editableOrWidgetElement;
       else {
-        const clickTargetFromPoint = getElementFromMouseEvent(view, domEventData);
+        const clickTargetFromPoint = getElementFromMouseEvent(editor, domEventData);
         if (clickTargetFromPoint && isWidget(clickTargetFromPoint)) element = clickTargetFromPoint;
         else return;
       }
@@ -47646,7 +48104,8 @@ function findClosestEditableOrWidgetAncestor(element) {
   }
   return null;
 }
-function getElementFromMouseEvent(view, domEventData) {
+function getElementFromMouseEvent(editor, domEventData) {
+  const view = editor.editing.view;
   const domRange = getRangeFromMouseEvent(domEventData.domEvent);
   let viewRange;
   if (domRange) viewRange = view.domConverter.domRangeToView(domRange);
@@ -47655,12 +48114,17 @@ function getElementFromMouseEvent(view, domEventData) {
   const viewPosition = viewRange.start;
   if (!viewPosition.parent) return null;
   let viewNode = viewPosition.parent;
-  if (viewPosition.parent.is("editableElement")) {
+  if (viewPosition.parent.is("editableElement") || hasNoCaretPosition(editor, viewPosition.parent)) {
     if (viewPosition.isAtEnd && viewPosition.nodeBefore) viewNode = viewPosition.nodeBefore;
     else if (viewPosition.isAtStart && viewPosition.nodeAfter) viewNode = viewPosition.nodeAfter;
   }
   if (viewNode.is("$text")) return viewNode.parent;
   return viewNode;
+}
+function hasNoCaretPosition(editor, node) {
+  if (!node.is("element") || isWidget(node)) return false;
+  const modelElement = editor.editing.mapper.toModelElement(node);
+  return !!modelElement && !editor.model.schema.checkChild(modelElement, "$text");
 }
 function isChild(element, parent) {
   if (!parent) return false;
@@ -47685,7 +48149,7 @@ function findNextTextBlock(position, schema) {
   return null;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-clipboard/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-clipboard/dist/index.js
 function plainTextToHtml(text) {
   text = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\r?\n\r?\n/g, "</p><p>").replace(/\r?\n/g, "<br>").replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;").replace(/^\s/, "&nbsp;").replace(/\s$/, "&nbsp;").replace(/\s\s/g, " &nbsp;");
   if (text.includes("</p><p>") || text.includes("<br>")) text = `<p>${text}</p>`;
@@ -47718,6 +48182,7 @@ var ClipboardObserver = class extends DomEventObserver {
         let content = "";
         if (dataTransfer.getData("text/html")) content = dataTransfer.getData("text/html");
         else if (dataTransfer.getData("text/plain")) content = plainTextToHtml(dataTransfer.getData("text/plain"));
+        else if (type == "clipboardInput" && dataTransfer.getData("text/uri-list") && !dataTransfer.files.length) content = plainTextToHtml(getUrisFromUriList(dataTransfer.getData("text/uri-list")).join("\n"));
         viewDocument.fire(eventInfo, {
           dataTransfer,
           content,
@@ -47741,6 +48206,9 @@ var ClipboardObserver = class extends DomEventObserver {
     this.fire(domEvent.type, domEvent, evtData);
   }
 };
+function getUrisFromUriList(uriList) {
+  return uriList.split(/\r?\n/).map((line) => line.trim()).filter((line) => line && !line.startsWith("#"));
+}
 function normalizeClipboardData(data) {
   return data.replace(/<span(?: class="Apple-converted-space"|)>(\s+)<\/span>/g, (fullMatch, spaces) => {
     if (spaces.length == 1) return " ";
@@ -48490,7 +48958,8 @@ var DragDropTarget = class extends Plugin {
     let domScrollable;
     if (this._scrollables.has(rootName)) domScrollable = this._scrollables.get(rootName).domElement;
     else {
-      domScrollable = findScrollableElement(this.editor.editing.view.domConverter.mapViewToDom(viewElement));
+      const domElement = this.editor.editing.view.domConverter.mapViewToDom(viewElement);
+      domScrollable = findClosestScrollableAncestor(domElement);
       this._domEmitter.listenTo(domScrollable, "scroll", this._reconvertMarkerThrottled, { usePassive: true });
       const resizeObserver = new ResizeObserver2(domScrollable, this._reconvertMarkerThrottled);
       this._scrollables.set(rootName, {
@@ -48564,15 +49033,6 @@ function getClosestMappedModelElement(editor, element) {
   const viewPosition = view.createPositionBefore(element);
   const viewElement = mapper.findMappedViewAncestor(viewPosition);
   return mapper.toModelElement(viewElement);
-}
-function findScrollableElement(domNode) {
-  let domElement = domNode;
-  do {
-    domElement = domElement.parentElement;
-    const overflow = globalVar.window.getComputedStyle(domElement).overflowY;
-    if (overflow == "auto" || overflow == "scroll") break;
-  } while (domElement.tagName != "BODY");
-  return domElement;
 }
 var DragDropBlockToolbar = class extends Plugin {
   /**
@@ -48648,9 +49108,9 @@ var DragDropBlockToolbar = class extends Plugin {
     if (!this.isEnabled || !this._isBlockDragging) return;
     const clientX = domEvent.clientX + (this.editor.locale.contentLanguageDirection == "ltr" ? 100 : -100);
     const clientY = domEvent.clientY;
-    const target = document.elementFromPoint(clientX, clientY);
     const view = this.editor.editing.view;
-    if (!target || !target.closest(".ck-editor__editable")) return;
+    const target = getTargetAcrossRoots(view, clientX, clientY);
+    if (!target) return;
     view.getObserver(ClipboardObserver).onDomEvent({
       ...domEvent,
       type: domEvent.type,
@@ -48669,6 +49129,15 @@ var DragDropBlockToolbar = class extends Plugin {
     this._isBlockDragging = false;
   }
 };
+function getTargetAcrossRoots(view, x, y) {
+  const shadowRoots = /* @__PURE__ */ new Set();
+  for (const domRoot of view.domRoots.values()) {
+    const root = domRoot.getRootNode();
+    if (isShadowRoot(root)) shadowRoots.add(root);
+  }
+  const target = getElementFromPoint(x, y, Array.from(shadowRoots));
+  return target && target.closest(".ck-editor__editable") ? target : null;
+}
 var DragDrop = class extends Plugin {
   /**
   * The live range over the original content that is being dragged.
@@ -48979,25 +49448,28 @@ var DragDrop = class extends Plugin {
     const editable = view.document.selection.editableElement;
     const domEditable = view.domConverter.mapViewToDom(editable);
     const computedStyle = globalVar.window.getComputedStyle(domEditable);
-    if (!this._previewContainer) {
-      this._previewContainer = createElement(globalVar.document, "div", { style: "position: fixed; left: -999999px;" });
-      globalVar.document.body.appendChild(this._previewContainer);
-    } else if (this._previewContainer.firstElementChild) this._previewContainer.removeChild(this._previewContainer.firstElementChild);
-    const preview = createElement(globalVar.document, "div");
+    const editableDocument = domEditable.ownerDocument;
+    if (!this._previewContainer) this._previewContainer = createElement(editableDocument, "div", { style: "position: fixed; left: -999999px;" });
+    else if (this._previewContainer.firstElementChild) this._previewContainer.removeChild(this._previewContainer.firstElementChild);
+    const editableRoot = domEditable.getRootNode();
+    if (isShadowRoot(editableRoot)) editableRoot.appendChild(this._previewContainer);
+    else editableDocument.body.appendChild(this._previewContainer);
+    const preview = createElement(editableDocument, "div");
     preview.className = "ck ck-content ck-clipboard-preview";
     const domRect = new Rect(domEditable);
     const domEditablePaddingLeft = parseFloat(computedStyle.paddingLeft);
     const domEditablePaddingRight = parseFloat(computedStyle.paddingRight);
     const editableWidth = parseFloat(computedStyle.width) - domEditablePaddingLeft - domEditablePaddingRight;
-    if (!domEditable.contains(domTarget)) if (!env.isiOS) {
-      const offsetLeft = domRect.left - clientX + domEditablePaddingLeft;
-      preview.style.width = `${editableWidth + offsetLeft}px`;
-      preview.style.paddingLeft = `${offsetLeft}px`;
-    } else {
-      preview.style.width = `${editableWidth}px`;
-      preview.style.backgroundColor = "var(--ck-color-base-background)";
-    }
-    else if (env.isiOS) {
+    if (!containsNode(domEditable, domTarget)) {
+      if (!env.isiOS) {
+        const offsetLeft = domRect.left - clientX + domEditablePaddingLeft;
+        preview.style.width = `${editableWidth + offsetLeft}px`;
+        preview.style.paddingLeft = `${offsetLeft}px`;
+      } else {
+        preview.style.width = `${editableWidth}px`;
+        preview.style.backgroundColor = "var(--ck-color-base-background)";
+      }
+    } else if (env.isiOS) {
       preview.style.maxWidth = `${editableWidth}px`;
       preview.style.padding = "10px";
       preview.style.minWidth = "200px";
@@ -49135,7 +49607,7 @@ var Clipboard = class extends Plugin {
   }
 };
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-undo/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-undo/dist/index.js
 var UndoRedoBaseCommand = class extends Command {
   /**
   * Stack of items stored by the command. These are pairs of:
@@ -49469,7 +49941,7 @@ var Undo = class extends Plugin {
   }
 };
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-image/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-image/dist/index.js
 function createInlineImageViewElement(writer) {
   return writer.createContainerElement("span", { class: "image-inline" }, writer.createEmptyElement("img"));
 }
@@ -49826,7 +50298,11 @@ var TextAlternativeFormView = class extends View {
     this.children = this.createCollection([this._createHeaderView()]);
     this.children.add(new FormRowView(locale, {
       children: [this.labeledInput, this.saveButtonView],
-      class: ["ck-form__row_with-submit", "ck-form__row_large-top-padding"]
+      class: [
+        "ck-form__row_with-submit",
+        "ck-form__row_large-top-padding",
+        "ck-form__row_large-bottom-padding"
+      ]
     }));
     this._focusables = new ViewCollection();
     this.keystrokes.set("Esc", (data, cancel) => {
@@ -49905,7 +50381,7 @@ var TextAlternativeFormView = class extends View {
       label: t("Save"),
       withText: true,
       type: "submit",
-      class: "ck-button-action ck-button-bold"
+      class: "ck-button-action ck-button_standard"
     });
     return saveButton;
   }
@@ -49946,11 +50422,11 @@ function getBalloonPositionData(editor) {
     target: editingView.domConverter.mapViewToDom(imageUtils.getClosestSelectedImageWidget(editingView.document.selection)),
     positions: [
       defaultPositions.northArrowSouth,
-      defaultPositions.northArrowSouthWest,
-      defaultPositions.northArrowSouthEast,
+      defaultPositions.northWestArrowSouthWest,
+      defaultPositions.northEastArrowSouthEast,
       defaultPositions.southArrowNorth,
-      defaultPositions.southArrowNorthWest,
-      defaultPositions.southArrowNorthEast,
+      defaultPositions.southWestArrowNorthWest,
+      defaultPositions.southEastArrowNorthEast,
       defaultPositions.viewportStickyNorth
     ]
   };
@@ -51175,7 +51651,7 @@ var Image = class extends Plugin {
   }
 };
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-editor-classic/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-editor-classic/dist/index.js
 var ClassicEditorUI = class extends EditorUI {
   /**
   * The main (top–most) view of the editor UI.
@@ -51221,6 +51697,7 @@ var ClassicEditorUI = class extends EditorUI {
     const editingRoot = editingView.document.getRoot();
     editable.name = editingRoot.rootName;
     editable.isInlineRoot = !rootAcceptsBlocks(editor, editingRoot.rootName);
+    editable.isMainFrameEditingRoot = true;
     view.render();
     const editableElement = editable.element;
     this.setEditableElement(editable.name, editableElement);
@@ -51416,10 +51893,10 @@ var ClassicEditor = class extends ClassicEditorBase {
   constructor(sourceElementOrDataOrConfig, config = {}) {
     const { sourceElementOrData, editorConfig } = normalizeSingleRootEditorConstructorParams(sourceElementOrDataOrConfig, config);
     super(editorConfig);
-    normalizeRootsConfig2(sourceElementOrData, this.config, "main", true);
+    normalizeRootsConfig(sourceElementOrData, this.config, "main", true);
     const sourceElement = this.config.get("attachTo");
     this.config.define("menuBar.isVisible", false);
-    if (isElement$15(sourceElement)) {
+    if (isElement$14(sourceElement)) {
       if (!sourceElement.isConnected)
         throw new CKEditorError("editor-source-element-not-attached", null);
       this.sourceElement = sourceElement;
@@ -51460,11 +51937,11 @@ var ClassicEditor = class extends ClassicEditorBase {
     return editor;
   }
 };
-function isElement$15(value) {
+function isElement$14(value) {
   return isElement(value);
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-mention/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-mention/dist/index.js
 var defaultHandledKeyCodes = [
   keyCodes.arrowup,
   keyCodes.arrowdown,
@@ -51472,7 +51949,7 @@ var defaultHandledKeyCodes = [
 ];
 var defaultCommitKeyCodes = [keyCodes.enter, keyCodes.tab];
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-select-all/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-select-all/dist/index.js
 var SelectAllCommand = class extends Command {
   /**
   * @inheritDoc
@@ -51604,7 +52081,7 @@ var SelectAll = class extends Plugin {
   }
 };
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-essentials/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-essentials/dist/index.js
 var Essentials = class extends Plugin {
   /**
   * @inheritDoc
@@ -51634,7 +52111,7 @@ var Essentials = class extends Plugin {
   }
 };
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-paragraph/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-paragraph/dist/index.js
 var ParagraphCommand = class extends Command {
   constructor(editor) {
     super(editor);
@@ -51803,7 +52280,7 @@ var Paragraph = class Paragraph2 extends Plugin {
   ]);
 };
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-list/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-list/dist/index.js
 var LIST_STYLE_TO_LIST_TYPE = {};
 var LIST_STYLE_TO_TYPE_ATTRIBUTE = {};
 var TYPE_ATTRIBUTE_TO_LIST_STYLE = {};
@@ -51875,7 +52352,7 @@ for (const { listStyle, typeAttribute, listType } of LIST_STYLE_TYPES) {
   if (typeAttribute) TYPE_ATTRIBUTE_TO_LIST_STYLE[typeAttribute] = listStyle;
 }
 
-// ../../../../../tmp/tmp.py9TsyCKPw/node_modules/@ckeditor/ckeditor5-table/dist/index.js
+// ../../../../../tmp/tmp.1Vf2oYRWyY/node_modules/@ckeditor/ckeditor5-table/dist/index.js
 var ALIGN_VALUES_REG_EXP$1 = /^(left|center|right)$/;
 var FLOAT_VALUES_REG_EXP = /^(left|none|right)$/;
 var DEFAULT_TABLE_ALIGNMENT_OPTIONS = {
@@ -52069,6 +52546,8 @@ export {
 @ckeditor/ckeditor5-utils/dist/index.js:
 @ckeditor/ckeditor5-utils/dist/index.js:
 @ckeditor/ckeditor5-utils/dist/index.js:
+@ckeditor/ckeditor5-utils/dist/index.js:
+@ckeditor/ckeditor5-utils/dist/index.js:
 @ckeditor/ckeditor5-engine/dist/index.js:
 @ckeditor/ckeditor5-engine/dist/index.js:
 @ckeditor/ckeditor5-engine/dist/index.js:
@@ -52086,6 +52565,9 @@ export {
 @ckeditor/ckeditor5-core/dist/index.js:
 @ckeditor/ckeditor5-core/dist/index.js:
 @ckeditor/ckeditor5-icons/dist/index.js:
+@ckeditor/ckeditor5-ui/dist/index.js:
+@ckeditor/ckeditor5-ui/dist/index.js:
+@ckeditor/ckeditor5-ui/dist/index.js:
 @ckeditor/ckeditor5-ui/dist/index.js:
 @ckeditor/ckeditor5-ui/dist/index.js:
 @ckeditor/ckeditor5-ui/dist/index.js:
@@ -52727,24 +53209,6 @@ ckeditor5/dist/ckeditor5.js:
   (* v8 ignore next -- @preserve *)
   (* v8 ignore if -- @preserve *)
 
-@ckeditor/ckeditor5-watchdog/dist/index.js:
-  (**
-   * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
-   * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
-   *)
-  (**
-  * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
-  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
-  *)
-  (* v8 ignore stop -- @preserve *)
-
-@ckeditor/ckeditor5-watchdog/dist/index.js:
-  (* v8 ignore stop -- @preserve *)
-  (**
-  * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
-  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
-  *)
-
 @ckeditor/ckeditor5-core/dist/index.js:
   (**
   * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
@@ -52752,6 +53216,13 @@ ckeditor5/dist/ckeditor5.js:
   *)
   (* v8 ignore next -- @preserve *)
   (* v8 ignore else -- @preserve *)
+
+@ckeditor/ckeditor5-core/dist/index.js:
+  (* v8 ignore stop -- @preserve *)
+  (**
+  * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+  *)
 
 @ckeditor/ckeditor5-icons/dist/index.js:
   (**

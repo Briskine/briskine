@@ -12,6 +12,7 @@ describe('insertTextfieldTemplate', () => {
 
   beforeEach(() => {
     textarea.value = ''
+    textarea.focus()
   })
 
   it('should insert template in textarea', () => {
@@ -80,6 +81,90 @@ describe('insertTextfieldTemplate', () => {
     expect(textarea.value).to.equal('pre test')
     expect(textarea.selectionStart).to.equal(8)
     expect(textarea.selectionEnd).to.equal(8)
+  })
+
+  it('should insert like typing, with the native input events', () => {
+    const events = []
+    const record = (e) => events.push([e.type, e.inputType, e.composed])
+    window.addEventListener('beforeinput', record, {capture: true})
+    window.addEventListener('input', record, {capture: true})
+
+    insertTextfieldTemplate({
+      text: 'test',
+    })
+
+    window.removeEventListener('beforeinput', record, {capture: true})
+    window.removeEventListener('input', record, {capture: true})
+    expect(textarea.value).to.equal('test')
+    // only webkit also fires beforeinput for execCommand
+    expect(events.filter(([type]) => type === 'input')).to.deep.equal([
+      ['input', 'insertText', true],
+    ])
+  })
+
+  it('should notify listeners outside the shadow root of the textarea', () => {
+    // e.g. a web component, that keeps its own value
+    const host = document.createElement('div')
+    const field = host.attachShadow({mode: 'open'}).appendChild(document.createElement('textarea'))
+    document.body.appendChild(host)
+    let value = ''
+    host.addEventListener('input', () => value = field.value)
+    field.focus()
+
+    insertTextfieldTemplate({
+      text: 'test',
+    })
+
+    host.remove()
+    expect(value).to.equal('test')
+  })
+
+  it('should let the insert be undone', () => {
+    textarea.value = 'pre'
+    textarea.setSelectionRange(3, 3)
+
+    insertTextfieldTemplate({
+      text: 'test',
+    })
+    document.execCommand('undo')
+
+    expect(textarea.value).to.equal('pre')
+  })
+
+  it('should insert newlines in textarea', () => {
+    insertTextfieldTemplate({
+      text: 'Kind regards,\nJohnny',
+    })
+
+    expect(textarea.value).to.equal('Kind regards,\nJohnny')
+  })
+
+  // webkit fires beforeinput, which the page can cancel
+  it('should insert when the page cancels the native insert', () => {
+    textarea.addEventListener('beforeinput', (e) => e.preventDefault(), {once: true})
+    let inputEvents = 0
+    const countInput = () => inputEvents++
+    textarea.addEventListener('input', countInput)
+
+    insertTextfieldTemplate({
+      text: 'test',
+    })
+
+    textarea.removeEventListener('input', countInput)
+    expect(textarea.value).to.equal('test')
+    expect(inputEvents).to.equal(1)
+  })
+
+  it('should insert once, when replacing a selection with the same text', () => {
+    textarea.value = 'pre test'
+    textarea.setSelectionRange(4, 8)
+
+    insertTextfieldTemplate({
+      text: 'test',
+    })
+
+    expect(textarea.value).to.equal('pre test')
+    expect(textarea.selectionStart).to.equal(8)
   })
 
   it('should insert template in input type=text field', () => {

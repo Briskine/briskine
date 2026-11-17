@@ -27,6 +27,33 @@ export function isTextfieldEditor (element) {
   )
 }
 
+// returns false when the browser or the page didn't insert the text
+function insertText (element, text) {
+  if (
+    !text
+    // type=email
+    || element.selectionStart === null
+    // execCommand inserts in the focused element
+    || getActiveElement(true) !== element
+  ) {
+    return false
+  }
+
+  const {value, selectionStart, selectionEnd} = element
+  try {
+    document.execCommand('insertText', false, text)
+  } catch {
+    return false
+  }
+
+  // the selection moves after inserting, even when replacing it with the same text
+  return (
+    element.value !== value
+    || element.selectionStart !== selectionStart
+    || element.selectionEnd !== selectionEnd
+  )
+}
+
 export function insertTextfieldTemplate ({ text }) {
   const element = getActiveElement()
   if (!isTextfieldEditor(element)) {
@@ -44,6 +71,14 @@ export function insertTextfieldTemplate ({ text }) {
     const remainingChars = element.maxLength - (currentLength - selectionLength)
     // use max in case the selection is somehow already over limit
     text = text.slice(0, Math.max(0, remainingChars))
+  }
+
+  // insert like typing, so the page gets the native input events,
+  // and the insert can be undone.
+  if (insertText(element, text)) {
+    // typing only fires change on blur, some pages expect ours
+    element.dispatchEvent(new Event('change', {bubbles: true}))
+    return true
   }
 
   if (element.selectionStart !== null) {

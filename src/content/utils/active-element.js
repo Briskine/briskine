@@ -5,6 +5,7 @@ import getEventTarget from './event-target.js'
 import { addFocusListeners } from './shadow-focus.js'
 import { isExtensionElement } from './extension-element.js'
 import isEditor from './editor.js'
+import getShadowRoot from './shadow-root.js'
 
 let removeFocusListeners = () => {}
 let activeElement = null
@@ -23,8 +24,8 @@ export function getActiveElement (live = false) {
   }
 
   let element = document.activeElement
-  while (element?.shadowRoot?.activeElement) {
-    element = element.shadowRoot.activeElement
+  while (getShadowRoot(element)?.activeElement) {
+    element = getShadowRoot(element).activeElement
   }
 
   return element

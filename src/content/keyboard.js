@@ -4,7 +4,7 @@
 import autocomplete from './autocomplete.js'
 import getEventTarget from './utils/event-target.js'
 import { getSelectionRange } from './utils/selection.js'
-import restoreSelection from './utils/restore-selection.js'
+import { restoreSelection } from './utils/restore-selection.js'
 import { getWord } from './utils/word.js'
 import { isContentEditable } from './editors/editor-contenteditable.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'

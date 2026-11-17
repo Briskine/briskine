@@ -23,4 +23,16 @@ test.describe('Iframe', () => {
     const template = 'It was nice talking to you.'
     await expect(textbox).toHaveText(template)
   })
+
+  test('should show the dialog in the top frame', async ({page}) => {
+    const textbox = page.frameLocator('#iframe').getByRole('textbox')
+    await textbox.click()
+    await textbox.press('Control+ ')
+    // firefox doesn't let the page read the properties of our element,
+    // so check that focus moved out of the iframe, into the top frame.
+    await page.waitForFunction(() => ![document.body, document.getElementById('iframe')].includes(document.activeElement))
+
+    await page.keyboard.press('Escape')
+    await expect(textbox).toBeFocused()
+  })
 })
