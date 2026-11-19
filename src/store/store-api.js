@@ -153,20 +153,27 @@ async function getCollection ({ collection, user, force = false }) {
   }
 
   // request is already in progress
-  if (collectionRequestQueue[collection]) {
-    return collectionRequestQueue[collection]
+  const pending = collectionRequestQueue[collection]
+  if (pending && !force) {
+    return pending
   }
 
-  // queue the request right away, so concurrent calls share it
-  collectionRequestQueue[collection] = Promise.resolve()
+  // the pending request could use an outdated query (e.g., the previous customer),
+  // so force fetches again after it.
+  const request = (pending ? pending.catch(() => {}) : Promise.resolve())
     .then(() => getCollectionQuery(collection, user))
     .then((query) => getDocs(query))
     .then((snapshot) => refreshLocalData(collection, snapshot))
     .finally(() => {
-      collectionRequestQueue[collection] = null
+      if (collectionRequestQueue[collection] === request) {
+        collectionRequestQueue[collection] = null
+      }
     })
 
-  return collectionRequestQueue[collection]
+  // queue the request right away, so concurrent calls share it
+  collectionRequestQueue[collection] = request
+
+  return request
 }
 
 // refresh local data cache from snapshot listeners
@@ -228,20 +235,30 @@ export async function refetchCollections (collections = []) {
 
   // the templates query depends on the customer plan,
   // so we fetch the customers first.
+  let customersError = null
   if (collectionsToFetch.includes('customers')) {
-    const cache = await browser.storage.local.get('customers')
-    const customers = await fetchCollection('customers')
     collectionsToFetch = collectionsToFetch.filter((c) => c !== 'customers')
 
-    if (
-      isFreeCustomer(cache.customers, user.customer) !== isFreeCustomer(customers, user.customer)
-      && !collectionsToFetch.includes('templates')
-    ) {
-      collectionsToFetch = collectionsToFetch.concat('templates')
+    try {
+      const cache = await browser.storage.local.get('customers')
+      const customers = await fetchCollection('customers')
+      if (
+        isFreeCustomer(cache.customers, user.customer) !== isFreeCustomer(customers, user.customer)
+        && !collectionsToFetch.includes('templates')
+      ) {
+        collectionsToFetch = collectionsToFetch.concat('templates')
+      }
+    } catch (err) {
+      // still fetch the other collections
+      customersError = err
     }
   }
 
-  return Promise.all(collectionsToFetch.map(fetchCollection))
+  await Promise.all(collectionsToFetch.map(fetchCollection))
+
+  if (customersError) {
+    throw customersError
+  }
 }
 
 function isFreeCustomer (customers = {}, customerId = '') {
@@ -558,7 +575,16 @@ export async function setActiveCustomer (customerId) {
       id: firebaseAuth.currentUser.uid,
       customer: customerId,
     })
-    .then(() => {
+    .then(async () => {
+      // clear the previous customer's data,
+      // so we don't show it for the new customer while offline.
+      await browser.storage.local.set({
+        templates: null,
+        tags: null,
+      })
+      trigger('templates-updated', [])
+      trigger('tags-updated', [])
+
       // update data when customer changes
       refetchCollections([
         'templates',

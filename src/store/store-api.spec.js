@@ -1,8 +1,9 @@
 import { expect, describe, it, vi, beforeEach } from 'vitest'
 
-const { storage, getDocs } = vi.hoisted(() => ({
+const { storage, getDocs, trigger } = vi.hoisted(() => ({
   storage: {},
   getDocs: vi.fn(),
+  trigger: vi.fn(),
 }))
 
 // the bundled dep resolves the factory as the namespace, so no default key
@@ -42,7 +43,7 @@ vi.mock('firebase/firestore/lite', () => ({
   orderBy: () => ({}),
   getDocs: getDocs,
 }))
-vi.mock('../background/background-trigger.js', () => ({default: vi.fn()}))
+vi.mock('../background/background-trigger.js', () => ({default: trigger}))
 vi.mock('../background/badge.js', () => ({badgeUpdate: vi.fn()}))
 vi.mock('../background/open-popup.js', () => ({openPopup: vi.fn()}))
 vi.mock('./extension-data.js', () => ({
@@ -50,7 +51,7 @@ vi.mock('./extension-data.js', () => ({
   setExtensionData: async () => {},
 }))
 
-import { getTemplates, refetchCollections } from './store-api.js'
+import { getTemplates, refetchCollections, setActiveCustomer } from './store-api.js'
 
 const cachedTemplate = {
   title: 'Cached',
@@ -63,8 +64,11 @@ const remoteTemplate = {
 }
 
 const remoteData = {
-  users: {user1: {customers: ['customer1']}},
-  customers: {customer1: {subscription: {plan: 'team'}}},
+  users: {user1: {customers: ['customer1', 'customer2']}},
+  customers: {
+    customer1: {subscription: {plan: 'team'}},
+    customer2: {subscription: {plan: 'team'}},
+  },
   tags: {},
   templates: {template2: remoteTemplate},
 }
@@ -103,6 +107,7 @@ describe('store api offline', () => {
   beforeEach(() => {
     Object.keys(storage).forEach((key) => delete storage[key])
     getDocs.mockReset()
+    trigger.mockReset()
   })
 
   it('should keep the cached data when refetching offline', async () => {
@@ -164,6 +169,65 @@ describe('store api offline', () => {
 
     const fetched = getDocs.mock.calls.map(([query]) => query.name)
     expect(fetched).to.deep.equal(['customers'])
+  })
+
+  it('should fetch the other collections when fetching the customers fails', async () => {
+    setCache()
+    getDocs.mockImplementation(async (query) => {
+      if (query.name === 'customers') {
+        throw new Error('offline')
+      }
+
+      return snapshot(remoteData[query.name])
+    })
+
+    await expect(refetchCollections()).rejects.toThrow('offline')
+
+    const fetched = getDocs.mock.calls.map(([query]) => query.name)
+    expect(fetched).to.include.members(['users', 'tags', 'templates'])
+
+    const templates = await getTemplates()
+    expect(templates.map((t) => t.title)).to.deep.equal(['Remote'])
+  })
+
+  it('should fetch again when forcing a fetch while a request is in progress', async () => {
+    setCache()
+    delete storage.templates
+    const responses = []
+    getDocs.mockImplementation(() => new Promise((resolve) => responses.push(resolve)))
+
+    const stale = getTemplates()
+    await vi.waitFor(() => expect(responses).to.have.length(1))
+
+    const refetch = refetchCollections(['templates'])
+    responses[0](snapshot({template1: cachedTemplate}))
+    await stale
+
+    await vi.waitFor(() => expect(responses).to.have.length(2))
+    responses[1](snapshot(remoteData.templates))
+    await refetch
+
+    const templates = await getTemplates()
+    expect(templates.map((t) => t.title)).to.deep.equal(['Remote'])
+  })
+
+  it('should clear the previous customer data when switching customers', async () => {
+    setCache()
+    const responses = []
+    getDocs.mockImplementation((query) => new Promise((resolve) => {
+      responses.push(() => resolve(snapshot(remoteData[query.name])))
+    }))
+
+    await setActiveCustomer('customer2')
+
+    expect(storage.templates).to.equal(null)
+    expect(storage.tags).to.equal(null)
+    expect(trigger).toHaveBeenCalledWith('templates-updated', [])
+    expect(trigger).toHaveBeenCalledWith('tags-updated', [])
+
+    await vi.waitFor(() => expect(responses).to.have.length(2))
+    responses.forEach((respond) => respond())
+    await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
   })
 
   it('should retry a request that failed', async () => {
