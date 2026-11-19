@@ -1,17 +1,21 @@
 import { expect, describe, it, vi, beforeEach } from 'vitest'
 
-const { storage, getDocs, trigger } = vi.hoisted(() => ({
-  storage: {},
-  getDocs: vi.fn(),
-  trigger: vi.fn(),
-}))
+const { storage, storageSet, getDocs, trigger } = vi.hoisted(() => {
+  const storage = {}
+  return {
+    storage: storage,
+    storageSet: vi.fn(async (data) => Object.assign(storage, data)),
+    getDocs: vi.fn(),
+    trigger: vi.fn(),
+  }
+})
 
 // the bundled dep resolves the factory as the namespace, so no default key
 vi.mock('webextension-polyfill', () => ({
   storage: {
     local: {
       get: async (key) => ({[key]: storage[key]}),
-      set: async (data) => Object.assign(storage, data),
+      set: storageSet,
       clear: async () => Object.keys(storage).forEach((key) => delete storage[key]),
     },
   },
@@ -57,7 +61,7 @@ vi.mock('./extension-data.js', () => ({
   setExtensionData: async () => {},
 }))
 
-import { getTemplates, refetchCollections, setActiveCustomer } from './store-api.js'
+import { getTemplates, logout, refetchCollections, setActiveCustomer } from './store-api.js'
 
 const cachedTemplate = {
   title: 'Cached',
@@ -114,6 +118,7 @@ describe('store api offline', () => {
     Object.keys(storage).forEach((key) => delete storage[key])
     getDocs.mockReset()
     trigger.mockReset()
+    storageSet.mockClear()
   })
 
   it('should keep the cached data when refetching offline', async () => {
@@ -303,12 +308,63 @@ describe('store api offline', () => {
     const request = getTemplates()
     await vi.waitFor(() => expect(respond).toBeTypeOf('function'))
 
-    storage.firebaseUser = {}
+    const fetchSpy = vi.spyOn(window, 'fetch').mockRejectedValue(new Error('offline'))
+    try {
+      await logout().catch(() => {})
+    } finally {
+      fetchSpy.mockRestore()
+    }
     respond(snapshot(remoteData.templates))
     await request
 
     expect(storage.templates).to.equal(undefined)
     expect(trigger).not.toHaveBeenCalledWith('templates-updated', expect.anything())
+  })
+
+  it('should not share a request between customers', async () => {
+    setCache()
+    delete storage.templates
+    const responses = []
+    getDocs.mockImplementation((query) => new Promise((resolve) => {
+      responses.push({
+        query: query,
+        respond: (data) => resolve(snapshot(data)),
+      })
+    }))
+    const templateResponses = () => responses.filter((r) => r.query.name === 'templates')
+
+    const previous = getTemplates()
+    await vi.waitFor(() => expect(templateResponses()).to.have.length(1))
+
+    await setActiveCustomer('customer2')
+    const current = getTemplates()
+    await vi.waitFor(() => expect(templateResponses()).to.have.length(2))
+
+    responses.forEach(({query, respond}) => {
+      const isCurrent = JSON.stringify(query).includes('"customer2"')
+      respond(isCurrent ? remoteData[query.name] : {template1: cachedTemplate})
+    })
+
+    expect((await previous).map((t) => t.title)).to.deep.equal(['Cached'])
+    expect((await current).map((t) => t.title)).to.deep.equal(['Remote'])
+    await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
+  })
+
+  it('should switch the customer and clear its data in one write', async () => {
+    setCache()
+    online()
+
+    await setActiveCustomer('customer2')
+
+    expect(storageSet).toHaveBeenCalledWith({
+      templates: null,
+      tags: null,
+      firebaseUser: {
+        id: 'user1',
+        customer: 'customer2',
+      },
+    })
+    await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
   })
 
   it('should retry a request that failed', async () => {
