@@ -165,8 +165,8 @@ async function getCollection ({ collection, user, force = false }) {
     .then(() => getCollectionQuery(collection, user))
     .then((query) => getDocs(query))
     .then(async (snapshot) => {
-      // the customer changed while fetching, drop the previous customer's data
-      if (customerCollections.includes(collection) && await isCustomerChanged(user.customer)) {
+      // the user or customer changed while fetching, drop the previous data
+      if (await isOutdatedRequest(collection, user)) {
         return {}
       }
 
@@ -187,11 +187,20 @@ async function getCollection ({ collection, user, force = false }) {
 // collections that belong to the active customer
 const customerCollections = ['templates', 'tags']
 
-async function isCustomerChanged (customerId) {
+async function isOutdatedRequest (collection, user = {}) {
   const storedUser = await browser.storage.local.get(globalUserKey)
-  const activeCustomer = storedUser[globalUserKey]?.customer
+  const activeUser = storedUser[globalUserKey] || {}
+  // logged out, or signed in with another user
+  if (activeUser.id !== user.id) {
+    return true
+  }
+
   // the active customer is not set yet right after signing in
-  return Boolean(activeCustomer) && activeCustomer !== customerId
+  return (
+    customerCollections.includes(collection)
+    && Boolean(activeUser.customer)
+    && activeUser.customer !== user.customer
+  )
 }
 
 // refresh local data cache from snapshot listeners
@@ -251,9 +260,28 @@ export async function refetchCollections (collections = []) {
     force: true,
   })
 
+  // failed collections don't stop fetching the others
+  const errors = []
+
+  // the active customer depends on the users data,
+  // so we fetch the users first.
+  if (collectionsToFetch.includes('users')) {
+    collectionsToFetch = collectionsToFetch.filter((c) => c !== 'users')
+
+    try {
+      await fetchCollection('users')
+      user = await getSignedInUser()
+    } catch (err) {
+      if (isLoggedOut(err)) {
+        return
+      }
+
+      errors.push(err)
+    }
+  }
+
   // the templates query depends on the customer plan,
   // so we fetch the customers first.
-  let customersError = null
   if (collectionsToFetch.includes('customers')) {
     collectionsToFetch = collectionsToFetch.filter((c) => c !== 'customers')
 
@@ -267,15 +295,19 @@ export async function refetchCollections (collections = []) {
         collectionsToFetch = collectionsToFetch.concat('templates')
       }
     } catch (err) {
-      // still fetch the other collections
-      customersError = err
+      errors.push(err)
     }
   }
 
-  await Promise.all(collectionsToFetch.map(fetchCollection))
+  const results = await Promise.allSettled(collectionsToFetch.map(fetchCollection))
+  results.forEach((result) => {
+    if (result.status === 'rejected') {
+      errors.push(result.reason)
+    }
+  })
 
-  if (customersError) {
-    throw customersError
+  if (errors.length) {
+    throw errors[0]
   }
 }
 

@@ -34,11 +34,17 @@ vi.mock('firebase/firestore/lite', () => ({
       return this
     },
   }),
-  query: (collection) => ({name: collection.name}),
-  where: () => ({}),
+  query: (collection, ...constraints) => ({
+    name: collection.name,
+    constraints: constraints,
+  }),
+  where: (field, op, value) => ({
+    field: field,
+    value: value,
+  }),
   documentId: () => ({}),
-  and: () => ({}),
-  or: () => ({}),
+  and: (...constraints) => constraints,
+  or: (...constraints) => constraints,
   limit: () => ({}),
   orderBy: () => ({}),
   getDocs: getDocs,
@@ -258,6 +264,51 @@ describe('store api offline', () => {
     responses.templates[1](snapshot(remoteData.templates))
     responses.tags.forEach((respond) => respond(snapshot({})))
     await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
+  })
+
+  it('should use the refetched users to get the active customer', async () => {
+    setCache()
+    online()
+    const users = remoteData.users
+    // removed from customer1
+    remoteData.users = {user1: {customers: ['customer2']}}
+
+    try {
+      await refetchCollections()
+    } finally {
+      remoteData.users = users
+    }
+
+    const fetched = getDocs.mock.calls.map(([query]) => query.name)
+    expect(fetched[0]).to.equal('users')
+
+    const templateQueries = getDocs.mock.calls
+      .map(([query]) => query)
+      .filter((query) => query.name === 'templates')
+    expect(templateQueries.length).to.be.above(0)
+    templateQueries.forEach((query) => {
+      expect(JSON.stringify(query)).to.include('"customer2"')
+      expect(JSON.stringify(query)).not.to.include('"customer1"')
+    })
+  })
+
+  it('should drop the data of a request that finishes after logging out', async () => {
+    setCache()
+    delete storage.templates
+    let respond
+    getDocs.mockImplementation(() => new Promise((resolve) => {
+      respond = resolve
+    }))
+
+    const request = getTemplates()
+    await vi.waitFor(() => expect(respond).toBeTypeOf('function'))
+
+    storage.firebaseUser = {}
+    respond(snapshot(remoteData.templates))
+    await request
+
+    expect(storage.templates).to.equal(undefined)
+    expect(trigger).not.toHaveBeenCalledWith('templates-updated', expect.anything())
   })
 
   it('should retry a request that failed', async () => {
