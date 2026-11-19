@@ -45,9 +45,10 @@ function generateManifest ({ browser, mode }) {
 
   // source maps
   if (mode === 'development') {
-    updatedManifestFile.web_accessible_resources[0].resources = updatedManifestFile.web_accessible_resources[0].resources.concat(
-      Array('content', 'page').map((script) => `${script}/${script}.js.map`)
-    )
+    updatedManifestFile.web_accessible_resources = [{
+      resources: ['content/content.js.map'],
+      matches: manifestFile.content_scripts[0].matches,
+    }]
   }
 
   // matching manifest setup for firefox and safari
@@ -59,8 +60,6 @@ function generateManifest ({ browser, mode }) {
     }
 
     removeSidePanel(updatedManifestFile)
-
-    delete updatedManifestFile.web_accessible_resources[0].use_dynamic_url
   }
 
   if (browser === 'firefox') {
@@ -228,19 +227,13 @@ export default defineConfig(async ({ mode }) => {
         fileName: 'background/background.js',
         format: 'es',
       }),
-
-      page: singleEntry({
-        input: path.join('content', 'page', 'page.js'),
-        fileName: 'page/page.js',
-        format: 'es',
-      }),
     },
 
     builder: {
       async buildApp (builder) {
         fs.rmSync(devPath, {recursive: true, force: true})
 
-        for (const name of ['pages', 'content', 'background', 'page']) {
+        for (const name of ['pages', 'content', 'background']) {
           await builder.build(builder.environments[name])
         }
 

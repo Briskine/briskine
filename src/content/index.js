@@ -22,7 +22,6 @@ import { setup as setupDialog, destroy as destroyDialog } from './dialog/dialog.
 import { setup as setupDialogTop, destroy as destroyDialogTop } from './dialog/dialog-top.js'
 import { setup as setupForm, destroy as destroyForm } from './form/form.js'
 import { setup as setupFormDialog, destroy as destroyFormDialog } from './form/form-dialog.js'
-import { setup as setupPage, destroy as destroyPage } from './page/page-parent.js'
 import { setup as setupAttachments, destroy as destroyAttachments } from './attachments/attachments.js'
 import {
   setup as setupDashboardEvents,
@@ -71,7 +70,6 @@ async function init () {
     setupBubble(settings),
     setupDialog(settings),
     setupForm(),
-    setupPage(),
     setupAttachments(),
     setupInsertEvent(),
     setupActiveElement(),
@@ -178,7 +176,6 @@ function destructor () {
   destroyBubble()
   destroyDialog()
   destroyForm()
-  destroyPage()
   destroyAttachments()
   destroyInsertEvent()
   destroyActiveElement()

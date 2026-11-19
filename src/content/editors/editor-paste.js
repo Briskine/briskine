@@ -25,8 +25,9 @@
  *
  */
 
-import { request } from '../page/page-parent.js'
 import { getActiveElement } from '../utils/active-element.js'
+import createDataTransferEvent from '../utils/data-transfer-event.js'
+import { isQuill1 } from './editor-quill1.js'
 
 function isPasteEditor (element) {
   return (
@@ -39,7 +40,7 @@ function isPasteEditor (element) {
     // quill v2
     || (
       element?.classList?.contains?.('ql-editor')
-      && !element?.closest?.('.ql-container')?.__quill
+      && !isQuill1(element)
     )
 
     // google sheets
@@ -49,30 +50,22 @@ function isPasteEditor (element) {
   )
 }
 
-export function insertPasteTemplate ({ html, text }) {
-  return request('paste-insert', {
-    html,
-    text,
-  })
-}
-
-// runs in page context,
-// otherwise Firefox won't trigger the event.
-export async function pageInsertPasteTemplate ({ html, text }) {
+export async function insertPasteTemplate ({ html, text }) {
   const element = getActiveElement()
   if (!isPasteEditor(element)) {
     return false
   }
 
-  const e = new ClipboardEvent('paste', {
-    clipboardData: new DataTransfer(),
-    bubbles: true,
+  const e = createDataTransferEvent({
+    constructor: 'ClipboardEvent',
+    type: 'paste',
+    dataKey: 'clipboardData',
+    props: {
+      bubbles: true,
+    },
+    text,
+    html,
   })
-  // set the data on the event, instead of a separate DataTransfer instance.
-  // otherwise Firefox sends an empty DataTransfer object.
-  // also needs to run in page context, for firefox support.
-  e.clipboardData.setData('text/plain', text)
-  e.clipboardData.setData('text/html', html)
   element.dispatchEvent(e)
 
   return true
