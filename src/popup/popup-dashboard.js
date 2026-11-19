@@ -51,18 +51,18 @@ function MotivationalMessage (props) {
     <Switch
       fallback={(
         <>
-          <span class="fst-italic">Big things have small beginnings</span> &#128170;
+          <span class="fst-italic">Big things have small beginnings</span>&nbsp;&#128170;
         </>
       )}
       >
       <Match when={props.words > 7500}>
-        <span class="fst-italic">You're awesome. Just awesome.</span> &#9996;
+        <span class="fst-italic">You're awesome. Just awesome.</span>&nbsp;&#9996;
       </Match>
       <Match when={props.words > 2500}>
-        <span class="fst-italic">Did you know mushrooms are one of the largest organisms in the world?</span> &#127812;
+        <span class="fst-italic">Did you know mushrooms are one of the largest organisms in the world?</span>&nbsp;&#127812;
       </Match>
       <Match when={props.words > 1500}>
-        <span class="fst-italic">Or the equivalent of writing a short story</span> &#128214;
+        <span class="fst-italic">Or the equivalent of writing a short story</span>&nbsp;&#128214;
       </Match>
     </Switch>
   )
