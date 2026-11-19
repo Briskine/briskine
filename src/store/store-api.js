@@ -142,23 +142,29 @@ function getCollectionQuery (name, user) {
 
 const collectionRequestQueue = {}
 
-async function getCollection ({ collection, user }) {
+// force skips the cache, and only replaces it when the request succeeds.
+async function getCollection ({ collection, user, force = false }) {
   // request is already in progress
   if (collectionRequestQueue[collection]) {
     return collectionRequestQueue[collection]
   }
 
-  // get from cache
-  const cache = await browser.storage.local.get(collection)
-  if (cache[collection]) {
-    return cache[collection]
+  if (!force) {
+    const cache = await browser.storage.local.get(collection)
+    if (cache[collection]) {
+      return cache[collection]
+    }
   }
 
-  const query = await getCollectionQuery(collection, user)
-  collectionRequestQueue[collection] = getDocs(query).then((snapshot) => {
-    collectionRequestQueue[collection] = null
-    return refreshLocalData(collection, snapshot)
-  })
+  // queue the request before building the query,
+  // the templates query waits for the queued customers request.
+  collectionRequestQueue[collection] = Promise.resolve()
+    .then(() => getCollectionQuery(collection, user))
+    .then((query) => getDocs(query))
+    .then((snapshot) => refreshLocalData(collection, snapshot))
+    .finally(() => {
+      collectionRequestQueue[collection] = null
+    })
 
   return collectionRequestQueue[collection]
 }
@@ -198,22 +204,18 @@ async function updateCache ({collection, data}) {
   return data
 }
 
+// keeps the cached data when offline
 export async function refetchCollections (collections = []) {
   const known = collections.filter((c) => allCollections.includes(c))
-  const collectionsToClear = known.length ? known : allCollections
-  const cache = {}
-  collectionsToClear.forEach((c) => {
-    cache[c] = null
-  })
-
-  await browser.storage.local.set(cache)
+  const collectionsToFetch = known.length ? known : allCollections
 
   try {
     const user = await getSignedInUser()
     return Promise.all(
-      collectionsToClear.map((c) => getCollection({
+      collectionsToFetch.map((c) => getCollection({
         collection: c,
         user: user,
+        force: true,
       }))
     )
   } catch (err) {
