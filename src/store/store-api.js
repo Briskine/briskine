@@ -155,12 +155,6 @@ function userChanged () {
 // collections that belong to the active customer
 const customerCollections = ['templates', 'tags']
 
-// requests are only shared between callers for the same user and customer
-function getRequestKey (collection, user = {}, generation = 0) {
-  const customer = customerCollections.includes(collection) ? user.customer : ''
-  return `${collection}:${user.id}:${customer}:${generation}`
-}
-
 const collectionRequestQueue = {}
 
 // force skips the cache, and only replaces it when the request succeeds.
@@ -175,8 +169,10 @@ async function getCollection ({ collection, user, force = false }) {
     }
   }
 
-  // request is already in progress
-  const key = getRequestKey(collection, user, generation)
+  // request is already in progress.
+  // only shared between callers that read the same user and customer,
+  // since every change to them increments the generation.
+  const key = `${collection}:${generation}`
   const pending = collectionRequestQueue[key]
   if (pending && !force) {
     return pending
