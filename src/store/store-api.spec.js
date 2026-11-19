@@ -125,6 +125,47 @@ describe('store api offline', () => {
     expect(templates.map((t) => t.title)).to.deep.equal(['Remote'])
   })
 
+  it('should return the cached data while a refetch is in progress', async () => {
+    setCache()
+    let respond
+    getDocs.mockImplementation((query) => new Promise((resolve) => {
+      respond = () => resolve(snapshot(remoteData[query.name]))
+    }))
+
+    const refetch = refetchCollections(['templates'])
+    await vi.waitFor(() => expect(respond).toBeTypeOf('function'))
+
+    const templates = await getTemplates()
+    expect(templates.map((t) => t.title)).to.deep.equal(['Cached'])
+
+    respond()
+    await refetch
+  })
+
+  it('should refetch the templates when the plan changes', async () => {
+    setCache()
+    storage.customers = {customer1: {subscription: {plan: 'free'}}}
+    online()
+
+    await refetchCollections(['customers'])
+
+    const fetched = getDocs.mock.calls.map(([query]) => query.name)
+    expect(fetched).to.deep.equal(['customers', 'templates'])
+
+    const templates = await getTemplates()
+    expect(templates.map((t) => t.title)).to.deep.equal(['Remote'])
+  })
+
+  it('should not refetch the templates when the plan is the same', async () => {
+    setCache()
+    online()
+
+    await refetchCollections(['customers'])
+
+    const fetched = getDocs.mock.calls.map(([query]) => query.name)
+    expect(fetched).to.deep.equal(['customers'])
+  })
+
   it('should retry a request that failed', async () => {
     setCache()
     delete storage.templates

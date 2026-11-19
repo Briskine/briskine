@@ -144,11 +144,7 @@ const collectionRequestQueue = {}
 
 // force skips the cache, and only replaces it when the request succeeds.
 async function getCollection ({ collection, user, force = false }) {
-  // request is already in progress
-  if (collectionRequestQueue[collection]) {
-    return collectionRequestQueue[collection]
-  }
-
+  // cached data doesn't wait for a refresh in progress (e.g., on a slow connection)
   if (!force) {
     const cache = await browser.storage.local.get(collection)
     if (cache[collection]) {
@@ -156,8 +152,12 @@ async function getCollection ({ collection, user, force = false }) {
     }
   }
 
-  // queue the request before building the query,
-  // the templates query waits for the queued customers request.
+  // request is already in progress
+  if (collectionRequestQueue[collection]) {
+    return collectionRequestQueue[collection]
+  }
+
+  // queue the request right away, so concurrent calls share it
   collectionRequestQueue[collection] = Promise.resolve()
     .then(() => getCollectionQuery(collection, user))
     .then((query) => getDocs(query))
@@ -207,17 +207,11 @@ async function updateCache ({collection, data}) {
 // keeps the cached data when offline
 export async function refetchCollections (collections = []) {
   const known = collections.filter((c) => allCollections.includes(c))
-  const collectionsToFetch = known.length ? known : allCollections
+  let collectionsToFetch = known.length ? known : allCollections
 
+  let user
   try {
-    const user = await getSignedInUser()
-    return Promise.all(
-      collectionsToFetch.map((c) => getCollection({
-        collection: c,
-        user: user,
-        force: true,
-      }))
-    )
+    user = await getSignedInUser()
   } catch (err) {
     if (isLoggedOut(err)) {
       return
@@ -225,6 +219,33 @@ export async function refetchCollections (collections = []) {
 
     throw err
   }
+
+  const fetchCollection = (collection) => getCollection({
+    collection: collection,
+    user: user,
+    force: true,
+  })
+
+  // the templates query depends on the customer plan,
+  // so we fetch the customers first.
+  if (collectionsToFetch.includes('customers')) {
+    const cache = await browser.storage.local.get('customers')
+    const customers = await fetchCollection('customers')
+    collectionsToFetch = collectionsToFetch.filter((c) => c !== 'customers')
+
+    if (
+      isFreeCustomer(cache.customers, user.customer) !== isFreeCustomer(customers, user.customer)
+      && !collectionsToFetch.includes('templates')
+    ) {
+      collectionsToFetch = collectionsToFetch.concat('templates')
+    }
+  }
+
+  return Promise.all(collectionsToFetch.map(fetchCollection))
+}
+
+function isFreeCustomer (customers = {}, customerId = '') {
+  return customers?.[customerId]?.subscription?.plan === 'free'
 }
 
 // three hours
