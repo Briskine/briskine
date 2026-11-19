@@ -446,11 +446,20 @@ export async function getSignedInUser () {
       // store default customer and refresh data.
       // on first run after login, user.customer is null,
       // and will be populated once signinWithToken is done.
-      if (user.customer && user.customer !== customer) {
+      // no longer part of the stored customer, and part of another one
+      if (customer && user.customer && user.customer !== customer) {
         // switch in the background,
         // and keep using the stored customer until the switch is saved.
-        switchActiveCustomer(customer, user.customer)
-          .catch((err) => debug(['switchActiveCustomer', err], 'warn'))
+        if (Date.now() - lastFailedSwitch > switchRetryDelay) {
+          switchActiveCustomer(customer, user.customer)
+            .catch((err) => {
+              // a cancelled switch means the stored customer already changed
+              if (err !== SWITCH_CANCELLED_ERR) {
+                lastFailedSwitch = Date.now()
+              }
+              debug(['switchActiveCustomer', err], 'warn')
+            })
+        }
 
         return {
           id: user.id,
@@ -682,6 +691,10 @@ function switchActiveCustomer (customerId, fromCustomerId) {
 
 const SWITCH_CANCELLED_ERR = 'switch-cancelled'
 
+// a failed automatic switch is retried after a while, not on every read
+const switchRetryDelay = 30 * 1000
+let lastFailedSwitch = 0
+
 // fetches the customer's data first, then saves it together with the customer.
 // if fetching fails (e.g., offline), or the switch is cancelled, nothing changes.
 async function switchCustomer (customerId, fromCustomerId) {
@@ -693,8 +706,14 @@ async function switchCustomer (customerId, fromCustomerId) {
     throw SWITCH_CANCELLED_ERR
   }
 
+  // firebase restores the user after the service worker starts
+  const firebaseUser = await getFirebaseUser()
+  if (!firebaseUser) {
+    throw LOGGED_OUT_ERR
+  }
+
   const user = {
-    id: firebaseAuth.currentUser.uid,
+    id: firebaseUser.uid,
     customer: customerId,
   }
 

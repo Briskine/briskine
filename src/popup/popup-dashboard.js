@@ -159,7 +159,7 @@ export default function PopupDashboard () {
     },
   ))
 
-  // switching teams clears the templates, then updates them when the new ones are fetched
+  // switching teams or syncing sends the new templates
   function templatesUpdated (templates = []) {
     setTemplatesCount(templates.length)
   }
