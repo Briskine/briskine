@@ -31,6 +31,7 @@ import {badgeUpdate} from '../background/badge.js'
 import {getDefaultTemplates, defaultTags, defaultSettings} from './default-data.js'
 import htmlToText from '../content/utils/html-to-text.js'
 import {getExtensionData, setExtensionData} from './extension-data.js'
+import debug from '../debug.js'
 
 export {getExtensionData, setExtensionData} from './extension-data.js'
 export {openPopup} from '../background/open-popup.js'
@@ -163,7 +164,14 @@ async function getCollection ({ collection, user, force = false }) {
   const request = (pending ? pending.catch(() => {}) : Promise.resolve())
     .then(() => getCollectionQuery(collection, user))
     .then((query) => getDocs(query))
-    .then((snapshot) => refreshLocalData(collection, snapshot))
+    .then(async (snapshot) => {
+      // the customer changed while fetching, drop the previous customer's data
+      if (customerCollections.includes(collection) && await isCustomerChanged(user.customer)) {
+        return {}
+      }
+
+      return refreshLocalData(collection, snapshot)
+    })
     .finally(() => {
       if (collectionRequestQueue[collection] === request) {
         collectionRequestQueue[collection] = null
@@ -174,6 +182,16 @@ async function getCollection ({ collection, user, force = false }) {
   collectionRequestQueue[collection] = request
 
   return request
+}
+
+// collections that belong to the active customer
+const customerCollections = ['templates', 'tags']
+
+async function isCustomerChanged (customerId) {
+  const storedUser = await browser.storage.local.get(globalUserKey)
+  const activeCustomer = storedUser[globalUserKey]?.customer
+  // the active customer is not set yet right after signing in
+  return Boolean(activeCustomer) && activeCustomer !== customerId
 }
 
 // refresh local data cache from snapshot listeners
@@ -345,7 +363,7 @@ export async function getSettings () {
   }
 }
 
-var LOGGED_OUT_ERR = 'logged-out'
+const LOGGED_OUT_ERR = 'logged-out'
 function isLoggedOut (err) {
   return err === LOGGED_OUT_ERR
 }
@@ -366,7 +384,7 @@ function getFirebaseUser () {
   })
 }
 
-var globalUserKey = 'firebaseUser'
+const globalUserKey = 'firebaseUser'
 export async function getSignedInUser () {
   const storedUser = await browser.storage.local.get(globalUserKey)
   const user = storedUser[globalUserKey] || {}
@@ -589,7 +607,7 @@ export async function setActiveCustomer (customerId) {
       refetchCollections([
         'templates',
         'tags',
-      ])
+      ]).catch((err) => debug(['refetchCollections', err], 'warn'))
       return
     })
 }

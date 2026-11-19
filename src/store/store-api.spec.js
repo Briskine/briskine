@@ -230,6 +230,36 @@ describe('store api offline', () => {
     await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
   })
 
+  it('should drop the previous customer data from a request in progress', async () => {
+    setCache()
+    delete storage.templates
+    const responses = {
+      templates: [],
+      tags: [],
+    }
+    getDocs.mockImplementation((query) => new Promise((resolve) => {
+      responses[query.name].push(resolve)
+    }))
+
+    const previous = getTemplates()
+    await vi.waitFor(() => expect(responses.templates).to.have.length(1))
+
+    await setActiveCustomer('customer2')
+    responses.templates[0](snapshot({template1: cachedTemplate}))
+    await previous
+
+    // the refetch for the new customer starts after the previous request
+    await vi.waitFor(() => expect(responses.templates).to.have.length(2))
+    expect(storage.templates).to.equal(null)
+    expect(trigger).not.toHaveBeenCalledWith('templates-updated', expect.arrayContaining([
+      expect.objectContaining({title: 'Cached'}),
+    ]))
+
+    responses.templates[1](snapshot(remoteData.templates))
+    responses.tags.forEach((respond) => respond(snapshot({})))
+    await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
+  })
+
   it('should retry a request that failed', async () => {
     setCache()
     delete storage.templates

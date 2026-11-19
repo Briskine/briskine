@@ -19,5 +19,8 @@ export async function insertQuill1Template ({ text }) {
     return false
   }
 
-  return insertExecCommandTemplate({ text })
+  // don't fall through to the other editors,
+  // they would change the dom under quill.
+  await insertExecCommandTemplate({ text })
+  return true
 }
