@@ -1,4 +1,4 @@
-import {createSignal, createResource, createEffect, on, Show, Switch, Match, onMount, For, createMemo} from 'solid-js'
+import {createSignal, createResource, createEffect, on, Show, Switch, Match, onMount, onCleanup, For, createMemo} from 'solid-js'
 
 import { websiteUrl, functionsUrl, dashboardTarget, freeTemplatesLimit } from '../config.js'
 import {
@@ -10,6 +10,8 @@ import {
   getSession,
   getTemplates,
   logout,
+  on as storeOn,
+  off as storeOff,
 } from '../store/store-content.js'
 
 import ArrowRepeat from 'bootstrap-icons/icons/arrow-repeat.svg'
@@ -142,6 +144,14 @@ export default function PopupDashboard () {
         .catch(() => {})
     },
   ))
+
+  // switching teams clears the templates, then updates them when the new ones are fetched
+  function templatesUpdated (templates = []) {
+    setTemplatesCount(templates.length)
+  }
+
+  storeOn('templates-updated', templatesUpdated)
+  onCleanup(() => storeOff('templates-updated', templatesUpdated))
 
   function switchTeam (e) {
     setCustomer(e.currentTarget.value)
