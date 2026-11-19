@@ -448,16 +448,8 @@ export async function getSignedInUser () {
       if (customer && user.customer && user.customer !== customer) {
         // switch in the background,
         // and keep using the stored customer until the switch is saved.
-        if (Date.now() - lastFailedSwitch > switchRetryDelay) {
-          switchActiveCustomer(customer, user.customer)
-            .catch((err) => {
-              // a cancelled switch means the stored customer already changed
-              if (err !== SWITCH_CANCELLED_ERR) {
-                lastFailedSwitch = Date.now()
-              }
-              debug(['switchActiveCustomer', err], 'warn')
-            })
-        }
+        switchActiveCustomer(customer, user.customer)
+          .catch((err) => debug(['switchActiveCustomer', err], 'warn'))
 
         return {
           id: user.id,
@@ -688,10 +680,6 @@ function switchActiveCustomer (customerId, fromCustomerId) {
 }
 
 const SWITCH_CANCELLED_ERR = 'switch-cancelled'
-
-// a failed automatic switch is retried after a while, not on every read
-const switchRetryDelay = 30 * 1000
-let lastFailedSwitch = 0
 
 // fetches the customer's data first, then saves it together with the customer.
 // if fetching fails (e.g., offline), or the switch is cancelled, nothing changes.

@@ -47,7 +47,7 @@ vi.mock('firebase/firestore/lite', () => ({
     name: collection.name,
     constraints: constraints,
   }),
-  where: (field, op, value) => ({
+  where: (field, _op, value) => ({
     field: field,
     value: value,
   }),
@@ -142,6 +142,9 @@ describe('store api offline', () => {
     getDocs.mockReset()
     trigger.mockReset()
     storageSet.mockClear()
+    // a failed test can leave firebase without a user
+    auth.currentUser = {uid: 'user1'}
+    authListeners.length = 0
   })
 
   it('should keep the cached data when refetching offline', async () => {
@@ -454,32 +457,6 @@ describe('store api offline', () => {
 
     expect(getDocs).not.toHaveBeenCalled()
     expect(storageSet.mock.calls.filter(([data]) => data.firebaseUser)).to.have.length(0)
-  })
-
-  it('should not retry a failed automatic switch on every read', async () => {
-    // a failed switch long enough ago not to delay the switches in the other tests
-    const now = Date.now() - 60 * 1000
-    const dateNow = vi.spyOn(Date, 'now').mockReturnValue(now)
-    try {
-      setCache()
-      // removed from customer1
-      storage.users = {user1: {customers: ['customer2']}}
-      offline()
-
-      await getSignedInUser()
-      await vi.waitFor(() => expect(getDocs).toHaveBeenCalled())
-      await new Promise((resolve) => setTimeout(resolve, 50))
-      const attempts = getDocs.mock.calls.length
-
-      await getSignedInUser()
-      await getSignedInUser()
-      await new Promise((resolve) => setTimeout(resolve, 50))
-
-      expect(getDocs.mock.calls.length).to.equal(attempts)
-      expect(storage.firebaseUser.customer).to.equal('customer1')
-    } finally {
-      dateNow.mockRestore()
-    }
   })
 
   it('should wait for firebase to restore the user when switching', async () => {
