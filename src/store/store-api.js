@@ -60,6 +60,7 @@ async function clearDataCache () {
   const bubbleAllowlist = extensionData.bubbleAllowlist
 
   await browser.storage.local.clear()
+  userChanged()
 
   // restore data between logins
   return setExtensionData({
@@ -155,9 +156,9 @@ function userChanged () {
 const customerCollections = ['templates', 'tags']
 
 // requests are only shared between callers for the same user and customer
-function getRequestKey (collection, user = {}) {
+function getRequestKey (collection, user = {}, generation = 0) {
   const customer = customerCollections.includes(collection) ? user.customer : ''
-  return `${collection}:${user.id}:${customer}`
+  return `${collection}:${user.id}:${customer}:${generation}`
 }
 
 const collectionRequestQueue = {}
@@ -175,7 +176,7 @@ async function getCollection ({ collection, user, force = false }) {
   }
 
   // request is already in progress
-  const key = getRequestKey(collection, user)
+  const key = getRequestKey(collection, user, generation)
   const pending = collectionRequestQueue[key]
   if (pending && !force) {
     return pending
@@ -439,7 +440,17 @@ export async function getSignedInUser () {
       // on first run after login, user.customer is null,
       // and will be populated once signinWithToken is done.
       if (user.customer && user.customer !== customer) {
-        setActiveCustomer(customer)
+        try {
+          await switchActiveCustomer(customer)
+          // the user and customer are stored after the switch
+          return {
+            id: user.id,
+            customer: customer,
+            generation: userGeneration,
+          }
+        } catch (err) {
+          debug(['switchActiveCustomer', err], 'warn')
+        }
       }
 
       return {
@@ -463,11 +474,14 @@ export async function getSignedInUser () {
 
 // extra data is saved in the same write as the user
 async function setSignedInUser (user, extraData = {}) {
+  // before the write, for requests already in progress,
+  // and after it, for requests that read the previous user during the write.
   userChanged()
   await browser.storage.local.set({
     ...extraData,
     [globalUserKey]: user,
   })
+  userChanged()
   return user
 }
 
@@ -635,6 +649,18 @@ async function getActiveCustomer (user = {}) {
   return userData.customers[0]
 }
 
+// concurrent calls share the same switch
+let customerSwitch = null
+function switchActiveCustomer (customerId) {
+  if (!customerSwitch) {
+    customerSwitch = setActiveCustomer(customerId).finally(() => {
+      customerSwitch = null
+    })
+  }
+
+  return customerSwitch
+}
+
 export async function setActiveCustomer (customerId) {
   // clear the previous customer's data in the same write,
   // so we don't show it for the new customer while offline,
@@ -650,9 +676,6 @@ export async function setActiveCustomer (customerId) {
       },
     )
     .then(() => {
-      trigger('templates-updated', [])
-      trigger('tags-updated', [])
-
       // update data when customer changes
       refetchCollections([
         'templates',

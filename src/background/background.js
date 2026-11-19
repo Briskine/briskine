@@ -8,8 +8,13 @@ import './frame-relay.js'
 import '../store/store-background.js'
 
 import {autosync} from '../store/store-api.js'
+import debug from '../debug.js'
 
-browser.runtime.onStartup.addListener(() => autosync())
-browser.runtime.onInstalled.addListener(() => autosync())
+function startupSync () {
+  autosync().catch((err) => debug(['autosync', err], 'warn'))
+}
+
+browser.runtime.onStartup.addListener(startupSync)
+browser.runtime.onInstalled.addListener(startupSync)
 
 

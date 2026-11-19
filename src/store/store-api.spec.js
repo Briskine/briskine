@@ -233,8 +233,9 @@ describe('store api offline', () => {
 
     expect(storage.templates).to.equal(null)
     expect(storage.tags).to.equal(null)
-    expect(trigger).toHaveBeenCalledWith('templates-updated', [])
-    expect(trigger).toHaveBeenCalledWith('tags-updated', [])
+    // an empty list would be cached by the content scripts
+    expect(trigger).not.toHaveBeenCalledWith('templates-updated', [])
+    expect(trigger).not.toHaveBeenCalledWith('tags-updated', [])
 
     await vi.waitFor(() => expect(responses).to.have.length(2))
     responses.forEach((respond) => respond())
@@ -364,6 +365,59 @@ describe('store api offline', () => {
         customer: 'customer2',
       },
     })
+    await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
+  })
+
+  it('should not cache the previous customer data read while switching customers', async () => {
+    setCache()
+    delete storage.templates
+    const responses = []
+    getDocs.mockImplementation((query) => new Promise((resolve) => {
+      responses.push({
+        query: query,
+        respond: (data) => resolve(snapshot(data)),
+      })
+    }))
+    let finishWrite
+    storageSet.mockImplementationOnce((data) => new Promise((resolve) => {
+      finishWrite = () => {
+        Object.assign(storage, data)
+        resolve()
+      }
+    }))
+
+    const switching = setActiveCustomer('customer2')
+    // reads the previous customer, while the switch is being saved
+    const previous = getTemplates()
+    await vi.waitFor(() => expect(responses).to.have.length(1))
+    expect(JSON.stringify(responses[0].query)).to.include('"customer1"')
+
+    finishWrite()
+    await switching
+    responses[0].respond({template1: cachedTemplate})
+    await previous
+
+    expect(storage.templates).to.equal(null)
+
+    await vi.waitFor(() => expect(responses).to.have.length(3))
+    responses.slice(1).forEach(({query, respond}) => respond(remoteData[query.name]))
+    await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
+  })
+
+  it('should switch customers once when removed from the active customer', async () => {
+    setCache()
+    // removed from customer1
+    storage.users = {user1: {customers: ['customer2']}}
+    online()
+
+    await Promise.all([
+      getTemplates(),
+      getTemplates(),
+    ])
+
+    const switches = storageSet.mock.calls.filter(([data]) => data.firebaseUser)
+    expect(switches).to.have.length(1)
+    expect(storage.firebaseUser.customer).to.equal('customer2')
     await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
   })
 
