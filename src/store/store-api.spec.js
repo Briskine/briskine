@@ -61,7 +61,7 @@ vi.mock('./extension-data.js', () => ({
   setExtensionData: async () => {},
 }))
 
-import { getTemplates, logout, refetchCollections, setActiveCustomer } from './store-api.js'
+import { getSignedInUser, getTemplates, logout, refetchCollections, setActiveCustomer } from './store-api.js'
 
 const cachedTemplate = {
   title: 'Cached',
@@ -236,6 +236,7 @@ describe('store api offline', () => {
     // an empty list would be cached by the content scripts
     expect(trigger).not.toHaveBeenCalledWith('templates-updated', [])
     expect(trigger).not.toHaveBeenCalledWith('tags-updated', [])
+    expect(trigger).toHaveBeenCalledWith('customer-changed')
 
     await vi.waitFor(() => expect(responses).to.have.length(2))
     responses.forEach((respond) => respond())
@@ -419,6 +420,34 @@ describe('store api offline', () => {
     expect(switches).to.have.length(1)
     expect(storage.firebaseUser.customer).to.equal('customer2')
     await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
+  })
+
+  it('should keep the stored customer when switching customers fails', async () => {
+    setCache()
+    // removed from customer1
+    storage.users = {user1: {customers: ['customer2']}}
+    online()
+    storageSet.mockRejectedValueOnce(new Error('storage error'))
+
+    const user = await getSignedInUser()
+
+    expect(user.customer).to.equal('customer1')
+    expect(storage.firebaseUser.customer).to.equal('customer1')
+  })
+
+  it('should fetch the customers when the active customer is not cached', async () => {
+    setCache()
+    delete storage.templates
+    // joined customer2 after the customers were cached
+    storage.customers = {customer1: remoteData.customers.customer1}
+    storage.firebaseUser.customer = 'customer2'
+    online()
+
+    const templates = await getTemplates()
+
+    const fetched = getDocs.mock.calls.map(([query]) => query.name)
+    expect(fetched).to.deep.equal(['customers', 'templates'])
+    expect(templates.map((t) => t.title)).to.deep.equal(['Remote'])
   })
 
   it('should retry a request that failed', async () => {

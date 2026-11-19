@@ -134,13 +134,18 @@ export default function PopupDashboard () {
   // switching teams changes the templates.
   createEffect(on(
     () => [isFree(), user().customer],
-    ([free]) => {
+    ([free, customerId]) => {
       if (free !== true) {
         return
       }
 
       getTemplates()
-        .then((templates) => setTemplatesCount(templates.length))
+        .then((templates) => {
+          // the customer changed while loading
+          if (user().customer === customerId) {
+            setTemplatesCount(templates.length)
+          }
+        })
         .catch(() => {})
     },
   ))

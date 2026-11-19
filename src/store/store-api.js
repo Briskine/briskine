@@ -202,7 +202,7 @@ async function getCollection ({ collection, user, force = false }) {
     })
     .finally(() => {
       if (collectionRequestQueue[key] === request) {
-        collectionRequestQueue[key] = null
+        delete collectionRequestQueue[key]
       }
     })
 
@@ -450,6 +450,12 @@ export async function getSignedInUser () {
           }
         } catch (err) {
           debug(['switchActiveCustomer', err], 'warn')
+          // the switch wasn't saved, keep the stored customer and its cached data
+          return {
+            id: user.id,
+            customer: user.customer,
+            generation: generation,
+          }
         }
       }
 
@@ -486,10 +492,20 @@ async function setSignedInUser (user, extraData = {}) {
 }
 
 async function isFree (user) {
-  const customers = await getCollection({
+  let customers = await getCollection({
     user: user,
     collection: 'customers'
   })
+
+  // joined the customer after the customers were cached
+  if (!customers[user.customer]) {
+    customers = await getCollection({
+      user: user,
+      collection: 'customers',
+      force: true,
+    })
+  }
+
   const customer = customers[user.customer]
   return customer.subscription.plan === 'free'
 }
@@ -649,16 +665,29 @@ async function getActiveCustomer (user = {}) {
   return userData.customers[0]
 }
 
-// concurrent calls share the same switch
+// concurrent calls for the same customer share the same switch
 let customerSwitch = null
 function switchActiveCustomer (customerId) {
-  if (!customerSwitch) {
-    customerSwitch = setActiveCustomer(customerId).finally(() => {
-      customerSwitch = null
-    })
+  if (customerSwitch?.customerId === customerId) {
+    return customerSwitch.request
   }
 
-  return customerSwitch
+  // switching to another customer waits for the previous switch
+  const previous = customerSwitch ? customerSwitch.request.catch(() => {}) : Promise.resolve()
+  const request = previous
+    .then(() => setActiveCustomer(customerId))
+    .finally(() => {
+      if (customerSwitch?.request === request) {
+        customerSwitch = null
+      }
+    })
+
+  customerSwitch = {
+    customerId: customerId,
+    request: request,
+  }
+
+  return request
 }
 
 export async function setActiveCustomer (customerId) {
@@ -676,6 +705,10 @@ export async function setActiveCustomer (customerId) {
       },
     )
     .then(() => {
+      // content scripts clear their in-memory data,
+      // so they don't show the previous customer's data.
+      trigger('customer-changed')
+
       // update data when customer changes
       refetchCollections([
         'templates',
