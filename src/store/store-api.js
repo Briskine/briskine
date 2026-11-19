@@ -442,11 +442,9 @@ export async function getSignedInUser () {
         ...user,
         generation: generation,
       })
-      // if we're no longer part of cached customer,
-      // store default customer and refresh data.
+      // no longer part of the stored customer, and part of another one.
       // on first run after login, user.customer is null,
       // and will be populated once signinWithToken is done.
-      // no longer part of the stored customer, and part of another one
       if (customer && user.customer && user.customer !== customer) {
         // switch in the background,
         // and keep using the stored customer until the switch is saved.
