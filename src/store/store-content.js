@@ -70,13 +70,6 @@ function tagsUpdated (tags = []) {
   cache.getTags = tags
 }
 
-// fetch the new customer's data from the background on the next request
-function customerChanged () {
-  cache.getAccount = null
-  cache.getTemplates = null
-  cache.getTags = null
-}
-
 function extensionDataUpdated (data = {}) {
   cache.getExtensionData = data
 }
@@ -87,7 +80,6 @@ export async function setup () {
   on('users-updated', usersUpdated)
   on('templates-updated', templatesUpdated)
   on('tags-updated', tagsUpdated)
-  on('customer-changed', customerChanged)
   on('extension-data-updated', extensionDataUpdated)
 
   const cached = await isCached()
@@ -108,7 +100,6 @@ export async function destroy () {
   off('users-updated', usersUpdated)
   off('templates-updated', templatesUpdated)
   off('tags-updated', tagsUpdated)
-  off('customer-changed', customerChanged)
   off('extension-data-updated', extensionDataUpdated)
 
   cache = {}

@@ -243,6 +243,17 @@ async function updateCache ({collection, data}) {
   return data
 }
 
+// waits for a customer switch in progress, to get the user after it
+async function getSignedInUserAfterSwitch () {
+  const user = await getSignedInUser()
+  if (!customerSwitch) {
+    return user
+  }
+
+  await customerSwitch.request.catch(() => {})
+  return getSignedInUser()
+}
+
 // keeps the cached data when offline
 export async function refetchCollections (collections = []) {
   const known = collections.filter((c) => allCollections.includes(c))
@@ -250,7 +261,7 @@ export async function refetchCollections (collections = []) {
 
   let user
   try {
-    user = await getSignedInUser()
+    user = await getSignedInUserAfterSwitch()
   } catch (err) {
     if (isLoggedOut(err)) {
       return
@@ -275,7 +286,7 @@ export async function refetchCollections (collections = []) {
 
     try {
       await fetchCollection('users')
-      user = await getSignedInUser()
+      user = await getSignedInUserAfterSwitch()
     } catch (err) {
       if (isLoggedOut(err)) {
         return
@@ -440,22 +451,15 @@ export async function getSignedInUser () {
       // on first run after login, user.customer is null,
       // and will be populated once signinWithToken is done.
       if (user.customer && user.customer !== customer) {
-        try {
-          await switchActiveCustomer(customer)
-          // the user and customer are stored after the switch
-          return {
-            id: user.id,
-            customer: customer,
-            generation: userGeneration,
-          }
-        } catch (err) {
-          debug(['switchActiveCustomer', err], 'warn')
-          // the switch wasn't saved, keep the stored customer and its cached data
-          return {
-            id: user.id,
-            customer: user.customer,
-            generation: generation,
-          }
+        // switch in the background,
+        // and keep using the stored customer until the switch is saved.
+        switchActiveCustomer(customer, user.customer)
+          .catch((err) => debug(['switchActiveCustomer', err], 'warn'))
+
+        return {
+          id: user.id,
+          customer: user.customer,
+          generation: generation,
         }
       }
 
@@ -492,20 +496,10 @@ async function setSignedInUser (user, extraData = {}) {
 }
 
 async function isFree (user) {
-  let customers = await getCollection({
+  const customers = await getCollection({
     user: user,
     collection: 'customers'
   })
-
-  // joined the customer after the customers were cached
-  if (!customers[user.customer]) {
-    customers = await getCollection({
-      user: user,
-      collection: 'customers',
-      force: true,
-    })
-  }
-
   const customer = customers[user.customer]
   return customer.subscription.plan === 'free'
 }
@@ -665,17 +659,17 @@ async function getActiveCustomer (user = {}) {
   return userData.customers[0]
 }
 
-// concurrent calls for the same customer share the same switch
+// switches run one at a time,
+// and concurrent calls for the same customer share the same switch.
 let customerSwitch = null
-function switchActiveCustomer (customerId) {
+function switchActiveCustomer (customerId, fromCustomerId) {
   if (customerSwitch?.customerId === customerId) {
     return customerSwitch.request
   }
 
-  // switching to another customer waits for the previous switch
   const previous = customerSwitch ? customerSwitch.request.catch(() => {}) : Promise.resolve()
   const request = previous
-    .then(() => setActiveCustomer(customerId))
+    .then(() => switchCustomer(customerId, fromCustomerId))
     .finally(() => {
       if (customerSwitch?.request === request) {
         customerSwitch = null
@@ -690,32 +684,58 @@ function switchActiveCustomer (customerId) {
   return request
 }
 
-export async function setActiveCustomer (customerId) {
-  // clear the previous customer's data in the same write,
-  // so we don't show it for the new customer while offline,
-  // or if the service worker stops in between.
-  return setSignedInUser(
-      {
-        id: firebaseAuth.currentUser.uid,
-        customer: customerId,
-      },
-      {
-        templates: null,
-        tags: null,
-      },
-    )
-    .then(() => {
-      // content scripts clear their in-memory data,
-      // so they don't show the previous customer's data.
-      trigger('customer-changed')
+// fetches the customer's data first, then saves it together with the customer.
+// if fetching fails (e.g., offline), nothing changes.
+async function switchCustomer (customerId, fromCustomerId) {
+  const generation = userGeneration
+  const storedUser = await browser.storage.local.get(globalUserKey)
+  const activeUser = storedUser[globalUserKey] || {}
+  // an automatic switch doesn't replace a customer picked in the meantime
+  if (fromCustomerId && activeUser.customer !== fromCustomerId) {
+    return
+  }
 
-      // update data when customer changes
-      refetchCollections([
-        'templates',
-        'tags',
-      ]).catch((err) => debug(['refetchCollections', err], 'warn'))
-      return
+  const user = {
+    id: firebaseAuth.currentUser.uid,
+    customer: customerId,
+  }
+
+  // the templates query depends on the customer plan
+  const cache = await browser.storage.local.get('customers')
+  if (!cache.customers?.[customerId]) {
+    const customers = await getCollection({
+      collection: 'customers',
+      user: user,
+      force: true,
     })
+    if (!customers[customerId]) {
+      throw new Error(`Customer ${customerId} not found`)
+    }
+  }
+
+  const [templates, tags] = await Promise.all(
+    customerCollections.map(async (collection) => {
+      const query = await getCollectionQuery(collection, user)
+      return getSnapshotData(await getDocs(query))
+    })
+  )
+
+  // the user changed while fetching (e.g., logged out)
+  if (generation !== userGeneration) {
+    return
+  }
+
+  await setSignedInUser(user, {
+    templates: templates,
+    tags: tags,
+  })
+
+  trigger('templates-updated', parseTemplatesCollection(templates))
+  trigger('tags-updated', parseTagsCollection(tags))
+}
+
+export async function setActiveCustomer (customerId) {
+  return switchActiveCustomer(customerId)
 }
 
 export async function updateTemplateStats ({id = '', _body_plaintext = ''}) {

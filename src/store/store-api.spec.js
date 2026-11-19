@@ -78,6 +78,7 @@ const remoteData = {
   customers: {
     customer1: {subscription: {plan: 'team'}},
     customer2: {subscription: {plan: 'team'}},
+    customer3: {subscription: {plan: 'team'}},
   },
   tags: {},
   templates: {template2: remoteTemplate},
@@ -111,6 +112,23 @@ function setCache () {
     tags: {},
     templates: {template1: cachedTemplate},
   })
+}
+
+// responds right away to the queries for the customer,
+// and holds the other queries until they're released.
+function respondForCustomer (customerId) {
+  const held = []
+  getDocs.mockImplementation((query) => {
+    if (JSON.stringify(query).includes(`"${customerId}"`) || ['users', 'customers'].includes(query.name)) {
+      return Promise.resolve(snapshot(remoteData[query.name]))
+    }
+
+    return new Promise((resolve) => {
+      held.push(() => resolve(snapshot({template1: cachedTemplate})))
+    })
+  })
+
+  return held
 }
 
 describe('store api offline', () => {
@@ -222,57 +240,6 @@ describe('store api offline', () => {
     expect(templates.map((t) => t.title)).to.deep.equal(['Remote'])
   })
 
-  it('should clear the previous customer data when switching customers', async () => {
-    setCache()
-    const responses = []
-    getDocs.mockImplementation((query) => new Promise((resolve) => {
-      responses.push(() => resolve(snapshot(remoteData[query.name])))
-    }))
-
-    await setActiveCustomer('customer2')
-
-    expect(storage.templates).to.equal(null)
-    expect(storage.tags).to.equal(null)
-    // an empty list would be cached by the content scripts
-    expect(trigger).not.toHaveBeenCalledWith('templates-updated', [])
-    expect(trigger).not.toHaveBeenCalledWith('tags-updated', [])
-    expect(trigger).toHaveBeenCalledWith('customer-changed')
-
-    await vi.waitFor(() => expect(responses).to.have.length(2))
-    responses.forEach((respond) => respond())
-    await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
-  })
-
-  it('should drop the previous customer data from a request in progress', async () => {
-    setCache()
-    delete storage.templates
-    const responses = {
-      templates: [],
-      tags: [],
-    }
-    getDocs.mockImplementation((query) => new Promise((resolve) => {
-      responses[query.name].push(resolve)
-    }))
-
-    const previous = getTemplates()
-    await vi.waitFor(() => expect(responses.templates).to.have.length(1))
-
-    await setActiveCustomer('customer2')
-    responses.templates[0](snapshot({template1: cachedTemplate}))
-    await previous
-
-    // the refetch for the new customer starts after the previous request
-    await vi.waitFor(() => expect(responses.templates).to.have.length(2))
-    expect(storage.templates).to.equal(null)
-    expect(trigger).not.toHaveBeenCalledWith('templates-updated', expect.arrayContaining([
-      expect.objectContaining({title: 'Cached'}),
-    ]))
-
-    responses.templates[1](snapshot(remoteData.templates))
-    responses.tags.forEach((respond) => respond(snapshot({})))
-    await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
-  })
-
   it('should use the refetched users to get the active customer', async () => {
     setCache()
     online()
@@ -323,62 +290,69 @@ describe('store api offline', () => {
     expect(trigger).not.toHaveBeenCalledWith('templates-updated', expect.anything())
   })
 
-  it('should not share a request between customers', async () => {
-    setCache()
-    delete storage.templates
-    const responses = []
-    getDocs.mockImplementation((query) => new Promise((resolve) => {
-      responses.push({
-        query: query,
-        respond: (data) => resolve(snapshot(data)),
-      })
-    }))
-    const templateResponses = () => responses.filter((r) => r.query.name === 'templates')
-
-    const previous = getTemplates()
-    await vi.waitFor(() => expect(templateResponses()).to.have.length(1))
-
-    await setActiveCustomer('customer2')
-    const current = getTemplates()
-    await vi.waitFor(() => expect(templateResponses()).to.have.length(2))
-
-    responses.forEach(({query, respond}) => {
-      const isCurrent = JSON.stringify(query).includes('"customer2"')
-      respond(isCurrent ? remoteData[query.name] : {template1: cachedTemplate})
-    })
-
-    expect((await previous).map((t) => t.title)).to.deep.equal(['Cached'])
-    expect((await current).map((t) => t.title)).to.deep.equal(['Remote'])
-    await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
-  })
-
-  it('should switch the customer and clear its data in one write', async () => {
+  it('should switch the customer and its data in one write', async () => {
     setCache()
     online()
 
     await setActiveCustomer('customer2')
 
     expect(storageSet).toHaveBeenCalledWith({
-      templates: null,
-      tags: null,
+      templates: remoteData.templates,
+      tags: remoteData.tags,
       firebaseUser: {
         id: 'user1',
         customer: 'customer2',
       },
     })
-    await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
+    expect(trigger).toHaveBeenCalledWith('templates-updated', [
+      expect.objectContaining({title: 'Remote'}),
+    ])
+    expect(trigger).toHaveBeenCalledWith('tags-updated', [])
   })
 
-  it('should not cache the previous customer data read while switching customers', async () => {
+  it('should not switch the customer when fetching its data fails', async () => {
+    setCache()
+    offline()
+
+    await expect(setActiveCustomer('customer2')).rejects.toThrow('offline')
+
+    expect(storage.firebaseUser.customer).to.equal('customer1')
+    expect(storage.templates).to.deep.equal({template1: cachedTemplate})
+    expect(trigger).not.toHaveBeenCalledWith('templates-updated', expect.anything())
+  })
+
+  it('should fetch the customers when switching to a customer that is not cached', async () => {
+    setCache()
+    storage.customers = {customer1: remoteData.customers.customer1}
+    online()
+
+    await setActiveCustomer('customer2')
+
+    const fetched = getDocs.mock.calls.map(([query]) => query.name)
+    expect(fetched[0]).to.equal('customers')
+    expect(fetched).to.include.members(['templates', 'tags'])
+    expect(storage.firebaseUser.customer).to.equal('customer2')
+  })
+
+  it('should not cache the previous customer data from a request in progress', async () => {
     setCache()
     delete storage.templates
-    const responses = []
-    getDocs.mockImplementation((query) => new Promise((resolve) => {
-      responses.push({
-        query: query,
-        respond: (data) => resolve(snapshot(data)),
-      })
-    }))
+    const held = respondForCustomer('customer2')
+
+    const previous = getTemplates()
+    await vi.waitFor(() => expect(held).to.have.length(1))
+
+    await setActiveCustomer('customer2')
+    held.forEach((respond) => respond())
+    await previous
+
+    expect(storage.templates).to.deep.equal(remoteData.templates)
+  })
+
+  it('should not cache the previous customer data read while saving the switch', async () => {
+    setCache()
+    delete storage.templates
+    const held = respondForCustomer('customer2')
     let finishWrite
     storageSet.mockImplementationOnce((data) => new Promise((resolve) => {
       finishWrite = () => {
@@ -388,66 +362,81 @@ describe('store api offline', () => {
     }))
 
     const switching = setActiveCustomer('customer2')
+    await vi.waitFor(() => expect(finishWrite).toBeTypeOf('function'))
     // reads the previous customer, while the switch is being saved
     const previous = getTemplates()
-    await vi.waitFor(() => expect(responses).to.have.length(1))
-    expect(JSON.stringify(responses[0].query)).to.include('"customer1"')
+    await vi.waitFor(() => expect(held).to.have.length(1))
 
     finishWrite()
     await switching
-    responses[0].respond({template1: cachedTemplate})
+    held.forEach((respond) => respond())
     await previous
 
-    expect(storage.templates).to.equal(null)
-
-    await vi.waitFor(() => expect(responses).to.have.length(3))
-    responses.slice(1).forEach(({query, respond}) => respond(remoteData[query.name]))
-    await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
+    expect(storage.templates).to.deep.equal(remoteData.templates)
   })
 
-  it('should switch customers once when removed from the active customer', async () => {
+  it('should not switch the customer after logging out while fetching', async () => {
+    setCache()
+    const held = respondForCustomer('customer1')
+
+    const switching = setActiveCustomer('customer2')
+    await vi.waitFor(() => expect(held).to.have.length(2))
+
+    const fetchSpy = vi.spyOn(window, 'fetch').mockRejectedValue(new Error('offline'))
+    try {
+      await logout().catch(() => {})
+    } finally {
+      fetchSpy.mockRestore()
+    }
+
+    held.forEach((respond) => respond())
+    await switching
+
+    // logging out clears the storage
+    expect(storage.firebaseUser?.customer).to.equal(undefined)
+    expect(storage.templates).to.equal(undefined)
+  })
+
+  it('should switch in the background when removed from the active customer', async () => {
     setCache()
     // removed from customer1
     storage.users = {user1: {customers: ['customer2']}}
     online()
 
-    await Promise.all([
+    const results = await Promise.all([
       getTemplates(),
       getTemplates(),
     ])
 
+    // keeps the cached data until the switch is saved
+    results.forEach((templates) => {
+      expect(templates.map((t) => t.title)).to.deep.equal(['Cached'])
+    })
+
+    await vi.waitFor(() => expect(storage.firebaseUser.customer).to.equal('customer2'))
     const switches = storageSet.mock.calls.filter(([data]) => data.firebaseUser)
     expect(switches).to.have.length(1)
-    expect(storage.firebaseUser.customer).to.equal('customer2')
-    await vi.waitFor(() => expect(storage.templates).to.deep.equal(remoteData.templates))
+    expect(storage.templates).to.deep.equal(remoteData.templates)
   })
 
-  it('should keep the stored customer when switching customers fails', async () => {
+  it('should not replace a customer picked while switching automatically', async () => {
     setCache()
     // removed from customer1
-    storage.users = {user1: {customers: ['customer2']}}
-    online()
-    storageSet.mockRejectedValueOnce(new Error('storage error'))
+    storage.users = {user1: {customers: ['customer2', 'customer3']}}
+    const held = respondForCustomer('customer2')
 
-    const user = await getSignedInUser()
+    // picked in the popup
+    const picked = setActiveCustomer('customer3')
+    await vi.waitFor(() => expect(held).to.have.length(2))
+    // reads the removed customer before the picked one is saved
+    await getSignedInUser()
 
-    expect(user.customer).to.equal('customer1')
-    expect(storage.firebaseUser.customer).to.equal('customer1')
-  })
+    held.forEach((respond) => respond())
+    await picked
+    await vi.waitFor(() => expect(storageSet.mock.calls.filter(([data]) => data.firebaseUser)).to.have.length(1))
+    await new Promise((resolve) => setTimeout(resolve, 50))
 
-  it('should fetch the customers when the active customer is not cached', async () => {
-    setCache()
-    delete storage.templates
-    // joined customer2 after the customers were cached
-    storage.customers = {customer1: remoteData.customers.customer1}
-    storage.firebaseUser.customer = 'customer2'
-    online()
-
-    const templates = await getTemplates()
-
-    const fetched = getDocs.mock.calls.map(([query]) => query.name)
-    expect(fetched).to.deep.equal(['customers', 'templates'])
-    expect(templates.map((t) => t.title)).to.deep.equal(['Remote'])
+    expect(storage.firebaseUser.customer).to.equal('customer3')
   })
 
   it('should retry a request that failed', async () => {

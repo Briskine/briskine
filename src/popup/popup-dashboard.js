@@ -96,9 +96,18 @@ export default function PopupDashboard () {
     return ''
   }
 
-  const [customer, setCustomer] = createSignal()
+  let teamSelect
+  // selecting the same team again retries a switch that failed
+  const [customer, setCustomer] = createSignal(undefined, {equals: false})
   const [switchCustomerRequest] = createResource(customer, async (customerId) => {
-    await setActiveCustomer(customerId)
+    try {
+      await setActiveCustomer(customerId)
+    } catch {
+      // the switch didn't happen (e.g., offline), show the current team again
+      teamSelect.value = user().customer
+      return
+    }
+
     setUser((prevUser) => ({
       ...prevUser,
       ...{customer: customerId}
@@ -209,6 +218,7 @@ export default function PopupDashboard () {
             }}
             >
             <select
+              ref={teamSelect}
               id="team-select"
               class="form-select"
               onChange={switchTeam}
