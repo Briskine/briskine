@@ -162,20 +162,15 @@ a:not(.btn):hover {
   display: grid;
   gap: var(--space-2);
   margin: var(--space-1) var(--space-3) var(--space-2);
-  padding: var(--space-3);
+  padding: var(--space-1) var(--space-3) var(--space-3);
 }
 
 .popup-stats p {
   margin: 0;
 }
 
-.popup-free.popup-stats {
-  border-top: 1px solid var(--border-color);
-}
-
 .popup-premium.popup-stats {
   gap: var(--space-1);
-  padding-top: var(--space-1);
 }
 
 .popup-saved {
