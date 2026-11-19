@@ -680,15 +680,17 @@ function switchActiveCustomer (customerId, fromCustomerId) {
   return request
 }
 
+const SWITCH_CANCELLED_ERR = 'switch-cancelled'
+
 // fetches the customer's data first, then saves it together with the customer.
-// if fetching fails (e.g., offline), nothing changes.
+// if fetching fails (e.g., offline), or the switch is cancelled, nothing changes.
 async function switchCustomer (customerId, fromCustomerId) {
   const generation = userGeneration
   const storedUser = await browser.storage.local.get(globalUserKey)
   const activeUser = storedUser[globalUserKey] || {}
   // an automatic switch doesn't replace a customer picked in the meantime
   if (fromCustomerId && activeUser.customer !== fromCustomerId) {
-    return
+    throw SWITCH_CANCELLED_ERR
   }
 
   const user = {
@@ -718,7 +720,7 @@ async function switchCustomer (customerId, fromCustomerId) {
 
   // the user changed while fetching (e.g., logged out)
   if (generation !== userGeneration) {
-    return
+    throw SWITCH_CANCELLED_ERR
   }
 
   await setSignedInUser(user, {

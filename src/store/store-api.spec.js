@@ -390,7 +390,7 @@ describe('store api offline', () => {
     }
 
     held.forEach((respond) => respond())
-    await switching
+    await expect(switching).rejects.toBe('switch-cancelled')
 
     // logging out clears the storage
     expect(storage.firebaseUser?.customer).to.equal(undefined)
