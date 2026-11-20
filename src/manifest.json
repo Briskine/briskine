@@ -43,16 +43,6 @@
       "match_about_blank": true
     }
   ],
-  "web_accessible_resources": [{
-    "resources": [
-      "page/page.js"
-    ],
-    "matches": [
-      "https://*/*",
-      "http://*/*"
-    ],
-    "use_dynamic_url": true
-  }],
   "side_panel": {
     "default_path": "sidepanel/sidepanel.html"
   },

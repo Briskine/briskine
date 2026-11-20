@@ -1,4 +1,4 @@
-import {createSignal, createResource, createEffect, on, Show, Switch, Match, onMount, For, createMemo} from 'solid-js'
+import {createSignal, createResource, createEffect, on, Show, Switch, Match, onMount, onCleanup, For, createMemo} from 'solid-js'
 
 import { websiteUrl, functionsUrl, dashboardTarget, freeTemplatesLimit } from '../config.js'
 import {
@@ -10,6 +10,8 @@ import {
   getSession,
   getTemplates,
   logout,
+  on as storeOn,
+  off as storeOff,
 } from '../store/store-content.js'
 
 import ArrowRepeat from 'bootstrap-icons/icons/arrow-repeat.svg'
@@ -49,18 +51,18 @@ function MotivationalMessage (props) {
     <Switch
       fallback={(
         <>
-          <span class="fst-italic">Big things have small beginnings</span> &#128170;
+          <span class="fst-italic">Big things have small beginnings</span>&nbsp;&#128170;
         </>
       )}
       >
       <Match when={props.words > 7500}>
-        <span class="fst-italic">You're awesome. Just awesome.</span> &#9996;
+        <span class="fst-italic">You're awesome. Just awesome.</span>&nbsp;&#9996;
       </Match>
       <Match when={props.words > 2500}>
-        <span class="fst-italic">Did you know mushrooms are one of the largest organisms in the world?</span> &#127812;
+        <span class="fst-italic">Did you know mushrooms are one of the largest organisms in the world?</span>&nbsp;&#127812;
       </Match>
       <Match when={props.words > 1500}>
-        <span class="fst-italic">Or the equivalent of writing a short story</span> &#128214;
+        <span class="fst-italic">Or the equivalent of writing a short story</span>&nbsp;&#128214;
       </Match>
     </Switch>
   )
@@ -94,9 +96,18 @@ export default function PopupDashboard () {
     return ''
   }
 
-  const [customer, setCustomer] = createSignal()
+  let teamSelect
+  // selecting the same team again retries a switch that failed
+  const [customer, setCustomer] = createSignal(undefined, {equals: false})
   const [switchCustomerRequest] = createResource(customer, async (customerId) => {
-    await setActiveCustomer(customerId)
+    try {
+      await setActiveCustomer(customerId)
+    } catch {
+      // the switch didn't happen (e.g., offline), show the current team again
+      teamSelect.value = user().customer
+      return
+    }
+
     setUser((prevUser) => ({
       ...prevUser,
       ...{customer: customerId}
@@ -132,16 +143,29 @@ export default function PopupDashboard () {
   // switching teams changes the templates.
   createEffect(on(
     () => [isFree(), user().customer],
-    ([free]) => {
+    ([free, customerId]) => {
       if (free !== true) {
         return
       }
 
       getTemplates()
-        .then((templates) => setTemplatesCount(templates.length))
+        .then((templates) => {
+          // the customer changed while loading
+          if (user().customer === customerId) {
+            setTemplatesCount(templates.length)
+          }
+        })
         .catch(() => {})
     },
   ))
+
+  // switching teams or syncing sends the new templates
+  function templatesUpdated (templates = []) {
+    setTemplatesCount(templates.length)
+  }
+
+  storeOn('templates-updated', templatesUpdated)
+  onCleanup(() => storeOff('templates-updated', templatesUpdated))
 
   function switchTeam (e) {
     setCustomer(e.currentTarget.value)
@@ -194,6 +218,7 @@ export default function PopupDashboard () {
             }}
             >
             <select
+              ref={teamSelect}
               id="team-select"
               class="form-select"
               onChange={switchTeam}

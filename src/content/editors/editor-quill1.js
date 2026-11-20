@@ -4,56 +4,23 @@
  */
 
 import { getActiveElement } from '../utils/active-element.js'
-import { request } from '../page/page-parent.js'
-import { getSelectionRange } from '../utils/selection.js'
+import { insertExecCommandTemplate } from './editor-execcommand.js'
 
-function isQuill1 (element) {
-  return element?.closest?.('.ql-container')?.__quill
+// quill v2 doesn't create the clipboard container
+export function isQuill1 (element) {
+  return Boolean(element?.closest?.('.ql-container')?.querySelector?.(':scope > .ql-clipboard'))
 }
 
-export async function pageInsertQuill1Template ({ html, text }) {
-  // we can't pass the element instance to the page script
+// quill1 drops the text of html elements it doesn't support (e.g., div),
+// so we only insert plain text.
+export async function insertQuill1Template ({ text }) {
   const element = getActiveElement()
   if (!isQuill1(element)) {
     return false
   }
 
-  // quill v1 exposes the quill instance on the container.
-  // private __quill property can only be accessed in a page script
-  const quill = element.closest('.ql-container').__quill
-
-  // needs manual selection delete
-  const range = getSelectionRange(element)
-  range.deleteContents()
-
-  // use quill instance methods.
-  const quillRange = quill.getSelection()
-
-  // when we don't have a default trusted types policy (e.g., Gemini),
-  // try to insert html.
-  if (!window?.trustedTypes?.defaultPolicy) {
-    try {
-      quill.clipboard.dangerouslyPasteHTML(quillRange?.index, html)
-      return true
-    } catch {
-      // if we catch an error (could be caused by trusted types only in the editor - e.g., Gemini),
-      // insert plain text.
-      // we can't catch the dangerouslyPasteHTML error on LinkedIn.
-    }
-  }
-
-  // when we have a default trusted types policy (e.g., LinkedIn),
-  // or when pasting html fails,
-  // only insert plain text,
-  // because the template html will most probably include invalid elements.
-  quill.insertText(quillRange?.index, text)
-
+  // don't fall through to the other editors,
+  // they would change the dom under quill.
+  await insertExecCommandTemplate({ text })
   return true
-}
-
-export function insertQuill1Template ({ text, html }) {
-  return request('quill1-insert', {
-    text,
-    html,
-  })
 }

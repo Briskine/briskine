@@ -1,5 +1,6 @@
 import {refetchCollections} from '../store/store-content.js'
 import { functionsUrl } from '../config.js'
+import debug from '../debug.js'
 
 const prefix = 'briskine-dashboard'
 
@@ -29,9 +30,10 @@ function clearCache (collection) {
 
   clearCacheTimer = setTimeout(() => {
     const updates = batchedUpdates.slice()
-    refetching.then(() => {
-      refetching = refetchCollections(updates)
-    })
+    // a failed refetch (e.g., offline) can't block the next ones
+    refetching = refetching
+      .then(() => refetchCollections(updates))
+      .catch((err) => debug(['refetchCollections', err], 'warn'))
 
     clearCacheTimer = null
     batchedUpdates = []

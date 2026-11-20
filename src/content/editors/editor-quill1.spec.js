@@ -1,6 +1,6 @@
 import { expect, describe, it, beforeAll, beforeEach, afterAll } from 'vitest'
 
-import {pageInsertQuill1Template} from './editor-quill1.js'
+import {insertQuill1Template} from './editor-quill1.js'
 
 let $link
 let $script
@@ -8,10 +8,8 @@ let $editor
 let containerId = 'quill-container'
 
 function cleanEditor () {
-  $editor.innerHTML = ''
-  Array('input', 'change').forEach((eventType) => {
-    $editor.dispatchEvent(new Event(eventType, {bubbles: true}))
-  })
+  window._quill.setText('')
+  window._quill.focus()
 }
 
 function waitForEditor () {
@@ -39,7 +37,7 @@ describe('editor Quill1', () => {
       $editor.id = '${containerId}'
       document.body.appendChild($editor)
 
-      const quill = new Quill('#${containerId}', {
+      window._quill = new Quill('#${containerId}', {
         theme: 'snow'
       })
 
@@ -52,19 +50,19 @@ describe('editor Quill1', () => {
 
   beforeEach(() => {
     cleanEditor()
-    $editor.focus()
   })
 
   it('should insert template', async () => {
-    const template = '<div>Kind regards,</div><div>.</div>'
-    await pageInsertQuill1Template({
-      html: template,
+    await insertQuill1Template({
+      html: '<div>Kind regards,</div><div>.</div>',
+      text: 'Kind regards,\n.',
     })
 
     expect($editor.innerHTML).to.include('<p>Kind regards,</p><p>.</p>')
   })
 
   afterAll(() => {
+    window._quill = null
     $link.remove()
     $script.remove()
     document.querySelector(`#${containerId}`).remove()

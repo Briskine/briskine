@@ -1,7 +1,7 @@
 import { expect, describe, it, beforeAll, beforeEach, afterAll } from 'vitest'
 import { server } from 'vitest/browser'
 
-import {pageInsertPasteTemplate} from './editor-paste.js'
+import {insertPasteTemplate} from './editor-paste.js'
 
 // ckeditor5's core EmitterMixin recurses infinitely on Playwright's
 // webkit (WebKitGTK on Linux), even with a minimal plugin set and
@@ -138,7 +138,7 @@ describe('editor Paste', function () {
 
     it('should insert template containing only anchor in prosemirror', async function () {
       const template = '<a href="https://www.briskine.com">briskine-two</a>'
-      await pageInsertPasteTemplate({
+      await insertPasteTemplate({
         html: template,
       })
 
@@ -147,7 +147,7 @@ describe('editor Paste', function () {
 
     it('should insert template containing anchor with div container in prosemirror', async () => {
       const template = '<div><a href="https://www.briskine.com">briskine-one</a></div>'
-      await pageInsertPasteTemplate({
+      await insertPasteTemplate({
         html: template,
       })
 
@@ -156,7 +156,7 @@ describe('editor Paste', function () {
 
     it('should insert template containing anchor with multiple containers in prosemirror', async () => {
       const template = '<div><div><p><a href="https://www.briskine.com">briskine-one</a></p></div></div>'
-      await pageInsertPasteTemplate({
+      await insertPasteTemplate({
         html: template,
       })
 
@@ -165,7 +165,7 @@ describe('editor Paste', function () {
 
     it('should insert template containing heading in prosemirror', async () => {
       const template = '<h1>heading 1</h1>'
-      await pageInsertPasteTemplate({
+      await insertPasteTemplate({
         html: template,
       })
 
@@ -174,7 +174,7 @@ describe('editor Paste', function () {
 
     it('should insert template containing list in prosemirror', async () => {
       const template = '<ul><li>item</li></ul>'
-      await pageInsertPasteTemplate({
+      await insertPasteTemplate({
         html: template,
       })
 
@@ -199,7 +199,7 @@ describe('editor Paste', function () {
 
     it('should insert plain text in ckeditor', async () => {
       const template = 'Kind regards'
-      await pageInsertPasteTemplate({
+      await insertPasteTemplate({
         html: template,
       })
 
@@ -208,7 +208,7 @@ describe('editor Paste', function () {
 
     it('should insert rich text in ckeditor', async () => {
       const template = '<div><strong>Image</strong> <img src="#"></div>'
-      await pageInsertPasteTemplate({
+      await insertPasteTemplate({
         html: template,
       })
 

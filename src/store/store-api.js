@@ -31,6 +31,7 @@ import {badgeUpdate} from '../background/badge.js'
 import {getDefaultTemplates, defaultTags, defaultSettings} from './default-data.js'
 import htmlToText from '../content/utils/html-to-text.js'
 import {getExtensionData, setExtensionData} from './extension-data.js'
+import debug from '../debug.js'
 
 export {getExtensionData, setExtensionData} from './extension-data.js'
 export {openPopup} from '../background/open-popup.js'
@@ -51,12 +52,15 @@ if (ENV === 'development') {
 
 
 async function clearDataCache () {
+  userChanged()
+
   // cache data that we want to keep between login sessions
   const extensionData = await getExtensionData()
   const words = extensionData.words
   const bubbleAllowlist = extensionData.bubbleAllowlist
 
   await browser.storage.local.clear()
+  userChanged()
 
   // restore data between logins
   return setExtensionData({
@@ -140,40 +144,77 @@ function getCollectionQuery (name, user) {
   )
 }
 
-const collectionRequestQueue = {}
+// incremented when the signed in user or the active customer changes,
+// so requests started before the change don't update the cache.
+let userGeneration = 0
 
-async function getCollection ({ collection, user }) {
-  // request is already in progress
-  if (collectionRequestQueue[collection]) {
-    return collectionRequestQueue[collection]
-  }
-
-  // get from cache
-  const cache = await browser.storage.local.get(collection)
-  if (cache[collection]) {
-    return cache[collection]
-  }
-
-  const query = await getCollectionQuery(collection, user)
-  collectionRequestQueue[collection] = getDocs(query).then((snapshot) => {
-    collectionRequestQueue[collection] = null
-    return refreshLocalData(collection, snapshot)
-  })
-
-  return collectionRequestQueue[collection]
+function userChanged () {
+  userGeneration = userGeneration + 1
 }
 
-// refresh local data cache from snapshot listeners
-function refreshLocalData (collectionName, querySnapshot) {
+// collections that belong to the active customer
+const customerCollections = ['templates', 'tags']
+
+const collectionRequestQueue = {}
+
+// force skips the cache, and only replaces it when the request succeeds.
+async function getCollection ({ collection, user, force = false }) {
+  const generation = user.generation ?? userGeneration
+
+  // cached data doesn't wait for a refresh in progress (e.g., on a slow connection)
+  if (!force) {
+    const cache = await browser.storage.local.get(collection)
+    if (cache[collection]) {
+      return cache[collection]
+    }
+  }
+
+  // request is already in progress.
+  // only shared between callers that read the same user and customer,
+  // since every change to them increments the generation.
+  const key = `${collection}:${generation}`
+  const pending = collectionRequestQueue[key]
+  if (pending && !force) {
+    return pending
+  }
+
+  // the pending request could use an outdated query (e.g., the previous plan),
+  // so force fetches again after it.
+  const request = (pending ? pending.catch(() => {}) : Promise.resolve())
+    .then(() => getCollectionQuery(collection, user))
+    .then((query) => getDocs(query))
+    .then((snapshot) => {
+      const data = getSnapshotData(snapshot)
+      // the user or customer changed while fetching,
+      // return the data without caching it.
+      if (generation !== userGeneration) {
+        return data
+      }
+
+      return updateCache({
+        collection: collection,
+        data: data,
+      })
+    })
+    .finally(() => {
+      if (collectionRequestQueue[key] === request) {
+        delete collectionRequestQueue[key]
+      }
+    })
+
+  // queue the request right away, so concurrent calls share it
+  collectionRequestQueue[key] = request
+
+  return request
+}
+
+function getSnapshotData (querySnapshot) {
   const data = {}
   querySnapshot.docs.forEach((doc) => {
     data[doc.id] = doc.data()
   })
 
-  return updateCache({
-    collection: collectionName,
-    data: data
-  })
+  return data
 }
 
 async function updateCache ({collection, data}) {
@@ -198,24 +239,25 @@ async function updateCache ({collection, data}) {
   return data
 }
 
+// waits for a customer switch in progress, to get the user after it
+async function getSignedInUserAfterSwitch () {
+  const user = await getSignedInUser()
+  if (!customerSwitch) {
+    return user
+  }
+
+  await customerSwitch.request.catch(() => {})
+  return getSignedInUser()
+}
+
+// keeps the cached data when offline
 export async function refetchCollections (collections = []) {
   const known = collections.filter((c) => allCollections.includes(c))
-  const collectionsToClear = known.length ? known : allCollections
-  const cache = {}
-  collectionsToClear.forEach((c) => {
-    cache[c] = null
-  })
+  let collectionsToFetch = known.length ? known : allCollections
 
-  await browser.storage.local.set(cache)
-
+  let user
   try {
-    const user = await getSignedInUser()
-    return Promise.all(
-      collectionsToClear.map((c) => getCollection({
-        collection: c,
-        user: user,
-      }))
-    )
+    user = await getSignedInUserAfterSwitch()
   } catch (err) {
     if (isLoggedOut(err)) {
       return
@@ -223,6 +265,66 @@ export async function refetchCollections (collections = []) {
 
     throw err
   }
+
+  const fetchCollection = (collection) => getCollection({
+    collection: collection,
+    user: user,
+    force: true,
+  })
+
+  // failed collections don't stop fetching the others
+  const errors = []
+
+  // the active customer depends on the users data,
+  // so we fetch the users first.
+  if (collectionsToFetch.includes('users')) {
+    collectionsToFetch = collectionsToFetch.filter((c) => c !== 'users')
+
+    try {
+      await fetchCollection('users')
+      user = await getSignedInUserAfterSwitch()
+    } catch (err) {
+      if (isLoggedOut(err)) {
+        return
+      }
+
+      errors.push(err)
+    }
+  }
+
+  // the templates query depends on the customer plan,
+  // so we fetch the customers first.
+  if (collectionsToFetch.includes('customers')) {
+    collectionsToFetch = collectionsToFetch.filter((c) => c !== 'customers')
+
+    try {
+      const cache = await browser.storage.local.get('customers')
+      const customers = await fetchCollection('customers')
+      if (
+        isFreeCustomer(cache.customers, user.customer) !== isFreeCustomer(customers, user.customer)
+        && !collectionsToFetch.includes('templates')
+      ) {
+        collectionsToFetch = collectionsToFetch.concat('templates')
+      }
+    } catch (err) {
+      errors.push(err)
+    }
+  }
+
+  const results = await Promise.allSettled(collectionsToFetch.map(fetchCollection))
+  results.forEach((result) => {
+    if (result.status === 'rejected') {
+      errors.push(result.reason)
+    }
+  })
+
+  if (errors.length) {
+    throw errors[0]
+  }
+}
+
+function isFreeCustomer (customers = {}, customerId = '') {
+  return customers?.[customerId]?.subscription?.plan === 'free'
 }
 
 // three hours
@@ -305,7 +407,7 @@ export async function getSettings () {
   }
 }
 
-var LOGGED_OUT_ERR = 'logged-out'
+const LOGGED_OUT_ERR = 'logged-out'
 function isLoggedOut (err) {
   return err === LOGGED_OUT_ERR
 }
@@ -326,8 +428,9 @@ function getFirebaseUser () {
   })
 }
 
-var globalUserKey = 'firebaseUser'
+const globalUserKey = 'firebaseUser'
 export async function getSignedInUser () {
+  const generation = userGeneration
   const storedUser = await browser.storage.local.get(globalUserKey)
   const user = storedUser[globalUserKey] || {}
 
@@ -335,18 +438,30 @@ export async function getSignedInUser () {
   if (firebaseUser) {
     // logged in to firebase and storage
     if (user.id === firebaseUser.uid) {
-      const customer = await getActiveCustomer(user)
-      // if we're no longer part of cached customer,
-      // store default customer and refresh data.
+      const customer = await getActiveCustomer({
+        ...user,
+        generation: generation,
+      })
+      // no longer part of the stored customer, and part of another one.
       // on first run after login, user.customer is null,
       // and will be populated once signinWithToken is done.
-      if (user.customer && user.customer !== customer) {
-        setActiveCustomer(customer)
+      if (customer && user.customer && user.customer !== customer) {
+        // switch in the background,
+        // and keep using the stored customer until the switch is saved.
+        switchActiveCustomer(customer, user.customer)
+          .catch((err) => debug(['switchActiveCustomer', err], 'warn'))
+
+        return {
+          id: user.id,
+          customer: user.customer,
+          generation: generation,
+        }
       }
 
       return {
         id: user.id,
         customer: customer,
+        generation: generation,
       }
     }
   } else {
@@ -362,10 +477,16 @@ export async function getSignedInUser () {
   throw LOGGED_OUT_ERR
 }
 
-async function setSignedInUser (user) {
-  let globalUser = {}
-  globalUser[globalUserKey] = user
-  await browser.storage.local.set(globalUser)
+// extra data is saved in the same write as the user
+async function setSignedInUser (user, extraData = {}) {
+  // before the write, for requests already in progress,
+  // and after it, for requests that read the previous user during the write.
+  userChanged()
+  await browser.storage.local.set({
+    ...extraData,
+    [globalUserKey]: user,
+  })
+  userChanged()
   return user
 }
 
@@ -513,7 +634,10 @@ export async function isFreePlan () {
 
 async function getActiveCustomer (user = {}) {
   const users = await getCollection({
-      user: {id: user.id},
+      user: {
+        id: user.id,
+        generation: user.generation,
+      },
       collection: 'users'
     })
 
@@ -530,19 +654,91 @@ async function getActiveCustomer (user = {}) {
   return userData.customers[0]
 }
 
+// switches run one at a time,
+// and concurrent calls for the same customer share the same switch.
+let customerSwitch = null
+function switchActiveCustomer (customerId, fromCustomerId) {
+  if (customerSwitch?.customerId === customerId) {
+    return customerSwitch.request
+  }
+
+  const previous = customerSwitch ? customerSwitch.request.catch(() => {}) : Promise.resolve()
+  const request = previous
+    .then(() => switchCustomer(customerId, fromCustomerId))
+    .finally(() => {
+      if (customerSwitch?.request === request) {
+        customerSwitch = null
+      }
+    })
+
+  customerSwitch = {
+    customerId: customerId,
+    request: request,
+  }
+
+  return request
+}
+
+const SWITCH_CANCELLED_ERR = 'switch-cancelled'
+
+// fetches the customer's data first, then saves it together with the customer.
+// if fetching fails (e.g., offline), or the switch is cancelled, nothing changes.
+async function switchCustomer (customerId, fromCustomerId) {
+  const generation = userGeneration
+  const storedUser = await browser.storage.local.get(globalUserKey)
+  const activeUser = storedUser[globalUserKey] || {}
+  // an automatic switch doesn't replace a customer picked in the meantime
+  if (fromCustomerId && activeUser.customer !== fromCustomerId) {
+    throw SWITCH_CANCELLED_ERR
+  }
+
+  // firebase restores the user after the service worker starts
+  const firebaseUser = await getFirebaseUser()
+  if (!firebaseUser) {
+    throw LOGGED_OUT_ERR
+  }
+
+  const user = {
+    id: firebaseUser.uid,
+    customer: customerId,
+  }
+
+  // the templates query depends on the customer plan
+  const cache = await browser.storage.local.get('customers')
+  if (!cache.customers?.[customerId]) {
+    const customers = await getCollection({
+      collection: 'customers',
+      user: user,
+      force: true,
+    })
+    if (!customers[customerId]) {
+      throw new Error(`Customer ${customerId} not found`)
+    }
+  }
+
+  const [templates, tags] = await Promise.all(
+    customerCollections.map(async (collection) => {
+      const query = await getCollectionQuery(collection, user)
+      return getSnapshotData(await getDocs(query))
+    })
+  )
+
+  // the user changed while fetching (e.g., logged out)
+  if (generation !== userGeneration) {
+    throw SWITCH_CANCELLED_ERR
+  }
+
+  await setSignedInUser(user, {
+    templates: templates,
+    tags: tags,
+  })
+
+  trigger('templates-updated', parseTemplatesCollection(templates))
+  trigger('tags-updated', parseTagsCollection(tags))
+}
+
 export async function setActiveCustomer (customerId) {
-  return setSignedInUser({
-      id: firebaseAuth.currentUser.uid,
-      customer: customerId,
-    })
-    .then(() => {
-      // update data when customer changes
-      refetchCollections([
-        'templates',
-        'tags',
-      ])
-      return
-    })
+  return switchActiveCustomer(customerId)
 }
 
 export async function updateTemplateStats ({id = '', _body_plaintext = ''}) {
