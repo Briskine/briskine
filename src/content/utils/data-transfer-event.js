@@ -1,8 +1,4 @@
 /* globals cloneInto */
-
-// firefox runs content scripts in a separate js context,
-// and the page receives an empty DataTransfer from events created there.
-// create the event with the page constructors.
 export default function createDataTransferEvent ({
   constructor,
   type,
@@ -11,6 +7,9 @@ export default function createDataTransferEvent ({
   text = '',
   html = '',
 }) {
+  // firefox sends empty DataTransfer events,
+  // if the event is not created in the page context.
+  // use wrappedJSObject and cloneInto to work around it.
   const pageWindow = window.wrappedJSObject || window
   let init = {
     ...props,
