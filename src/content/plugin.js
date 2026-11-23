@@ -15,7 +15,7 @@ function pluginFunctions (type) {
 
 export async function getPluginData (params) {
   const responses = await Promise.allSettled(
-    pluginFunctions('data').map((getData) => getData(params))
+    pluginFunctions('data').map(async (getData) => getData(params))
   )
 
   return responses

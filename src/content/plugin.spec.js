@@ -57,6 +57,15 @@ describe('plugin', () => {
       expect(await getPluginData({})).to.deep.equal({subject: 'hello'})
     })
 
+    it('should keep the data of the others when one plugin throws synchronously', async () => {
+      gmail.data.mockImplementation(() => {
+        throw new Error('boom')
+      })
+      outlook.data.mockResolvedValue({subject: 'hello'})
+
+      expect(await getPluginData({})).to.deep.equal({subject: 'hello'})
+    })
+
     it('should return an empty object when no plugin answers', async () => {
       expect(await getPluginData({})).to.deep.equal({})
     })
