@@ -8,9 +8,13 @@
     <div id="host"></div>
     <script>
       const root = document.getElementById('host').attachShadow({mode: 'closed'})
-      root.innerHTML = '<textarea rows="10" cols="50"></textarea>'
+      root.innerHTML = `
+        <textarea rows="10" cols="50"></textarea>
+        <div contenteditable="true" style="border: 1px solid; min-height: 100px;"></div>
+      `
       // the tests can't reach into the closed shadow root
       window.closedTextarea = root.querySelector('textarea')
+      window.closedContentEditable = root.querySelector('[contenteditable]')
 
       // extension-ready.js can't find the textarea, so wait for the extension here.
       // it starts when an editor is focused.
