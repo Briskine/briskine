@@ -14,11 +14,14 @@ const fields = [
     name: 'textarea',
     focus: () => window.closedTextarea.focus(),
     getValue: () => window.closedTextarea.value,
+    atCaret: 'hello It was nice talking to you.world',
   },
   {
     name: 'contenteditable',
     focus: () => window.closedContentEditable.focus(),
     getValue: () => window.closedContentEditable.innerText.trim(),
+    // the template is a block
+    atCaret: 'hello\nIt was nice talking to you.\nworld',
   },
 ]
 
@@ -46,6 +49,19 @@ for (const field of fields) {
       await page.waitForTimeout(500)
       await page.keyboard.press('Enter')
       await expect.poll(() => page.evaluate(field.getValue)).toBe('It was nice talking to you.')
+    })
+
+    test('should insert template from dialog at the caret', async ({page}) => {
+      await page.keyboard.type('hello world')
+      for (let i = 0; i < 'world'.length; i++) {
+        await page.keyboard.press('ArrowLeft')
+      }
+      await page.keyboard.press('Control+ ')
+      await expect.poll(() => isFocused(page)).toBe(false)
+      await page.keyboard.type('nic', {delay: 100})
+      await page.waitForTimeout(500)
+      await page.keyboard.press('Enter')
+      await expect.poll(() => page.evaluate(field.getValue)).toBe(field.atCaret)
     })
   })
 }
