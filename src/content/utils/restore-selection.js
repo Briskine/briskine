@@ -1,6 +1,7 @@
 import { isContentEditable } from '../editors/editor-contenteditable.js'
 import { isTextfieldEditor } from '../editors/editor-textfield.js'
 import { getSelectionRange, setSelectionRange } from './selection.js'
+import { getActiveElement } from './active-element.js'
 
 // the selection of the editor, to restore later.
 // the offsets in input and textarea, a range in contenteditable.
@@ -56,7 +57,16 @@ export async function restoreSelection (element, selection) {
   }
 }
 
-function hasCaret (element) {
+// the editor is focused, and the caret is inside it
+export function hasCaret (element) {
+  if (getActiveElement(true) !== element) {
+    return false
+  }
+
+  if (!isContentEditable(element)) {
+    return true
+  }
+
   const range = getSelectionRange(element)
   return Boolean(range && element.contains(range.startContainer))
 }

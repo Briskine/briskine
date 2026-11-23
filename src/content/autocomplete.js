@@ -11,7 +11,7 @@ import htmlToText from './utils/html-to-text.js'
 import debug from '../debug.js'
 import { getWord, selectWord } from './utils/word.js'
 import { getSelectionRange } from './utils/selection.js'
-import { saveSelection, restoreSelection } from './utils/restore-selection.js'
+import { saveSelection, restoreSelection, hasCaret } from './utils/restore-selection.js'
 import { updateTemplateStats } from '../store/store-content.js'
 import { getActiveElement } from './utils/active-element.js'
 import { selectFirstCursor } from './cursors/cursors.js'
@@ -119,6 +119,11 @@ export default async function autocomplete ({ template }) {
 
   const html = sanitize(parsed)
   const text = htmlToText(html)
+
+  // the page can move focus while we parse the template
+  if (element.isConnected && !hasCaret(element)) {
+    await restoreSelection(element, selection)
+  }
 
   if (template.shortcut) {
     await selectShortcut(element, template.shortcut)
