@@ -3483,13 +3483,9 @@ function planLoc(loc) {
   if (!loc) {
     return void 0;
   }
-  const result = {
-    start: Object.freeze({ line: loc.start.line, column: loc.start.column }),
-    end: Object.freeze({ line: loc.end.line, column: loc.end.column })
-  };
-  if (loc.source !== void 0) {
-    result.source = loc.source;
-  }
+  const start = Object.freeze({ line: loc.start.line, column: loc.start.column });
+  const end = Object.freeze({ line: loc.end.line, column: loc.end.column });
+  const result = loc.source !== void 0 ? { source: loc.source, start, end } : { start, end };
   return Object.freeze(result);
 }
 function planCall(params, hash, scopes, loc) {
