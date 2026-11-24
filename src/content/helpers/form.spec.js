@@ -324,9 +324,9 @@ describe('form handlebars helpers', () => {
 
     it('should tell apart Map keys that serialize the same', async () => {
       const session = await createSession()
-      session.context = {m: new Map([[null, 'a'], [NaN, 'b'], [Infinity, 'c'], ['null', 'd']])}
+      session.context = {m: new Map([[null, 'a'], [NaN, 'b'], [Infinity, 'c'], ['null', 'd'], [Symbol('x'), 'e'], [Symbol('x'), 'f']])}
       const keys = await form('{{#each m}}{{input}}{{/each}}', session)
-      expect(new Set(keys).size).to.equal(4)
+      expect(new Set(keys).size).to.equal(6)
     })
 
     it('should need an id in a template parsed without its text', async () => {
@@ -335,6 +335,12 @@ describe('form handlebars helpers', () => {
 
     it('should not take ids that look like generated keys', async () => {
       expect(await parseTemplate('{{input id="~1"}}')).to.equal('<pre>{{input}} ids can\'t start with ~</pre>')
+    })
+
+    it('should treat a number id and the same id as text as one field', async () => {
+      const {html, session} = await render('{{input id=0}}{{textarea id="0"}}', {}, 'form')
+      expect([...session.fields.keys()]).to.deep.equal(['0'])
+      expect(html).to.contain('id="field-0-0"').and.to.contain('id="field-0-1"')
     })
 
     it('should take a number as an id', async () => {

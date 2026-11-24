@@ -133,10 +133,10 @@ export default function createForm ({
   // and its content for lists.
   function itemId (entry) {
     if (entry.items === null) {
-      // object keys of a Map can't be told apart by their content.
+      // object and symbol keys of a Map can't be told apart by their text.
       // the type keeps keys like null and NaN apart, which serialize the same.
       const key = entry.key
-      if (key !== null && (typeof key === 'object' || typeof key === 'function')) {
+      if (key !== null && ['object', 'function', 'symbol'].includes(typeof key)) {
         return `#${entry.index}`
       }
       return `k${intern(ids, `${key === null ? 'null' : typeof key}:${String(key)}`)}`
@@ -177,6 +177,9 @@ export default function createForm ({
       throw new Error(`{{${name}}} has an empty id`)
     } else if (isGeneratedKey(id)) {
       throw new Error(`{{${name}}} ids can't start with ${generatedKeyPrefix}`)
+    } else {
+      // values are stored by text, so id=0 and id="0" are one field
+      id = String(id)
     }
 
     // keeps fields in template order
