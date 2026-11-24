@@ -35,10 +35,11 @@ async function actions ({ element, template, data, session }) {
   if ($parent) {
     // set subject field value.
     // subject is only available for inMail messaging.
-    const $subjectField = querySelectorDeep('[name=subject]', $parent)
+    const $subjectField = querySelectorDeep('[name=subject], .compose-subject__input', $parent)
     if (template.subject && $subjectField) {
       const parsedSubject = await parseTemplate(template.subject, data, session)
       $subjectField.value = parsedSubject
+      $subjectField.dispatchEvent(new Event('input', {bubbles: true}))
     }
   }
 }
@@ -54,9 +55,13 @@ function getToName (element, doc) {
     '.msg-thread',
     // post in feed
     '.feed-shared-update-v2',
+    // recruiter message composer
+    '.messaging-composer__content',
   ]
 
   const contactNameSelectors = [
+    // recipient in the recruiter message composer
+    '.recipient-pill__recipient-name',
     // contact name in organization inbox message threads
     '.org-inbox-thread__link-to-profile',
     // contact name in message threads
