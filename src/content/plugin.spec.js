@@ -19,7 +19,7 @@ import { getPluginData, runPluginActions } from './plugin.js'
 describe('plugin', () => {
   beforeEach(() => {
     for (const plugin of [gmail, outlook, facebook]) {
-      plugin.data.mockReset().mockResolvedValue(undefined)
+      plugin.data.mockReset().mockReturnValue(undefined)
       plugin.actions?.mockReset()
     }
 
@@ -37,22 +37,37 @@ describe('plugin', () => {
     })
 
     it('should return the data of the plugin that answered', async () => {
+      outlook.data.mockReturnValue({subject: 'hello'})
+
+      expect(await getPluginData({})).to.deep.equal({subject: 'hello'})
+    })
+
+    it('should return the data of an async plugin', async () => {
       outlook.data.mockResolvedValue({subject: 'hello'})
 
       expect(await getPluginData({})).to.deep.equal({subject: 'hello'})
     })
 
     it('should ignore plugins that return nothing', async () => {
-      gmail.data.mockResolvedValue(undefined)
-      outlook.data.mockResolvedValue(false)
-      facebook.data.mockResolvedValue({subject: 'hello'})
+      gmail.data.mockReturnValue(undefined)
+      outlook.data.mockReturnValue(false)
+      facebook.data.mockReturnValue({subject: 'hello'})
 
       expect(await getPluginData({})).to.deep.equal({subject: 'hello'})
     })
 
-    it('should keep the data of the others when one plugin throws', async () => {
+    it('should keep the data of the others when an async plugin rejects', async () => {
       gmail.data.mockRejectedValue(new Error('boom'))
-      outlook.data.mockResolvedValue({subject: 'hello'})
+      outlook.data.mockReturnValue({subject: 'hello'})
+
+      expect(await getPluginData({})).to.deep.equal({subject: 'hello'})
+    })
+
+    it('should keep the data of the others when one plugin throws synchronously', async () => {
+      gmail.data.mockImplementation(() => {
+        throw new Error('boom')
+      })
+      outlook.data.mockReturnValue({subject: 'hello'})
 
       expect(await getPluginData({})).to.deep.equal({subject: 'hello'})
     })
