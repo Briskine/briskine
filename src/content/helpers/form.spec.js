@@ -297,6 +297,38 @@ describe('form handlebars helpers', () => {
       expect(await renderTemplate(template, session)).to.equal('[a/x:0][a/y:1][b/x:2][b/y:3]')
     })
 
+    it('should keep keys short for large loop items', async () => {
+      const big = {name: 'x'.repeat(5000)}
+      const session = await createSession({list: [big, {...big, name: 'y'.repeat(5000)}]})
+      const keys = await form('{{#each list}}{{input}}{{/each}}', session)
+      expect(new Set(keys).size).to.equal(2)
+      keys.forEach((key) => expect(key.length).to.be.below(10))
+      for (const text of session.ids.keys()) {
+        expect(text.length < 5000 || !text.includes('\n')).to.equal(true)
+      }
+    })
+
+    it('should tell apart Map items whose keys are objects', async () => {
+      const session = await createSession()
+      session.context = {m: new Map([[{}, 'x'], [{}, 'y']])}
+      const keys = await form('{{#each m}}{{input}}{{/each}}', session)
+      expect(new Set(keys).size).to.equal(2)
+    })
+
+    it('should not take ids that look like generated keys', async () => {
+      expect(await parseTemplate('{{input id="~1"}}')).to.equal('<pre>{{input}} ids can\'t start with ~</pre>')
+    })
+
+    it('should take a number as an id', async () => {
+      const session = await createSession({list: ['a']})
+      expect(await form('{{#each list}}{{input id=@index}}{{/each}}', session)).to.deep.equal(['0'])
+    })
+
+    it('should not show a generated key in select errors', async () => {
+      expect(await parseTemplate('{{#select}}{{option "A"}}{{option "A"}}{{/select}}'))
+        .to.equal('<pre>{{#select}} has more than one option with the value "A"</pre>')
+    })
+
     it('should keep the values of the body and the extra fields apart', async () => {
       const session = await createSession({list: ['a']})
       const body = '{{#each list}}{{input}}{{/each}}'

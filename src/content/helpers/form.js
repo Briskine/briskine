@@ -38,8 +38,9 @@ const maxVisibleOptions = 6
 // keys of fields without an id start with this, so they can't be a user id
 export const generatedKeyPrefix = '~'
 
+// ids can be numbers, like id=@index
 export function isGeneratedKey (key = '') {
-  return key.startsWith(generatedKeyPrefix)
+  return String(key).startsWith(generatedKeyPrefix)
 }
 
 // undefined when the value can't be serialized
@@ -105,32 +106,41 @@ export default function createForm ({
 } = {}) {
   const occurrences = new Map()
   // per render, since the lists are new on every render
-  const serializedItems = new WeakMap()
+  const listItemIds = new WeakMap()
 
-  function serializeItems (items) {
-    if (!serializedItems.has(items)) {
-      serializedItems.set(items, items.map(serialize))
+  // the id of every item in a list, worked out once per list: a short id for
+  // its content, so large items don't make long keys, and which occurrence of
+  // that content it is, so two items with the same content are still two items.
+  function itemIds (items) {
+    if (!listItemIds.has(items)) {
+      const seen = new Map()
+      listItemIds.set(items, items.map((item, index) => {
+        const content = serialize(item)
+        if (content === undefined) {
+          return `#${index}`
+        }
+
+        const id = `v${intern(ids, content)}`
+        const count = (seen.get(id) ?? 0) + 1
+        seen.set(id, count)
+        return count > 1 ? `${id}#${count}` : id
+      }))
     }
-    return serializedItems.get(items)
+    return listItemIds.get(items)
   }
 
   // the item a loop iteration renders: its key for objects and Maps,
-  // its content for lists, and which occurrence of that content it is,
-  // so two items with the same content are still two items.
+  // and its content for lists.
   function itemId (entry) {
     if (entry.items === null) {
-      const key = serialize(entry.key)
-      return key === undefined ? `#${entry.index}` : `k${key}`
+      // object keys of a Map can't be told apart by their content
+      const key = entry.key
+      const primitive = key === null || (typeof key !== 'object' && typeof key !== 'function')
+      const serialized = primitive ? serialize(key) : undefined
+      return serialized === undefined ? `#${entry.index}` : `k${intern(ids, serialized)}`
     }
 
-    const items = serializeItems(entry.items)
-    const content = items[entry.index]
-    if (content === undefined) {
-      return `#${entry.index}`
-    }
-
-    const before = items.slice(0, entry.index).filter((item) => item === content).length
-    return before ? `v${content}#${before + 1}` : `v${content}`
+    return itemIds(entry.items)[entry.index]
   }
 
   // undefined for a template parsed without locations
@@ -156,6 +166,8 @@ export default function createForm ({
     let id = options.hash.id
     if (id === undefined || id === '') {
       id = generatedKey(options)
+    } else if (isGeneratedKey(id)) {
+      throw new Error(`{{${name}}} ids can't start with ${generatedKeyPrefix}`)
     }
     if (id === undefined) {
       throw new Error(`{{${name}}} needs an id`)
@@ -259,7 +271,9 @@ export default function createForm ({
 
     const duplicate = choices.find((choice, index) => choices.findIndex((c) => c.value === choice.value) !== index)
     if (duplicate) {
-      throw new Error(`{{#select id="${claimed.id}"}} has more than one option with the value "${duplicate.value}"`)
+      // generated keys mean nothing to the person who wrote the template
+      const select = isGeneratedKey(claimed.id) ? '{{#select}}' : `{{#select id="${claimed.id}"}}`
+      throw new Error(`${select} has more than one option with the value "${duplicate.value}"`)
     }
 
     const multiple = toBoolean(options.hash.multiple)
