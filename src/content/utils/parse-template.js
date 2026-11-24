@@ -19,7 +19,8 @@ import createCss from '../helpers/css.js'
 import createSite from '../helpers/site.js'
 import createEachSite from '../helpers/each-site.js'
 import createHidden from '../helpers/hidden.js'
-import createForm from '../helpers/form.js'
+import createForm, { isGeneratedKey } from '../helpers/form.js'
+import carryOver from '../form/carry-over.js'
 
 import moment from 'moment/min/moment-with-locales.js'
 
@@ -94,18 +95,31 @@ export async function createSession (data = {}) {
       eachSite: new Map(),
       css: new Map(),
     },
-    // field values by id, available as @form
+    // field values by key. Fields with an id are available as @form.
     values: {},
     // fields from the last render
     fields: new Map(),
+    // short ids for template texts and loop item paths, for field keys
+    ids: new Map(),
+    // fields without an id from the last render of each template,
+    // to carry values over to loop items whose text was edited
+    records: new Map(),
+    // set when only text fields changed since the last render
+    textEdit: false,
     // checked only when a template has fields
     isFree: () => free ??= checkFree(),
   }
 }
 
+// only the fields with an id
+function formData (values = {}) {
+  return Object.fromEntries(Object.entries(values).filter(([key]) => !isGeneratedKey(key)))
+}
+
 // mode is form, to render form fields, or final, to render their values
 export async function renderTemplate (template = '', session, mode = 'final') {
   const fields = new Map()
+  const records = []
   const randoms = session.randoms.get(template) ?? []
   session.randoms.set(template, randoms)
   const renderHelpers = {
@@ -119,6 +133,8 @@ export async function renderTemplate (template = '', session, mode = 'final') {
     ...createForm({
       values: session.values,
       fields,
+      records,
+      ids: session.ids,
       mode,
       isFree: session.isFree,
     }),
@@ -127,7 +143,7 @@ export async function renderTemplate (template = '', session, mode = 'final') {
   const html = await briskbars(template, session.context, {
     helpers: renderHelpers,
     partials: session.partials,
-    data: {form: session.values},
+    data: {form: formData(session.values)},
   })
 
   // fields shown for the first time start with their default
@@ -137,6 +153,21 @@ export async function renderTemplate (template = '', session, mode = 'final') {
     }
   }
   session.fields = fields
+
+  // after a text edit, loop items whose text changed take the value
+  // of the item that was at their position, then render again with it.
+  const previous = session.records.get(template)
+  session.records.set(template, records)
+  if (session.textEdit && previous) {
+    session.textEdit = false
+    const moves = carryOver(previous, records)
+      .filter(([from]) => Object.hasOwn(session.values, from))
+    if (moves.length) {
+      moves.forEach(([from, to]) => session.values[to] = session.values[from])
+      return renderTemplate(template, session, mode)
+    }
+  }
+  session.textEdit = false
 
   return html
 }

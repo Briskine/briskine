@@ -10,13 +10,20 @@
  * {{#select id="tone"}}{{option "Formal"}}{{option "Casual" value="casual"}}{{/select}}
  * {{#select id="intro"}}{{#option label="Long"}}<p>Dear Sir,</p>{{/option}}{{/select}}
  * {{#if @form.ps}}P.S. ...{{/if}}
+ * {{#each list}}{{this}}: {{input}}{{/each}}
  *
  * Templates with fields open in a form before they're inserted,
  * then fields are replaced by their values.
  *
+ * Fields with an id share one value, available as @form.<id>.
+ * Fields without an id get a key from where they're written
+ * (the template text, line and column) and the loop items they render for,
+ * so they keep their value while other fields appear and disappear.
+ * Their values aren't in @form.
+ *
  */
 
-import { escapeExpression, SafeString, createFrame } from '../../briskbars/briskbars.js'
+import { escapeExpression, SafeString, createFrame, loopEntry } from '../../briskbars/briskbars.js'
 import PremiumError from '../utils/premium-error.js'
 
 const fieldClasses = {
@@ -27,6 +34,30 @@ const fieldClasses = {
 const inputTypes = ['text', 'number', 'email', 'url', 'tel', 'date', 'time', 'datetime-local', 'month', 'week', 'color', 'checkbox']
 const attributeNames = ['placeholder', 'min', 'max', 'step', 'pattern', 'rows', 'cols', 'size']
 const maxVisibleOptions = 6
+
+// keys of fields without an id start with this, so they can't be a user id
+export const generatedKeyPrefix = '~'
+
+export function isGeneratedKey (key = '') {
+  return key.startsWith(generatedKeyPrefix)
+}
+
+// undefined when the value can't be serialized
+function serialize (value) {
+  try {
+    return JSON.stringify(value)
+  } catch {
+    return undefined
+  }
+}
+
+// a short id for a long string, the same one for the whole form session
+function intern (ids, text) {
+  if (!ids.has(text)) {
+    ids.set(text, String(ids.size + 1))
+  }
+  return ids.get(text)
+}
 
 function renderAttributes (attributes = {}) {
   return Object.entries(attributes)
@@ -67,16 +98,72 @@ function selectDefault (hash = {}, choices = []) {
 export default function createForm ({
   values = {},
   fields = new Map(),
+  // fields without an id, for matching loop items between renders
+  records = [],
+  // short ids for template texts and item paths, kept for the form session
+  ids = new Map(),
   mode = 'final',
   isFree = async () => false,
 } = {}) {
   const occurrences = new Map()
+  // per render, since the lists are new on every render
+  const serializedItems = new WeakMap()
+
+  function serializeItems (items) {
+    if (!serializedItems.has(items)) {
+      serializedItems.set(items, items.map(serialize))
+    }
+    return serializedItems.get(items)
+  }
+
+  // the item a loop iteration renders: its key for objects and Maps,
+  // its content for lists, and which occurrence of that content it is,
+  // so two items with the same content are still two items.
+  function itemId (entry) {
+    if (entry.items === null) {
+      const key = serialize(entry.key)
+      return key === undefined ? `#${entry.index}` : `k${key}`
+    }
+
+    const items = serializeItems(entry.items)
+    const content = items[entry.index]
+    if (content === undefined) {
+      return `#${entry.index}`
+    }
+
+    const before = items.slice(0, entry.index).filter((item) => item === content).length
+    return before ? `v${content}#${before + 1}` : `v${content}`
+  }
+
+  // undefined for a template parsed without locations
+  function generatedKey (options) {
+    const loc = options.loc
+    if (!loc) {
+      return undefined
+    }
+
+    const site = `${intern(ids, loc.source ?? '')}:${loc.start.line}:${loc.start.column}`
+    // outermost loop first
+    const items = []
+    const indexes = []
+    for (let entry = loopEntry(options.data); entry; entry = entry.parent) {
+      items.unshift(itemId(entry))
+      indexes.unshift(entry.index)
+    }
+
+    const key = generatedKeyPrefix + intern(ids, `${site}\n${JSON.stringify(items)}`)
+    records.push({key, site, indexes: indexes.join(',')})
+    return key
+  }
 
   // claims the field's place before any await,
   // because sibling helpers render concurrently.
   function claim (name, options) {
-    const id = options.hash.id
+    let id = options.hash.id
     if (id === undefined || id === '') {
+      id = generatedKey(options)
+    }
+    if (id === undefined) {
       throw new Error(`{{${name}}} needs an id`)
     }
 
@@ -106,7 +193,7 @@ export default function createForm ({
     const attributes = {
       id: `field-${id}-${count}`,
       'data-form-id': id,
-      'aria-label': options.hash.label || options.hash.placeholder || id,
+      'aria-label': options.hash.label || options.hash.placeholder || (isGeneratedKey(id) ? undefined : id),
     }
     attributeNames.forEach((name) => attributes[name] = options.hash[name])
     attributes.required = toBoolean(options.hash.required)

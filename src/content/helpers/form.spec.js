@@ -144,8 +144,182 @@ describe('form handlebars helpers', () => {
       expect(await renderTemplate('{{#each list}}{{@form.name}}{{/each}}', session)).to.equal('JaneJane')
     })
 
-    it('should throw without an id', async () => {
-      expect(await parseTemplate('{{input}}')).to.equal('<pre>{{input}} needs an id</pre>')
+  })
+
+  describe('fields without an id', () => {
+    // the keys of the fields in the form, in template order
+    function keys (html) {
+      return [...html.matchAll(/data-form-id="([^"]+)"/g)].map((match) => match[1])
+    }
+
+    async function form (template, session) {
+      return keys(await renderTemplate(template, session, 'form'))
+    }
+
+    it('should render a field without an id', async () => {
+      const session = await createSession()
+      const html = await renderTemplate('Hi {{input placeholder="Name"}}', session, 'form')
+      const [key] = keys(html)
+      expect(key).to.match(/^~/)
+      expect(html).to.contain('aria-label="Name"')
+
+      session.values[key] = 'Jane'
+      expect(await renderTemplate('Hi {{input placeholder="Name"}}', session)).to.equal('Hi Jane')
+    })
+
+    it('should not use the key as the label', async () => {
+      const {html} = await render('{{input}}', {}, 'form')
+      expect(html).not.to.contain('aria-label')
+    })
+
+    it('should render textareas and selects without an id', async () => {
+      const {html} = await render('{{textarea}}{{#select}}{{option "A"}}{{/select}}', {}, 'form')
+      expect(keys(html)).to.have.length(2)
+    })
+
+    it('should keep fields with the same options apart', async () => {
+      const session = await createSession()
+      const template = '{{input placeholder="Note"}} {{input placeholder="Note"}}'
+      const [first, second] = await form(template, session)
+      expect(first).not.to.equal(second)
+
+      session.values[first] = 'a'
+      session.values[second] = 'b'
+      expect(await renderTemplate(template, session)).to.equal('a b')
+    })
+
+    it('should keep the same keys between renders', async () => {
+      const session = await createSession()
+      const template = '{{input}}{{textarea}}'
+      expect(await form(template, session)).to.deep.equal(await form(template, session))
+    })
+
+    it('should not add fields without an id to @form', async () => {
+      const session = await createSession()
+      const template = '{{input id="name"}}{{input}}{{#each @form}}[{{@key}}]{{/each}}'
+      await renderTemplate(template, session)
+      expect(await renderTemplate(template, session)).to.equal('[name]')
+    })
+
+    it('should keep its value when a field before it appears', async () => {
+      const session = await createSession()
+      const template = '{{input type="checkbox" id="more"}}{{#if @form.more}}{{input}}{{/if}}{{input}}'
+      const [, last] = await form(template, session)
+      session.values[last] = 'kept'
+
+      session.values.more = true
+      const [, added, stillLast] = await form(template, session)
+      expect(stillLast).to.equal(last)
+      expect(added).not.to.equal(last)
+      expect(await renderTemplate(template, session)).to.equal('kept')
+    })
+
+    it('should give every loop item its own value', async () => {
+      const session = await createSession({list: ['a', 'b']})
+      const template = '{{#each list}}[{{this}}:{{input}}]{{/each}}'
+      const [a, b] = await form(template, session)
+      session.values[a] = 1
+      session.values[b] = 2
+      expect(await renderTemplate(template, session)).to.equal('[a:1][b:2]')
+    })
+
+    it('should give items with the same content their own value', async () => {
+      const session = await createSession({list: ['Pen', 'Pen']})
+      const template = '{{#each list}}[{{input}}]{{/each}}'
+      const [first, second] = await form(template, session)
+      expect(first).not.to.equal(second)
+      session.values[first] = 2
+      session.values[second] = 5
+      expect(await renderTemplate(template, session)).to.equal('[2][5]')
+    })
+
+    const sites = '{{#select id="sites" multiple=true}}{{option "Gmail"}}{{option "Outlook"}}{{/select}}'
+      + '{{#each @form.sites}}[{{this}}:{{input}}]{{/each}}'
+
+    it('should keep the value of an item when another one is removed', async () => {
+      const session = await createSession()
+      session.values.sites = ['Gmail', 'Outlook']
+      const [, gmail, outlook] = await form(sites, session)
+      session.values[gmail] = 'g'
+      session.values[outlook] = 'o'
+
+      session.values.sites = ['Outlook']
+      expect(await renderTemplate(sites, session)).to.equal('Outlook[Outlook:o]')
+
+      session.values.sites = ['Gmail', 'Outlook']
+      expect(await renderTemplate(sites, session)).to.equal('Gmail, Outlook[Gmail:g][Outlook:o]')
+    })
+
+    it('should not carry a value over when the selection is replaced', async () => {
+      const session = await createSession()
+      session.values.sites = ['Gmail']
+      const [, gmail] = await form(sites, session)
+      session.values[gmail] = 'g'
+
+      session.values.sites = ['Outlook']
+      session.textEdit = false
+      expect(await renderTemplate(sites, session)).to.equal('Outlook[Outlook:]')
+    })
+
+    const tags = '{{input id="tags"}}{{#each (text @form.tags "split" ",")}}[{{this}}:{{input}}]{{/each}}'
+
+    it('should carry the value over to an item whose text was edited', async () => {
+      const session = await createSession()
+      session.values.tags = 'Gm,Outlook'
+      const [, gm, outlook] = await form(tags, session)
+      session.values[gm] = 'g'
+      session.values[outlook] = 'o'
+
+      session.values.tags = 'Gma,Outlook'
+      session.textEdit = true
+      expect(await renderTemplate(tags, session, 'form')).to.contain('value="g"')
+      expect(await renderTemplate(tags, session)).to.equal('Gma,Outlook[Gma:g][Outlook:o]')
+    })
+
+    it('should carry the value over in the final render', async () => {
+      const session = await createSession()
+      session.values.tags = 'Gm'
+      const [, gm] = await form(tags, session)
+      session.values[gm] = 'g'
+
+      // changed in the form dialog, then inserted right away
+      session.values.tags = 'Gma'
+      session.textEdit = true
+      expect(await renderTemplate(tags, session)).to.equal('Gma[Gma:g]')
+    })
+
+    it('should start an item added at the end empty', async () => {
+      const session = await createSession()
+      session.values.tags = 'a'
+      const [, a] = await form(tags, session)
+      session.values[a] = 1
+
+      session.values.tags = 'a,b'
+      session.textEdit = true
+      expect(await renderTemplate(tags, session)).to.equal('a,b[a:1][b:]')
+    })
+
+    it('should carry values over to the fields in an edited outer item', async () => {
+      const session = await createSession({inner: ['x', 'y']})
+      const template = '{{input id="tags"}}{{#each (text @form.tags "split" ",")}}'
+        + '{{#each @root.inner}}[{{../this}}/{{this}}:{{input}}]{{/each}}{{/each}}'
+      session.values.tags = 'Gm'
+      const [, x, y] = await form(template, session)
+      session.values[x] = 1
+      session.values[y] = 2
+
+      session.values.tags = 'Gma'
+      session.textEdit = true
+      expect(await renderTemplate(template, session)).to.equal('Gma[Gma/x:1][Gma/y:2]')
+    })
+
+    it('should keep the values of the body and the extra fields apart', async () => {
+      const session = await createSession({list: ['a']})
+      const body = '{{#each list}}{{input}}{{/each}}'
+      const subject = 'Re: {{#each list}}{{input}}{{/each}}'
+      const [bodyKey] = await form(body, session)
+      const [subjectKey] = await form(subject, session)
+      expect(bodyKey).not.to.equal(subjectKey)
     })
   })
 
