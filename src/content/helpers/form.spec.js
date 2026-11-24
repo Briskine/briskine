@@ -250,20 +250,19 @@ describe('form handlebars helpers', () => {
       expect(await renderTemplate(sites, session)).to.equal('Gmail, Outlook[Gmail:g][Outlook:o]')
     })
 
-    it('should not carry a value over when the selection is replaced', async () => {
+    it('should start a new item empty when the selection is replaced', async () => {
       const session = await createSession()
       session.values.sites = ['Gmail']
       const [, gmail] = await form(sites, session)
       session.values[gmail] = 'g'
 
       session.values.sites = ['Outlook']
-      session.textEdit = false
       expect(await renderTemplate(sites, session)).to.equal('Outlook[Outlook:]')
     })
 
     const tags = '{{input id="tags"}}{{#each (text @form.tags "split" ",")}}[{{this}}:{{input}}]{{/each}}'
 
-    it('should carry the value over to an item whose text was edited', async () => {
+    it('should start an item empty when its text is edited, and keep the old value', async () => {
       const session = await createSession()
       session.values.tags = 'Gm,Outlook'
       const [, gm, outlook] = await form(tags, session)
@@ -271,46 +270,31 @@ describe('form handlebars helpers', () => {
       session.values[outlook] = 'o'
 
       session.values.tags = 'Gma,Outlook'
-      session.textEdit = true
-      expect(await renderTemplate(tags, session, 'form')).to.contain('value="g"')
-      expect(await renderTemplate(tags, session)).to.equal('Gma,Outlook[Gma:g][Outlook:o]')
+      expect(await renderTemplate(tags, session)).to.equal('Gma,Outlook[Gma:][Outlook:o]')
+
+      session.values.tags = 'Gm,Outlook'
+      expect(await renderTemplate(tags, session)).to.equal('Gm,Outlook[Gm:g][Outlook:o]')
     })
 
-    it('should carry the value over in the final render', async () => {
+    it('should keep values by position with an id from @index', async () => {
       const session = await createSession()
-      session.values.tags = 'Gm'
-      const [, gm] = await form(tags, session)
-      session.values[gm] = 'g'
-
-      // changed in the form dialog, then inserted right away
-      session.values.tags = 'Gma'
-      session.textEdit = true
-      expect(await renderTemplate(tags, session)).to.equal('Gma[Gma:g]')
-    })
-
-    it('should start an item added at the end empty', async () => {
-      const session = await createSession()
-      session.values.tags = 'a'
-      const [, a] = await form(tags, session)
-      session.values[a] = 1
-
-      session.values.tags = 'a,b'
-      session.textEdit = true
-      expect(await renderTemplate(tags, session)).to.equal('a,b[a:1][b:]')
-    })
-
-    it('should carry values over to the fields in an edited outer item', async () => {
-      const session = await createSession({inner: ['x', 'y']})
       const template = '{{input id="tags"}}{{#each (text @form.tags "split" ",")}}'
-        + '{{#each @root.inner}}[{{../this}}/{{this}}:{{input}}]{{/each}}{{/each}}'
-      session.values.tags = 'Gm'
-      const [, x, y] = await form(template, session)
-      session.values[x] = 1
-      session.values[y] = 2
+        + '[{{this}}:{{input id=(text "note_" "concat" @index)}}]{{/each}}'
+      session.values.tags = 'Gm,Outlook'
+      expect(await form(template, session)).to.deep.equal(['tags', 'note_0', 'note_1'])
+      session.values.note_0 = 'g'
 
-      session.values.tags = 'Gma'
-      session.textEdit = true
-      expect(await renderTemplate(template, session)).to.equal('Gma[Gma/x:1][Gma/y:2]')
+      session.values.tags = 'Gma,Outlook'
+      expect(await renderTemplate(template, session)).to.equal('Gma,Outlook[Gma:g][Outlook:]')
+    })
+
+    it('should give every inner item of every outer item its own value', async () => {
+      const session = await createSession({outer: ['a', 'b'], inner: ['x', 'y']})
+      const template = '{{#each outer}}{{#each @root.inner}}[{{../this}}/{{this}}:{{input}}]{{/each}}{{/each}}'
+      const keys = await form(template, session)
+      expect(new Set(keys).size).to.equal(4)
+      keys.forEach((key, index) => session.values[key] = index)
+      expect(await renderTemplate(template, session)).to.equal('[a/x:0][a/y:1][b/x:2][b/y:3]')
     })
 
     it('should keep the values of the body and the extra fields apart', async () => {

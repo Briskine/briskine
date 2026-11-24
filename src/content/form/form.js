@@ -16,31 +16,6 @@ const topFrameId = 0
 
 const forms = new Map()
 
-// fields where an edit can change a loop item's text a little at a time
-const textTypes = ['text', 'email', 'url', 'tel', 'textarea']
-
-// the form dialog sends every value changed since it opened,
-// so a change is a value that's different from what it sent last time.
-function changedKeys (received = {}, values = {}) {
-  return Object.keys(values).filter((key) => {
-    return !Object.hasOwn(received, key) || JSON.stringify(values[key]) !== JSON.stringify(received[key])
-  })
-}
-
-// applies only what changed in the form dialog. A value it sent before can be
-// out of date, after it was carried over to an edited loop item here.
-// Also notes whether only text fields changed, so loop items whose text was
-// edited keep their values.
-function applyValues (form, values = {}) {
-  const session = form.session
-  const changed = changedKeys(form.received, values)
-  form.received = values
-  session.textEdit = changed.length > 0 && changed.every((key) => {
-    return textTypes.includes(session.fields.get(key)?.type)
-  })
-  changed.forEach((key) => session.values[key] = values[key])
-}
-
 async function renderForm (form) {
   const html = await renderTemplate(form.template, form.session, 'form')
   return html.replaceAll(cursorMarker, '')
@@ -50,7 +25,7 @@ async function renderForm (form) {
 // rejects when the top frame can't show the form.
 export default async function fillForm ({template = '', session, title = ''}) {
   const id = crypto.randomUUID()
-  const form = {template, session, received: {}}
+  const form = {template, session}
   const html = await renderForm(form)
 
   return new Promise((resolve, reject) => {
@@ -101,7 +76,7 @@ async function respondToRender ({id, values = {}} = {}) {
     return null
   }
 
-  applyValues(form, values)
+  Object.assign(form.session.values, values)
 
   try {
     return {html: await renderForm(form)}
@@ -117,7 +92,7 @@ function closeForm ({id, values = {}, insert = false} = {}) {
   }
 
   forms.delete(id)
-  applyValues(form, values)
+  Object.assign(form.session.values, values)
   form.resolve(insert)
 }
 

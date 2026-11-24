@@ -20,7 +20,6 @@ import createSite from '../helpers/site.js'
 import createEachSite from '../helpers/each-site.js'
 import createHidden from '../helpers/hidden.js'
 import createForm, { isGeneratedKey } from '../helpers/form.js'
-import carryOver from '../form/carry-over.js'
 
 import moment from 'moment/min/moment-with-locales.js'
 
@@ -101,11 +100,6 @@ export async function createSession (data = {}) {
     fields: new Map(),
     // short ids for template texts and loop item paths, for field keys
     ids: new Map(),
-    // fields without an id from the last render of each template,
-    // to carry values over to loop items whose text was edited
-    records: new Map(),
-    // set when only text fields changed since the last render
-    textEdit: false,
     // checked only when a template has fields
     isFree: () => free ??= checkFree(),
   }
@@ -119,7 +113,6 @@ function formData (values = {}) {
 // mode is form, to render form fields, or final, to render their values
 export async function renderTemplate (template = '', session, mode = 'final') {
   const fields = new Map()
-  const records = []
   const randoms = session.randoms.get(template) ?? []
   session.randoms.set(template, randoms)
   const renderHelpers = {
@@ -133,7 +126,6 @@ export async function renderTemplate (template = '', session, mode = 'final') {
     ...createForm({
       values: session.values,
       fields,
-      records,
       ids: session.ids,
       mode,
       isFree: session.isFree,
@@ -153,21 +145,6 @@ export async function renderTemplate (template = '', session, mode = 'final') {
     }
   }
   session.fields = fields
-
-  // after a text edit, loop items whose text changed take the value
-  // of the item that was at their position, then render again with it.
-  const previous = session.records.get(template)
-  session.records.set(template, records)
-  if (session.textEdit && previous) {
-    session.textEdit = false
-    const moves = carryOver(previous, records)
-      .filter(([from]) => Object.hasOwn(session.values, from))
-    if (moves.length) {
-      moves.forEach(([from, to]) => session.values[to] = session.values[from])
-      return renderTemplate(template, session, mode)
-    }
-  }
-  session.textEdit = false
 
   return html
 }

@@ -98,8 +98,6 @@ function selectDefault (hash = {}, choices = []) {
 export default function createForm ({
   values = {},
   fields = new Map(),
-  // fields without an id, for matching loop items between renders
-  records = [],
   // short ids for template texts and item paths, kept for the form session
   ids = new Map(),
   mode = 'final',
@@ -145,15 +143,11 @@ export default function createForm ({
     const site = `${intern(ids, loc.source ?? '')}:${loc.start.line}:${loc.start.column}`
     // outermost loop first
     const items = []
-    const indexes = []
     for (let entry = loopEntry(options.data); entry; entry = entry.parent) {
       items.unshift(itemId(entry))
-      indexes.unshift(entry.index)
     }
 
-    const key = generatedKeyPrefix + intern(ids, `${site}\n${JSON.stringify(items)}`)
-    records.push({key, site, indexes: indexes.join(',')})
-    return key
+    return generatedKeyPrefix + intern(ids, `${site}\n${JSON.stringify(items)}`)
   }
 
   // claims the field's place before any await,
