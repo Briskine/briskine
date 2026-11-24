@@ -133,11 +133,13 @@ export default function createForm ({
   // and its content for lists.
   function itemId (entry) {
     if (entry.items === null) {
-      // object keys of a Map can't be told apart by their content
+      // object keys of a Map can't be told apart by their content.
+      // the type keeps keys like null and NaN apart, which serialize the same.
       const key = entry.key
-      const primitive = key === null || (typeof key !== 'object' && typeof key !== 'function')
-      const serialized = primitive ? serialize(key) : undefined
-      return serialized === undefined ? `#${entry.index}` : `k${intern(ids, serialized)}`
+      if (key !== null && (typeof key === 'object' || typeof key === 'function')) {
+        return `#${entry.index}`
+      }
+      return `k${intern(ids, `${key === null ? 'null' : typeof key}:${String(key)}`)}`
     }
 
     return itemIds(entry.items)[entry.index]
@@ -145,12 +147,13 @@ export default function createForm ({
 
   // undefined for a template parsed without locations
   function generatedKey (options) {
+    // without the template text, fields in different partials could share a key
     const loc = options.loc
-    if (!loc) {
+    if (!loc || loc.source === undefined) {
       return undefined
     }
 
-    const site = `${intern(ids, loc.source ?? '')}:${loc.start.line}:${loc.start.column}`
+    const site = `${intern(ids, loc.source)}:${loc.start.line}:${loc.start.column}`
     // outermost loop first
     const items = []
     for (let entry = loopEntry(options.data); entry; entry = entry.parent) {
@@ -164,13 +167,16 @@ export default function createForm ({
   // because sibling helpers render concurrently.
   function claim (name, options) {
     let id = options.hash.id
-    if (id === undefined || id === '') {
+    if (!Object.hasOwn(options.hash, 'id')) {
       id = generatedKey(options)
+      if (id === undefined) {
+        throw new Error(`{{${name}}} needs an id`)
+      }
+    } else if (id === undefined || id === null || id === '') {
+      // written, but empty, like a typo in id=@indx
+      throw new Error(`{{${name}}} has an empty id`)
     } else if (isGeneratedKey(id)) {
       throw new Error(`{{${name}}} ids can't start with ${generatedKeyPrefix}`)
-    }
-    if (id === undefined) {
-      throw new Error(`{{${name}}} needs an id`)
     }
 
     // keeps fields in template order

@@ -1,7 +1,7 @@
 import { expect, describe, it, beforeAll, afterAll, vi } from 'vitest'
 
 import parseTemplate, { createSession, renderTemplate } from '../utils/parse-template.js'
-import { escapeExpression } from '../../briskbars/briskbars.js'
+import { escapeExpression, parse } from '../../briskbars/briskbars.js'
 import { cursorMarker } from '../cursors/cursors.js'
 
 function premium () {
@@ -313,6 +313,24 @@ describe('form handlebars helpers', () => {
       session.context = {m: new Map([[{}, 'x'], [{}, 'y']])}
       const keys = await form('{{#each m}}{{input}}{{/each}}', session)
       expect(new Set(keys).size).to.equal(2)
+    })
+
+    it('should show an error for an id that is written but empty', async () => {
+      expect(await parseTemplate('{{input id=@indx}}')).to.equal('<pre>{{input}} has an empty id</pre>')
+      expect(await parseTemplate('{{input id=""}}')).to.equal('<pre>{{input}} has an empty id</pre>')
+      expect(await parseTemplate('{{#each list}}{{input id=this.id}}{{/each}}', {list: [{}]}))
+        .to.equal('<pre>{{input}} has an empty id</pre>')
+    })
+
+    it('should tell apart Map keys that serialize the same', async () => {
+      const session = await createSession()
+      session.context = {m: new Map([[null, 'a'], [NaN, 'b'], [Infinity, 'c'], ['null', 'd']])}
+      const keys = await form('{{#each m}}{{input}}{{/each}}', session)
+      expect(new Set(keys).size).to.equal(4)
+    })
+
+    it('should need an id in a template parsed without its text', async () => {
+      expect(await parseTemplate(parse('{{input}}'))).to.equal('<pre>{{input}} needs an id</pre>')
     })
 
     it('should not take ids that look like generated keys', async () => {
