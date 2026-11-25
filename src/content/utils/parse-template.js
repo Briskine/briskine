@@ -110,41 +110,52 @@ function formData (values = {}) {
   return Object.fromEntries(Object.entries(values).filter(([key]) => !isGeneratedKey(key)))
 }
 
+// for templates that keep adding fields
+const maxRenders = 5
+
 // mode is form, to render form fields, or final, to render their values
 export async function renderTemplate (template = '', session, mode = 'final') {
-  const fields = new Map()
   const randoms = session.randoms.get(template) ?? []
   session.randoms.set(template, randoms)
-  const renderHelpers = {
-    ...helpers,
-    moment: createMoment(session.now),
-    random: createRandom(randoms),
-    site: createSite(session.cache.site),
-    eachSite: createEachSite(session.cache.eachSite),
-    css: createCss(session.cache.css),
-    hidden: createHidden(mode),
-    ...createForm({
-      values: session.values,
-      fields,
-      ids: session.ids,
-      mode,
-      isFree: session.isFree,
-    }),
-  }
 
-  const html = await briskbars(template, session.context, {
-    helpers: renderHelpers,
-    partials: session.partials,
-    data: {form: formData(session.values)},
-  })
+  let html = ''
+  for (let render = 1; render <= maxRenders; render++) {
+    const fields = new Map()
+    const renderHelpers = {
+      ...helpers,
+      moment: createMoment(session.now),
+      random: createRandom(randoms),
+      site: createSite(session.cache.site),
+      eachSite: createEachSite(session.cache.eachSite),
+      css: createCss(session.cache.css),
+      hidden: createHidden(mode),
+      ...createForm({
+        values: session.values,
+        fields,
+        ids: session.ids,
+        mode,
+        isFree: session.isFree,
+      }),
+    }
 
-  // fields shown for the first time start with their default
-  for (const [id, field] of fields) {
-    if (!Object.hasOwn(session.values, id)) {
-      session.values[id] = field.default
+    html = await briskbars(template, session.context, {
+      helpers: renderHelpers,
+      partials: session.partials,
+      data: {form: formData(session.values)},
+    })
+
+    // fields shown for the first time start with their default
+    const added = [...fields.keys()].filter((id) => !Object.hasOwn(session.values, id))
+    for (const id of added) {
+      session.values[id] = fields.get(id).default
+    }
+    session.fields = fields
+
+    // render again, so @form has the defaults of the new fields
+    if (!added.some((id) => !isGeneratedKey(id))) {
+      break
     }
   }
-  session.fields = fields
 
   return html
 }

@@ -526,6 +526,39 @@ describe('form handlebars helpers', () => {
       Math.random = random
     })
 
+    it('should use the default of a field that appears in the form', async () => {
+      const session = await createSession()
+      const template = '{{input type="checkbox" id="discount"}}{{#if @form.discount}}{{input type="number" id="percent" value=15}}% off, with the code SORRY{{@form.percent}}{{/if}}'
+      expect(await renderTemplate(template, session)).to.equal('')
+
+      session.values.discount = true
+      expect(await renderTemplate(template, session, 'form')).to.contain('% off, with the code SORRY15')
+    })
+
+    it('should use the defaults of fields that appear behind a checked box', async () => {
+      const session = await createSession()
+      const template = '{{input type="checkbox" id="discount" checked=true}}{{#if @form.discount}}{{input type="color" id="highlight" value="#ffe066"}}{{#if @form.highlight}}{{input id="code" value="SORRY"}}{{/if}}{{/if}}[{{@form.highlight}} {{@form.code}}]'
+      expect(await renderTemplate(template, session)).to.equal('#ffe066SORRY[#ffe066 SORRY]')
+    })
+
+    it('should use the default of a field before the field', async () => {
+      const session = await createSession()
+      expect(await renderTemplate('Hi {{@form.name}}, {{input id="name" value="there"}}', session)).to.equal('Hi there, there')
+    })
+
+    it('should use the default of a field in the extra fields', async () => {
+      const session = await createSession()
+      await renderTemplate('Hi {{input id="name" value="there"}}', session)
+      expect(await renderTemplate('#{{input id="order" value="10482"}} for {{@form.name}}, {{@form.order}}', session)).to.equal('#10482 for there, 10482')
+    })
+
+    it('should stop rendering again when every render adds a field', async () => {
+      const session = await createSession()
+      const html = await renderTemplate('{{input id="a"}}{{#each @form}}{{input id=(text "x" "concat" @key)}}{{/each}}', session)
+      expect(html).to.be.a('string')
+      expect(Object.keys(session.values).length).to.be.below(20)
+    })
+
     it('should use the same time on every render', async () => {
       const session = await createSession()
       const template = '{{moment format="HH:mm:ss.SSS"}}'
