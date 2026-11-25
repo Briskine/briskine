@@ -1,4 +1,4 @@
-import { expect, describe, it, beforeAll, afterAll, beforeEach } from 'vitest'
+import { expect, describe, it, beforeAll, afterAll, beforeEach, afterEach, vi } from 'vitest'
 
 import {insertContentEditableTemplate} from './editor-contenteditable.js'
 
@@ -17,6 +17,10 @@ describe('editor ContentEditable', () => {
   beforeEach(() => {
     editable.innerHTML = ''
     editable.focus()
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
   })
 
   it('should insert template into contenteditable', () => {
@@ -87,6 +91,20 @@ describe('editor ContentEditable', () => {
 
     expect(outside.innerHTML).to.equal('page')
     outside.remove()
+  })
+
+  it('should insert template when moving the caret after it fails', async () => {
+    window.getSelection().collapse(editable, 0)
+    vi.spyOn(Selection.prototype, 'setBaseAndExtent').mockImplementation(() => {
+      throw new Error('setBaseAndExtent')
+    })
+
+    const inserted = await insertContentEditableTemplate({
+      html: '<div>test</div>',
+    })
+
+    expect(inserted).to.equal(true)
+    expect(editable.innerHTML).to.equal('<div>test</div>')
   })
 
   afterAll(() => {
