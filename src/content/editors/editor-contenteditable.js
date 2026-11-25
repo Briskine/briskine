@@ -23,6 +23,18 @@ export async function insertContentEditableTemplate ({ html, text }) {
   }
 
   let range = getSelectionRange(element)
+  // we can't see the caret, the browser can still insert at it
+  if (
+    !range
+    || !element.contains(range.startContainer)
+    || !element.contains(range.endContainer)
+  ) {
+    return insertExecCommandTemplate({
+      html,
+      text,
+    })
+  }
+
   // delete existing selection
   range.deleteContents()
 

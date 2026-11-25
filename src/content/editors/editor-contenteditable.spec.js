@@ -74,6 +74,21 @@ describe('editor ContentEditable', () => {
     editable.removeAttribute('aria-readonly')
   })
 
+  it('should not change the page when the selection is outside the editor', async () => {
+    const outside = document.createElement('div')
+    outside.textContent = 'page'
+    document.body.appendChild(outside)
+    window.getSelection().setBaseAndExtent(outside.firstChild, 0, outside.firstChild, 4)
+
+    await insertContentEditableTemplate({
+      html: '<div>test</div>',
+      text: 'test',
+    })
+
+    expect(outside.innerHTML).to.equal('page')
+    outside.remove()
+  })
+
   afterAll(() => {
     editable.remove()
   })
