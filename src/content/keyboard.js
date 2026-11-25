@@ -9,6 +9,7 @@ import { getWord } from './utils/word.js'
 import { isContentEditable } from './editors/editor-contenteditable.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
 import { getTemplates } from '../store/store-content.js'
+import debug from '../debug.js'
 
 import { keybind, keyunbind } from './keybind.js'
 import { swipebind, swipeunbind } from './swipe.js'
@@ -76,11 +77,14 @@ async function keyboardAutocomplete (e) {
     }
   }
 
-  await restoreSelection(element, cachedRange)
-
-  autocomplete({
-    template,
-  })
+  try {
+    await restoreSelection(element, cachedRange)
+    await autocomplete({
+      template,
+    })
+  } catch (err) {
+    debug(['keyboard autocomplete', err], 'error')
+  }
 }
 
 let cachedKeyboardShortcut = ''

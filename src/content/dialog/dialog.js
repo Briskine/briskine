@@ -13,6 +13,7 @@ import { getEditableCaret, getContentEditableCaret, getTargetRect } from './dial
 import autocomplete from '../autocomplete.js'
 import { saveSelection, restoreSelection } from '../utils/restore-selection.js'
 import { getActiveElement } from '../utils/active-element.js'
+import isEditor from '../utils/editor.js'
 import { isBubbleElement } from '../utils/extension-element.js'
 import getFrameOffset from '../utils/frame-offset.js'
 import { keybind, keyunbind } from '../keybind.js'
@@ -158,10 +159,14 @@ async function show ({ target: node } = {}) {
 }
 
 async function respondToClose ({ template } = {}) {
+  // the page can replace the editor while the dialog is open
+  const target = editor?.isConnected ? editor : getActiveElement()
+  const selection = target === editor ? cachedSelection : null
+
   let restored = false
   try {
-    if (editor?.isConnected) {
-      await restoreSelection(editor, cachedSelection)
+    if (isEditor(target)) {
+      await restoreSelection(target, selection)
       restored = true
     }
   } catch (err) {
@@ -173,6 +178,8 @@ async function respondToClose ({ template } = {}) {
   if (restored && template) {
     autocomplete({
       template: template,
+    }).catch((err) => {
+      debug(['dialog autocomplete', err], 'error')
     })
   }
 }
