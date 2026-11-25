@@ -77,8 +77,14 @@ async function keyboardAutocomplete (e) {
     }
   }
 
+  // the caret is still after the shortcut, insert even if this fails
   try {
     await restoreSelection(element, cachedRange)
+  } catch (err) {
+    debug(['keyboard restore selection', err], 'error')
+  }
+
+  try {
     await autocomplete({
       template,
     })

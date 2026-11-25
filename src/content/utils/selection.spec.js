@@ -48,4 +48,20 @@ describe('selection', () => {
       expect(getSelectionRange(editor)).to.equal(null)
     }
   )
+
+  it('should not scroll when setting the selection fails', async () => {
+    const editor = createShadowEditor()
+    const scroll = vi.spyOn(Element.prototype, 'scrollIntoView')
+    vi.spyOn(Selection.prototype, 'setBaseAndExtent').mockImplementation(() => {
+      throw new Error('setBaseAndExtent')
+    })
+
+    const range = new Range()
+    range.setStart(editor.firstChild, 6)
+    range.setEnd(editor.firstChild, 11)
+    await expect(setSelectionRange(editor, range)).rejects.toThrow('setBaseAndExtent')
+    await new Promise((resolve) => setTimeout(resolve, 150))
+
+    expect(scroll).not.toHaveBeenCalled()
+  })
 })

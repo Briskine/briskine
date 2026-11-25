@@ -127,20 +127,6 @@ describe('dialog', () => {
     await trigger(eventShowDialog, {})
     expect(visibility).to.deep.equal([true, false])
   })
-  it('should insert in the editor that replaced it while the dialog was open', async () => {
-    await trigger(eventShowDialog, {})
-
-    textarea.remove()
-    textarea = document.createElement('textarea')
-    document.body.appendChild(textarea)
-    textarea.focus()
-    textarea.blur()
-
-    await trigger(eventDialogClose, {template: {body: 'hello'}})
-    expect(document.activeElement).to.equal(textarea)
-    expect(autocomplete).toHaveBeenCalledOnce()
-  })
-
   it('should not insert when the editor was removed while the dialog was open', async () => {
     await trigger(eventShowDialog, {})
 

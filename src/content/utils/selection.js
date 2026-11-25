@@ -114,7 +114,7 @@ export async function setSelectionRange (node, range) {
     return range
   }
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     // even if setBaseAndExtent is synchronous,
     // some third-party editors rely on selection change to notice the change,
     // so that's when we consider it done.
@@ -144,11 +144,17 @@ export async function setSelectionRange (node, range) {
     // when the range is in shadow dom,
     // that's why we use setBaseAndExtent.
     const selection = getComposedSelection(node)
-    selection.setBaseAndExtent(
-      range.startContainer,
-      range.startOffset,
-      range.endContainer,
-      range.endOffset
-    )
+    try {
+      selection.setBaseAndExtent(
+        range.startContainer,
+        range.startOffset,
+        range.endContainer,
+        range.endOffset
+      )
+    } catch (err) {
+      clearTimeout(timer)
+      document.removeEventListener('selectionchange', done)
+      reject(err)
+    }
   })
 }
