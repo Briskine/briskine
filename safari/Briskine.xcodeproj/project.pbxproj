@@ -100,7 +100,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		A6EBF1283034646B00D6A327 /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (background, chunks, content, icons, page, popup, sidepanel, ); name = Resources; path = ../ext; sourceTree = SOURCE_ROOT; };
+		A6EBF1283034646B00D6A327 /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (background, chunks, content, icons, popup, sidepanel, ); name = Resources; path = ../ext; sourceTree = SOURCE_ROOT; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -318,7 +318,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 2600;
+				LastUpgradeCheck = 2720;
 				TargetAttributes = {
 					A6A5D6CB29C88DE400BE4AC5 = {
 						CreatedOnToolsVersion = 14.2;
