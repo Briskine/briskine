@@ -17,6 +17,7 @@ ext/
 # xcode
 .DS_Store
 xcuserdata/
+**/xcshareddata/xcschemes/
 
 # tests
 test/pages
