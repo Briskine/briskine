@@ -8,6 +8,12 @@ vi.mock('../utils/frame-offset.js', () => ({
   }),
 }))
 
+vi.mock('../autocomplete.js', () => ({
+  default: vi.fn(async () => {}),
+}))
+
+import autocomplete from '../autocomplete.js'
+import { setup as setupActiveElement, destroy as destroyActiveElement } from '../utils/active-element.js'
 import { eventShowDialog, eventDialogShow, eventDialogClose, eventDialogVisibility } from '../../config.js'
 import { trigger, on, off } from '../../store/store-content.js'
 import { setup, destroy } from './dialog.js'
@@ -37,6 +43,8 @@ describe('dialog', () => {
       }
     }
 
+    autocomplete.mockClear()
+    setupActiveElement()
     setup({dialog_shortcut: 'ctrl+space'})
     on(eventDialogVisibility, recordVisibility)
 
@@ -48,6 +56,7 @@ describe('dialog', () => {
   afterEach(() => {
     off(eventDialogVisibility, recordVisibility)
     destroy()
+    destroyActiveElement()
     textarea.remove()
     delete window.browser.runtime.sendMessage
   })
@@ -116,6 +125,14 @@ describe('dialog', () => {
   it('should not be visible when the top frame is not available', async () => {
     showResponse = new Error('Receiving end does not exist')
     await trigger(eventShowDialog, {})
+    expect(visibility).to.deep.equal([true, false])
+  })
+  it('should not insert when the editor was removed while the dialog was open', async () => {
+    await trigger(eventShowDialog, {})
+
+    textarea.remove()
+    await trigger(eventDialogClose, {template: {body: 'hello'}})
+    expect(autocomplete).not.toHaveBeenCalled()
     expect(visibility).to.deep.equal([true, false])
   })
 })

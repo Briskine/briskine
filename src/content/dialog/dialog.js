@@ -173,6 +173,8 @@ async function respondToClose ({ template } = {}) {
   if (restored && template) {
     autocomplete({
       template: template,
+    }).catch((err) => {
+      debug(['dialog autocomplete', err], 'error')
     })
   }
 }

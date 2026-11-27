@@ -4,7 +4,7 @@ vi.mock('../utils/current-url.js', () => ({
   default: () => new URL('https://www.linkedin.com/messaging/'),
 }))
 
-import { getPluginData } from '../plugin.js'
+import { getPluginData, runPluginActions } from '../plugin.js'
 import loadIframe from '../../test-utils/iframe.js'
 
 describe('linkedin', () => {
@@ -204,6 +204,45 @@ describe('linkedin', () => {
       ],
       subject: '',
     })
+
+    iframe.remove()
+  })
+
+  it('should get the recipient in recruiter message composer', async () => {
+    const iframe = await loadIframe('/pages/linkedin/linkedin-recruiter-message.html')
+    const data = await getPluginData({document: iframe.contentDocument})
+
+    expect(data).to.deep.equal({
+      from: {},
+      to: [
+        {
+          name: 'Michael Briskine',
+          first_name: 'Michael',
+          last_name: 'Briskine',
+          email: ''
+        }
+      ],
+      subject: '',
+    })
+
+    iframe.remove()
+  })
+
+  it('should set the subject in recruiter message composer', async () => {
+    const iframe = await loadIframe('/pages/linkedin/linkedin-recruiter-message.html')
+    const doc = iframe.contentDocument
+    const $subject = doc.querySelector('.compose-subject__input')
+    let inputEvents = 0
+    $subject.addEventListener('input', () => inputEvents++)
+
+    await runPluginActions({
+      element: doc.querySelector('.ql-editor'),
+      template: {subject: 'Hello'},
+      data: {},
+    })
+
+    expect($subject.value).to.equal('Hello')
+    expect(inputEvents).to.equal(1)
 
     iframe.remove()
   })

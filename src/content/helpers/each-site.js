@@ -8,10 +8,12 @@
  * each with that tab's plugin data and @site, the same way {{#site}} does,
  * and @index, @first and @last, the same way {{#each}} does.
  * Renders the else branch only when no tab matched.
+ * Records a loop entry for every tab, the same way {{#each}} does,
+ * so form fields inside get a value per tab.
  *
  */
 
-import { createFrame } from '../../briskbars/briskbars.js'
+import { createFrame, loopEntry, loopEntryKey } from '../../briskbars/briskbars.js'
 
 import { getSiteContexts } from '../site/site-context.js'
 import siteFrame from '../site/site-frame.js'
@@ -33,6 +35,8 @@ export default function createEachSite (cache = new Map()) {
       return options.inverse(this)
     }
 
+    const parent = loopEntry(options.data)
+    const tabIds = contexts.map((context) => context.tabId)
     let output = ''
     for (const [index, context] of contexts.entries()) {
       const frame = createFrame(options.data)
@@ -40,6 +44,13 @@ export default function createEachSite (cache = new Map()) {
       frame.first = index === 0
       frame.last = index === contexts.length - 1
       frame.site = siteFrame(context)
+      frame[loopEntryKey] = {
+        item: context.tabId,
+        key: index,
+        index,
+        items: tabIds,
+        parent,
+      }
 
       output += await options.fn(await parseContext(context.data), {data: frame})
     }

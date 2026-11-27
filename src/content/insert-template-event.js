@@ -4,6 +4,7 @@ import { on, off } from '../store/store-content.js'
 import { getActiveElement } from './utils/active-element.js'
 import { isTextfieldEditor } from './editors/editor-textfield.js'
 import { isContentEditable } from './editors/editor-contenteditable.js'
+import debug from '../debug.js'
 
 function insertTemplate ({ template = {} }) {
   let element = getActiveElement()
@@ -20,6 +21,8 @@ function insertTemplate ({ template = {} }) {
 
   autocomplete({
     template: template,
+  }).catch((err) => {
+    debug(['insert template event', err], 'error')
   })
 }
 

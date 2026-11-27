@@ -6,7 +6,7 @@ vi.mock('../site/site-context.js', () => ({
   getSiteMatches: vi.fn(),
 }))
 
-import parseTemplate from '../utils/parse-template.js'
+import parseTemplate, { createSession, renderTemplate } from '../utils/parse-template.js'
 import { getSiteContext, getSiteContexts, getSiteMatches } from '../site/site-context.js'
 
 const tabs = [
@@ -172,5 +172,20 @@ describe('eachSite handlebars helper', () => {
 
     expect(await parseTemplate('{{#site "briskine.com"}}[{{to.first_name}}]{{/site}}{{#eachSite "briskine.com"}}[{{to.first_name}}]{{/eachSite}}'))
       .to.equal('[John][Michael][John]')
+  })
+
+  it('should give form fields without an id a value per tab', async () => {
+    const session = await createSession()
+    session.isFree = async () => false
+    const template = '{{#eachSite "briskine.com"}}[{{@site.title}}:{{input}}]{{/eachSite}}'
+    const html = await renderTemplate(template, session, 'form')
+    const keys = [...html.matchAll(/data-form-id="([^"]+)"/g)].map((match) => match[1])
+    expect(keys).to.have.length(2)
+    expect(keys[0]).not.to.equal(keys[1])
+
+    session.values[keys[0]] = 'a'
+    session.values[keys[1]] = 'b'
+    expect(await renderTemplate(template, session))
+      .to.equal('[Messaging | Briskine:a][Feed | Briskine:b]')
   })
 })

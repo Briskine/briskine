@@ -4,6 +4,7 @@
 import { getActiveElement } from '../utils/active-element.js'
 import { getSelectionRange, setSelectionRange } from '../utils/selection.js'
 import { insertExecCommandTemplate } from './editor-execcommand.js'
+import debug from '../../debug.js'
 
 export function isContentEditable (element) {
   return (
@@ -23,6 +24,18 @@ export async function insertContentEditableTemplate ({ html, text }) {
   }
 
   let range = getSelectionRange(element)
+  // we can't see the caret, the browser can still insert at it
+  if (
+    !range
+    || !element.contains(range.startContainer)
+    || !element.contains(range.endContainer)
+  ) {
+    return insertExecCommandTemplate({
+      html,
+      text,
+    })
+  }
+
   // delete existing selection
   range.deleteContents()
 
@@ -55,7 +68,12 @@ export async function insertContentEditableTemplate ({ html, text }) {
   range.insertNode(templateNode)
   range.collapse()
 
-  await setSelectionRange(element, range)
+  // the template is inserted, so we can't fall back to another editor
+  try {
+    await setSelectionRange(element, range)
+  } catch (err) {
+    debug(['insertContentEditableTemplate', err])
+  }
 
   // trigger multiple change events,
   // for frameworks and scripts to notice changes to the editable fields.

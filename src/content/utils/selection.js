@@ -49,6 +49,10 @@ export function getSelectionRange (node) {
     && typeof selection.getComposedRanges === 'function'
   ) {
     const staticRange = selection.getComposedRanges({ shadowRoots: [root] })[0]
+    if (!staticRange) {
+      return null
+    }
+
     const range = new Range()
     range.setStart(staticRange.startContainer, staticRange.startOffset)
     range.setEnd(staticRange.endContainer, staticRange.endOffset)
@@ -87,6 +91,8 @@ export function getSelectionFocus (
   return [focusNode, focusOffset]
 }
 
+const selectionChangeTimeout = 100
+
 export async function setSelectionRange (node, range) {
   const currentRange = getSelectionRange(node)
 
@@ -108,7 +114,7 @@ export async function setSelectionRange (node, range) {
     return range
   }
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     // even if setBaseAndExtent is synchronous,
     // some third-party editors rely on selection change to notice the change,
     // so that's when we consider it done.
@@ -116,7 +122,10 @@ export async function setSelectionRange (node, range) {
     // on screen, and we can use getBoundingClientRect on it.
     // requestAnimationFrame would be enough for that,
     // if we didn't need to support third-party editors.
-    document.addEventListener('selectionchange', () => {
+    const done = () => {
+      clearTimeout(timer)
+      document.removeEventListener('selectionchange', done)
+
       // scroll to caret, if needed.
       // doesn't happen automatically everywhere (e.g., gemini)
       const parent = range?.commonAncestorContainer?.parentElement
@@ -125,17 +134,27 @@ export async function setSelectionRange (node, range) {
       }
 
       resolve(range)
-    }, { once: true })
+    }
+
+    // the page can stop the event, or the browser can skip it
+    const timer = setTimeout(done, selectionChangeTimeout)
+    document.addEventListener('selectionchange', done)
 
     // Safari/Webkit doesn't support selection.addRange(),
     // when the range is in shadow dom,
     // that's why we use setBaseAndExtent.
     const selection = getComposedSelection(node)
-    selection.setBaseAndExtent(
-      range.startContainer,
-      range.startOffset,
-      range.endContainer,
-      range.endOffset
-    )
+    try {
+      selection.setBaseAndExtent(
+        range.startContainer,
+        range.startOffset,
+        range.endContainer,
+        range.endOffset
+      )
+    } catch (err) {
+      clearTimeout(timer)
+      document.removeEventListener('selectionchange', done)
+      reject(err)
+    }
   })
 }

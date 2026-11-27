@@ -146,22 +146,15 @@ export function getDefaultTemplates () {
         {{/hidden~}}
         <div>{{#if (compare "===" @form.tone "Formal")}}Dear{{else}}Hi{{/if}} {{input id="first-name" placeholder="First name" required=true}},</div>
         <div>first name again (same id, kept in sync): {{input id="first-name"}}</div>
-        <div>first name from @form: {{capitalize @form.[first-name]}}</div>
         <div>order: #{{input type="number" id="order" placeholder="Order" min=1 required=true}}</div>
         <div>email: {{input type="email" id="email" placeholder="Email"}}</div>
-        <div>url: {{input type="url" id="url" value="https://www.briskine.com"}}</div>
-        <div>tel: {{input type="tel" id="tel" pattern="[0-9 +]+" placeholder="Digits, spaces, +"}}</div>
         <div>date: {{input type="date" id="date"}} -> {{moment @form.date format="dddd, MMMM D"}}</div>
-        <div>time: {{input type="time" id="time" value="09:30"}}</div>
+        <div>time: {{input type="time" value="09:30"}}</div>
         <div>datetime-local: {{input type="datetime-local" id="when"}} -> {{moment @form.when format="LLLL"}}</div>
         <div>month: {{input type="month" id="month"}} -> {{moment @form.month format="MMMM YYYY"}}</div>
         <div>week: {{input type="week" id="week"}} -> {{moment @form.week format="[week of] MMMM D"}}</div>
         <div>color: <span style="background: {{@form.highlight}}">highlighted with {{@form.highlight}}</span></div>
-        <div>cause: {{#select id="cause"}}
-          {{option "a delay at our warehouse" value="a warehouse delay"}}
-          {{option "Carrier issue" value="an issue with the carrier"}}
-        {{/select}}</div>
-        <div>intro (block options): {{#select id="intro"}}
+        <div>intro (block options): {{#select}}
           {{#option label="Short"}}<em>Thanks!</em>{{/option}}
           {{#option label="Long"}}<strong>Thank you for {{#if @form.[first-name]}}your message, {{@form.[first-name]}}{{else}}reaching out{{/if}}.</strong>{{/option}}
         {{/select}}</div>
@@ -172,14 +165,15 @@ export function getDefaultTemplates () {
           </div>
           <div>{{input type="checkbox" id="partial"}} partial refund</div>
           {{#if @form.partial}}
-            <div>reason: {{input id="reason" placeholder="Reason"}}</div>
+            <div>reason: {{input placeholder="Reason"}}</div>
           {{/if}}
         {{/if}}
-        <div>notes: {{textarea id="notes" rows=3 placeholder="Newlines become line breaks"}}</div>
+        <div>no id, one per tool: {{#each @form.tools}}[{{this}}: {{input placeholder="Plan"}}]{{/each}}</div>
+        <div>notes (no id, kept while refund toggles): {{textarea rows=3 placeholder="Newlines become line breaks"}}</div>
         <div>random (same in the form and the template): {{random "one" "two" "three" "four" "five"}}</div>
         <div>now (same in the form and the template): {{moment format="HH:mm:ss"}}</div>
         <div>cursor: {{cursor}}</div>
-        {{#if @form.ps}}<div>P.S. {{input id="ps-text" value="See you soon!"}}</div>{{/if}}
+        {{#if @form.ps}}<div>P.S. {{input value="See you soon!"}}</div>{{/if}}
       `,
     })
 

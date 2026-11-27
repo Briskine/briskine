@@ -19,7 +19,7 @@ import createCss from '../helpers/css.js'
 import createSite from '../helpers/site.js'
 import createEachSite from '../helpers/each-site.js'
 import createHidden from '../helpers/hidden.js'
-import createForm from '../helpers/form.js'
+import createForm, { isGeneratedKey } from '../helpers/form.js'
 
 import moment from 'moment/min/moment-with-locales.js'
 
@@ -94,49 +94,68 @@ export async function createSession (data = {}) {
       eachSite: new Map(),
       css: new Map(),
     },
-    // field values by id, available as @form
+    // field values by key. Fields with an id are available as @form.
     values: {},
     // fields from the last render
     fields: new Map(),
+    // short ids for template texts and loop item paths, for field keys
+    ids: new Map(),
     // checked only when a template has fields
     isFree: () => free ??= checkFree(),
   }
 }
 
+// only the fields with an id
+function formData (values = {}) {
+  return Object.fromEntries(Object.entries(values).filter(([key]) => !isGeneratedKey(key)))
+}
+
+// for templates that keep adding fields
+const maxRenders = 5
+
 // mode is form, to render form fields, or final, to render their values
 export async function renderTemplate (template = '', session, mode = 'final') {
-  const fields = new Map()
   const randoms = session.randoms.get(template) ?? []
   session.randoms.set(template, randoms)
-  const renderHelpers = {
-    ...helpers,
-    moment: createMoment(session.now),
-    random: createRandom(randoms),
-    site: createSite(session.cache.site),
-    eachSite: createEachSite(session.cache.eachSite),
-    css: createCss(session.cache.css),
-    hidden: createHidden(mode),
-    ...createForm({
-      values: session.values,
-      fields,
-      mode,
-      isFree: session.isFree,
-    }),
-  }
 
-  const html = await briskbars(template, session.context, {
-    helpers: renderHelpers,
-    partials: session.partials,
-    data: {form: session.values},
-  })
+  let html = ''
+  for (let render = 1; render <= maxRenders; render++) {
+    const fields = new Map()
+    const renderHelpers = {
+      ...helpers,
+      moment: createMoment(session.now),
+      random: createRandom(randoms),
+      site: createSite(session.cache.site),
+      eachSite: createEachSite(session.cache.eachSite),
+      css: createCss(session.cache.css),
+      hidden: createHidden(mode),
+      ...createForm({
+        values: session.values,
+        fields,
+        ids: session.ids,
+        mode,
+        isFree: session.isFree,
+      }),
+    }
 
-  // fields shown for the first time start with their default
-  for (const [id, field] of fields) {
-    if (!Object.hasOwn(session.values, id)) {
-      session.values[id] = field.default
+    html = await briskbars(template, session.context, {
+      helpers: renderHelpers,
+      partials: session.partials,
+      data: {form: formData(session.values)},
+    })
+
+    // fields shown for the first time start with their default
+    const added = [...fields.keys()].filter((id) => !Object.hasOwn(session.values, id))
+    for (const id of added) {
+      session.values[id] = fields.get(id).default
+    }
+    session.fields = fields
+
+    // render again, so @form has the defaults of the new fields
+    if (!added.some((id) => !isGeneratedKey(id))) {
+      break
     }
   }
-  session.fields = fields
 
   return html
 }
